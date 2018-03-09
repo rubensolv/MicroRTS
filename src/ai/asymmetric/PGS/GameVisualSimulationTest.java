@@ -75,7 +75,7 @@ public class GameVisualSimulationTest {
         int PERIOD = 20;
         boolean gameover = false;
 
-        //AI ai1 = new StrategyTactics(utt);
+        AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new RangedRush(utt);
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new LightRush(utt);
@@ -97,7 +97,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new POLightRush(utt);
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new PGSmRTS_SandBox(utt);
-        AI ai1 = new PGSmRTS(utt); 
+        //AI ai1 = new PGSmRTS(utt); 
         //AI ai1 = new GAB_SandBox(utt);
         
         AI ai2 = new GAB_SandBox_Parcial_State(utt);
