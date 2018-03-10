@@ -79,6 +79,7 @@ public class ClusterTesteLeve {
         int iAi2 = Integer.parseInt(args[1]);
         int map = Integer.parseInt(args[2]);
         
+        
         Instant timeInicial = Instant.now();
         Duration duracao;
         
@@ -314,10 +315,11 @@ public class ClusterTesteLeve {
                new GAB(utt),
                new GAB_ABActionGeneration(utt),
                new SAB(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, best), "Bk1"), //PGS com o best response do GA
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, best), "best")
+               //new PGSSCriptChoice(utt, decodeScripts(utt, best), "Bk1"), //PGS com o best response do GA
                //new GAB_ScriptC(utt, decodeScripts(utt, best), "Bk1"), //GAB com o best response do GA
                
-               new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Bk2") //PGS com o best response do Nash
+               //new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Bk2") //PGS com o best response do Nash
                //new GAB_ScriptC(utt, decodeScripts(utt, sc2Nash), "Bk2")  //GAB com o best response do Nash
                
                //new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA"), //PGS com o melhor GA

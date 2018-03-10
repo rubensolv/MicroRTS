@@ -31,7 +31,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI {
+public class SSSmRTSScriptChoice extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -52,9 +52,12 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     
     private Integer numberTypes;
     private Double timePlayout;
+    
+    //tupla scripts
+    String tuplaInScripts = "";
 
-    public SSSmRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 1,
+    public SSSmRTSScriptChoice(UnitTypeTable utt) {
+        this(100, -1, 200, 4, 4,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -62,8 +65,31 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 utt,
                 new AStarPathFinding());
     }
+    
+    public SSSmRTSScriptChoice(UnitTypeTable utt, List<AI> scripts) {
+        this(100, -1, 200, 4, 4,
+                //new CombinedEvaluation(),
+                new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
+        this.scripts = scripts;
+    }
+    
+    public SSSmRTSScriptChoice(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
+        this(100, -1, 200, 4, 4,
+                //new CombinedEvaluation(),
+                new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
+        this.scripts = scripts;
+        this.tuplaInScripts = tuplaIndSc;
+    }
 
-    public SSSmRTS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SSSmRTSScriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -74,31 +100,24 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         pf = a_pf;
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
-        buildPortfolio();
     }
+    public SSSmRTSScriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
+        super(time, max_playouts);
 
-    protected void buildPortfolio() {
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
-        this.scripts.add(new POWorkerRush(utt));
-
-        //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
-        //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
-        //this.scripts.add(new PORangedRush(utt, new FloodFillPathFinding()));
-        
+        LOOKAHEAD = la;
+        I = a_I;
+        R = a_R;
+        evaluation = e;
+        utt = a_utt;
+        pf = a_pf;
+        defaultScript = new POLightRush(a_utt);
+        this.scripts = scripts;
     }
 
     @Override
     public void reset() {
 
-    }
-    
-    protected void evalPortfolio(int heightMap){
-        if(heightMap <= 16 && !portfolioHasWorkerRush()){
-            this.scripts.add(new POWorkerRush(utt));
-        }
-    }
+    }    
     
     private boolean portfolioHasWorkerRush() {
         for (AI script : scripts) {
@@ -111,8 +130,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception {
-        if (gs.canExecuteAnyAction(player)) {
-            evalPortfolio(gs.getPhysicalGameState().getHeight());
+        if (gs.canExecuteAnyAction(player)) {            
             startNewComputation(player, gs);
             return getBestActionSoFar();
         } else {
@@ -233,7 +251,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public AI clone() {
-        return new SSSmRTS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new SSSmRTSScriptChoice(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -253,7 +271,8 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + LOOKAHEAD + ", " + I + ", " + R + ", " + evaluation + ", " + pf + ")";
+        //return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + LOOKAHEAD + ", " + I + ", " + R + ", " + evaluation + ", " + pf + ")";
+        return getClass().getSimpleName()+"_"+tuplaInScripts+"_"+this.scripts.toString();
     }
 
     public int getPlayoutLookahead() {
