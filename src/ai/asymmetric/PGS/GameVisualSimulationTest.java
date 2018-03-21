@@ -21,6 +21,7 @@ import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.BFSPathFinding;
+import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.GAB.GAB;
 import ai.asymmetric.GAB.GAB_timeControlNormalScore;
 import ai.asymmetric.GAB.SandBox.GAB_SandBox;
@@ -101,7 +102,8 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PGSmRTS(utt); 
         //AI ai1 = new GAB_SandBox(utt);
         
-        AI ai2 = new GAB_SandBox_Parcial_State(utt);
+        AI ai2 = new AlphaBetaSearch(utt);
+        //AI ai2 = new GAB_SandBox_Parcial_State(utt);
         //AI ai2 = new GAB_SandBox(utt);
         //AI ai2 = new PGSmRTS(utt); 
         //AI ai2 = new WorkerRush(utt);

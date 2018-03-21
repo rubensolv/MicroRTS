@@ -222,12 +222,14 @@ public class GAB_SandBox_Parcial_State extends AIWithComputationBudget implement
                 //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
                 //System.out.println("Escolhido paAB");
                 //currentScriptData = new UnitScriptData(playerForThisComputation);
+                System.out.println("Unidades = "+paAB.toString());
                 return paAB;
             }
         }
 
         //System.out.println("Escolhido paPGS");
         //currentScriptData = new UnitScriptData(playerForThisComputation);
+        System.out.println("Unidades = "+paPGS.toString());
         return paPGS;
 
     }

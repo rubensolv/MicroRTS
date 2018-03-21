@@ -31,6 +31,7 @@ import ai.aiSelection.IDABCD.ABSelection;
 import ai.asymmetric.GAB.GAB;
 import ai.asymmetric.GAB.GAB_ABActionGeneration;
 import ai.asymmetric.GAB.GAB_ScriptC;
+import ai.asymmetric.GAB.SandBox.GAB_SandBox;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
@@ -300,9 +301,9 @@ public class ClusterTesteLeve {
          */            
         
         //best response GA 
-        String best = "25;15;13;11;18;"; 
-        String sc2Nash = "25;15;13;11;21;"; 
-        //String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
+        String best = "277;"; 
+        //String sc2Nash = "25;15;13;11;21;"; 
+        String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                new AHTNAI(utt),
@@ -312,17 +313,18 @@ public class ClusterTesteLeve {
                new StrategyTactics(utt),
                new PGSmRTS(utt),
                new SSSmRTS(utt),
-               new GAB(utt),
-               new GAB_ABActionGeneration(utt),
+               //new GAB(utt),
+               //new GAB_ABActionGeneration(utt),
                new SAB(utt),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, best), "best")
-               //new PGSSCriptChoice(utt, decodeScripts(utt, best), "Bk1"), //PGS com o best response do GA
+               new GAB_SandBox(utt),
+               //new SSSmRTSScriptChoice(utt, decodeScripts(utt, best), "best")
+               new PGSSCriptChoice(utt, decodeScripts(utt, best), "PIBL"), //PGS com o best response do GA
                //new GAB_ScriptC(utt, decodeScripts(utt, best), "Bk1"), //GAB com o best response do GA
                
                //new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Bk2") //PGS com o best response do Nash
                //new GAB_ScriptC(utt, decodeScripts(utt, sc2Nash), "Bk2")  //GAB com o best response do Nash
                
-               //new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA"), //PGS com o melhor GA
+               new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA") //PGS com o melhor GA
                //new GAB_ScriptC(utt, decodeScripts(utt, bestGA), "bGA")  //GAB com o melhor GA
                 
         ));

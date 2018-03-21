@@ -89,6 +89,12 @@ public class RoundRobinTOMatchDummy {
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
+
+        //PlayerAction pa1 = ai1.getAction(0, gs);
+        //PlayerAction pa2 = ai2.getAction(1, gs);
+        
+        //gs.issueSafe(pa1);
+        //gs.issueSafe(pa2);
         
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
