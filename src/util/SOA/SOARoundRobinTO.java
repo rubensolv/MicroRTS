@@ -32,11 +32,15 @@ public class SOARoundRobinTO {
             ArrayList<String> mathSOA = buscarAquivos(pathSOA);
             for (String arquivo : mathSOA) {
                 System.out.println("Processando arquivo "+arquivo);
-                if (processarMatch(pathLog, arquivo)) {
+                 try {
+                    if (processarMatch(pathLog, arquivo)) {
                     //remove o arquivo da pasta 
                     File remove = new File(arquivo);
                     remove.delete();
                 }
+                     } catch (Exception e) {
+                e.printStackTrace();
+            }
             }
 
             
