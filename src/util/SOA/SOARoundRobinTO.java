@@ -23,27 +23,26 @@ public class SOARoundRobinTO {
         String pathLog = args[1];
         //String pathSOA = "/home/rubens/cluster/ExecAIGASOA/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/ExecAIGASOA/logs/";
-        
+
         System.out.println(pathSOA);
         System.out.println(pathLog);
-        
+
         while (!finalizarSOA(pathSOA)) {
             //procuro a existencia dos arquivos a serem processados.
             ArrayList<String> mathSOA = buscarAquivos(pathSOA);
             for (String arquivo : mathSOA) {
-                System.out.println("Processando arquivo "+arquivo);
-                 try {
+                System.out.println("Processando arquivo " + arquivo);
+                try {
                     if (processarMatch(pathLog, arquivo)) {
-                    //remove o arquivo da pasta 
-                    File remove = new File(arquivo);
-                    remove.delete();
+                        //remove o arquivo da pasta 
+                        File remove = new File(arquivo);
+                        remove.delete();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                     } catch (Exception e) {
-                e.printStackTrace();
-            }
             }
 
-            
             try {
                 System.out.println("Waiting...");
                 Thread.sleep(10000);

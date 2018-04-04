@@ -6,6 +6,7 @@ package util.SOA;
 
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import gui.PhysicalGameStatePanel;
