@@ -8,7 +8,6 @@ package ai.aiSelection.AlphaBetaSearch;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import rts.UnitAction;
 
 /**
  *
@@ -16,12 +15,11 @@ import rts.UnitAction;
  */
 public class MoveArray {
     
-    //lookup table unitIndex -> unitID
-    HashMap<Long, Integer> lookupId = new HashMap<>();
-    Integer Index;
+    
 
     // the array which contains all the moves
     Action[][] _moves = new Action[100][105];// otimizado
+    //HashMap<Long, Action[]> _moves = new HashMap<>();
 
     // how many moves each unit has
     int[] _numMoves = new int[100];
@@ -36,8 +34,6 @@ public class MoveArray {
     boolean _hasMoreMoves;
 
     public MoveArray() {
-        lookupId = new HashMap<>();
-        Index = 0;
         this._maxUnits = 100;
         this._numUnits = 0;
         this._hasMoreMoves = true;
@@ -48,8 +44,6 @@ public class MoveArray {
     }
 
     public void clear() {
-        lookupId = new HashMap<>();
-        Index = 0;
         // only clear things if they need to be cleared
         if (_numUnits == 0) {
             return;
@@ -249,29 +243,5 @@ public class MoveArray {
             }
         }
     }
-    
-    public Integer InsertUnitIndex(Long unitID){
-        Integer ret = this.Index;
-        this.Index++;
-        this.lookupId.put(unitID, ret);        
-        return ret;
-    }
-    
-    public Integer getUnitIndex(Long unitID){
-        return this.lookupId.get(unitID);
-    }
-    
-    public boolean UnitIDInserted(Long unitID){
-        return this.lookupId.containsKey(unitID);           
-    }
-    
-    public Long getOrigIDUnit(Integer unitIndex){
-        for(Long l : lookupId.keySet()){
-            if(lookupId.get(l)==unitIndex){
-                return l;
-            }
-        }
-        
-        return null;
-    }
+
 }

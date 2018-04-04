@@ -25,6 +25,7 @@ import ai.abstraction.WorkerRush;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
+import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
@@ -204,7 +205,7 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                "maps/32x32/basesWorkers32x32A.xml"
         ));
         
         UnitTypeTable utt = new UnitTypeTable();
@@ -301,9 +302,9 @@ public class ClusterTesteLeve {
          */            
         
         //best response GA 
-        String best = "277;"; 
+        String bestGA = "57;94;205;"; 
         //String sc2Nash = "25;15;13;11;21;"; 
-        String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
+        //String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                new AHTNAI(utt),
@@ -313,12 +314,16 @@ public class ClusterTesteLeve {
                new StrategyTactics(utt),
                new PGSmRTS(utt),
                new SSSmRTS(utt),
+               new POLightRush(utt),
+               new POHeavyRush(utt),
+               new PORangedRush(utt),
+               new POWorkerRush(utt),
                //new GAB(utt),
                //new GAB_ABActionGeneration(utt),
-               new SAB(utt),
-               new GAB_SandBox(utt),
+               //new SAB(utt),
+               //new GAB_SandBox(utt),
                //new SSSmRTSScriptChoice(utt, decodeScripts(utt, best), "best")
-               new PGSSCriptChoice(utt, decodeScripts(utt, best), "PIBL"), //PGS com o best response do GA
+               //new PGSSCriptChoice(utt, decodeScripts(utt, best) ""), //PGS com o best response do GA
                //new GAB_ScriptC(utt, decodeScripts(utt, best), "Bk1"), //GAB com o best response do GA
                
                //new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Bk2") //PGS com o best response do Nash

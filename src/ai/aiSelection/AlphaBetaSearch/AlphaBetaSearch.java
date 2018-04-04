@@ -54,6 +54,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
+    
+    //class to control a relation between unit ID and Unit Index (limited to 100).
+    LookUpUnits lKp = new LookUpUnits();
 
     public AlphaBetaSearch(UnitTypeTable utt) {
         this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
@@ -434,12 +437,15 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         if (moves == null) {
             moves = new MoveArray();
         }
+        
+        lKp.refreshLookup(state);
+        
         PlayerActionGenerator AllMoves = new PlayerActionGenerator(state, playerToGame);
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
         for (Pair<Unit, List<UnitAction>> choice : choices) {
             moves.addUnit();
             for (UnitAction uAc : choice.m_b) {
-                Integer idIndex = moves.InsertUnitIndex(choice.m_a.getID());
+                Integer idIndex = lKp.getUnitIndex(choice.m_a.getID());
                 Action act = new Action(idIndex, playerToMove.codigo(), uAc.getType(), uAc);
                 moves.add(idIndex, act);
             }
@@ -549,10 +555,10 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         ArrayList<Action> acts = new ArrayList<>();
         for (Pair<Unit, UnitAction> choice : pTemp.getActions()) {
             Integer idIndex;
-            if (moves.UnitIDInserted(choice.m_a.getID())) {
-                idIndex = moves.getUnitIndex(choice.m_a.getID());
+            if (lKp.UnitIDInserted(choice.m_a.getID())) {
+                idIndex = lKp.getUnitIndex(choice.m_a.getID());
             } else {
-                idIndex = moves.InsertUnitIndex(choice.m_a.getID());
+                idIndex = lKp.InsertUnitIndex(choice.m_a.getID());
             }
             Action act = new Action(idIndex, playerToMove.codigo(), choice.m_b.getType(), choice.m_b);
             //moves.add(idIndex, act);
@@ -563,10 +569,11 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     private void applyActionState(GameState child, ArrayList<Action> movesToAplly, MoveArray moves) {
+        lKp.refreshLookup(child);
         PlayerAction act = new PlayerAction();
         for (Action action : movesToAplly) {
-            if (moves.getOrigIDUnit(action.getUnit()) != null) {
-                act.addUnitAction(child.getUnit(moves.getOrigIDUnit(action.getUnit())), action.getUnitAction());
+            if (lKp.getOrigIDUnit(action.getUnit()) != null) {
+                act.addUnitAction(child.getUnit(lKp.getOrigIDUnit(action.getUnit())), action.getUnitAction());
             } else {
                 System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.applyActionState() Erro ao encontrar unidade");
             }
@@ -576,12 +583,13 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     private PlayerAction makePlayerAction(GameState state, ArrayList<Action> movesToAplly, MoveArray moves) {
+        lKp.refreshLookup(state);
         PlayerAction act = new PlayerAction();
         for (Action action : movesToAplly) {
-            if (moves.getOrigIDUnit(playerToGame) != null) {
-                act.addUnitAction(state.getUnit(moves.getOrigIDUnit(playerToGame)), action.getUnitAction());
+            if (lKp.getOrigIDUnit(playerToGame) != null) {
+                act.addUnitAction(state.getUnit(lKp.getOrigIDUnit(playerToGame)), action.getUnitAction());
             } else {
-                System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.applyActionState() Erro ao encontrar unidade");
+                System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.makePlayerAction() Erro ao encontrar unidade");
             }
         }
         return act;
@@ -622,10 +630,10 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     @Override
-    public PlayerAction getAction(int player, GameState gs) throws Exception {
-        startNewComputation(player, gs);
-        computeDuringOneGameFrame();
-        if (gs.canExecuteAnyAction(player)) {
+    public PlayerAction getAction(int player, GameState gs) throws Exception {        
+        if (gs.canExecuteAnyAction(player)) {            
+            startNewComputation(player, gs);
+            computeDuringOneGameFrame();            
             return getBestActionSoFar();
         } else {
             return new PlayerAction();
