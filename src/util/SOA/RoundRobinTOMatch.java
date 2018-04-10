@@ -49,7 +49,7 @@ public class RoundRobinTOMatch {
         PhysicalGameState pgs = PhysicalGameState.load(map, utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 8000;
+        int MAXCYCLES = 10000;
         int PERIOD = 20;
         boolean gameover = false;
 
@@ -142,7 +142,7 @@ public class RoundRobinTOMatch {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -154,6 +154,10 @@ public class RoundRobinTOMatch {
 
         log.add("Winner " + Integer.toString(gs.winner()));
         log.add("Game Over");
+        
+        if(gs.winner() == -1){
+            System.out.println("Empate!"+ai1.toString()+" vs "+ai2.toString()+" Max Cycles ="+MAXCYCLES+" Time:"+duracao.toMinutes());
+        }
 
         gravarLog(log, tupleAi1, tupleAi2, IDMatch, Generation, pathLog);
         //System.exit(0);
