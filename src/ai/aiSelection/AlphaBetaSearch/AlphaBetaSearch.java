@@ -167,7 +167,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
         // move generation
         MoveArray moves = _allMoves.get(depth);
-        moves = generateMoves(moves, playerToMove, state);
+        if (state.canExecuteAnyAction(playerToMove.codigo())) {
+        	moves = generateMoves(moves, playerToMove, state);
+        }
         moves.shuffleMoveActions();
         generateOrderedMoves(state, moves, TTval, playerToMove, depth);
 
@@ -355,11 +357,12 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     public int calculateHash(int hashNum, GameState currentGS) {
         Hash hashC = new Hash();
+        lKp.refreshLookup(currentGS);
         hashC.initHash();
         int hash = 0;
         for (Unit u : currentGS.getUnits()) {
             if (!u.getType().isResource) {
-                hash += hashC.magicHash(calculateHashUnit(hashNum, currentGS.getTime(), u), u.getPlayer(), u.hashCode());
+                hash += hashC.magicHash(calculateHashUnit(hashNum, currentGS.getTime(), u), u.getPlayer(), lKp.getUnitIndex(u.getID()));
             }
         }
 
