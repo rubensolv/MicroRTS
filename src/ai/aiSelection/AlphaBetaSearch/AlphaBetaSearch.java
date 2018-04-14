@@ -437,9 +437,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     private MoveArray generateMoves(MoveArray moves, Players playerToMove, GameState state) throws Exception {
 
-        if (moves == null) {
+        //if (moves == null) {
             moves = new MoveArray();
-        }
+        //}
         
         lKp.refreshLookup(state);
         
