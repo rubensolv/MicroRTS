@@ -215,7 +215,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                        }
                
                 // get the alpha beta value
-                val = alphaBeta(state, (depth - 1), playerToMove, null, alpha, beta);
+                val = alphaBeta(child, (depth - 1), playerToMove, null, alpha, beta);
             }
 
             // set alpha or beta based on maxplayer
