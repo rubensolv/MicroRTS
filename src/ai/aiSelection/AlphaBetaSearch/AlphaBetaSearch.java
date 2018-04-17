@@ -203,10 +203,19 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                     applyActionState(child, prevSimMove, moves);
                 }
 
-                // do the moves of the current player
+             // do the moves of the current player
                 applyActionState(child, moveVec, moves);
+               
+                //apply a simulation node.
+                 while (child.winner() == -1 &&
+                               !child.gameover() &&
+                               !child.canExecuteAnyAction(_params.getMaxPlayer().codigo()) &&
+                               !child.canExecuteAnyAction(getEnemy(_params.getMaxPlayer()))) {
+                           child.cycle();
+                       }
+               
                 // get the alpha beta value
-                val = alphaBeta(state, (depth - 1), playerToMove, null, alpha, beta);
+                val = alphaBeta(child, (depth - 1), playerToMove, null, alpha, beta);
             }
 
             // set alpha or beta based on maxplayer
