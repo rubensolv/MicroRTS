@@ -139,17 +139,19 @@ public class Action {
             return "RETURN";
         } else if (unitAction.getType() == 4) { //TYPE_PRODUCE
             return "PRODUCE";
-        } else if (unitAction.getType() == 4) { //TYPE_PRODUCE
-            return "PRODUCE";
-        }
-
+        } 
         return "NONE"; // TYPE_NONE = 0
     }
 
     public String debugString() {
         String str = "";
 
-        str = moveString()+": ("+this._unit+", "+this._player+", "+ this.unitAction.toString()+", "+this._p.toString();
+        if(this._p != null){
+            str = moveString()+": ("+this._unit+", "+this._player+", "+ this.unitAction.toString()+", "+this._p.toString();
+        }else{
+            str = moveString()+": ("+this._unit+", "+this._player+", "+ this.unitAction.toString();
+        }
+        
         
         return str;
     }

@@ -51,6 +51,17 @@ public class AlphaBetaSearchResults {
         this.ttSaveAttempts = 0;
         
     }
+    
+    public void print(){
+        System.out.println(this.toString());
+    }
+
+    @Override
+    public String toString() {
+        return "AlphaBetaSearchResults{" + "solved=" + solved + ", timedOut=" + timedOut + ", nodesExpanded=" + nodesExpanded + ", timeElapsed=" + timeElapsed + ", avgBranch=" + avgBranch + ", bestMoves=" + bestMoves + ", abValue=" + abValue + ", maxDepthReached=" + maxDepthReached + '}';
+    }
+    
+    
 
     public boolean isSolved() {
         return solved;

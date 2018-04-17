@@ -59,7 +59,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     LookUpUnits lKp = new LookUpUnits();
 
     public AlphaBetaSearch(UnitTypeTable utt) {
-        this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
+        this(1000000, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
     }
 
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
@@ -134,11 +134,11 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         // update statistics
         _results.setNodesExpanded(_results.getNodesExpanded() + 1);
         if (searchTimeOut()) {
-            System.out.println("Estou dando searchTimeOut");
+            //System.out.println("Estou dando searchTimeOut");
             throw new Exception();
         }
         if (terminalState(state, depth)) {
-            System.out.println("Estado é terminal!");
+            //System.out.println("Estado é terminal!");
             // return the value, but the move will not be valid since none was performed
             StateEvalScore evalScore = eval(_params.getMaxPlayer(), _params.getEvalMethod(),
                                             _params.getSimScripts()[Players.Player_One.codigo()], 
@@ -182,6 +182,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
         // for each child
         while (getNextMoveVec(playerToMove, moves, moveNumber, TTval, depth, moveVec)) {
+            //printMoveVec(moveVec);
             // the value of the recursive AB we will call
             AlphaBetaValue val = new AlphaBetaValue();
 
@@ -209,8 +210,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                 //apply a simulation node.
                  while (child.winner() == -1 &&
                                !child.gameover() &&
-                               !child.canExecuteAnyAction(_params.getMaxPlayer().codigo()) &&
-                               !child.canExecuteAnyAction(getEnemy(_params.getMaxPlayer()))) {
+                               !child.canExecuteAnyAction(0) &&
+                               !child.canExecuteAnyAction(1)) {
                            child.cycle();
                        }
                
@@ -253,12 +254,14 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         //
         return maxPlayer ? new AlphaBetaValue(alpha, bestMove) : new AlphaBetaValue(beta, bestMove);
     }
+    
 
     private AlphaBetaValue IDAlphaBeta(GameState initialState, short maxDepth) throws Exception {
         AlphaBetaValue val = new AlphaBetaValue();
         _results.setNodesExpanded(0);
         _results.setMaxDepthReached(0);
         for (int d = 1; d < maxDepth; d++) {
+            //_results.print(); // remover
             StateEvalScore alpha = new StateEvalScore(-10000000, 999999);
             StateEvalScore beta = new StateEvalScore(10000000, 999999);
             _results.setMaxDepthReached(d);
@@ -455,9 +458,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         PlayerActionGenerator AllMoves = new PlayerActionGenerator(state, playerToGame);
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
         for (Pair<Unit, List<UnitAction>> choice : choices) {
-            moves.addUnit();
+            Integer idIndex = lKp.getUnitIndex(choice.m_a.getID());
+            moves.addUnit(idIndex);
             for (UnitAction uAc : choice.m_b) {
-                Integer idIndex = lKp.getUnitIndex(choice.m_a.getID());
                 Action act = new Action(idIndex, playerToMove.codigo(), uAc.getType(), uAc);
                 moves.add(idIndex, act);
             }
@@ -590,16 +593,20 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                 System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.applyActionState() Erro ao encontrar unidade");
             }
         }
-
-        child.issue(act);
+        try {
+            child.issue(act);
+        } catch (Exception e) {
+            System.out.println("Erro applyActionState "+e.toString());
+        }
+        
     }
 
     private PlayerAction makePlayerAction(GameState state, ArrayList<Action> movesToAplly, MoveArray moves) {
         lKp.refreshLookup(state);
         PlayerAction act = new PlayerAction();
         for (Action action : movesToAplly) {
-            if (lKp.getOrigIDUnit(playerToGame) != null) {
-                act.addUnitAction(state.getUnit(lKp.getOrigIDUnit(playerToGame)), action.getUnitAction());
+            if (lKp.getOrigIDUnit(action.getUnit()) != null) {
+                act.addUnitAction(state.getUnit(lKp.getOrigIDUnit(action.getUnit())), action.getUnitAction());
             } else {
                 System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.makePlayerAction() Erro ao encontrar unidade");
             }
@@ -684,6 +691,12 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
         return _results.getBestMoves();
+    }
+
+    private void printMoveVec(ArrayList<Action> moveVec) {
+        for (Action action : moveVec) {
+            System.out.println(action.debugString());
+        }
     }
 
 }
