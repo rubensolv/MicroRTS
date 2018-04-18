@@ -132,7 +132,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         // update statistics
         _results.setNodesExpanded(_results.getNodesExpanded() + 1);
         if (searchTimeOut()) {
-            //System.out.println("Estou dando searchTimeOut");
+            System.out.println("Estou dando searchTimeOut");
             throw new Exception();
         }
         if (terminalState(state, depth)) {
@@ -179,7 +179,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         ArrayList<Action> moveVec = new ArrayList<>();
 
         // for each child
-        while (getNextMoveVec(playerToMove, moves, moveNumber, TTval, depth, moveVec)) {
+        while (getNextMoveVec(playerToMove, moves, moveNumber, TTval, depth, moveVec, state)) {
             //printMoveVec(moveVec);
             // the value of the recursive AB we will call
             AlphaBetaValue val = new AlphaBetaValue();
@@ -278,6 +278,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
                 }
                 System.out.println("Erro during process "+ e.toString());
+                System.err.println(e.getStackTrace());
                 break;
             }
 
@@ -507,7 +508,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     }
 
-    private boolean getNextMoveVec(Players playerToMove, MoveArray2 moves, int moveNumber, TTLookupValue TTval, int depth, ArrayList<Action> moveVec) {
+    private boolean getNextMoveVec(Players playerToMove, MoveArray2 moves, int moveNumber, TTLookupValue TTval, int depth, ArrayList<Action> moveVec, GameState stateTemp) {
 
         if ((moveNumber >= _params.getMaxChildren())) {
             return false;
@@ -539,7 +540,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         } // otherwise return the next move vector starting from the beginning
         else {
             if (moves.hasMoreMoves()) {
-                for (Action a : moves.getNextMoveVec()) {
+                for (Action a : moves.getNextValidMoveVec(stateTemp, playerToMove.codigo())) {
                     moveVec.add(a);
                 }
                 return true;

@@ -169,7 +169,7 @@ public class GameState implements Serializable {
     // returns "true" is any action different from NONE was issued
     public boolean issue(PlayerAction pa) {
         boolean returnValue = false;
-
+       
         for (Pair<Unit, UnitAction> p : pa.actions) {
 //            if (p.m_a==null) {
 //                System.err.println("Issuing an action to a null unit!!!");

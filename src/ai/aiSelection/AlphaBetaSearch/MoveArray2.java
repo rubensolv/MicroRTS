@@ -8,6 +8,13 @@ package ai.aiSelection.AlphaBetaSearch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import rts.GameState;
+import rts.PhysicalGameState;
+import rts.ResourceUsage;
+import rts.UnitAction;
+import rts.UnitActionAssignment;
+import rts.units.Unit;
 
 /**
  *
@@ -21,17 +28,16 @@ public class MoveArray2 {
     // the number of units that have moves;
     ArrayList<Integer> _numUnits;
     boolean _hasMoreMoves;
-    
+
     // trigger to simplify the move generation
     HashMap<Integer, Integer> _currentMovesIndex;
-    
 
     public MoveArray2() {
         this._moves = new HashMap<>();
         this._hasMoreMoves = true;
         this._numUnits = new ArrayList<>();
         this._currentMovesIndex = new HashMap<>();
-        
+
     }
 
     public void clear() {
@@ -80,10 +86,9 @@ public class MoveArray2 {
         return (Action[]) _moves.get(unit).toArray();
     }
 
-    
     public void printCurrentMoveIndex() {
         for (Integer _numUnit : _numUnits) {
-            System.out.print(_numUnit+":"+_currentMovesIndex.get(_numUnit)+" ");
+            System.out.print(_numUnit + ":" + _currentMovesIndex.get(_numUnit) + " ");
         }
         System.out.println(" ");
     }
@@ -91,13 +96,13 @@ public class MoveArray2 {
     //check
     public void incrementMove(int unit) {
         //thinking if it is necessary
-        _currentMovesIndex.put(unit, ( (_currentMovesIndex.get(unit)+1) % _moves.get(unit).size() ));
+        _currentMovesIndex.put(unit, ((_currentMovesIndex.get(unit) + 1) % _moves.get(unit).size()));
         // if the value rolled over, we need to do the carry calculation
-        if(_currentMovesIndex.get(unit) == 0){
+        if (_currentMovesIndex.get(unit) == 0) {
             // the next unit index
             // if we have space left to increment, do it
             try {
-                int nextUnit = _numUnits.get(_numUnits.indexOf(unit)+1);
+                int nextUnit = _numUnits.get(_numUnits.indexOf(unit) + 1);
                 incrementMove(nextUnit);
             } catch (Exception e) { // otherwise we have no more moves
                 // stop
@@ -109,18 +114,42 @@ public class MoveArray2 {
     public boolean hasMoreMoves() {
         return _hasMoreMoves;
     }
-    
-    public ArrayList<Action> getNextMoveVec(){
+
+    /**
+     * Return one vector of Actions valid
+     *
+     * @param state where the actions were generated
+     * @param codPlayer int with the player id
+     * @return ArrayList with valid actions.
+     */
+    public ArrayList<Action> getNextValidMoveVec(GameState state, int codPlayer) {
+        ArrayList<Action> tempActions;
+        tempActions = getNextMoveVec();
+
+        boolean isVecValid = false;
+
+        while (isVecValid == false) {
+            if (calcResourcesVec(tempActions, state, codPlayer)) {
+                isVecValid = true;
+            } else {
+                tempActions = getNextMoveVec();
+            }
+        }
+
+        return tempActions;
+    }
+
+    public ArrayList<Action> getNextMoveVec() {
         ArrayList<Action> tempActions = new ArrayList<>();
-        
+
         for (Integer m : _numUnits) {
             Action act = _moves.get(m).get(_currentMovesIndex.get(m));
-            if(act != null){
+            if (act != null) {
                 tempActions.add(act);
             }
         }
-        
-        if(_numUnits.size() > 0){
+
+        if (_numUnits.size() > 0) {
             incrementMove(_numUnits.get(0));
         }
         return tempActions;
@@ -174,26 +203,26 @@ public class MoveArray2 {
     public int numUnits() {
         return _numUnits.size();
     }
-    
-    public int numUnitsInTuple(){
+
+    public int numUnitsInTuple() {
         return numUnits();
     }
-    
-    public int numMoves(int unit){
+
+    public int numMoves(int unit) {
         return _moves.get(unit).size();
     }
-    
-    public void replaceMovimentUnit(int unit, Action move){
+
+    public void replaceMovimentUnit(int unit, Action move) {
         ArrayList<Action> newAction = new ArrayList<>();
         newAction.add(move);
-        _moves.put(unit, newAction); 
+        _moves.put(unit, newAction);
         _currentMovesIndex.put(unit, 0);
         checkAndInsert(unit);
     }
-    
-    public void print(){
+
+    public void print() {
         for (Integer _numUnit : _numUnits) {
-            for(Action ac : _moves.get(_numUnit)){
+            for (Action ac : _moves.get(_numUnit)) {
                 try {
                     System.out.println(ac.debugString());
                 } catch (Exception e) {
@@ -205,12 +234,41 @@ public class MoveArray2 {
 
     /**
      * It will check if the unit exist in _numUnits and will insert if not.
-     * @param unit 
+     *
+     * @param unit
      */
     private void checkAndInsert(int unit) {
-        if(!_numUnits.contains(unit)){
+        if (!_numUnits.contains(unit)) {
             _numUnits.add(unit);
         }
+    }
+
+    private boolean calcResourcesVec(ArrayList<Action> tempActions, GameState state, int codPlayer) {
+        // Generate the reserved resources:
+        ResourceUsage base_ru = new ResourceUsage();
+        GameState gs = state;
+        PhysicalGameState pgs = state.getPhysicalGameState();
+
+        for (Unit u : pgs.getUnits()) {
+
+            UnitActionAssignment uaa = gs.getUnitActions().get(u);
+            if (uaa != null) {
+                ResourceUsage ru = uaa.action.resourceUsage(u, pgs);
+                base_ru.merge(ru);
+            }
+
+        }
+
+        int resUsage = 0;
+        for (Action tempAction : tempActions) {
+            if (tempAction.getType() == UnitAction.TYPE_PRODUCE) {
+                resUsage += tempAction.getUnitAction().getUnitType().cost;
+            }
+        }
+
+        //we need to verify position resources.
+        
+        return resUsage <= (state.getPlayer(codPlayer).getResources() - base_ru.getResourcesUsed(codPlayer));
     }
 
 }
