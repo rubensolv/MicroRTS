@@ -172,7 +172,9 @@ public class MoveArray {
                 tempActions.add(act);
             }
         }
-        incrementMove(_numUnits.get(0));
+        if(_numUnits.size() > 0){
+            incrementMove(_numUnits.get(0));
+        }
         return tempActions;
     }
     
