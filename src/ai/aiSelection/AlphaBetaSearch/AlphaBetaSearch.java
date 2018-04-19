@@ -329,7 +329,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     private boolean searchTimeOut() {
-        if(Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit()-5)){
+        if(Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit()-2)){
             return true;
         }
         return ((_results.getNodesExpanded() % 100 == 0)
