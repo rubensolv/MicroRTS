@@ -266,6 +266,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             _currentRootDepth = d;
             // perform ID-AB until time-out
             try {
+                lKp.clean();
+                lKp.refreshLookup(initialState);
                 val = alphaBeta(initialState, d, Players.Player_None, null, alpha, beta);
                 _results.setBestMoves(val.getMove().getMove());
                 _results.setAbValue(val.getScore().getVal());

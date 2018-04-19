@@ -23,6 +23,11 @@ public class LookUpUnits {
         lookupId = new HashMap<>();
         Index = 0;
     }
+    
+    public void clean(){
+        lookupId.clear();
+        Index = 0;
+    }
         
     public Integer InsertUnitIndex(Long unitID){
         Integer ret = this.Index;
