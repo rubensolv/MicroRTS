@@ -6,6 +6,7 @@
 package ai.aiSelection.AlphaBetaSearch;
 
 import ai.abstraction.partialobservability.POLightRush;
+import ai.abstraction.partialobservability.POWorkerRush;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.MoveOrderMethod;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.PlayerToMove;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.Players;
@@ -62,9 +63,17 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
-        _params.setPlayerModel(Players.Player_One.codigo(), null);
+        _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
         _params.setPlayerModel(Players.Player_Two.codigo(), null);
         _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
+        /*
+        _params.setOrderedMoveScripts(new ArrayList<AI>(){
+            {
+                add(0,new POLightRush(utt));
+                add(1,new POWorkerRush(utt));
+            }
+        });
+        */
         StartAlphaBetaSearch(_params, _TT);
         evaluation = new SimpleSqrtEvaluationFunction3();
     }
@@ -82,6 +91,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         for (int p = 0; p < 2; ++p) {
             // set ordered move script player objects
             for (int s = 0; s < _params.getOrderedMoveScripts().size(); s++) {
+                _allScripts[p] = new ArrayList();
                 _allScripts[p].add(_params.getOrderedMoveScripts().get(s));
             }
             // set player model objects
@@ -103,6 +113,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         for (int p = 0; p < 2; ++p) {
             // set ordered move script player objects
             for (int s = 0; s < _params.getOrderedMoveScripts().size(); s++) {
+                _allScripts[p] = new ArrayList();
                 _allScripts[p].add(_params.getOrderedMoveScripts().get(s));
             }
             // set player model objects
