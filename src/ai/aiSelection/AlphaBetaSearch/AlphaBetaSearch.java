@@ -132,9 +132,6 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     private AlphaBetaValue alphaBeta(GameState state, int depth, Players lastPlayerToMove, ArrayList<Action> prevSimMove, StateEvalScore alpha, StateEvalScore beta) throws Exception {
         // update statistics
         _results.setNodesExpanded(_results.getNodesExpanded() + 1);
-        if(_results.getNodesExpanded()>=44){
-            System.out.println("check "+ _results.getNodesExpanded());
-        }
         if (searchTimeOut()) {
             System.out.println("Estou dando searchTimeOut");
             throw new Exception();
@@ -156,14 +153,16 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
         // Transposition Table Logic
         TTLookupValue TTval = new TTLookupValue();
+        
         if (isTranspositionLookupState(state, prevSimMove)) {
-            TTval = TTlookup(state, alpha, beta, depth);
+           TTval = TTlookup(state, alpha, beta, depth);
 
             // if this is a TT cut, return the proper value
             if (TTval.isCut()) {
                 return new AlphaBetaValue(TTval.getEntry().getScore(), getAlphaBetaMove(TTval, playerToMove));
             }
         }
+        
 
         boolean bestMoveSet = false;
 
@@ -375,14 +374,15 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         Hash hashC = new Hash();
         lKp.refreshLookup(currentGS);
         hashC.initHash();
-        int hash = 0;
+        Long hash = 0L;
         for (Unit u : currentGS.getUnits()) {
             if (!u.getType().isResource) {
-                hash += hashC.magicHash(calculateHashUnit(hashNum, currentGS.getTime(), u), u.getPlayer(), lKp.getUnitIndex(u.getID()));
+                long tHash = hashC.magicHash(calculateHashUnit(hashNum, currentGS.getTime(), u), u.getPlayer(), lKp.getUnitIndex(u.getID()));
+                hash += tHash;
             }
         }
-
-        return hash;
+        int ret = (int) (hash % 100000);
+        return ((int) (hash % 100000));
     }
 
     // calculates the hash of this unit based on a given game time

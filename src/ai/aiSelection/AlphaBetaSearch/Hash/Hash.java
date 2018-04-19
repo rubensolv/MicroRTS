@@ -67,7 +67,10 @@ public class Hash {
 	key = key ^ (key >> 4);
 	key = key * 2057; // key = (key + (key << 3)) + (key << 11);
 	key = key ^ (key >> 16);
-	return key;
+        
+        return key;
+        //String sInt = Integer.toUnsignedString(key);
+	//return Integer.parseInt(sInt);
     }
     
     //Robert Jenkins' 32 bit integer hash function
@@ -92,5 +95,7 @@ public class Hash {
     
     public int magicHash(int hash, int player, int index){
         return hash32shift(hash ^ Hash.UNIT_INDEX_HASH[player][index]);
+        //String sInt = Integer.toUnsignedString(hash32shift(hash ^ Hash.UNIT_INDEX_HASH[player][index]));
+	//return Integer.parseInt(sInt);
     }
 }

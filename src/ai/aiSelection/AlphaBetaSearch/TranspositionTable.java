@@ -36,7 +36,8 @@ public class TranspositionTable {
         this.TT = new ArrayList<>();
         //this is necessary em Java?
         for (int i = 0; i < 100000; i++) {
-            this.TT.add(new TTEntry());
+            //this.TT.add(new TTEntry());
+            this.TT.add(i, new TTEntry());
         }
         this.size = 100000;
         this.collisions = 0;
@@ -212,6 +213,9 @@ public class TranspositionTable {
     public TTEntry lookupScan(int hash1, int hash2){
         lookups++;
         int index = getIndex(hash1);
+        if(index < 0){
+            System.err.println("Indice menor que zero");
+        }
         
         // scan to see if this exists anywhere in the next few entries
         for (int i = index; (i<(index+10)) && (i <TT.size()); i++) {
@@ -235,6 +239,7 @@ public class TranspositionTable {
 	if (index > maxIndex) maxIndex = index;
         
         TTEntry tte = TT.get(index);
+        
         
         // if there is a valid entry at that location
         if(tte.isValid()){
