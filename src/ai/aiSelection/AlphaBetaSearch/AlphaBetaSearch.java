@@ -56,7 +56,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     LookUpUnits lKp = new LookUpUnits();
 
     public AlphaBetaSearch(UnitTypeTable utt) {
-        this(10000, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
+        this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
     }
 
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
@@ -328,7 +328,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     private boolean searchTimeOut() {
-        return ((_results.getNodesExpanded() % 50 == 0)
+        return ((_results.getNodesExpanded() % 200 == 0)
                 && (Duration.between(_searchTimer, Instant.now()).toMillis() >= _params.getTimeLimit()));
     }
 
@@ -540,7 +540,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         } // otherwise return the next move vector starting from the beginning
         else {
             if (moves.hasMoreMoves()) {
-                for (Action a : moves.getNextValidMoveVec(stateTemp, playerToMove.codigo())) {
+                for (Action a : moves.getNextValidMoveVec(stateTemp, playerToMove.codigo(), lKp)) {
                     moveVec.add(a);
                 }
                 return true;

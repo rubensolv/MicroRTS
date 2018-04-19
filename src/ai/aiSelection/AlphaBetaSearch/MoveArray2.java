@@ -13,6 +13,10 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.ResourceUsage;
 import rts.UnitAction;
+import static rts.UnitAction.DIRECTION_DOWN;
+import static rts.UnitAction.DIRECTION_LEFT;
+import static rts.UnitAction.DIRECTION_RIGHT;
+import static rts.UnitAction.DIRECTION_UP;
 import rts.UnitActionAssignment;
 import rts.units.Unit;
 
@@ -122,14 +126,14 @@ public class MoveArray2 {
      * @param codPlayer int with the player id
      * @return ArrayList with valid actions.
      */
-    public ArrayList<Action> getNextValidMoveVec(GameState state, int codPlayer) {
+    public ArrayList<Action> getNextValidMoveVec(GameState state, int codPlayer, LookUpUnits lkp) {
         ArrayList<Action> tempActions;
         tempActions = getNextMoveVec();
 
         boolean isVecValid = false;
 
         while (isVecValid == false) {
-            if (calcResourcesVec(tempActions, state, codPlayer)) {
+            if (calcFullResourcesVec(tempActions, state, codPlayer, lkp)) {
                 isVecValid = true;
             } else {
                 tempActions = getNextMoveVec();
@@ -263,12 +267,40 @@ public class MoveArray2 {
         for (Action tempAction : tempActions) {
             if (tempAction.getType() == UnitAction.TYPE_PRODUCE) {
                 resUsage += tempAction.getUnitAction().getUnitType().cost;
-            }
+            } 
         }
 
-        //we need to verify position resources.
-        
         return resUsage <= (state.getPlayer(codPlayer).getResources() - base_ru.getResourcesUsed(codPlayer));
     }
+    
+    private boolean calcFullResourcesVec(ArrayList<Action> tempActions, GameState state, int codPlayer, LookUpUnits lkp) {
+        ResourceUsage base_ru = new ResourceUsage();
+        GameState gs = state;
+        PhysicalGameState pgs = state.getPhysicalGameState();
+        
+        //sum the base_ru used
+        for (Unit u : pgs.getUnits()) {
+            UnitActionAssignment uaa = gs.getUnitActions().get(u);
+            if (uaa != null) {
+                ResourceUsage ru = uaa.action.resourceUsage(u, pgs);
+                base_ru.merge(ru);
+            }
+        }
+        //check the action
+        for(Action act : tempActions){
+            Unit u = state.getUnit(lkp.getOrigIDUnit(act.getUnit()));
+            UnitAction ua = act.getUnitAction();
+            ResourceUsage r2 = ua.resourceUsage(u, pgs);
+            if (base_ru.consistentWith(r2, gs)) {
+                    base_ru.merge(r2);
+                } else {
+                    return false;
+                }
+        }
+        
+        return true;
+    }
+    
+    
 
 }
