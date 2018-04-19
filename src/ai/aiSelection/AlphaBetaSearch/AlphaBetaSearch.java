@@ -193,6 +193,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                 child = state.clone();    
             } catch (Exception e) {
                 throw new Exception();
+            } catch(Error e2){
+                throw new Exception();
             }
             
 
@@ -265,7 +267,6 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         _results.setNodesExpanded(0);
         _results.setMaxDepthReached(0);
         for (int d = 1; d < maxDepth; d++) {
-            _results.print(); // remover
             StateEvalScore alpha = new StateEvalScore(-10000000, 999999);
             StateEvalScore beta = new StateEvalScore(10000000, 999999);
             _results.setMaxDepthReached(d);
@@ -291,7 +292,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             }
 
         }
-
+        _results.print(); // remover
         return val;
     }
 
