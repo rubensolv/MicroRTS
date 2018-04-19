@@ -706,4 +706,11 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         }
     }
 
+    @Override
+    public String toString() {
+        return "AlphaBetaSearch{" + "_params=" + _params.getDescription() + '}';
+    }
+    
+    
+
 }
