@@ -61,6 +61,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
+        _params.setTimeLimit(time);
         _params.setPlayerModel(Players.Player_One.codigo(), null);
         _params.setPlayerModel(Players.Player_Two.codigo(), null);
         _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
@@ -131,6 +132,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     private AlphaBetaValue alphaBeta(GameState state, int depth, Players lastPlayerToMove, ArrayList<Action> prevSimMove, StateEvalScore alpha, StateEvalScore beta) throws Exception {
         // update statistics
         _results.setNodesExpanded(_results.getNodesExpanded() + 1);
+        if(_results.getNodesExpanded()>=44){
+            System.out.println("check "+ _results.getNodesExpanded());
+        }
         if (searchTimeOut()) {
             System.out.println("Estou dando searchTimeOut");
             throw new Exception();
@@ -188,7 +192,6 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             GameState child = state.clone();
 
             boolean firstMove = true;
-
             // if this is the first player in a simultaneous move state
             if (bothCanMove() && (prevSimMove == null) && (depth != 1)) {
                 firstMove = true;
@@ -201,7 +204,6 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                     // do the previous move selected by the first player to move during this state
                     applyActionState(child, prevSimMove, moves);
                 }
-
              // do the moves of the current player
                 applyActionState(child, moveVec, moves);
                 //child.forceExecuteAllActions(); //check if this is good for our problem
@@ -212,7 +214,6 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                                !child.canExecuteAnyAction(1)) {
                            child.cycle();
                        }
-               
                 // get the alpha beta value
                 val = alphaBeta(child, (depth - 1), playerToMove, null, alpha, beta);
             }
@@ -328,7 +329,10 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     private boolean searchTimeOut() {
-        return ((_results.getNodesExpanded() % 200 == 0)
+        if(Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit()-5)){
+            return true;
+        }
+        return ((_results.getNodesExpanded() % 100 == 0)
                 && (Duration.between(_searchTimer, Instant.now()).toMillis() >= _params.getTimeLimit()));
     }
 
@@ -683,6 +687,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         playerForThisComputation = player;
         gs_to_start_from = gs;
         playerToGame = player;
+        this._results = new AlphaBetaSearchResults();
     }
 
     @Override
