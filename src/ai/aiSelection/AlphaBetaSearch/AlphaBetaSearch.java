@@ -188,7 +188,13 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             AlphaBetaValue val = new AlphaBetaValue();
 
             // generate the child state
-            GameState child = state.clone();
+            GameState child;
+            try {
+                child = state.clone();    
+            } catch (Exception e) {
+                throw new Exception();
+            }
+            
 
             boolean firstMove = true;
             // if this is the first player in a simultaneous move state
