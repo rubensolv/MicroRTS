@@ -65,9 +65,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
-        //_params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
         _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
-        _params.setPlayerModel(Players.Player_Two.codigo(), null);
+        _params.setPlayerModel(Players.Player_Two.codigo(), new POWorkerRush(utt));
         _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
 
         ScriptsCreator sc = new ScriptsCreator(utt,300);
@@ -78,7 +77,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                // add(0, new POLightRush(utt));
                // add(1, new POWorkerRush(utt));
                 add(0, scriptsCompleteSet.get(0));
-                add(1, scriptsCompleteSet.get(1));
+                //add(1, scriptsCompleteSet.get(1));
             }
         });
         
@@ -139,6 +138,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         this._searchTimer = Instant.now();
         this.playerToGame = player;
         _params.setMaxPlayer(Players.porCodigo(player));
+        _params.setPlayerModel(player, null);
 
         StateEvalScore alpha = new StateEvalScore(-10000000, 1000000);
         StateEvalScore beta = new StateEvalScore(10000000, 1000000);
