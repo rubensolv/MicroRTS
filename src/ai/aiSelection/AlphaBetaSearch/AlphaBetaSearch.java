@@ -65,6 +65,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
+        //_params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
         _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
         _params.setPlayerModel(Players.Player_Two.codigo(), null);
         _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
@@ -80,7 +81,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                 add(1, scriptsCompleteSet.get(1));
             }
         });
-
+        
         StartAlphaBetaSearch(_params, _TT);
         evaluation = new SimpleSqrtEvaluationFunction3();
     }
@@ -244,7 +245,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                         && !child.canExecuteAnyAction(0)
                         && !child.canExecuteAnyAction(1)) {
                     child.cycle();
+                    stopSearch();
                 }
+                stopSearch();
                 // get the alpha beta value
                 val = alphaBeta(child, (depth - 1), playerToMove, null, alpha, beta);
             }
@@ -492,7 +495,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         }
 
         lKp.refreshLookup(state);
-
+        stopSearch();
         PlayerActionGenerator AllMoves = new PlayerActionGenerator(state, playerToMove.codigo());
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
         for (Pair<Unit, List<UnitAction>> choice : choices) {
@@ -507,7 +510,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         return moves;
     }
 
-    //não consegui fazer
+    
     private void generateOrderedMoves(GameState state, MoveArray2 moves, TTLookupValue TTval, Players playerToMove, int depth) throws Exception {
         // get the array where we will store the moves and clear it
         ArrayList[] orderedMoves = _orderedMoves[depth];     
@@ -547,7 +550,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     }
 
-    private boolean getNextMoveVec(Players playerToMove, MoveArray2 moves, int moveNumber, TTLookupValue TTval, int depth, ArrayList<Action> moveVec, GameState stateTemp) {
+    private boolean getNextMoveVec(Players playerToMove, MoveArray2 moves, int moveNumber, TTLookupValue TTval, int depth, ArrayList<Action> moveVec, GameState stateTemp) throws Exception {
 
         if ((moveNumber >= _params.getMaxChildren())) {
             return false;
@@ -579,7 +582,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         } // otherwise return the next move vector starting from the beginning
         else {
             if (moves.hasMoreMoves()) {
-                for (Action a : moves.getNextValidMoveVec(stateTemp, playerToMove.codigo(), lKp)) {
+                for (Action a : moves.getNextValidMoveVec(stateTemp, playerToMove.codigo(), lKp, _searchTimer)) {
                     moveVec.add(a);
                 }
                 return true;

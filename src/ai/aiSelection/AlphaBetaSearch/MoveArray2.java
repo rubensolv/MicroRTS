@@ -5,6 +5,8 @@
  */
 package ai.aiSelection.AlphaBetaSearch;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,12 +38,13 @@ public class MoveArray2 {
     // trigger to simplify the move generation
     HashMap<Integer, Integer> _currentMovesIndex;
 
+    Instant initialTime;
+
     public MoveArray2() {
         this._moves = new HashMap<>();
         this._hasMoreMoves = true;
         this._numUnits = new ArrayList<>();
         this._currentMovesIndex = new HashMap<>();
-
     }
 
     public void clear() {
@@ -126,17 +129,22 @@ public class MoveArray2 {
      * @param codPlayer int with the player id
      * @return ArrayList with valid actions.
      */
-    public ArrayList<Action> getNextValidMoveVec(GameState state, int codPlayer, LookUpUnits lkp) {
+    public ArrayList<Action> getNextValidMoveVec(GameState state, int codPlayer, LookUpUnits lkp, Instant initialTime) throws Exception {
         ArrayList<Action> tempActions;
         tempActions = getNextMoveVec();
 
         boolean isVecValid = false;
 
         while (isVecValid == false) {
-            if (calcFullResourcesVec(tempActions, state, codPlayer, lkp)) {
-                isVecValid = true;
-            } else {
-                tempActions = getNextMoveVec();
+            if (Duration.between(initialTime, Instant.now()).toMillis() <= (98)) {
+                if (calcFullResourcesVec(tempActions, state, codPlayer, lkp)) {
+                    isVecValid = true;
+                } else {
+                    tempActions = getNextMoveVec();
+                }
+            }else{
+                //System.out.println("Stop the valid Move Vec!");
+                throw new Exception();
             }
         }
 
@@ -267,17 +275,17 @@ public class MoveArray2 {
         for (Action tempAction : tempActions) {
             if (tempAction.getType() == UnitAction.TYPE_PRODUCE) {
                 resUsage += tempAction.getUnitAction().getUnitType().cost;
-            } 
+            }
         }
 
         return resUsage <= (state.getPlayer(codPlayer).getResources() - base_ru.getResourcesUsed(codPlayer));
     }
-    
+
     private boolean calcFullResourcesVec(ArrayList<Action> tempActions, GameState state, int codPlayer, LookUpUnits lkp) {
         ResourceUsage base_ru = new ResourceUsage();
         GameState gs = state;
         PhysicalGameState pgs = state.getPhysicalGameState();
-        
+
         //sum the base_ru used
         for (Unit u : pgs.getUnits()) {
             UnitActionAssignment uaa = gs.getUnitActions().get(u);
@@ -287,20 +295,18 @@ public class MoveArray2 {
             }
         }
         //check the action
-        for(Action act : tempActions){
+        for (Action act : tempActions) {
             Unit u = state.getUnit(lkp.getOrigIDUnit(act.getUnit()));
             UnitAction ua = act.getUnitAction();
             ResourceUsage r2 = ua.resourceUsage(u, pgs);
             if (base_ru.consistentWith(r2, gs)) {
-                    base_ru.merge(r2);
-                } else {
-                    return false;
-                }
+                base_ru.merge(r2);
+            } else {
+                return false;
+            }
         }
-        
+
         return true;
     }
-    
-    
 
 }

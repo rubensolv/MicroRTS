@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class Hash {
     // some data storage
-    public final static int[][] UNIT_INDEX_HASH = new int[2][100];
+    public final static int[][] UNIT_INDEX_HASH = new int[2][200];
     public final static HashValues[] VALUES = new HashValues[2];
     
     
@@ -28,7 +28,7 @@ public class Hash {
             Random rand = new Random(seed);
             
             for(int p = 0; p < 2; p++){
-                for(int u =0; u < 100; u++){
+                for(int u =0; u < 200; u++){
                     Hash.UNIT_INDEX_HASH[p][u] = rand.nextInt();
                 }
                 unitPositionHash[p]	= rand.nextInt();
