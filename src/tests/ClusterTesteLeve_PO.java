@@ -30,8 +30,6 @@ import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
 import ai.asymmetric.GAB.GAB;
-import ai.asymmetric.GAB.GAB_ABActionGeneration;
-import ai.asymmetric.GAB.GAB_ScriptC;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
@@ -139,15 +137,11 @@ public class ClusterTesteLeve_PO {
                new PGSmRTS(utt),
                new SSSmRTS(utt),
                new GAB(utt),
-               new GAB_ABActionGeneration(utt),
                new SAB(utt),
                new PGSSCriptChoice(utt, decodeScripts(utt, best), "BR"), //PGS com o best response do GA
                new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Nash"), //PGS com o best response do Nash
-               new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA"), //PGS com o melhor GA
-               
-               new GAB_ScriptC(utt, decodeScripts(utt, best), "BR"), //GAB com o best response do GA
-               new GAB_ScriptC(utt, decodeScripts(utt, sc2Nash), "Nash"),  //GAB com o best response do Nash
-               new GAB_ScriptC(utt, decodeScripts(utt, bestGA), "bGA")  //GAB com o melhor GA
+               new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA") //PGS com o melhor GA
+
                
                
                
