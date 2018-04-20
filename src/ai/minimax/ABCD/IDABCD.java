@@ -144,6 +144,7 @@ public class IDABCD extends AIWithComputationBudget implements InterruptibleAI {
         if (gs.canExecuteAnyAction(player)) {
             startNewComputation(player,gs.clone());
             computeDuringOneGameFrame();
+            System.out.println(statisticsString());
             return getBestActionSoFar();
         } else {
             return new PlayerAction();        
