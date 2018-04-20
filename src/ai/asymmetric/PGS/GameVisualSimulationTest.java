@@ -23,6 +23,7 @@ import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.GAB.GAB;
+import ai.asymmetric.GAB.SandBox.AlphaBetaSearchAbstract;
 import ai.asymmetric.GAB.SandBox.GAB_SandBox;
 import ai.asymmetric.GAB.SandBox.GAB_SandBox_Parcial_State;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
@@ -104,7 +105,8 @@ public class GameVisualSimulationTest {
         //AI ai1 = new GAB_SandBox(utt);
         //AI ai2 = new IDABCD(utt);
         
-        AI ai2 = new AlphaBetaSearch(utt);
+        AI ai2 = new GAB_SandBox(utt);
+        //AI ai2 = new AlphaBetaSearchAbstract(utt);
         //AI ai2 = new GAB_SandBox_Parcial_State(utt);
         //AI ai2 = new GAB_SandBox(utt);
         //AI ai2 = new PGSmRTS(utt); 

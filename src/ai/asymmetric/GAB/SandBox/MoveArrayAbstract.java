@@ -3,22 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.aiSelection.AlphaBetaSearch;
+package ai.asymmetric.GAB.SandBox;
 
+import ai.aiSelection.AlphaBetaSearch.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.ResourceUsage;
 import rts.UnitAction;
-import static rts.UnitAction.DIRECTION_DOWN;
-import static rts.UnitAction.DIRECTION_LEFT;
-import static rts.UnitAction.DIRECTION_RIGHT;
-import static rts.UnitAction.DIRECTION_UP;
 import rts.UnitActionAssignment;
 import rts.units.Unit;
 
@@ -26,7 +22,7 @@ import rts.units.Unit;
  *
  * @author rubens
  */
-public class MoveArray2 {
+public class MoveArrayAbstract {
 
     // the array which contains all the moves
     HashMap<Integer, ArrayList<Action>> _moves;
@@ -40,7 +36,7 @@ public class MoveArray2 {
 
     Instant initialTime;
 
-    public MoveArray2() {
+    public MoveArrayAbstract() {
         this._moves = new HashMap<>();
         this._hasMoreMoves = true;
         this._numUnits = new ArrayList<>();

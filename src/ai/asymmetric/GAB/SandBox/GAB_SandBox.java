@@ -44,7 +44,7 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
     UnitTypeTable utt;
     PathFinding pf;
     PGSLimit_SandBox _pgs = null;
-    IDABCDAsymmetricSandBox _ab = null;
+    AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
     int _time;
@@ -76,8 +76,8 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
         utt = a_utt;
         pf = a_pf;
         _pgs = new PGSLimit_SandBox(utt);
-        _ab = new IDABCDAsymmetricSandBox(utt);
-        _time = time;;
+        _ab = new AlphaBetaSearchAbstract(utt);
+        _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
         _numUnits = 2;
@@ -91,7 +91,7 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
         utt = a_utt;
         pf = a_pf;
         _pgs = new PGSLimit_SandBox(utt);
-        _ab = new IDABCDAsymmetricSandBox(utt);
+        _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();

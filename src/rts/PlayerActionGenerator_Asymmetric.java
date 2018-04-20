@@ -263,6 +263,7 @@ public class PlayerActionGenerator_Asymmetric {
     }
 
     private List<UnitAction> takeUnitScriptMove(Unit u, GameState gs, int player) throws Exception {
+        System.err.println("Mudar metodo takeUnitScriptMove... Acelerar!");
         List<UnitAction> actionUnit = new ArrayList<>();
 
         AI ai = currentScriptData.getAIUnit(u);

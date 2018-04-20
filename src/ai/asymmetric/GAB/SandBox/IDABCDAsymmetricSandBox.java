@@ -4,7 +4,6 @@
  */
 package ai.asymmetric.GAB.SandBox;
 
-
 import ai.asymmetric.IDABCD.*;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
@@ -71,7 +70,7 @@ public class IDABCDAsymmetricSandBox extends AIWithComputationBudget implements 
 
     int max_consecutive_frames_searching_so_far = 0;
 
-    GameState gs_to_start_from = null; 
+    GameState gs_to_start_from = null;
     int consecutive_frames_searching = 0;
     int last_depth = 1;
     int last_nleaves = 0;
@@ -447,9 +446,9 @@ public class IDABCDAsymmetricSandBox extends AIWithComputationBudget implements 
                         //                            while(current.actions.size()>MAX_BRANCHING_FACTOR) current.actions.remove(r.nextInt(current.actions.size()));
                         current.best = null;
                         PlayerAction next = current.actions.getNextAction(cutOffTime);
-                        
+
                         if (next != null) {
-                            if(maxplayer == playerForThisComputation){
+                            if (maxplayer == playerForThisComputation) {
                                 next = defineAssymetricAction(current.gs, maxplayer, next);
                             }
                             GameState gs2 = current.gs.cloneIssue(next);
@@ -462,14 +461,14 @@ public class IDABCDAsymmetricSandBox extends AIWithComputationBudget implements 
                         current.alpha = Math.max(current.alpha, lastResult.m_b);
                         if (current.best == null || lastResult.m_b > current.best.m_b) {
                             current.best = lastResult;
-                            current.best.m_a = defineAssymetricAction(current.gs, maxplayer,current.actions.getLastAction());
-                            if (_bestScore < (double) lastResult.m_b  && maxplayer == playerForThisComputation) {
+                            current.best.m_a = defineAssymetricAction(current.gs, maxplayer, current.actions.getLastAction());
+                            if (_bestScore < (double) lastResult.m_b && maxplayer == playerForThisComputation) {
                                 _bestScore = (double) lastResult.m_b;
                             }
                         }
                         PlayerAction next = current.actions.getNextAction(cutOffTime);
                         if (next != null) {
-                            if(maxplayer == playerForThisComputation){
+                            if (maxplayer == playerForThisComputation) {
                                 next = defineAssymetricAction(current.gs, maxplayer, next);
                             }
                         }
@@ -479,7 +478,7 @@ public class IDABCDAsymmetricSandBox extends AIWithComputationBudget implements 
                             }
                             System.out.println("alpha: " + current.alpha + ", beta: " + current.beta + ", next: " + next);
                         }
-                        if (current.beta <= current.alpha || next == null  && maxplayer == playerForThisComputation) {
+                        if (current.beta <= current.alpha || next == null && maxplayer == playerForThisComputation) {
                             lastResult = current.best;
                             if (_bestScore < (double) lastResult.m_b) {
                                 _bestScore = (double) lastResult.m_b;
@@ -529,7 +528,7 @@ public class IDABCDAsymmetricSandBox extends AIWithComputationBudget implements 
                         current.beta = Math.min(current.beta, lastResult.m_b);
                         if (current.best == null || lastResult.m_b < current.best.m_b) {
                             current.best = lastResult;
-                            if (_bestScore < (double) lastResult.m_b  && minplayer == playerForThisComputation) {
+                            if (_bestScore < (double) lastResult.m_b && minplayer == playerForThisComputation) {
                                 _bestScore = (double) lastResult.m_b;
                             }
                             //current.best.m_a = current.actions.getLastAction();
@@ -541,7 +540,7 @@ public class IDABCDAsymmetricSandBox extends AIWithComputationBudget implements 
                         PlayerAction next = playoutAI.getAction(minplayer, current.gs);
                         if (current.beta <= current.alpha || next == null) {
                             lastResult = current.best;
-                            if (_bestScore < (double) lastResult.m_b  && minplayer == playerForThisComputation) {
+                            if (_bestScore < (double) lastResult.m_b && minplayer == playerForThisComputation) {
                                 _bestScore = (double) lastResult.m_b;
                             }
                             stack.remove(0);

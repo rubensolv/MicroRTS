@@ -308,11 +308,11 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             catch (Exception e) {
                 // if we didn't finish the first depth, set the move to the best script move
                 if (d == 1) {
-                    System.out.println("Selecting best scripted move for AB");
+                    //System.out.println("Selecting best scripted move for AB");
                     _results.setBestMoves(_params.getSimScripts()[playerToGame].getAction(playerToGame, initialState));
 
                 }
-                System.out.println("Erro during process " + e.toString());
+                //System.out.println("Erro during process " + e.toString());
                 //System.err.println(e.getStackTrace());
                 break;
             }
@@ -751,7 +751,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     protected void stopSearch() throws Exception {
         if (Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit() - 1)) {
-            System.out.println("Stop the search!");
+            //System.out.println("Stop the search!");
             throw new Exception();
         }
     }

@@ -126,6 +126,10 @@ public class AlphaBetaSearchParameters {
         _simScripts[0]=p1;
         _simScripts[1]=p2;
     }
+    
+    public void setSimScripts(int player, AI ai){
+        _simScripts[player] = ai;
+    }
 
     public PlayerToMove getPlayerToMoveMethod() {
         return _playerToMoveMethod;

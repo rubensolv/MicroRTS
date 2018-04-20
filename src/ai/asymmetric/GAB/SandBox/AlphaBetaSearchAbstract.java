@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.aiSelection.AlphaBetaSearch;
+package ai.asymmetric.GAB.SandBox;
 
+import ai.aiSelection.AlphaBetaSearch.*;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.MoveOrderMethod;
@@ -13,6 +14,7 @@ import ai.aiSelection.AlphaBetaSearch.Enumerators.Players;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.SearchMethods;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.TTEntryEnum;
 import ai.aiSelection.AlphaBetaSearch.Hash.Hash;
+import ai.asymmetric.common.UnitScriptData;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.core.AI;
@@ -24,11 +26,13 @@ import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.PlayerActionGenerator;
+import rts.PlayerActionGenerator_Asymmetric;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
@@ -38,13 +42,13 @@ import util.Pair;
  *
  * @author rubens
  */
-public class AlphaBetaSearch extends AIWithComputationBudget implements InterruptibleAI {
+public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements InterruptibleAI {
 
     private AlphaBetaSearchParameters _params;
     private AlphaBetaSearchResults _results;
     private Instant _searchTimer;
     private int _currentRootDepth;
-    private ArrayList<MoveArray2> _allMoves;
+    private ArrayList<MoveArrayAbstract> _allMoves;
     private ArrayList[][] _orderedMoves = new ArrayList[50][10];
     private ArrayList[] _allScripts = new ArrayList[2];
     private AI[] _playerModels = new AI[2];
@@ -55,44 +59,47 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     GameState gs_to_start_from = null;
     int playerForThisComputation;
 
+    UnitScriptData currentScriptData = null;
+    HashSet<Unit> _unitsAbsAB = null;
+
     //class to control a relation between unit ID and Unit Index (limited to 100).
     LookUpUnits lKp = new LookUpUnits();
 
-    public AlphaBetaSearch(UnitTypeTable utt) {
-        this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
+    public AlphaBetaSearchAbstract(UnitTypeTable utt) {
+        this(10000, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
     }
 
-    public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
+    public AlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
         _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
         _params.setPlayerModel(Players.Player_Two.codigo(), new POWorkerRush(utt));
         _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
 
-        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
-        
+
         _params.setOrderedMoveScripts(new ArrayList<AI>() {
             {
-               // add(0, new POLightRush(utt));
-               // add(1, new POWorkerRush(utt));
+                // add(0, new POLightRush(utt));
+                // add(1, new POWorkerRush(utt));
                 add(0, scriptsCompleteSet.get(0));
                 //add(1, scriptsCompleteSet.get(1));
             }
         });
-        
+
         StartAlphaBetaSearch(_params, _TT);
         evaluation = new SimpleSqrtEvaluationFunction3();
     }
 
-    public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT) {
+    public AlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT) {
         super(time, max_playouts);
         this._params = _params;
         this._TT = _TT;
         this._currentRootDepth = 0;
         this._allMoves = new ArrayList<>();
         for (int i = 0; i <= 50; i++) {
-            this._allMoves.add(new MoveArray2());
+            this._allMoves.add(new MoveArrayAbstract());
         }
         this._results = new AlphaBetaSearchResults();
         for (int p = 0; p < 2; ++p) {
@@ -117,7 +124,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         this._currentRootDepth = 0;
         this._allMoves = new ArrayList<>();
         for (int i = 0; i <= 50; i++) {
-            this._allMoves.add(new MoveArray2());
+            this._allMoves.add(new MoveArrayAbstract());
         }
         for (int p = 0; p < 2; ++p) {
             // set ordered move script player objects
@@ -189,7 +196,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         boolean bestMoveSet = false;
 
         // move generation
-        MoveArray2 moves = _allMoves.get(depth);
+        MoveArrayAbstract moves = _allMoves.get(depth);
         if (state.canExecuteAnyAction(playerToMove.codigo())) {
             moves = generateMoves(moves, playerToMove, state);
         }
@@ -308,11 +315,11 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             catch (Exception e) {
                 // if we didn't finish the first depth, set the move to the best script move
                 if (d == 1) {
-                    System.out.println("Selecting best scripted move for AB");
+                    //System.out.println("Selecting best scripted move for AB");
                     _results.setBestMoves(_params.getSimScripts()[playerToGame].getAction(playerToGame, initialState));
 
                 }
-                System.out.println("Erro during process " + e.toString());
+                //System.out.println("Erro during process " + e.toString());
                 //System.err.println(e.getStackTrace());
                 break;
             }
@@ -486,17 +493,17 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         }
     }
 
-    private MoveArray2 generateMoves(MoveArray2 moves, Players playerToMove, GameState state) throws Exception {
+    private MoveArrayAbstract generateMoves(MoveArrayAbstract moves, Players playerToMove, GameState state) throws Exception {
 
         if (moves == null) {
-            moves = new MoveArray2();
+            moves = new MoveArrayAbstract();
         } else {
             moves.clear();
         }
 
         lKp.refreshLookup(state);
         stopSearch();
-        PlayerActionGenerator AllMoves = new PlayerActionGenerator(state, playerToMove.codigo());
+        PlayerActionGenerator_Asymmetric AllMoves = new PlayerActionGenerator_Asymmetric(state, playerToMove.codigo(), this.currentScriptData, _unitsAbsAB);
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
         for (Pair<Unit, List<UnitAction>> choice : choices) {
             Integer idIndex = lKp.getUnitIndex(choice.m_a.getID());
@@ -510,10 +517,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         return moves;
     }
 
-    
-    private void generateOrderedMoves(GameState state, MoveArray2 moves, TTLookupValue TTval, Players playerToMove, int depth) throws Exception {
+    private void generateOrderedMoves(GameState state, MoveArrayAbstract moves, TTLookupValue TTval, Players playerToMove, int depth) throws Exception {
         // get the array where we will store the moves and clear it
-        ArrayList[] orderedMoves = _orderedMoves[depth];     
+        ArrayList[] orderedMoves = _orderedMoves[depth];
         cleanMoves(orderedMoves);
         //orderedMoves = new ArrayList[10]; // clear
 
@@ -550,7 +556,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     }
 
-    private boolean getNextMoveVec(Players playerToMove, MoveArray2 moves, int moveNumber, TTLookupValue TTval, int depth, ArrayList<Action> moveVec, GameState stateTemp) throws Exception {
+    private boolean getNextMoveVec(Players playerToMove, MoveArrayAbstract moves, int moveNumber, TTLookupValue TTval, int depth, ArrayList<Action> moveVec, GameState stateTemp) throws Exception {
 
         if ((moveNumber >= _params.getMaxChildren())) {
             return false;
@@ -600,17 +606,16 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     private int getRealSize(ArrayList[] orderedMoves) {
         int qtdMoves = 0;
 
-        for (int i = 0; i < orderedMoves.length; i++) {
-            if (orderedMoves[i] != null) {
+        for (ArrayList orderedMove : orderedMoves) {
+            if (orderedMove != null) {
                 qtdMoves++;
             }
-
         }
 
         return qtdMoves;
     }
 
-    private ArrayList getActions(PlayerAction pTemp, MoveArray2 moves, Players playerToMove) {
+    private ArrayList getActions(PlayerAction pTemp, MoveArrayAbstract moves, Players playerToMove) {
         ArrayList<Action> acts = new ArrayList<>();
         for (Pair<Unit, UnitAction> choice : pTemp.getActions()) {
             Integer idIndex;
@@ -627,7 +632,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         return acts;
     }
 
-    private void applyActionState(GameState child, ArrayList<Action> movesToAplly, MoveArray2 moves) {
+    private void applyActionState(GameState child, ArrayList<Action> movesToAplly, MoveArrayAbstract moves) {
         lKp.refreshLookup(child);
         PlayerAction act = new PlayerAction();
         for (Action action : movesToAplly) {
@@ -645,7 +650,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     }
 
-    private PlayerAction makePlayerAction(GameState state, ArrayList<Action> movesToAplly, MoveArray2 moves) {
+    private PlayerAction makePlayerAction(GameState state, ArrayList<Action> movesToAplly, MoveArrayAbstract moves) {
         lKp.refreshLookup(state);
         PlayerAction act = new PlayerAction();
         for (Action action : movesToAplly) {
@@ -705,7 +710,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     @Override
     public AI clone() {
-        return new AlphaBetaSearch(TIME_BUDGET, ITERATIONS_BUDGET, _params, _TT);
+        return new AlphaBetaSearchAbstract(TIME_BUDGET, ITERATIONS_BUDGET, _params, _TT);
     }
 
     @Override
@@ -751,7 +756,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     protected void stopSearch() throws Exception {
         if (Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit() - 1)) {
-            System.out.println("Stop the search!");
+            //System.out.println("Stop the search!");
             throw new Exception();
         }
     }
@@ -759,19 +764,50 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     private int countElemArray(ArrayList[] orderedMoves) {
         int count = 0;
         for (ArrayList orderedMove : orderedMoves) {
-            if(orderedMove != null){
+            if (orderedMove != null) {
                 count++;
             }
         }
-        
+
         return count;
     }
 
     private void cleanMoves(ArrayList[] orderedMoves) {
         for (int i = 0; i < orderedMoves.length; i++) {
             orderedMoves[i] = null;
-            
+
         }
+    }
+
+    public AI getPlayoutAI() {
+        return _params.getSimScripts()[playerToGame];
+    }
+
+    public void setPlayoutAI(AI a_dp) {
+        _params.setSimScripts(playerToGame, a_dp);
+    }
+
+    public AI getPlayoutAIEnemy() {
+        return _params.getSimScripts()[getEnemy(Players.porCodigo(playerToGame))];
+    }
+
+    public void setPlayoutAIEnemy(AI playoutAIEnemy) {
+        _params.setSimScripts(getEnemy(Players.porCodigo(playerToGame)), playoutAIEnemy);
+    }
+
+    @Override
+    public void setTimeBudget(int a_tb) {
+        TIME_BUDGET = a_tb;
+        _params.setTimeLimit(a_tb);
+    }
+
+    public final PlayerAction getActionForAssymetric(int player, GameState gs, UnitScriptData currentScriptData, HashSet<Unit> unitsAbsAB) throws Exception {
+        this.currentScriptData = currentScriptData;
+        this._unitsAbsAB = unitsAbsAB;
+
+        startNewComputation(player, gs);
+        computeDuringOneGameFrame();
+        return getBestActionSoFar();
     }
 
 }
