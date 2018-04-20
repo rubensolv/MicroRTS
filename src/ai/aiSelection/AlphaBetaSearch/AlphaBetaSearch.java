@@ -13,6 +13,8 @@ import ai.aiSelection.AlphaBetaSearch.Enumerators.Players;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.SearchMethods;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.TTEntryEnum;
 import ai.aiSelection.AlphaBetaSearch.Hash.Hash;
+import ai.configurablescript.BasicExpandedConfigurableScript;
+import ai.configurablescript.ScriptsCreator;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.InterruptibleAI;
@@ -52,7 +54,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
-    
+
     //class to control a relation between unit ID and Unit Index (limited to 100).
     LookUpUnits lKp = new LookUpUnits();
 
@@ -66,14 +68,19 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
         _params.setPlayerModel(Players.Player_Two.codigo(), null);
         _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
-        /*
-        _params.setOrderedMoveScripts(new ArrayList<AI>(){
+
+        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+        
+        _params.setOrderedMoveScripts(new ArrayList<AI>() {
             {
-                add(0,new POLightRush(utt));
-                add(1,new POWorkerRush(utt));
+               // add(0, new POLightRush(utt));
+               // add(1, new POWorkerRush(utt));
+                add(0, scriptsCompleteSet.get(0));
+                add(1, scriptsCompleteSet.get(1));
             }
         });
-        */
+
         StartAlphaBetaSearch(_params, _TT);
         evaluation = new SimpleSqrtEvaluationFunction3();
     }
@@ -91,7 +98,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         for (int p = 0; p < 2; ++p) {
             // set ordered move script player objects
             for (int s = 0; s < _params.getOrderedMoveScripts().size(); s++) {
-                _allScripts[p] = new ArrayList();
+                if (_allScripts[p] == null) {
+                    _allScripts[p] = new ArrayList();
+                }
                 _allScripts[p].add(_params.getOrderedMoveScripts().get(s));
             }
             // set player model objects
@@ -113,7 +122,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         for (int p = 0; p < 2; ++p) {
             // set ordered move script player objects
             for (int s = 0; s < _params.getOrderedMoveScripts().size(); s++) {
-                _allScripts[p] = new ArrayList();
+                if (_allScripts[p] == null) {
+                    _allScripts[p] = new ArrayList();
+                }
                 _allScripts[p].add(_params.getOrderedMoveScripts().get(s));
             }
             // set player model objects
@@ -151,8 +162,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             //System.out.println("Estado é terminal!");
             // return the value, but the move will not be valid since none was performed
             StateEvalScore evalScore = eval(_params.getMaxPlayer(), _params.getEvalMethod(),
-                                            _params.getSimScripts()[Players.Player_One.codigo()], 
-                                            _params.getSimScripts()[Players.Player_Two.codigo()], state);
+                    _params.getSimScripts()[Players.Player_One.codigo()],
+                    _params.getSimScripts()[Players.Player_Two.codigo()], state);
             return new AlphaBetaValue(new StateEvalScore(evalScore.getVal(), evalScore.getNumMoves()), new AlphaBetaMove());
         }
 
@@ -164,25 +175,25 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
         // Transposition Table Logic
         TTLookupValue TTval = new TTLookupValue();
-        
+
         if (isTranspositionLookupState(state, prevSimMove)) {
-           TTval = TTlookup(state, alpha, beta, depth);
+            TTval = TTlookup(state, alpha, beta, depth);
 
             // if this is a TT cut, return the proper value
             if (TTval.isCut()) {
                 return new AlphaBetaValue(TTval.getEntry().getScore(), getAlphaBetaMove(TTval, playerToMove));
             }
         }
-        
 
         boolean bestMoveSet = false;
 
         // move generation
         MoveArray2 moves = _allMoves.get(depth);
         if (state.canExecuteAnyAction(playerToMove.codigo())) {
-        	moves = generateMoves(moves, playerToMove, state);
+            moves = generateMoves(moves, playerToMove, state);
         }
         moves.shuffleMoveActions();
+        stopSearch();
         generateOrderedMoves(state, moves, TTval, playerToMove, depth);
 
         // while we have more simultaneous moves
@@ -195,25 +206,26 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         // for each child
         while (getNextMoveVec(playerToMove, moves, moveNumber, TTval, depth, moveVec, state)) {
             //printMoveVec(moveVec);
+            stopSearch();
             // the value of the recursive AB we will call
             AlphaBetaValue val = new AlphaBetaValue();
 
             // generate the child state
             GameState child;
             try {
-                child = state.clone();    
+                child = state.clone();
             } catch (Exception e) {
                 throw new Exception();
-            } catch(Error e2){
+            } catch (Error e2) {
                 throw new Exception();
             }
-            
 
             boolean firstMove = true;
             // if this is the first player in a simultaneous move state
             if (bothCanMove() && (prevSimMove == null) && (depth != 1)) {
                 firstMove = true;
                 // don't generate a child yet, just pass on the move we are investigating
+                stopSearch();
                 val = alphaBeta(state, (depth - 1), playerToMove, moveVec, alpha, beta);
             } else {
                 firstMove = false;
@@ -222,16 +234,17 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                     // do the previous move selected by the first player to move during this state
                     applyActionState(child, prevSimMove, moves);
                 }
-             // do the moves of the current player
+                // do the moves of the current player
                 applyActionState(child, moveVec, moves);
                 //child.forceExecuteAllActions(); //check if this is good for our problem
                 //apply a simulation node.
-                 while (child.winner() == -1 &&
-                               !child.gameover() &&
-                               !child.canExecuteAnyAction(0) &&
-                               !child.canExecuteAnyAction(1)) {
-                           child.cycle();
-                       }
+                stopSearch();
+                while (child.winner() == -1
+                        && !child.gameover()
+                        && !child.canExecuteAnyAction(0)
+                        && !child.canExecuteAnyAction(1)) {
+                    child.cycle();
+                }
                 // get the alpha beta value
                 val = alphaBeta(child, (depth - 1), playerToMove, null, alpha, beta);
             }
@@ -271,7 +284,6 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         //
         return maxPlayer ? new AlphaBetaValue(alpha, bestMove) : new AlphaBetaValue(beta, bestMove);
     }
-    
 
     private AlphaBetaValue IDAlphaBeta(GameState initialState, short maxDepth) throws Exception {
         AlphaBetaValue val = new AlphaBetaValue();
@@ -297,8 +309,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                     _results.setBestMoves(_params.getSimScripts()[playerToGame].getAction(playerToGame, initialState));
 
                 }
-                System.out.println("Erro during process "+ e.toString());
-                System.err.println(e.getStackTrace());
+                System.out.println("Erro during process " + e.toString());
+                //System.err.println(e.getStackTrace());
                 break;
             }
 
@@ -348,7 +360,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     private boolean searchTimeOut() {
-        if(Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit()-2)){
+        if (Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit() - 2)) {
             return true;
         }
         return ((_results.getNodesExpanded() % 100 == 0)
@@ -475,12 +487,12 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
         if (moves == null) {
             moves = new MoveArray2();
-        }else{
+        } else {
             moves.clear();
         }
-        
+
         lKp.refreshLookup(state);
-        
+
         PlayerActionGenerator AllMoves = new PlayerActionGenerator(state, playerToMove.codigo());
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
         for (Pair<Unit, List<UnitAction>> choice : choices) {
@@ -498,8 +510,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     //não consegui fazer
     private void generateOrderedMoves(GameState state, MoveArray2 moves, TTLookupValue TTval, Players playerToMove, int depth) throws Exception {
         // get the array where we will store the moves and clear it
-        ArrayList[] orderedMoves = _orderedMoves[depth];
-        orderedMoves = new ArrayList[10]; // clear
+        ArrayList[] orderedMoves = _orderedMoves[depth];     
+        cleanMoves(orderedMoves);
+        //orderedMoves = new ArrayList[10]; // clear
 
         // if we are using opponent modeling, get the move and then return, we don't want to put any more moves in
         if (_params.getPlayerModel(playerToMove.codigo()) != null) {
@@ -519,10 +532,12 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         if (_params.getMoveOrdering() == MoveOrderMethod.ScriptFirst) {
             for (int s = 0; s < _params.getOrderedMoveScripts().size(); s++) {
                 AI aiT = (AI) _allScripts[playerToMove.codigo()].get(s);
-                int indexOrd = orderedMoves.length;
+                //int indexOrd = orderedMoves.length;
+                int indexOrd = countElemArray(orderedMoves);
                 orderedMoves[indexOrd] = new ArrayList();
-                PlayerAction pTemp = _params.getPlayerModel(playerToMove.codigo()).getAction(playerToMove.codigo(), state);
+                PlayerAction pTemp = aiT.getAction(playerToMove.codigo(), state);
                 orderedMoves[indexOrd] = getActions(pTemp, moves, playerToMove);
+                stopSearch();
             }
 
             if (orderedMoves.length < 2) {
@@ -622,9 +637,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         try {
             child.issue(act);
         } catch (Exception e) {
-            System.out.println("Erro applyActionState "+e.toString());
+            System.out.println("Erro applyActionState " + e.toString());
         }
-        
+
     }
 
     private PlayerAction makePlayerAction(GameState state, ArrayList<Action> movesToAplly, MoveArray2 moves) {
@@ -675,10 +690,10 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     }
 
     @Override
-    public PlayerAction getAction(int player, GameState gs) throws Exception {        
-        if (gs.canExecuteAnyAction(player)) {            
+    public PlayerAction getAction(int player, GameState gs) throws Exception {
+        if (gs.canExecuteAnyAction(player)) {
             startNewComputation(player, gs);
-            computeDuringOneGameFrame();            
+            computeDuringOneGameFrame();
             return getBestActionSoFar();
         } else {
             return new PlayerAction();
@@ -730,7 +745,30 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     public String toString() {
         return "AlphaBetaSearch{" + "_params=" + _params.getDescription() + '}';
     }
-    
-    
+
+    protected void stopSearch() throws Exception {
+        if (Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit() - 1)) {
+            System.out.println("Stop the search!");
+            throw new Exception();
+        }
+    }
+
+    private int countElemArray(ArrayList[] orderedMoves) {
+        int count = 0;
+        for (ArrayList orderedMove : orderedMoves) {
+            if(orderedMove != null){
+                count++;
+            }
+        }
+        
+        return count;
+    }
+
+    private void cleanMoves(ArrayList[] orderedMoves) {
+        for (int i = 0; i < orderedMoves.length; i++) {
+            orderedMoves[i] = null;
+            
+        }
+    }
 
 }
