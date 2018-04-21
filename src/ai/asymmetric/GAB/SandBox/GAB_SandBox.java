@@ -54,7 +54,7 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
     int _numManager;
     IManagerAbstraction manager = null;
     boolean firstTime = true;
-    
+
     //tste
     UnitScriptData currentScriptData;
 
@@ -65,6 +65,7 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
                 utt,
                 new AStarPathFinding());
     }
+
     public GAB_SandBox(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 150, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
@@ -83,10 +84,10 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
         _numUnits = 2;
         _numManager = 2;
     }
-    
+
     public GAB_SandBox(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
-        
+
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
@@ -111,10 +112,13 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
             startNewComputation(player, gs);
             return getBestActionSoFar();
         } else {
-            startNewComputation(player, gs);
-            _pgs.setTimeBudget(95);
-            currentScriptData = _pgs.continueImproveUnitScript(player, gs, currentScriptData);
-            //currentScriptData = _pgs.getUnitScript(player, gs);
+            if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
+                //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
+                startNewComputation(player, gs);
+                _pgs.setTimeBudget(95);
+                currentScriptData = _pgs.continueImproveUnitScript(player, gs, currentScriptData);
+                //currentScriptData = _pgs.getUnitScript(player, gs);
+            }
             return new PlayerAction();
         }
     }
@@ -186,15 +190,14 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
         long start = System.currentTimeMillis();
-                
-        if(this.firstTime){
-            currentScriptData = _pgs.getUnitScript(playerForThisComputation, gs_to_start_from);    
+
+        if (this.firstTime) {
+            currentScriptData = _pgs.getUnitScript(playerForThisComputation, gs_to_start_from);
             this.firstTime = false;
-        }else if(hasNewUnitToImprove()){
+        } else if (hasNewUnitToImprove()) {
             updateCurrentScriptData();
         }
         PlayerAction paPGS = _pgs.getFinalAction(currentScriptData);
-        
 
         if ((System.currentTimeMillis() - start) < 90) {
             //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
@@ -215,12 +218,12 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
             //if(_ab.getBestScore() > _pgs.getBestScore()){
             //if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
-                //System.out.println("Escolhido paAB");
-                //currentScriptData = new UnitScriptData(playerForThisComputation);
-                return paAB;
+            //System.out.println("Escolhido paAB");
+            //currentScriptData = new UnitScriptData(playerForThisComputation);
+            return paAB;
             //}
         }
-  
+
         //System.out.println("Escolhido paPGS");
         //currentScriptData = new UnitScriptData(playerForThisComputation);
         return paPGS;
@@ -296,20 +299,20 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
     private boolean hasNewUnitToImprove() {
         ArrayList<Unit> unitsPlayer = getUnits(playerForThisComputation);
         List<Unit> unitsComputed = currentScriptData.getUnits();
-        
+
         for (Unit unit : unitsPlayer) {
-            if(!unitsComputed.contains(unit)){
+            if (!unitsComputed.contains(unit)) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
-    private ArrayList<Unit> getUnits(int player){
+
+    private ArrayList<Unit> getUnits(int player) {
         ArrayList<Unit> unitsPlayer = new ArrayList<>();
-        for(Unit u : gs_to_start_from.getUnits()) {
-            if(u.getPlayer() == player){
+        for (Unit u : gs_to_start_from.getUnits()) {
+            if (u.getPlayer() == player) {
                 unitsPlayer.add(u);
             }
         }
@@ -319,9 +322,9 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
     private void updateCurrentScriptData() {
         ArrayList<Unit> unitsPlayer = getUnits(playerForThisComputation);
         List<Unit> unitsComputed = currentScriptData.getUnits();
-        
+
         for (Unit unit : unitsPlayer) {
-            if(!unitsComputed.contains(unit)){
+            if (!unitsComputed.contains(unit)) {
                 currentScriptData.setUnitScript(unit, _pgs.getDefaultScript());
             }
         }
@@ -332,7 +335,5 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
         //return "GAB_SandBox{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
         return "GAB_SandBox_" + _numUnits + "_" + _numManager + '}';
     }
-    
-    
 
 }
