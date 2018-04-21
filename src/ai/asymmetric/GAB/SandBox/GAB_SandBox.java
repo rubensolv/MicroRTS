@@ -213,12 +213,12 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
             //System.out.println("Results AB= "+ _ab.statisticsString());
             //if(_ab.getBestScore() > _pgs.getBestScore()){
-            if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
+            //if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
                 //System.out.println("Escolhido paAB");
                 //currentScriptData = new UnitScriptData(playerForThisComputation);
                 return paAB;
-            }
+            //}
         }
   
         //System.out.println("Escolhido paPGS");

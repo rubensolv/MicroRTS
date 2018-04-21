@@ -5,10 +5,10 @@
  */
 package ai.asymmetric.common;
 
-import ai.asymmetric.PGS.*;
 import ai.core.AI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import rts.GameState;
@@ -109,6 +109,10 @@ public class UnitScriptData {
             AI value = entry.getValue();
             System.out.println(key.toString()+"   "+value.toString());            
         }
+    }
+    
+    public HashSet<AI> getUniqueAI(){
+        return new HashSet<>(_unitScriptMap.values());
     }
 
 }

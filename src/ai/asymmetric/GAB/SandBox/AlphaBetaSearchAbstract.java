@@ -163,7 +163,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         // update statistics
         _results.setNodesExpanded(_results.getNodesExpanded() + 1);
         if (searchTimeOut()) {
-            System.out.println("Estou dando searchTimeOut");
+            //System.out.println("Estou dando searchTimeOut");
             throw new Exception();
         }
         if (terminalState(state, depth)) {

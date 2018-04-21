@@ -8,10 +8,13 @@ import ai.asymmetric.common.UnitScriptData;
 import ai.core.AI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import rts.units.Unit;
 import util.Pair;
 
@@ -37,6 +40,7 @@ public class PlayerActionGenerator_Asymmetric {
     boolean moreActions = true;
     UnitScriptData currentScriptData = null;
     HashSet<Unit> unitsAbsAB = null;
+    HashMap<String, PlayerAction> actions = new HashMap<>();
 
     public long getGenerated() {
         return generated;
@@ -57,10 +61,12 @@ public class PlayerActionGenerator_Asymmetric {
     public PlayerActionGenerator_Asymmetric(GameState a_gs, int pID, UnitScriptData currentScriptData, HashSet<Unit> unitsAbsAB) throws Exception {
         this.currentScriptData = currentScriptData;
         this.unitsAbsAB = unitsAbsAB;
+
         // Generate the reserved resources:
         base_ru = new ResourceUsage();
         gs = a_gs;
         pgs = gs.getPhysicalGameState();
+        getUnitScriptDataActions(gs, pID);
 
         for (Unit u : pgs.getUnits()) {
             UnitActionAssignment uaa = gs.unitActions.get(u);
@@ -81,10 +87,11 @@ public class PlayerActionGenerator_Asymmetric {
                         l = u.getUnitActions(gs);
                     } else {
                         //se a unidade existir no unitScriptData
-                        if(unitExistScriptData(u)){
-                        //gero os movimentos com base nos scripts
-                            l = takeUnitScriptMove(u, gs, pID);
-                        }else{
+                        if (unitExistScriptData(u)) {
+                            //gero os movimentos com base nos scripts
+                            //l = takeUnitScriptMove(u, gs, pID); //old version
+                            l = takeActionCached(u, currentScriptData);
+                        } else {
                             l = u.getUnitActions(gs);
                         }
                     }
@@ -194,7 +201,7 @@ public class PlayerActionGenerator_Asymmetric {
         PlayerAction pa = new PlayerAction();
         pa.setResourceUsage(base_ru.clone());
         for (Pair<Unit, List<UnitAction>> unitChoices : choices) {
-            List<UnitAction> l = new LinkedList<UnitAction>();
+            List<UnitAction> l = new LinkedList<>();
             l.addAll(unitChoices.m_b);
             Unit u = unitChoices.m_a;
 
@@ -279,14 +286,39 @@ public class PlayerActionGenerator_Asymmetric {
     }
 
     private boolean unitExistScriptData(Unit u) {
-        
-        for(Unit us : currentScriptData.getUnits()){
-            if(us.getID() == u.getID()){
+
+        for (Unit us : currentScriptData.getUnits()) {
+            if (us.getID() == u.getID()) {
                 return true;
             }
         }
-        
+
         return false;
+    }
+
+    private void getUnitScriptDataActions(GameState a_gs, int pID) {
+        actions.clear();
+        currentScriptData.getUniqueAI().forEach((_item) -> {
+            try {
+                _item.reset();
+                actions.put(_item.toString(), _item.getAction(pID, a_gs));
+            } catch (Exception ex) {
+                Logger.getLogger(PlayerActionGenerator_Asymmetric.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println("Error getUnitScriptDataActions");
+            }
+        });
+    }
+
+    private List<UnitAction> takeActionCached(Unit u, UnitScriptData currentScriptData) {
+        AI ai = currentScriptData.getAIUnit(u);
+        List<UnitAction> actionUnit = new ArrayList<>();
+
+        UnitAction unt = actions.get(ai.toString()).getAction(u);
+        if (unt != null) {
+            actionUnit.add(unt);
+        }
+
+        return actionUnit;
     }
 
 }
