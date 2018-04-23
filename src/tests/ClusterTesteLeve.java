@@ -29,8 +29,8 @@ import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
-import ai.asymmetric.GAB.GAB;
-import ai.asymmetric.GAB.SandBox.GAB_SandBox;
+import ai.asymmetric.GAB.GAB_oldVersion;
+import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
@@ -319,7 +319,7 @@ public class ClusterTesteLeve {
                //new GAB(utt),
                //new GAB_ABActionGeneration(utt),
                //new SAB(utt),
-               //new GAB_SandBox(utt),
+               //new GAB(utt),
                //new SSSmRTSScriptChoice(utt, decodeScripts(utt, best), "best")
                //new PGSSCriptChoice(utt, decodeScripts(utt, best) ""), //PGS com o best response do GA
                //new GAB_ScriptC(utt, decodeScripts(utt, best), "Bk1"), //GAB com o best response do GA

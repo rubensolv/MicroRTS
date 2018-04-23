@@ -39,7 +39,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class GAB extends AIWithComputationBudget implements InterruptibleAI {
+public class GAB_oldVersion extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -55,7 +55,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
     int _numManager;
     IManagerAbstraction manager = null;
 
-    public GAB(UnitTypeTable utt) {
+    public GAB_oldVersion(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -63,7 +63,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
                 new AStarPathFinding());
     }
 
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public GAB_oldVersion(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         evaluation = e;
@@ -77,7 +77,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         _numUnits = 2;
     }
     
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+    public GAB_oldVersion(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
         
         evaluation = e;
@@ -145,7 +145,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new GAB(_time, _max_playouts, evaluation, utt, pf);
+        return new GAB_oldVersion(_time, _max_playouts, evaluation, utt, pf);
     }
 
     @Override

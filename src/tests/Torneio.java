@@ -17,7 +17,7 @@ import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.ahtn.AHTNAI;
-import ai.asymmetric.GAB.GAB;
+import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.core.AI;

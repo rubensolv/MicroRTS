@@ -29,7 +29,7 @@ import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
-import ai.asymmetric.GAB.GAB;
+import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
@@ -128,15 +128,14 @@ public class ClusterTesteLeve_PO {
         String sc2Nash = "207;254;"; 
         String bestGA = "271;254;"; // colocar o melhor cromossomo
         
-        List<AI> ais = new ArrayList<>(Arrays.asList(
-               new POWorkerRush(utt),
+        List<AI> ais = new ArrayList<>(Arrays.asList(new POWorkerRush(utt),
                new PORangedRush(utt),
                new POLightRush(utt),
                new POHeavyRush(utt),
                new BS3_NaiveMCTS(utt),
                new PGSmRTS(utt),
                new SSSmRTS(utt),
-               new GAB(utt),
+               new GAB_oldVersion(utt),
                new SAB(utt),
                new PGSSCriptChoice(utt, decodeScripts(utt, best), "BR"), //PGS com o best response do GA
                new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Nash"), //PGS com o best response do Nash

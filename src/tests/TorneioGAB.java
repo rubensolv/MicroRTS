@@ -14,7 +14,7 @@ import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.ahtn.AHTNAI;
-import ai.asymmetric.GAB.GAB;
+import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.core.AI;
@@ -67,7 +67,7 @@ public class TorneioGAB {
 
         //bots
         AI ai1 = new PGSmRTS(utt);
-        AI ai2 = new GAB(100, 200,new SimpleSqrtEvaluationFunction3(),
+        AI ai2 = new GAB_oldVersion(100, 200,new SimpleSqrtEvaluationFunction3(),
              utt,
              new AStarPathFinding(),
              numUnits,managerChoice);

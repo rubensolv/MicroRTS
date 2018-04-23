@@ -25,12 +25,12 @@ import ai.abstraction.WorkerRush;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
+import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
-import ai.asymmetric.GAB.GAB;
-import ai.asymmetric.GAB.SandBox.GAB_SandBox;
-import ai.asymmetric.GAB.SandBox.GAB_SandBox_Parcial_State;
+import ai.asymmetric.GAB.GAB_oldVersion;
+import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
@@ -58,6 +58,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -73,11 +74,14 @@ import util.XMLWriter;
  * @author Rubens
  */
 public class ClusterTesteLeve_GAB_SAB {
+    
+    static HashMap<Integer, ArrayList<Integer>>  mapElements = new HashMap<>();
 
     public static void main(String args[]) throws Exception {
         int iAi1 = Integer.parseInt(args[0]);
         int iAi2 = Integer.parseInt(args[1]);
         int map = Integer.parseInt(args[2]);
+        
         
         Instant timeInicial = Instant.now();
         Duration duracao;
@@ -146,65 +150,19 @@ public class ClusterTesteLeve_GAB_SAB {
                 "maps/64x64/ComplexPathToFight64x64.xml",
                 "maps/64x64/SimplePathExplore64x64.xml",
                 "maps/64x64/SimplePathToFight64x64.xml"
-                
-        mapas scv teste
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/NoWhereToRun9x8.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                "maps/DoubleGame24x24.xml",
-                "maps/BWDistantResources32x32.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml", 
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                "maps/9x8/BlockWall9x8.xml"
+ 
         
-        mapas scv totais de teste SCV
-                //5 mapas 8x8
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml", 
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                //5 mapas 16x16
-                "maps/16x16/basesWorkers16x16C.xml",
-                "maps/16x16/basesWorkers16x16G.xml",
-                "maps/16x16/basesWorkers16x16K.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                //5 mapas 24x24
-                "maps/24x24/basesWorkers24x24C.xml",
-                "maps/24x24/basesWorkers24x24E.xml",
-                "maps/24x24/basesWorkers24x24F.xml",
-                "maps/24x24/basesWorkers24x24I.xml",
-                "maps/DoubleGame24x24.xml",
-                //5 mapas 32x32
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/32x32/basesWorkersBarracks32x32.xml",
-                "maps/32x32/RunToFight32x32A.xml",
-                "maps/32x32/centerResources32x32.xml",
-                "maps/BWDistantResources32x32.xml",
-                //5 mapas 64x46
-                "maps/BroodWar/(4)BloodBath.scmA.xml",
-                "maps/BroodWar/(4)BloodBath.scmC.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmF.xml"
-                //5 mapas 128x128
-                (3)TauCross.scxA.xml
-                (3)TauCross.scxC.xml
-                (4)CircuitBreaker.scxB.xml
-                (4)Python.scxA.xml
-                (4)Python.scxF.xml
+
 
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
                 "maps/8x8/basesWorkers8x8A.xml",
                 "maps/16x16/basesWorkers16x16A.xml",
-                "maps/24x24/basesWorkers24x24A.xml"
+                "maps/BWDistantResources32x32.xml",
+                "maps/24x24/basesWorkers24x24A.xml",
+                "maps/NoWhereToRun9x8.xml",
+                "maps/DoubleGame24x24.xml"
         ));
         
         UnitTypeTable utt = new UnitTypeTable();
@@ -301,24 +259,23 @@ public class ClusterTesteLeve_GAB_SAB {
          */            
         
         //best response GA 
-        String best = "240;81;95;95;"; 
-        String sc2Nash = "240;81;95;95;"; 
-        String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
-        
-        List<AI> ais = new ArrayList<>(Arrays.asList(
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new GAB_SandBox(utt, 1, 2),
-               new GAB_SandBox(utt, 2, 2),
-               new GAB_SandBox(utt, 3, 2),
-               new GAB_SandBox_Parcial_State(utt, 1, 2),
-               new GAB_SandBox_Parcial_State(utt, 2, 2),
-               new GAB_SandBox_Parcial_State(utt, 3, 2)
-        ));
+        String bestGA = "57;94;205;"; 
+        //String sc2Nash = "25;15;13;11;21;"; 
+        //String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
+        generateConfig();
+        List<AI> ais = new ArrayList<>();
 
-        AI ai1 = ais.get(iAi1);
-        AI ai2 = ais.get(iAi2);
+        AI ai1;
+        AI ai2;
+        if(iAi1 == 0){
+            ai1 = new PGSmRTS(utt);
+            ai2 = getIA(utt,iAi2);
+        }else{
+            ai2 = new PGSmRTS(utt);
+            ai1 = getIA(utt,iAi2);
+        }
+        
+        ais.clear();
 
         /*
             Variáveis para coleta de tempo
@@ -404,7 +361,7 @@ public class ClusterTesteLeve_GAB_SAB {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
             
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 15));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 30));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;
@@ -442,6 +399,27 @@ public class ClusterTesteLeve_GAB_SAB {
         });
 
         return scriptsAI;
+    }
+    
+    public static void generateConfig(){
+        int cont = 0;
+        for (int i = 0; i <= 10; i++) {
+            for (int j = 0; j < 9; j++) {
+                 ArrayList<Integer>  choices = new ArrayList<>();
+                 choices.add(0, i);
+                 choices.add(1, j);
+                mapElements.put(cont, choices);
+                cont++;
+                        
+            }
+        }
+        //System.out.println("tests.ClusterTesteLeve_GAB_SAB.generateConfig() teste total ="+ mapElements.keySet().size());
+        
+    }
+
+    private static AI getIA(UnitTypeTable utt, int iAi2) {
+        ArrayList<Integer>  choices = mapElements.get(iAi2);
+        return new GAB(utt, choices.get(0), choices.get(1));
     }
 
 }

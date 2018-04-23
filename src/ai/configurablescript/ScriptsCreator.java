@@ -33,7 +33,7 @@ public class ScriptsCreator {
 
 	UnitTypeTable utt;
 	Parameters p;
-	int debug =1;
+	int debug =0;
 	int numScripts=300;
 
 	public ScriptsCreator(UnitTypeTable utt, int tamMixSet ){

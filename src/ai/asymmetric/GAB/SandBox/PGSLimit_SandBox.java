@@ -77,8 +77,8 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
     }
     
     protected void buildPortfolio(){
-        this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new POLightRush(utt));
+        this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new POWorkerRush(utt));
         

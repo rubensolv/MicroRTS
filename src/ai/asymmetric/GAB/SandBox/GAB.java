@@ -38,7 +38,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class GAB_SandBox extends AIWithComputationBudget implements InterruptibleAI {
+public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -58,7 +58,7 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
     //tste
     UnitScriptData currentScriptData;
 
-    public GAB_SandBox(UnitTypeTable utt) {
+    public GAB(UnitTypeTable utt) {
         this(100, 150, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -66,11 +66,11 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
                 new AStarPathFinding());
     }
 
-    public GAB_SandBox(UnitTypeTable utt, int numUnits, int numManager) {
+    public GAB(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 150, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
 
-    public GAB_SandBox(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         evaluation = e;
@@ -85,7 +85,7 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
         _numManager = 2;
     }
 
-    public GAB_SandBox(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
 
         evaluation = e;
@@ -160,7 +160,7 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
 
     @Override
     public AI clone() {
-        return new GAB_SandBox(_time, _max_playouts, evaluation, utt, pf);
+        return new GAB(_time, _max_playouts, evaluation, utt, pf);
     }
 
     @Override
@@ -332,8 +332,8 @@ public class GAB_SandBox extends AIWithComputationBudget implements Interruptibl
 
     @Override
     public String toString() {
-        //return "GAB_SandBox{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "GAB_SandBox_" + _numUnits + "_" + _numManager + '}';
+        //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
+        return "GAB_SandBox_" + _numUnits + "_" + _numManager;
     }
 
 }

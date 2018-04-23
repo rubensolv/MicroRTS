@@ -7,7 +7,6 @@ package ai.asymmetric.GAB.SandBox;
 
 import ai.aiSelection.AlphaBetaSearch.*;
 import ai.abstraction.partialobservability.POLightRush;
-import ai.abstraction.partialobservability.POWorkerRush;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.MoveOrderMethod;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.PlayerToMove;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.Players;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Random;
 import rts.GameState;
 import rts.PlayerAction;
-import rts.PlayerActionGenerator;
 import rts.PlayerActionGenerator_Asymmetric;
 import rts.UnitAction;
 import rts.units.Unit;
@@ -66,28 +64,29 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
     LookUpUnits lKp = new LookUpUnits();
 
     public AlphaBetaSearchAbstract(UnitTypeTable utt) {
-        this(10000, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
+        this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
     }
 
     public AlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
-        _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
-        _params.setPlayerModel(Players.Player_Two.codigo(), new POWorkerRush(utt));
+        _params.setPlayerModel(Players.Player_One.codigo(), new POLightRush(utt));
+        _params.setPlayerModel(Players.Player_Two.codigo(), new POLightRush(utt));
         _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
 
         ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
-
+        
         _params.setOrderedMoveScripts(new ArrayList<AI>() {
             {
                 // add(0, new POLightRush(utt));
                 // add(1, new POWorkerRush(utt));
                 add(0, scriptsCompleteSet.get(0));
-                //add(1, scriptsCompleteSet.get(1));
+                add(1, scriptsCompleteSet.get(1));
+                
             }
         });
-
+        
         StartAlphaBetaSearch(_params, _TT);
         evaluation = new SimpleSqrtEvaluationFunction3();
     }
@@ -325,7 +324,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             }
 
         }
-        _results.print(); // remover
+        //_results.print(); // remover
         return val;
     }
 

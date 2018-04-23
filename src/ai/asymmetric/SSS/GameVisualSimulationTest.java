@@ -20,7 +20,7 @@ import ai.abstraction.WorkerRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.pathfinding.BFSPathFinding;
-import ai.asymmetric.GAB.GAB;
+import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
