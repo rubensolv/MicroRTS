@@ -42,7 +42,7 @@ import util.Pair;
  * UnitScriptData. 
  *
  */
-public class SAB extends AIWithComputationBudget implements InterruptibleAI {
+public class SAB_oldVersion extends AIWithComputationBudget implements InterruptibleAI {
     
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -58,7 +58,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     int _numManager;
     IManagerAbstraction manager = null;
 
-    public SAB(UnitTypeTable utt) {
+    public SAB_oldVersion(UnitTypeTable utt) {
         this(100, 200,new SimpleSqrtEvaluationFunction3(),
              //new SimpleSqrtEvaluationFunction2(),
              //new LanchesterEvaluationFunction(),
@@ -67,7 +67,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
              2,0);
     }
     
-    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+    public SAB_oldVersion(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
         
         evaluation = e;
@@ -137,7 +137,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new SAB(_time, _max_playouts, evaluation, utt, pf, _numUnits, _numManager);
+        return new SAB_oldVersion(_time, _max_playouts, evaluation, utt, pf, _numUnits, _numManager);
     }
 
     @Override

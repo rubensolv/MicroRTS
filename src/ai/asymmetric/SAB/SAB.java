@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.asymmetric.GAB.SandBox;
+package ai.asymmetric.SAB;
 
+import ai.asymmetric.GAB.SandBox.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.asymmetric.ManagerUnits.IManagerAbstraction;
@@ -38,12 +39,12 @@ import util.Pair;
  *
  * @author rubens
  */
-public class GAB extends AIWithComputationBudget implements InterruptibleAI {
+public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    PGSLimit_SandBox _pgs = null;
+    SSSLimit _pgs = null;
     AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
@@ -58,7 +59,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
     //tste
     UnitScriptData currentScriptData;
 
-    public GAB(UnitTypeTable utt) {
+    public SAB(UnitTypeTable utt) {
         this(100, 150, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -66,17 +67,17 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
                 new AStarPathFinding());
     }
 
-    public GAB(UnitTypeTable utt, int numUnits, int numManager) {
+    public SAB(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 150, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
 
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
+        _pgs = new SSSLimit(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -85,13 +86,13 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         _numManager = 2;
     }
 
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
 
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
+        _pgs = new SSSLimit(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -160,7 +161,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new GAB(_time, _max_playouts, evaluation, utt, pf);
+        return new SAB(_time, _max_playouts, evaluation, utt, pf);
     }
 
     @Override

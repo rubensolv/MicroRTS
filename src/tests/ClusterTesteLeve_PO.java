@@ -34,7 +34,7 @@ import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
-import ai.asymmetric.SAB.SAB;
+import ai.asymmetric.SAB.SAB_oldVersion;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -136,7 +136,7 @@ public class ClusterTesteLeve_PO {
                new PGSmRTS(utt),
                new SSSmRTS(utt),
                new GAB_oldVersion(utt),
-               new SAB(utt),
+               new SAB_oldVersion(utt),
                new PGSSCriptChoice(utt, decodeScripts(utt, best), "BR"), //PGS com o best response do GA
                new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Nash"), //PGS com o best response do Nash
                new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA") //PGS com o melhor GA

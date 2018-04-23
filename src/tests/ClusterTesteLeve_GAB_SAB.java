@@ -35,7 +35,7 @@ import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
-import ai.asymmetric.SAB.SAB;
+import ai.asymmetric.SAB.SAB_oldVersion;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -227,7 +227,7 @@ public class ClusterTesteLeve_GAB_SAB {
                new SSSmRTS(utt),
                new GAB(utt),
                new GAB_ABActionGeneration(utt),
-               new SAB(utt),
+               new SAB_oldVersion(utt),
                new PGSSCriptChoice(utt, decodeScripts(utt, best), "BR"), //PGS com o best response do GA
                new GAB_ScriptC(utt, decodeScripts(utt, best), "BR"), //GAB com o best response do GA
                new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Nash"), //PGS com o best response do Nash

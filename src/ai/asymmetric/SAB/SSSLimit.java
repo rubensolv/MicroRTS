@@ -51,10 +51,10 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
-    
+
     private Integer numberTypes;
     private Double timePlayout;
-    
+
     double _bestScore;
 
     public SSSLimit(UnitTypeTable utt) {
@@ -90,7 +90,6 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new PORangedRush(utt, new FloodFillPathFinding()));
-        
     }
 
     @Override
@@ -118,7 +117,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
 
         enemyScript = seedEnemy;
         defaultScript = seedPlayer;
-        
+
         // set up the root script data
         UnitScriptData currentScriptData = new UnitScriptData(playerForThisComputation);
         currentScriptData.setSeedUnits(seedPlayer);
@@ -128,23 +127,60 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
         numberTypes = 0;
         timePlayout = 0.0;
 
-        if(doStratifiedSearch(playerForThisComputation, currentScriptData, seedEnemy)){
+        if (doStratifiedSearch(playerForThisComputation, currentScriptData, seedEnemy)) {
             /*
             System.out.print("Time Playout ");
             AdaptableStratType.printType();
             System.out.println("Types: "+ numberTypes + " Time: "+ timePlayout);
-            */
-            AdaptableStratType.increase(timePlayout,TIME_BUDGET, scripts.size());
-        }else{
+             */
+            AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
+        } else {
             /*
             System.out.print("Time Playout ");
             AdaptableStratType.printType();
             System.out.println("Types: "+ numberTypes + " Time: "+ timePlayout);
-            */
+             */
             AdaptableStratType.decrease(numberTypes);
         }
 
         return getFinalAction(currentScriptData);
+    }
+
+    public UnitScriptData continueImproveUnitScript(int player, GameState gs, UnitScriptData currentScriptData) throws Exception {
+        startNewComputation(player, gs);
+
+        //pego o melhor script do portfolio para ser a semente
+        AI seedPlayer = getSeedPlayer(playerForThisComputation);
+        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+
+        enemyScript = seedEnemy;
+        defaultScript = seedPlayer;
+
+        // set up the root script data
+        currentScriptData.setSeedUnits(seedPlayer);
+        setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
+
+        // do the initial root portfolio search for our player
+        numberTypes = 0;
+        timePlayout = 0.0;
+
+        if (doStratifiedSearch(playerForThisComputation, currentScriptData, seedEnemy)) {
+            /*
+            System.out.print("Time Playout ");
+            AdaptableStratType.printType();
+            System.out.println("Types: "+ numberTypes + " Time: "+ timePlayout);
+             */
+            AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
+        } else {
+            /*
+            System.out.print("Time Playout ");
+            AdaptableStratType.printType();
+            System.out.println("Types: "+ numberTypes + " Time: "+ timePlayout);
+             */
+            AdaptableStratType.decrease(numberTypes);
+        }
+
+        return currentScriptData;
     }
 
     protected AI getSeedPlayer(int player) throws Exception {
@@ -269,7 +305,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
     public void setR(int a) {
         R = a;
     }
-    
+
     public double getBestScore() {
         return _bestScore;
     }
@@ -301,6 +337,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
         nplayouts = 0;
         _startTime = gs.getTime();
         start_time = System.currentTimeMillis();
+        _bestScore = 0.0;
     }
 
     @Override
@@ -316,14 +353,14 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
             }
         }
     }
+
     //private boolean doStratifiedSearch(int player, UnitScriptData currentScriptData, AI seedEnemy, Integer numberTypes, Double timePlayouts) throws Exception {
     private boolean doStratifiedSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
         int enemy = 1 - player;
         int numberEvals = 0;
-        
+
         UnitScriptData bestScriptData = currentScriptData.clone();
         double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
-        
 
         //compute the set of type for each unit that can move
         HashMap<AdaptableStratType, ArrayList<Unit>> typeUnits = new HashMap<>();
@@ -363,9 +400,9 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
                     numberEvals++;
                     if ((sIndex == 0) || (score > bestScoreVec[typeIndex])) {
                         bestScriptVec[typeIndex] = scripts.get(sIndex);
-                        bestScoreVec[typeIndex]  = score;
+                        bestScoreVec[typeIndex] = score;
                     }
-                    if((counterIterations == 0 && scripts.get(0)==ai || score > _bestScore)){
+                    if ((counterIterations == 0 && scripts.get(0) == ai || score > _bestScore)) {
                         _bestScore = score;
                         hasImproved = true;
                     }
@@ -374,14 +411,14 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
                 for (Unit un : typeUnits.get(ordemAdapt.get(typeIndex))) {
                     currentScriptData.setUnitScript(un, bestScriptVec[typeIndex]);
                 }
-                
-                if( System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0)) ){
-                    timePlayout =  (double)(System.currentTimeMillis() - start_time) /(numberEvals);
+
+                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
                     return hasFinishedIteration;
                 }
-                
+
             }
-            if(!hasImproved){
+            if (!hasImproved) {
                 return hasFinishedIteration;
             }
             counterIterations++;
@@ -393,13 +430,13 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
         System.out.println("---CurrentTime: "+ System.currentTimeMillis());
         System.out.println("---Tempo calculado: "+ (System.currentTimeMillis() - start_time));
         System.out.println("---numberEvals: "+ numberEvals);
-        */
-        if(numberEvals==0){
-            timePlayout = (double)((System.currentTimeMillis() - start_time) /(1));    
-        }else{
-            timePlayout = (double)((System.currentTimeMillis() - start_time) /(numberEvals));
+         */
+        if (numberEvals == 0) {
+            timePlayout = (double) ((System.currentTimeMillis() - start_time) / (1));
+        } else {
+            timePlayout = (double) ((System.currentTimeMillis() - start_time) / (numberEvals));
         }
-        
+
         //System.out.println("---Calculado: "+ timePlayout);
         return hasFinishedIteration;
     }
@@ -433,34 +470,33 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
     }
 
     public UnitScriptData getUnitScript(int player, GameState gs) throws Exception {
-       
-            startNewComputation(player,gs);
-            return getBestUnitScriptSoFar();
-        
+
+        startNewComputation(player, gs);
+        return getBestUnitScriptSoFar();
+
     }
-    
+
     public UnitScriptData getBestUnitScriptSoFar() throws Exception {
 
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
-        AI seedEnemy = getSeedPlayer(1-playerForThisComputation);
-        
+        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+
         defaultScript = seedPlayer;
         enemyScript = seedEnemy;
-        
+
         UnitScriptData currentScriptData = new UnitScriptData(playerForThisComputation);
         currentScriptData.setSeedUnits(seedPlayer);
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
-        if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
+        if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
             doStratifiedSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
-        
+
         return currentScriptData;
     }
-    
+
     public AI getEnemyScript() {
         return enemyScript;
     }
-    
-    
+
 }
