@@ -1,13 +1,12 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.asymmetric.SAB;
+package ai.asymmetric.GAB.SandBox;
 
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
-import ai.asymmetric.IDABCD.IDABCDAsymmetric_ABActionGeneration;
 import ai.asymmetric.ManagerUnits.IManagerAbstraction;
 import ai.asymmetric.ManagerUnits.ManagerClosest;
 import ai.asymmetric.ManagerUnits.ManagerClosestEnemy;
@@ -38,17 +37,14 @@ import util.Pair;
 /**
  *
  * @author rubens
- * Esta versão do GAB utiliza a versão do IDABCD asssimétrico com o playerActionGenerator alterado pelo 
- * UnitScriptData. 
- *
  */
-public class SAB extends AIWithComputationBudget implements InterruptibleAI {
-    
+public class GAB extends AIWithComputationBudget implements InterruptibleAI {
+
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    SSSLimit _pgs = null;
-    IDABCDAsymmetric_ABActionGeneration _ab = null;
+    PGSLimit_SandBox _pgs = null;
+    AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
     int _time;
@@ -57,52 +53,79 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     int _numUnits;
     int _numManager;
     IManagerAbstraction manager = null;
+    boolean firstTime = true;
 
-    public SAB(UnitTypeTable utt) {
-        this(100, 200,new SimpleSqrtEvaluationFunction3(),
-             //new SimpleSqrtEvaluationFunction2(),
-             //new LanchesterEvaluationFunction(),
-             utt,
-             new AStarPathFinding(),
-             2,0);
+    //tste
+    UnitScriptData currentScriptData;
+
+    public GAB(UnitTypeTable utt) {
+        this(100, 150, new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
     }
-    
-    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+
+    public GAB(UnitTypeTable utt, int numUnits, int numManager) {
+        this(100, 150, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+    }
+
+    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
-        
+
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new SSSLimit(utt);
-        _ab = new IDABCDAsymmetric_ABActionGeneration(utt);
-        _time = time;;
+        _pgs = new PGSLimit_SandBox(utt);
+        _ab = new AlphaBetaSearchAbstract(utt);
+        _time = time;
+        _max_playouts = max_playouts;
+        _unitsAbsAB = new HashSet<>();
+        _numUnits = 2;
+        _numManager = 2;
+    }
+
+    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+        super(time, max_playouts);
+
+        evaluation = e;
+        utt = a_utt;
+        pf = a_pf;
+        _pgs = new PGSLimit_SandBox(utt);
+        _ab = new AlphaBetaSearchAbstract(utt);
+        _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
         _numUnits = numUnits;
         _numManager = numManager;
     }
 
-
-
     @Override
     public void reset() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public PlayerAction getAction(int player, GameState gs ) throws Exception {
-         if (gs.canExecuteAnyAction(player)) {
+    public PlayerAction getAction(int player, GameState gs) throws Exception {
+        if (gs.canExecuteAnyAction(player)) {
             startManager(player, _numUnits);
-            startNewComputation(player,gs);
+            startNewComputation(player, gs);
             return getBestActionSoFar();
         } else {
-            return new PlayerAction();        
-        } 
+            if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
+                //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
+                startNewComputation(player, gs);
+                _pgs.setTimeBudget(95);
+                currentScriptData = _pgs.continueImproveUnitScript(player, gs, currentScriptData);
+                //currentScriptData = _pgs.getUnitScript(player, gs);
+            }
+            return new PlayerAction();
+        }
     }
-    
-    
-    protected void startManager(int playerID, int numUnits){
-        if(manager == null){
-            switch(_numManager){
+
+    protected void startManager(int playerID, int numUnits) {
+        if (manager == null) {
+            switch (_numManager) {
                 case 0:
                     manager = new ManagerRandom(playerID, _numUnits);
                     break;
@@ -130,26 +153,26 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
                     manager = new ManagerMoreDPS(playerID, numUnits);
                     break;
                 default:
-                    System.out.println("ai.asymmetric.SAB.SAB.startManager() Erro na escolha!");
+                    System.out.println("ai.asymmetric.GAB.GAB_ABActionGeneration.startManager() Erro na escolha!");
             }
         }
     }
 
     @Override
     public AI clone() {
-        return new SAB(_time, _max_playouts, evaluation, utt, pf, _numUnits, _numManager);
+        return new GAB(_time, _max_playouts, evaluation, utt, pf);
     }
 
     @Override
     public List<ParameterSpecification> getParameters() {
         List<ParameterSpecification> parameters = new ArrayList<>();
-        
-        parameters.add(new ParameterSpecification("TimeBudget",int.class,100));
-        parameters.add(new ParameterSpecification("IterationsBudget",int.class,-1));
-        parameters.add(new ParameterSpecification("PlayoutLookahead",int.class,200));
+
+        parameters.add(new ParameterSpecification("TimeBudget", int.class, 100));
+        parameters.add(new ParameterSpecification("IterationsBudget", int.class, -1));
+        parameters.add(new ParameterSpecification("PlayoutLookahead", int.class, 200));
         parameters.add(new ParameterSpecification("EvaluationFunction", EvaluationFunction.class, new SimpleSqrtEvaluationFunction3()));
         parameters.add(new ParameterSpecification("PathFinding", PathFinding.class, new AStarPathFinding()));
-        
+
         return parameters;
     }
 
@@ -167,104 +190,150 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
         long start = System.currentTimeMillis();
-         UnitScriptData currentScriptData = _pgs.getUnitScript(playerForThisComputation, gs_to_start_from);
-         PlayerAction paPGS = _pgs.getFinalAction(currentScriptData);
-         
-         if( (System.currentTimeMillis()-start)< 90 ){
-             //aplico o AB
+
+        if (this.firstTime) {
+            currentScriptData = _pgs.getUnitScript(playerForThisComputation, gs_to_start_from);
+            this.firstTime = false;
+        } else if (hasNewUnitToImprove()) {
+            updateCurrentScriptData();
+        }
+        PlayerAction paPGS = _pgs.getFinalAction(currentScriptData);
+
+        if ((System.currentTimeMillis() - start) < 90) {
+            //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
+            //aplico o AB
             manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
-            
+
             _ab.setPlayoutAI(_pgs.getDefaultScript());
-            
-            int timeUsed = (int)(System.currentTimeMillis()-start);
-            if(timeUsed < 80){
-            _ab.setTimeBudget(100 -timeUsed);
-            }else{
+            _ab.setPlayoutAIEnemy(_pgs.getEnemyScript());
+            int timeUsed = (int) (System.currentTimeMillis() - start);
+            if (timeUsed < 80) {
+                _ab.setTimeBudget(100 - timeUsed);
+            } else {
                 _ab.setTimeBudget(20);
             }
-             //System.out.println("----------------------------------------"+_unitsAbsAB);
+            //System.out.println("----------------------------------------" + _unitsAbsAB);
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
+            //System.out.println("Results AB= "+ _ab.statisticsString());
             //if(_ab.getBestScore() > _pgs.getBestScore()){
             //if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
-            if(playoutAnalise(paAB)> _pgs.getBestScore()){
-                return paAB;
-            }
-         }
-         
-         return paPGS;
+            //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
+            //System.out.println("Escolhido paAB");
+            //currentScriptData = new UnitScriptData(playerForThisComputation);
+            return paAB;
+            //}
+        }
 
-         
+        //System.out.println("Escolhido paPGS");
+        //currentScriptData = new UnitScriptData(playerForThisComputation);
+        return paPGS;
+
     }
+
     /**
-     * Função que executa um playout de 1 ação e o restante de passos com o script default escolhido pelo pgs.
+     * Função que executa um playout de 1 ação e o restante de passos com o
+     * script default escolhido pelo pgs.
+     *
      * @param pa
-     * @return 
+     * @return
      */
-    protected double playoutAnalise(PlayerAction pa) throws Exception{
-        
-        AI ai1 = _pgs.defaultScript;
+    protected double playoutAnalise(PlayerAction pa) throws Exception {
+
+        AI ai1 = _pgs.getDefaultScript();
         AI ai2 = _pgs.getEnemyScript();
-        
+
         //boolean paUsed = false;
         //System.out.println(pa.toString());
-        
         GameState gs2 = gs_to_start_from.clone();
-        
+
         pa = changePlayer(playerForThisComputation, pa, gs2);
         gs2.issue(pa);
-        
+
         ai1.reset();
         ai2.reset();
         int timeLimit = gs2.getTime() + _max_playouts;
         boolean gameover = false;
-        while(!gameover && gs2.getTime()<timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-          
+
                 PlayerAction pa1 = ai1.getAction(playerForThisComputation, gs2);
                 gs2.issue(pa1);
-          
-                PlayerAction pa2 = ai2.getAction(1-playerForThisComputation, gs2);
+
+                PlayerAction pa2 = ai2.getAction(1 - playerForThisComputation, gs2);
                 gs2.issue(pa2);
             }
-        }        
-        double e = evaluation.evaluate(playerForThisComputation, 1-playerForThisComputation, gs2);
+        }
+        double e = evaluation.evaluate(playerForThisComputation, 1 - playerForThisComputation, gs2);
 
         return e;
     }
-    
-    
-    protected PlayerAction changePlayer(int player, PlayerAction pa, GameState gs){
+
+    protected PlayerAction changePlayer(int player, PlayerAction pa, GameState gs) {
         PlayerAction paR = new PlayerAction();
-        
-        for(Pair<Unit,UnitAction> tmp: pa.getActions()) {
+
+        for (Pair<Unit, UnitAction> tmp : pa.getActions()) {
             paR.addUnitAction(gs.getUnit(tmp.m_a.getID()), tmp.m_b);
         }
-        
+
         return paR;
     }
-    
-    protected PlayerAction checkIntegrity(int player, PlayerAction pa){
-        List<Pair<Unit,UnitAction>> remActions = new ArrayList<>();
-        
-        for(Pair<Unit,UnitAction> tmp: pa.getActions()) {
-            if(tmp.m_a.getPlayer() != player){
+
+    protected PlayerAction checkIntegrity(int player, PlayerAction pa) {
+        List<Pair<Unit, UnitAction>> remActions = new ArrayList<>();
+
+        for (Pair<Unit, UnitAction> tmp : pa.getActions()) {
+            if (tmp.m_a.getPlayer() != player) {
                 remActions.add(tmp);
             }
         }
         for (Pair<Unit, UnitAction> remAction : remActions) {
             pa.removeUnitAction(remAction.m_a, remAction.m_b);
         }
-        
+
         return pa;
+    }
+
+    //verifica se o UnitScriptData contem todas as unidades.
+    private boolean hasNewUnitToImprove() {
+        ArrayList<Unit> unitsPlayer = getUnits(playerForThisComputation);
+        List<Unit> unitsComputed = currentScriptData.getUnits();
+
+        for (Unit unit : unitsPlayer) {
+            if (!unitsComputed.contains(unit)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private ArrayList<Unit> getUnits(int player) {
+        ArrayList<Unit> unitsPlayer = new ArrayList<>();
+        for (Unit u : gs_to_start_from.getUnits()) {
+            if (u.getPlayer() == player) {
+                unitsPlayer.add(u);
+            }
+        }
+        return unitsPlayer;
+    }
+
+    private void updateCurrentScriptData() {
+        ArrayList<Unit> unitsPlayer = getUnits(playerForThisComputation);
+        List<Unit> unitsComputed = currentScriptData.getUnits();
+
+        for (Unit unit : unitsPlayer) {
+            if (!unitsComputed.contains(unit)) {
+                currentScriptData.setUnitScript(unit, _pgs.getDefaultScript());
+            }
+        }
     }
 
     @Override
     public String toString() {
-        return "SAB{" + "_numUnits=" + _numUnits + ", manager=" + _numManager + '}';
+        //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
+        return "GAB_SandBox_" + _numUnits + "_" + _numManager;
     }
-    
-    
 
 }
