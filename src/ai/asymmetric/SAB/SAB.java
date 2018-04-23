@@ -334,7 +334,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "GAB_SandBox_" + _numUnits + "_" + _numManager;
+        return "SAB_SandBox_" + _numUnits + "_" + _numManager;
     }
 
 }
