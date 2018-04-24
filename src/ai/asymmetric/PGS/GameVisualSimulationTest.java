@@ -29,6 +29,8 @@ import ai.asymmetric.GAB.SandBox.GAB_SandBox_Parcial_State;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
 import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.configurablescript.BasicExpandedConfigurableScript;
+import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.EvaluationFunctionForwarding;
 import ai.evaluation.LanchesterEvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
@@ -42,6 +44,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
 import rts.PhysicalGameState;
@@ -49,6 +53,7 @@ import rts.Player;
 import rts.PlayerAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import static tests.ClusterTesteLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -68,14 +73,14 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //testes GAB
-        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);  
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
@@ -112,7 +117,8 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PGSmRTS(utt); 
         //AI ai1 = new GAB(utt);
         //AI ai2 = new IDABCD(utt);
-        AI ai1 = new StrategyTactics(utt);
+        //AI ai1 = new StrategyTactics(utt);
+        AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         
         AI ai2 = new SAB(utt);
         //AI ai2 = new GAB(utt);
@@ -162,7 +168,7 @@ public class GameVisualSimulationTest {
                 
                 gs.issueSafe(pa1);
                 gs.issueSafe(pa2);
-
+                
                 // simulate:
                 gameover = gs.cycle();
                 w.repaint();
@@ -189,6 +195,28 @@ public class GameVisualSimulationTest {
         } while (!gameover && gs.getTime() < MAXCYCLES);
 
         System.out.println("Game Over");
+    }
+    
+    public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
+        
+        //decompõe a tupla
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        String[] itens = sScripts.split(";");
+
+        for (String element : itens) {
+            iScriptsAi1.add(Integer.decode(element));
+        }
+        
+        List<AI> scriptsAI = new ArrayList<>();
+
+        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
+        iScriptsAi1.forEach((idSc) -> {
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
+        });
+
+        return scriptsAI;
     }
 
 

@@ -81,8 +81,9 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             {
                 // add(0, new POLightRush(utt));
                 // add(1, new POWorkerRush(utt));
-                add(0, scriptsCompleteSet.get(0));
-                add(1, scriptsCompleteSet.get(1));
+                add(0, scriptsCompleteSet.get(217));
+                add(1, scriptsCompleteSet.get(2));
+                add(1, scriptsCompleteSet.get(3));
                 
             }
         });
