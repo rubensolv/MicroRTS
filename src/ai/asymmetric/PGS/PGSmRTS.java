@@ -75,8 +75,8 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     }
 
     protected void buildPortfolio() {
-        this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new POLightRush(utt));
+        this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new POWorkerRush(utt));
         //this.scripts.add(new EconomyMilitaryRush(utt));
@@ -300,7 +300,8 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
         //controle pelo número de iterações
-        for (int i = 0; i < I; i++) {
+        //for (int i = 0; i < I; i++) {
+        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))){
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo

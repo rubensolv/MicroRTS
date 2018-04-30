@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.GAB.SandBox;
 
+import ai.RandomAI;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.asymmetric.ManagerUnits.IManagerAbstraction;
@@ -57,9 +58,10 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
     //tste
     UnitScriptData currentScriptData;
+    RandomAI rAI ;
 
     public GAB(UnitTypeTable utt) {
-        this(100, 150, new SimpleSqrtEvaluationFunction3(),
+        this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
                 utt,
@@ -67,7 +69,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
     }
 
     public GAB(UnitTypeTable utt, int numUnits, int numManager) {
-        this(100, 150, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+        this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
 
     public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
@@ -83,6 +85,8 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         _unitsAbsAB = new HashSet<>();
         _numUnits = 2;
         _numManager = 2;
+        
+        rAI = new RandomAI(utt);
     }
 
     public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
@@ -98,6 +102,8 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         _unitsAbsAB = new HashSet<>();
         _numUnits = numUnits;
         _numManager = numManager;
+        
+        rAI = new RandomAI(utt);
     }
 
     @Override
@@ -115,7 +121,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
                 //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
                 startNewComputation(player, gs);
-                _pgs.setTimeBudget(95);
+                _pgs.setTimeBudget(100);
                 currentScriptData = _pgs.continueImproveUnitScript(player, gs, currentScriptData);
                 //currentScriptData = _pgs.getUnitScript(player, gs);
             }
@@ -198,6 +204,9 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             updateCurrentScriptData();
         }
         PlayerAction paPGS = _pgs.getFinalAction(currentScriptData);
+        if(_numUnits == 0){
+            return paPGS;
+        }
 
         if ((System.currentTimeMillis() - start) < 90) {
             //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
@@ -216,12 +225,12 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
             //System.out.println("Results AB= "+ _ab.statisticsString());
             //if(_ab.getBestScore() > _pgs.getBestScore()){
-            //if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
+            if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
             //System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
-            return paAB;
-            //}
+                return paAB;
+            }
         }
 
         //System.out.println("Escolhido paPGS");
@@ -239,8 +248,11 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
      */
     protected double playoutAnalise(PlayerAction pa) throws Exception {
 
-        AI ai1 = _pgs.getDefaultScript();
-        AI ai2 = _pgs.getEnemyScript();
+        //AI ai1 = _pgs.getDefaultScript();
+        //AI ai2 = _pgs.getEnemyScript();
+        
+        AI ai1 = rAI;
+        AI ai2 = rAI;
 
         //boolean paUsed = false;
         //System.out.println(pa.toString());

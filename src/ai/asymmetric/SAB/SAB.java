@@ -44,7 +44,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    SSSLimit _pgs = null;
+    SSSLimit _sss = null;
     AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
@@ -77,7 +77,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new SSSLimit(utt);
+        _sss = new SSSLimit(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -92,7 +92,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new SSSLimit(utt);
+        _sss = new SSSLimit(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -116,8 +116,8 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
                 //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
                 startNewComputation(player, gs);
-                _pgs.setTimeBudget(95);
-                currentScriptData = _pgs.continueImproveUnitScript(player, gs, currentScriptData);
+                _sss.setTimeBudget(95);
+                currentScriptData = _sss.continueImproveUnitScript(player, gs, currentScriptData);
                 //currentScriptData = _pgs.getUnitScript(player, gs);
             }
             return new PlayerAction();
@@ -193,20 +193,23 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         long start = System.currentTimeMillis();
 
         if (this.firstTime) {
-            currentScriptData = _pgs.getUnitScript(playerForThisComputation, gs_to_start_from);
+            currentScriptData = _sss.getUnitScript(playerForThisComputation, gs_to_start_from);
             this.firstTime = false;
         } else if (hasNewUnitToImprove()) {
             updateCurrentScriptData();
         }
-        PlayerAction paPGS = _pgs.getFinalAction(currentScriptData);
+        PlayerAction paSSS = _sss.getFinalAction(currentScriptData);
+        if(_numUnits == 0){
+            return paSSS;
+        }
 
         if ((System.currentTimeMillis() - start) < 90) {
             //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
             //aplico o AB
             manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
 
-            _ab.setPlayoutAI(_pgs.getDefaultScript());
-            _ab.setPlayoutAIEnemy(_pgs.getEnemyScript());
+            _ab.setPlayoutAI(_sss.getDefaultScript());
+            _ab.setPlayoutAIEnemy(_sss.getEnemyScript());
             int timeUsed = (int) (System.currentTimeMillis() - start);
             if (timeUsed < 80) {
                 _ab.setTimeBudget(100 - timeUsed);
@@ -227,7 +230,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
         //System.out.println("Escolhido paPGS");
         //currentScriptData = new UnitScriptData(playerForThisComputation);
-        return paPGS;
+        return paSSS;
 
     }
 
@@ -240,8 +243,8 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
      */
     protected double playoutAnalise(PlayerAction pa) throws Exception {
 
-        AI ai1 = _pgs.getDefaultScript();
-        AI ai2 = _pgs.getEnemyScript();
+        AI ai1 = _sss.getDefaultScript();
+        AI ai2 = _sss.getEnemyScript();
 
         //boolean paUsed = false;
         //System.out.println(pa.toString());
@@ -326,7 +329,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
         for (Unit unit : unitsPlayer) {
             if (!unitsComputed.contains(unit)) {
-                currentScriptData.setUnitScript(unit, _pgs.getDefaultScript());
+                currentScriptData.setUnitScript(unit, _sss.getDefaultScript());
             }
         }
     }

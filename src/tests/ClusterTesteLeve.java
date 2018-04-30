@@ -203,7 +203,13 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/32x32/basesWorkers32x32A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/DoubleGame24x24.xml"
+                //"maps/32x32/basesWorkers32x32A.xml"
+                //"maps/BWDistantResources32x32.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                
+                
         ));
         
         UnitTypeTable utt = new UnitTypeTable();
@@ -299,10 +305,11 @@ public class ClusterTesteLeve {
                 new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
          */            
         
-        //best response GA 
-        String bestGA = "57;94;205;"; 
-        //String sc2Nash = "25;15;13;11;21;"; 
-        //String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
+        //best response GA PGS
+        String GA_PGS = "64;288;"; 
+        //best response GA SSS
+        String GA_SSS = "8;216;"; 
+        
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                new AHTNAI(utt),
@@ -316,19 +323,10 @@ public class ClusterTesteLeve {
                new POHeavyRush(utt),
                new PORangedRush(utt),
                new POWorkerRush(utt),
-               //new GAB(utt),
-               //new GAB_ABActionGeneration(utt),
-               //new SAB_oldVersion(utt),
-               //new GAB(utt),
-               //new SSSmRTSScriptChoice(utt, decodeScripts(utt, best), "best")
-               //new PGSSCriptChoice(utt, decodeScripts(utt, best) ""), //PGS com o best response do GA
-               //new GAB_ScriptC(utt, decodeScripts(utt, best), "Bk1"), //GAB com o best response do GA
                
-               //new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Bk2") //PGS com o best response do Nash
-               //new GAB_ScriptC(utt, decodeScripts(utt, sc2Nash), "Bk2")  //GAB com o best response do Nash
+               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "bGA"), //PGS com o melhor GA
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "SSS_GA")
                
-               new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA") //PGS com o melhor GA
-               //new GAB_ScriptC(utt, decodeScripts(utt, bestGA), "bGA")  //GAB com o melhor GA
                 
         ));
 

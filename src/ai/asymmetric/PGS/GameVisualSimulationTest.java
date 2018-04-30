@@ -17,6 +17,7 @@ import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
 import ai.abstraction.WorkerRush;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
@@ -73,7 +74,7 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
@@ -85,6 +86,10 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
+       //combate tests 
+       PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/melee2x2Mixed_map8x8.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/melee4x4light2.xml", utt);
 
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
@@ -112,15 +117,16 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PortfolioAI(utt);
         //AI ai1 = new GAB(utt);
         //AI ai1 = new POLightRush(utt);
-        //AI ai1 = new WorkerRush(utt);
+        AI ai1 = new WorkerRush(utt);
         //AI ai1 = new PGSmRTS_SandBox(utt);
         //AI ai1 = new PGSmRTS(utt); 
         //AI ai1 = new GAB(utt);
-        //AI ai2 = new IDABCD(utt);
+        //AI ai1 = new IDABCD(utt);
         //AI ai1 = new StrategyTactics(utt);
-        AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
+        //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         
-        AI ai2 = new SAB(utt);
+        AI ai2 = new NOKDPS(utt);
+        //AI ai2 = new GAB(utt);
         //AI ai2 = new GAB(utt);
         //AI ai2 = new AlphaBetaSearchAbstract(utt);
         //AI ai2 = new GAB_SandBox_Parcial_State(utt);
@@ -163,7 +169,9 @@ public class GameVisualSimulationTest {
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                //System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                if( (System.currentTimeMillis() - startTime) >0){
+                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                }
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);
@@ -193,7 +201,7 @@ public class GameVisualSimulationTest {
             }
             */
         } while (!gameover && gs.getTime() < MAXCYCLES);
-
+        System.out.println("Winner " + Integer.toString(gs.winner()));
         System.out.println("Game Over");
     }
     

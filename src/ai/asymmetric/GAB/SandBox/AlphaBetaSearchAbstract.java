@@ -7,6 +7,7 @@ package ai.asymmetric.GAB.SandBox;
 
 import ai.aiSelection.AlphaBetaSearch.*;
 import ai.abstraction.partialobservability.POLightRush;
+import ai.abstraction.partialobservability.POWorkerRush;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.MoveOrderMethod;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.PlayerToMove;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.Players;
@@ -25,6 +26,7 @@ import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -70,9 +72,9 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
     public AlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
-        _params.setPlayerModel(Players.Player_One.codigo(), new POLightRush(utt));
+        _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
         _params.setPlayerModel(Players.Player_Two.codigo(), new POLightRush(utt));
-        _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
+        _params.setSimScripts(new POWorkerRush(utt), new POWorkerRush(utt));
 
         ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
@@ -81,9 +83,10 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             {
                 // add(0, new POLightRush(utt));
                 // add(1, new POWorkerRush(utt));
-                add(0, scriptsCompleteSet.get(217));
-                add(1, scriptsCompleteSet.get(2));
-                add(1, scriptsCompleteSet.get(3));
+                add(0, scriptsCompleteSet.get(0));
+                add(1, scriptsCompleteSet.get(1));
+                //add(2, scriptsCompleteSet.get(2));
+                //add(3, scriptsCompleteSet.get(3));
                 
             }
         });
@@ -529,7 +532,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             orderedMoves[0] = new ArrayList();
             // generate the moves into that vector
             PlayerAction pTemp = _params.getPlayerModel(playerToMove.codigo()).getAction(playerToMove.codigo(), state);
-            orderedMoves[0] = getActions(pTemp, moves, playerToMove);
+            orderedMoves[0] = getActions(pTemp, moves, playerToMove, state);
             return;
         }
 
@@ -545,7 +548,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
                 int indexOrd = countElemArray(orderedMoves);
                 orderedMoves[indexOrd] = new ArrayList();
                 PlayerAction pTemp = aiT.getAction(playerToMove.codigo(), state);
-                orderedMoves[indexOrd] = getActions(pTemp, moves, playerToMove);
+                orderedMoves[indexOrd] = getActions(pTemp, moves, playerToMove, state);
                 stopSearch();
             }
 
@@ -615,7 +618,8 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         return qtdMoves;
     }
 
-    private ArrayList getActions(PlayerAction pTemp, MoveArrayAbstract moves, Players playerToMove) {
+    private ArrayList getActions(PlayerAction pTemp, MoveArrayAbstract moves, Players playerToMove, GameState state) throws Exception {
+        HashMap<String, PlayerAction> actions = new HashMap<>();
         ArrayList<Action> acts = new ArrayList<>();
         for (Pair<Unit, UnitAction> choice : pTemp.getActions()) {
             Integer idIndex;
@@ -624,7 +628,22 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             } else {
                 idIndex = lKp.InsertUnitIndex(choice.m_a.getID());
             }
-            Action act = new Action(idIndex, playerToMove.codigo(), choice.m_b.getType(), choice.m_b);
+            Action act;
+            if(!_unitsAbsAB.contains(choice.m_a)){
+                 act = new Action(idIndex, playerToMove.codigo(), choice.m_b.getType(), choice.m_b);
+            }else{
+                 //take unit script action
+                 PlayerAction pAIUnit;
+                 AI ai = currentScriptData.getAIUnit(choice.m_a);
+                 if(actions.containsKey(ai.toString())){
+                    pAIUnit = actions.get(ai.toString());
+                 }else{
+                     pAIUnit = ai.getAction(playerToMove.codigo(), state);
+                     actions.put(ai.toString(), pAIUnit);
+                 }
+                 UnitAction actAbst = pAIUnit.getAction(choice.m_a);
+                 act = new Action(idIndex, playerToMove.codigo(), actAbst.getType(), actAbst);
+            }
             //moves.add(idIndex, act);
             acts.add(act);
         }
@@ -637,10 +656,11 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         PlayerAction act = new PlayerAction();
         for (Action action : movesToAplly) {
             if (lKp.getOrigIDUnit(action.getUnit()) != null) {
-                act.addUnitAction(child.getUnit(lKp.getOrigIDUnit(action.getUnit())), action.getUnitAction());
-            } else {
-                System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.applyActionState() Erro ao encontrar unidade");
-            }
+                Unit unt = child.getUnit(lKp.getOrigIDUnit(action.getUnit()));
+                if(unt != null){        
+                    act.addUnitAction(unt, action.getUnitAction());
+                }
+            } 
         }
         try {
             child.issue(act);

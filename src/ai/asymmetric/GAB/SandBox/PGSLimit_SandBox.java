@@ -33,7 +33,7 @@ import rts.units.UnitTypeTable;
  */
 public class PGSLimit_SandBox extends AIWithComputationBudget implements InterruptibleAI{
     
-    int LOOKAHEAD = 150;
+    int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
     int R = 0;  // number of times to improve with respect to the response fo the other player
     EvaluationFunction evaluation = null;
@@ -53,7 +53,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
     double _bestScore;
 
     public PGSLimit_SandBox(UnitTypeTable utt) {
-        this(100, -1, 150, 2, 2, 
+        this(100, -1, 200, 1, 1, 
              new SimpleSqrtEvaluationFunction3(),
              //new SimpleSqrtEvaluationFunction2(),
              //new LanchesterEvaluationFunction(),
@@ -380,7 +380,6 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
                     if(scoreTemp > bestScore){
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
-                        
                     }
                     if( (counterIterations == 0 && scripts.get(0)==ai) || scoreTemp > _bestScore  ){
                         _bestScore = bestScore;
