@@ -212,9 +212,11 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
             //aplico o AB
             manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
-
+            
             _ab.setPlayoutAI(_pgs.getDefaultScript());
             _ab.setPlayoutAIEnemy(_pgs.getEnemyScript());
+            _ab.setPlayerModel((1-playerForThisComputation), _pgs.getEnemyScript().clone());
+            
             int timeUsed = (int) (System.currentTimeMillis() - start);
             if (timeUsed < 80) {
                 _ab.setTimeBudget(100 - timeUsed);
@@ -223,14 +225,15 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             }
             //System.out.println("----------------------------------------" + _unitsAbsAB);
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
+            //System.out.println(_ab.toString());
             //System.out.println("Results AB= "+ _ab.statisticsString());
             //if(_ab.getBestScore() > _pgs.getBestScore()){
-            if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
+            //if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
             //System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
                 return paAB;
-            }
+            //}
         }
 
         //System.out.println("Escolhido paPGS");

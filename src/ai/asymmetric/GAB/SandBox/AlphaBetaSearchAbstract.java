@@ -72,7 +72,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
     public AlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
-        _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
+        _params.setPlayerModel(Players.Player_One.codigo(), new POLightRush(utt));
         _params.setPlayerModel(Players.Player_Two.codigo(), new POLightRush(utt));
         _params.setSimScripts(new POWorkerRush(utt), new POWorkerRush(utt));
 
@@ -85,8 +85,6 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
                 // add(1, new POWorkerRush(utt));
                 add(0, scriptsCompleteSet.get(0));
                 add(1, scriptsCompleteSet.get(1));
-                //add(2, scriptsCompleteSet.get(2));
-                //add(3, scriptsCompleteSet.get(3));
                 
             }
         });
@@ -829,5 +827,10 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         computeDuringOneGameFrame();
         return getBestActionSoFar();
     }
+    
+    public void setPlayerModel(int player, AI ai){
+        _params.setPlayerModel(player, ai);
+    }
+            
 
 }

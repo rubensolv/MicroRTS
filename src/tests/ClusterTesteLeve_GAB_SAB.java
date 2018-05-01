@@ -361,7 +361,7 @@ public class ClusterTesteLeve_GAB_SAB {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
             
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 30));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;

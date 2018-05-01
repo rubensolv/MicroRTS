@@ -226,7 +226,17 @@ public class AlphaBetaSearchParameters {
             _desc.get(1).add(String.valueOf(getMaxChildren()));        
             _desc.get(1).add(this.getMoveOrdering().name());
             _desc.get(1).add(getPlayerToMoveMethod().name());
-            _desc.get(1).add("");
+            if(this._playerModel[0] != null){
+            _desc.get(1).add(this._playerModel[0].toString());
+            }else{
+                _desc.get(1).add("-");
+            }
+            if(this._playerModel[1] != null){
+            _desc.get(1).add(this._playerModel[1].toString());
+            }else{
+                _desc.get(1).add("-");
+            }
+            
         }
         
         return _desc;
