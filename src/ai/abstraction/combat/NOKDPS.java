@@ -147,8 +147,8 @@ public class NOKDPS extends AbstractionLayerAI {
                         foundAction = true;
                     }
                 } else if ((move.getType() == UnitAction.TYPE_MOVE)) {
-                    int destX = ourUnit.getX() + move.getDirection();
-                    int destY = ourUnit.getY() + move.getDirection();
+                    int destX = move.getLocationX() + move.getDirection();
+                    int destY = move.getLocationY() + move.getDirection();
 
                     int dist = getDistanceSqToUnit(destX, destY, closestUnit.getX(), closestUnit.getY());
                     if (dist < closestMoveDist) {

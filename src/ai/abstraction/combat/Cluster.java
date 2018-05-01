@@ -26,7 +26,7 @@ import rts.units.*;
  *
  * @author Rubens
  */
-public class NOKDPS extends AbstractionLayerAI {
+public class Cluster extends AbstractionLayerAI {
 
     Random r = new Random();
     protected UnitTypeTable utt;
@@ -37,21 +37,20 @@ public class NOKDPS extends AbstractionLayerAI {
     int playerForComputation;
     GameState gs_to_Compute;
     PlayerAction playerActions;
+    
+    private int _cenX, _cenY;
 
     /*----------------------------------------------------------------------
- | Attack HighestDPS Player No Overkill
+ | Cluster Player
  |----------------------------------------------------------------------
  | Chooses an action with following priority:
- | 1) If it can attack, ATTACK highest DPS/HP enemy unit to overkill
- | 2) If it cannot attack:
- |    a) If it is in range to attack an enemy, WAIT until attack
- |    b) If it is not in range of enemy, MOVE towards closest
+ | 1) Move to centroid of our unit cluster
  `----------------------------------------------------------------------*/
-    public NOKDPS(UnitTypeTable a_utt) {
+    public Cluster(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
 
-    public NOKDPS(UnitTypeTable a_utt, PathFinding a_pf) {
+    public Cluster(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
@@ -72,7 +71,7 @@ public class NOKDPS extends AbstractionLayerAI {
 
     @Override
     public AI clone() {
-        return new NOKDPS(utt, pf);
+        return new Cluster(utt, pf);
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -85,6 +84,8 @@ public class NOKDPS extends AbstractionLayerAI {
         playerForComputation = player;
         gs_to_Compute = gs;
         playerActions = new PlayerAction();
+        _cenX = 0;
+        _cenY = 0;
 
         Player p = gs.getPlayer(player);
 //        System.out.println("LightRushAI for player " + player + " (cycle " + gs.getTime() + ")");
@@ -103,77 +104,84 @@ public class NOKDPS extends AbstractionLayerAI {
         // behavior of workers:
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canHarvest
+                    && gs.getActionAssignment(u) == null
                     && u.getPlayer() == player) {
                 combatUnits.add(u);
             }
         }
-        NOKDPSBehavior(combatUnits, p, pgs);
+        ClusterBehavior(combatUnits, p, pgs);
         //workersBehavior(workers, p, pgs);
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
-        //return translateActions(player, gs);
+        //return translateActions(player, gs);        
         return playerActions;
     }
+    
+    private void CalcCentroide(ArrayList<Unit> unidades) {
+        int x = 0, y = 0;
+        for (Unit un : unidades) {
+            x += un.getX();
+            y += un.getY();
+        }
+        x = x / unidades.size();
+        y = y / unidades.size();
+        _cenX = x;
+        _cenY = y;
+    }
 
-    protected void NOKDPSBehavior(List<Unit> units, Player p, PhysicalGameState pgs) {
+    protected void ClusterBehavior(List<Unit> units, Player p, PhysicalGameState pgs) {
         int enemyID = getEnemy(p.getID());
-        HashMap<Unit, Integer> hpRemaining = new HashMap<>();
 
-        for (Unit uEnemy : pgs.getUnits()) {
-            if ((uEnemy.getType() != barracksType) && (uEnemy.getType() != baseType)
-                    && uEnemy.getPlayer() == enemyID) {
-                hpRemaining.put(uEnemy, uEnemy.getHitPoints());
+        // compute the centroid of our unit cluster
+        ArrayList<Unit> myUnits = new ArrayList<>();
+
+        for (Unit uUnit : pgs.getUnits()) {
+            if ((uUnit.getType() != barracksType) && (uUnit.getType() != baseType)
+                    && uUnit.getPlayer() == p.getID()) {
+                myUnits.add(uUnit);
             }
         }
-
+        CalcCentroide(myUnits);
+        
         for (Unit unit : units) {
             boolean foundAction = false;
-            UnitAction actionMoveIndex = null;
             UnitAction closestMoveIndex = null;
             double actionHighestDPS = 0;
             int closestMoveDist = Integer.MAX_VALUE;
+            
 
             Unit ourUnit = unit;
-            Unit closestUnit = getClosestEnemyUnit(ourUnit, pgs);
+            List<UnitAction> actionsUnit = getUnitActions(ourUnit);
+            for (UnitAction move : actionsUnit) {
+                 if ((move.getType() == UnitAction.TYPE_MOVE)) {
 
-            for (UnitAction move : getUnitActions(ourUnit)) {
-                if ((move.getType() == UnitAction.TYPE_ATTACK_LOCATION) && (getHPRemaining(hpRemaining, move) > 0)) {
-                    Unit target = getEnemyByPosition(hpRemaining, move);
-                    double dpsHPValue = (dpf(target) / getHPRemaining(hpRemaining, move));
+                    int dist = getDistanceSqToUnit(move.getLocationX()+move.getDirection(), 
+                                                   move.getLocationY()+move.getDirection(), 
+                                                   _cenX, _cenY);
 
-                    if (dpsHPValue > actionHighestDPS) {
-                        actionHighestDPS = dpsHPValue;
-                        actionMoveIndex = move;
-                        foundAction = true;
-                    }
-                } else if ((move.getType() == UnitAction.TYPE_MOVE)) {
-                    int destX = ourUnit.getX() + move.getDirection();
-                    int destY = ourUnit.getY() + move.getDirection();
-
-                    int dist = getDistanceSqToUnit(destX, destY, closestUnit.getX(), closestUnit.getY());
                     if (dist < closestMoveDist) {
                         closestMoveDist = dist;
                         closestMoveIndex = move;
+                        foundAction = true;
                     }
                 }
             }
-            UnitAction theMove;
+            // the move we will be returning
+            UnitAction bestMoveIndex = null;
+
             if (foundAction) {
-                theMove = actionMoveIndex;
+                bestMoveIndex = closestMoveIndex;
             } else {
-                theMove = closestMoveIndex;
-            }
-            if (theMove != null) {
-                if (theMove.getType() == UnitAction.TYPE_ATTACK_LOCATION) {
-                    Unit enemyUnit = getEnemyByPosition(hpRemaining, theMove);
-                    int valueHP = hpRemaining.get(enemyUnit);
-                    hpRemaining.put(enemyUnit, valueHP - ourUnit.getMaxDamage());
+                if(!actionsUnit.isEmpty()){
+                    bestMoveIndex = actionsUnit.get(0);
                 }
-            } else {
-                theMove = new UnitAction(UnitAction.TYPE_NONE, 10);
             }
 
-            playerActions.addUnitAction(ourUnit, theMove);
+            if (bestMoveIndex == null) {
+                bestMoveIndex = new UnitAction(UnitAction.TYPE_NONE, 10);
+            }
+
+            playerActions.addUnitAction(ourUnit, bestMoveIndex);
         }
     }
 
@@ -184,36 +192,53 @@ public class NOKDPS extends AbstractionLayerAI {
      * @return
      */
     private List<UnitAction> getUnitActions(Unit ourUnit) {
-        HashSet<UnitAction> actions = new HashSet<>();
-        //attack action : attack unit more close
-        Unit enemy = getClosestEnemyUnit(ourUnit, gs_to_Compute.getPhysicalGameState());
-        UnitAction t = new Attack(ourUnit, enemy, pf).execute(gs_to_Compute);
-        if (t != null) {
-            actions.add(t);
-        } else {
-           UnitAction t2 = new Move(ourUnit,enemy.getX(),enemy.getY(), pf).execute(gs_to_Compute);
-           if(t2!= null){
-               actions.add(t2);
-           }
+        ArrayList<UnitAction> ActionsT = new ArrayList<>();
+        
+        UnitAction t2 = new Move(ourUnit,_cenX,_cenY, pf).execute(gs_to_Compute);
+        if(t2!= null){
+            ActionsT.add(t2);
         }
-
-        //actions.addAll(ourUnit.getUnitActions(gs_to_Compute));
-        return new ArrayList<>(actions);
+        t2 = new Move(ourUnit, ourUnit.getX()+1,ourUnit.getY(), pf).execute(gs_to_Compute);
+        if(t2!= null){
+            ActionsT.add(t2);
+        }
+        t2 = new Move(ourUnit, ourUnit.getX(),ourUnit.getY()+1, pf).execute(gs_to_Compute);
+        if(t2!= null){
+            ActionsT.add(t2);
+        }
+        t2 = new Move(ourUnit, ourUnit.getX()+1,ourUnit.getY()+1, pf).execute(gs_to_Compute);
+        if(t2!= null){
+            ActionsT.add(t2);
+        }
+        t2 = new Move(ourUnit, ourUnit.getX()-1,ourUnit.getY(), pf).execute(gs_to_Compute);
+        if(t2!= null){
+            ActionsT.add(t2);
+        }
+        t2 = new Move(ourUnit, ourUnit.getX(),ourUnit.getY()-1, pf).execute(gs_to_Compute);
+        if(t2!= null){
+            ActionsT.add(t2);
+        }
+        t2 = new Move(ourUnit, ourUnit.getX()-1,ourUnit.getY()-1, pf).execute(gs_to_Compute);
+        if(t2!= null){
+            ActionsT.add(t2);
+        }
+        
+        return ActionsT;
     }
 
-    private Unit getClosestEnemyUnit(Unit allyUnit, PhysicalGameState pgs) {
-        Unit closestEnemy = null;
+    private Unit getClosestUnit(Unit allyUnit, PhysicalGameState pgs) {
+        Unit closestAlly = null;
         int closestDistance = 0;
         for (Unit u2 : pgs.getUnits()) {
-            if (u2.getPlayer() >= 0 && u2.getPlayer() != playerForComputation) {
+            if (u2.getPlayer() >= 0 && u2.getPlayer() == playerForComputation && allyUnit != u2) {
                 int d = Math.abs(u2.getX() - allyUnit.getX()) + Math.abs(u2.getY() - allyUnit.getY());
-                if (closestEnemy == null || d < closestDistance) {
-                    closestEnemy = u2;
+                if (closestAlly == null || d < closestDistance) {
+                    closestAlly = u2;
                     closestDistance = d;
                 }
             }
         }
-        return closestEnemy;
+        return closestAlly;
     }
 
     protected int getEnemy(int playerID) {
@@ -347,8 +372,8 @@ public class NOKDPS extends AbstractionLayerAI {
         return parameters;
     }
 
-    private int getHPRemaining(HashMap<Unit, Integer> hpRemaining, UnitAction move) {
-        for (Unit un : hpRemaining.keySet()) {
+    private int getHPRemaining(ArrayList<Unit> units, UnitAction move) {
+        for (Unit un : units) {
             if (un.getX() == move.getLocationX() && un.getY() == move.getLocationY()) {
                 return un.getHitPoints();
             }
@@ -357,8 +382,8 @@ public class NOKDPS extends AbstractionLayerAI {
         return 0;
     }
 
-    private Unit getEnemyByPosition(HashMap<Unit, Integer> hpRemaining, UnitAction move) {
-        for (Unit un : hpRemaining.keySet()) {
+    private Unit getEnemyByPosition(ArrayList<Unit> units, UnitAction move) {
+        for (Unit un : units) {
             if (un.getX() == move.getLocationX() && un.getY() == move.getLocationY()) {
                 return un;
             }
@@ -374,6 +399,28 @@ public class NOKDPS extends AbstractionLayerAI {
     private int getDistanceSqToUnit(int pXinicial, int pYinicial, int pXfinal, int pYfinal) {
         return ((pXinicial - pXfinal) * (pXinicial - pXfinal))
                 + ((pYinicial - pYfinal) * (pYinicial - pYfinal));
+    }
+
+    private Unit getClosestEnemyUnit(Unit allyUnit, PhysicalGameState pgs) {
+        Unit closestEnemy = null;
+        int closestDistance = 0;
+        for (Unit u2 : pgs.getUnits()) {
+            if (u2.getPlayer() >= 0 && u2.getPlayer() != playerForComputation) {
+                int d = Math.abs(u2.getX() - allyUnit.getX()) + Math.abs(u2.getY() - allyUnit.getY());
+                if (closestEnemy == null || d < closestDistance) {
+                    closestEnemy = u2;
+                    closestDistance = d;
+                }
+            }
+        }
+        return closestEnemy;
+    }
+
+    private boolean CanAttackTarget(Unit ourUnit, Unit closestUnit) {
+        int dx = closestUnit.getX() - ourUnit.getX();
+        int dy = closestUnit.getY() - ourUnit.getY();
+        double d = Math.sqrt(dx * dx + dy * dy);
+        return d <= ourUnit.getAttackRange();
     }
 
 }
