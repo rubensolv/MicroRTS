@@ -31,6 +31,7 @@ import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.GAB.SandBox.GAB_SandBox_Parcial_State;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
 import ai.asymmetric.SAB.SAB;
+import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
@@ -84,12 +85,12 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //testes GAB
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);  
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
        //combate tests 
-       PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/melee2x2Mixed_map8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/melee4x4light2.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/ClusterTestMap_map8x8.xml", utt);
@@ -125,11 +126,13 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PGSmRTS(utt); 
         //AI ai1 = new GAB(utt);
         //AI ai1 = new IDABCD(utt);
-        AI ai1 = new StrategyTactics(utt);
+        //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
+        AI ai1 = new SSSmRTS(utt);
         
+        AI ai2 = new SAB(utt);
         //AI ai2 = new Cluster(utt);
-        AI ai2 = new KitterDPS(utt);
+        //AI ai2 = new KitterDPS(utt);
         //AI ai2 = new NOKDPS(utt);
         //AI ai2 = new GAB(utt);
         //AI ai2 = new GAB(utt);
@@ -174,9 +177,9 @@ public class GameVisualSimulationTest {
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-               // if( (System.currentTimeMillis() - startTime) >0){
-               //    System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
-               // }
+                if( (System.currentTimeMillis() - startTime) >0){
+                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                }
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);

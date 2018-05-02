@@ -96,7 +96,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     
     protected void evalPortfolio(int heightMap){
         if(heightMap <= 16 && !portfolioHasWorkerRush()){
-            this.scripts.add(new POWorkerRush(utt));
+            //this.scripts.add(new POWorkerRush(utt));
         }
     }
     

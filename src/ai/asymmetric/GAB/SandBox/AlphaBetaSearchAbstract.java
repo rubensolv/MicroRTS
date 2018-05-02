@@ -74,7 +74,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         _params.setTimeLimit(time);
         _params.setPlayerModel(Players.Player_One.codigo(), new POLightRush(utt));
         _params.setPlayerModel(Players.Player_Two.codigo(), new POLightRush(utt));
-        _params.setSimScripts(new POWorkerRush(utt), new POWorkerRush(utt));
+        _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
 
         ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();

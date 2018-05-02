@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.SAB;
 
+import ai.RandomAI;
 import ai.asymmetric.GAB.SandBox.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
@@ -58,9 +59,10 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
     //tste
     UnitScriptData currentScriptData;
+    RandomAI rAI ;
 
     public SAB(UnitTypeTable utt) {
-        this(100, 150, new SimpleSqrtEvaluationFunction3(),
+        this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
                 utt,
@@ -68,7 +70,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     }
 
     public SAB(UnitTypeTable utt, int numUnits, int numManager) {
-        this(100, 150, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+        this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
 
     public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
@@ -116,7 +118,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
                 //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
                 startNewComputation(player, gs);
-                _sss.setTimeBudget(95);
+                _sss.setTimeBudget(100);
                 currentScriptData = _sss.continueImproveUnitScript(player, gs, currentScriptData);
                 //currentScriptData = _pgs.getUnitScript(player, gs);
             }
@@ -154,7 +156,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
                     manager = new ManagerMoreDPS(playerID, numUnits);
                     break;
                 default:
-                    System.out.println("ai.asymmetric.GAB.GAB_ABActionGeneration.startManager() Erro na escolha!");
+                    System.out.println("ai.asymmetric.SAB.SAB.startManager() Erro na escolha!");
             }
         }
     }
@@ -208,8 +210,10 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             //aplico o AB
             manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
 
-            _ab.setPlayoutAI(_sss.getDefaultScript());
-            _ab.setPlayoutAIEnemy(_sss.getEnemyScript());
+            _ab.setPlayoutAI(_sss.getDefaultScript().clone());
+            _ab.setPlayoutAIEnemy(_sss.getEnemyScript().clone());
+            _ab.setPlayerModel((1-playerForThisComputation), _sss.getEnemyScript().clone());
+            
             int timeUsed = (int) (System.currentTimeMillis() - start);
             if (timeUsed < 80) {
                 _ab.setTimeBudget(100 - timeUsed);
@@ -243,8 +247,11 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
      */
     protected double playoutAnalise(PlayerAction pa) throws Exception {
 
-        AI ai1 = _sss.getDefaultScript();
-        AI ai2 = _sss.getEnemyScript();
+        //AI ai1 = _sss.getDefaultScript();
+        //AI ai2 = _sss.getEnemyScript();
+        
+        AI ai1 = rAI;
+        AI ai2 = rAI;
 
         //boolean paUsed = false;
         //System.out.println(pa.toString());
