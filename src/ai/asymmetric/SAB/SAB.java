@@ -84,8 +84,9 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
-        _numUnits = 2;
+        _numUnits = 0;
         _numManager = 2;
+        rAI = new RandomAI(utt);
     }
 
     public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
@@ -101,6 +102,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         _unitsAbsAB = new HashSet<>();
         _numUnits = numUnits;
         _numManager = numManager;
+        rAI = new RandomAI(utt);
     }
 
     @Override
@@ -198,7 +200,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             currentScriptData = _sss.getUnitScript(playerForThisComputation, gs_to_start_from);
             this.firstTime = false;
         } else if (hasNewUnitToImprove()) {
-            updateCurrentScriptData();
+            currentScriptData = _sss.getUnitScript(playerForThisComputation, gs_to_start_from);
         }
         PlayerAction paSSS = _sss.getFinalAction(currentScriptData);
         if(_numUnits == 0){
@@ -224,11 +226,11 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
             //System.out.println("Results AB= "+ _ab.statisticsString());
             //if(_ab.getBestScore() > _pgs.getBestScore()){
-            //if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
+            //if(playoutAnalise(paAB)> playoutAnalise(paSSS)){
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
             //System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
-            return paAB;
+                return paAB;
             //}
         }
 

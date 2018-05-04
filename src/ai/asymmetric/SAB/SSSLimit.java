@@ -155,7 +155,9 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
     }
 
     public UnitScriptData continueImproveUnitScript(int player, GameState gs, UnitScriptData currentScriptData) throws Exception {
-        startNewComputation(player, gs);
+        GameState gs2 = gs.clone();
+        gs2.cycle();
+        startNewComputation(player, gs2);
 
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);

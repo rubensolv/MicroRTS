@@ -77,7 +77,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                // add(0, new POLightRush(utt));
                // add(1, new POWorkerRush(utt));
                 add(0, scriptsCompleteSet.get(0));
-                //add(1, scriptsCompleteSet.get(1));
+                add(1, scriptsCompleteSet.get(1));
+                add(2, scriptsCompleteSet.get(2));
+                add(3, scriptsCompleteSet.get(3));
             }
         });
         
@@ -156,7 +158,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         // update statistics
         _results.setNodesExpanded(_results.getNodesExpanded() + 1);
         if (searchTimeOut()) {
-            System.out.println("Estou dando searchTimeOut");
+            //System.out.println("Estou dando searchTimeOut");
             throw new Exception();
         }
         if (terminalState(state, depth)) {
@@ -318,7 +320,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             }
 
         }
-        _results.print(); // remover
+        //results.print(); // remover
         return val;
     }
 

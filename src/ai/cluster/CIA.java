@@ -3,170 +3,97 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.asymmetric.GAB.SandBox;
+package ai.cluster;
 
-import ai.RandomAI;
+import Standard.CombinedEvaluation;
+import Standard.ReducedGameState;
+import ai.RandomBiasedAI;
+import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
-import ai.asymmetric.ManagerUnits.IManagerAbstraction;
-import ai.asymmetric.ManagerUnits.ManagerClosest;
-import ai.asymmetric.ManagerUnits.ManagerClosestEnemy;
-import ai.asymmetric.ManagerUnits.ManagerFartherEnemy;
-import ai.asymmetric.ManagerUnits.ManagerFather;
-import ai.asymmetric.ManagerUnits.ManagerLessDPS;
-import ai.asymmetric.ManagerUnits.ManagerLessLife;
-import ai.asymmetric.ManagerUnits.ManagerMoreDPS;
-import ai.asymmetric.ManagerUnits.ManagerMoreLife;
-import ai.asymmetric.ManagerUnits.ManagerRandom;
-import ai.asymmetric.common.UnitScriptData;
+import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
+import ai.cluster.core.hdbscanstar.HDBSCANStarObject;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.InterruptibleAI;
 import ai.core.ParameterSpecification;
 import ai.evaluation.EvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
+import ai.mcts.naivemcts.NaiveMCTS;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import rts.GameState;
+import rts.PhysicalGameState;
 import rts.PlayerAction;
+import rts.ResourceUsage;
 import rts.UnitAction;
 import rts.units.Unit;
+import rts.units.UnitType;
 import rts.units.UnitTypeTable;
 import util.Pair;
 
 /**
+ * Cluster Independent Action (CIA) Use HDBScan* to choose the clusters and
+ * apply in each cluster NaiveMCTS
  *
  * @author rubens
  */
-public class GAB extends AIWithComputationBudget implements InterruptibleAI {
+public class CIA extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    PGSLimit_SandBox _pgs = null;
-    AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
-    int _time;
-    int _max_playouts;
-    HashSet<Unit> _unitsAbsAB;
-    int _numUnits;
-    int _numManager;
-    IManagerAbstraction manager = null;
-    boolean firstTime = true;
+    ArrayList<ArrayList<Unit>> clusters;
+    //AlphaBetaSearch IA1;
+    NaiveMCTS IA1;
 
-    //tste
-    UnitScriptData currentScriptData;
-    RandomAI rAI ;
-
-    public GAB(UnitTypeTable utt) {
+    public CIA(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
-                //new SimpleSqrtEvaluationFunction2(),
-                //new LanchesterEvaluationFunction(),
                 utt,
                 new AStarPathFinding());
     }
 
-    public GAB(UnitTypeTable utt, int numUnits, int numManager) {
-        this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
-    }
-
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public CIA(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
-
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
-        _ab = new AlphaBetaSearchAbstract(utt);
-        _time = time;
-        _max_playouts = max_playouts;
-        _unitsAbsAB = new HashSet<>();
-        _numUnits = 5;
-        _numManager = 0;
-        
-        rAI = new RandomAI(utt);
-    }
-
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
-        super(time, max_playouts);
-
-        evaluation = e;
-        utt = a_utt;
-        pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
-        _ab = new AlphaBetaSearchAbstract(utt);
-        _time = time;
-        _max_playouts = max_playouts;
-        _unitsAbsAB = new HashSet<>();
-        _numUnits = numUnits;
-        _numManager = numManager;
-        
-        rAI = new RandomAI(utt);
+        clusters = new ArrayList<>();
+        //IA1 = new AlphaBetaSearch(utt);
+        IA1 = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
     }
 
     @Override
     public void reset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        clusters.clear();
     }
 
     @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception {
         if (gs.canExecuteAnyAction(player)) {
-            startManager(player, _numUnits);
             startNewComputation(player, gs);
+            computeDuringOneGameFrame();
             return getBestActionSoFar();
         } else {
-            if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
+            if ((gs.getNextChangeTime() - 1) == gs.getTime()) {
                 //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
                 startNewComputation(player, gs);
-                _pgs.setTimeBudget(100);
-                currentScriptData = _pgs.continueImproveUnitScript(player, gs, currentScriptData);
-                //currentScriptData = _pgs.getUnitScript(player, gs);
+                //computeDuringOneGameFrame();
             }
             return new PlayerAction();
         }
     }
 
-    protected void startManager(int playerID, int numUnits) {
-        if (manager == null) {
-            switch (_numManager) {
-                case 0:
-                    manager = new ManagerRandom(playerID, _numUnits);
-                    break;
-                case 1:
-                    manager = new ManagerClosest(playerID, numUnits);
-                    break;
-                case 2:
-                    manager = new ManagerClosestEnemy(playerID, numUnits);
-                    break;
-                case 3:
-                    manager = new ManagerFather(playerID, numUnits);
-                    break;
-                case 4:
-                    manager = new ManagerFartherEnemy(playerID, numUnits);
-                    break;
-                case 5:
-                    manager = new ManagerLessLife(playerID, numUnits);
-                    break;
-                case 6:
-                    manager = new ManagerMoreLife(playerID, numUnits);
-                    break;
-                case 7:
-                    manager = new ManagerLessDPS(playerID, numUnits);
-                case 8:
-                    manager = new ManagerMoreDPS(playerID, numUnits);
-                    break;
-                default:
-                    System.out.println("ai.asymmetric.GAB.GAB_ABActionGeneration.startManager() Erro na escolha!");
-            }
-        }
-    }
-
     @Override
     public AI clone() {
-        return new GAB(_time, _max_playouts, evaluation, utt, pf);
+        return new CIA(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
     }
 
     @Override
@@ -190,109 +117,85 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public void computeDuringOneGameFrame() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        findBestClusters();
+        filterClusters();
+        removeEnemyClusters();
+        groupClustersWithBasesAndBarracks();
+        System.out.println("Total Cluster:" + this.clusters.size());
     }
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
         long start = System.currentTimeMillis();
-
-        if (this.firstTime) {
-            currentScriptData = _pgs.getUnitScript(playerForThisComputation, gs_to_start_from);
-            this.firstTime = false;
-        } else if (hasNewUnitToImprove()) {
-            updateCurrentScriptData();
+        if (clusters.size() == 1) {
+            //NaiveMCTS ns = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
+            IA1.setTimeBudget(100);
+            return IA1.getAction(playerForThisComputation, gs_to_start_from);
         }
-        PlayerAction paPGS = _pgs.getFinalAction(currentScriptData);
-        if(_numUnits == 0){
-            return paPGS;
+        //build temporary states
+        ArrayList<GameState> states = new ArrayList<>();
+        for (ArrayList<Unit> cluster : clusters) {
+            states.add(buildNewState(cluster, gs_to_start_from));
         }
 
-        if ((System.currentTimeMillis() - start) < 90) {
-            //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
-            //aplico o AB
-            manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
-            
-            _ab.setPlayoutAI(_pgs.getDefaultScript());
-            _ab.setPlayoutAIEnemy(_pgs.getEnemyScript());
-            _ab.setPlayerModel((1-playerForThisComputation), _pgs.getEnemyScript().clone());
-            
-            int timeUsed = (int) (System.currentTimeMillis() - start);
-            if (timeUsed < 80) {
-                _ab.setTimeBudget(100 - timeUsed);
-            } else {
-                _ab.setTimeBudget(20);
+        //calculate time for each state
+        int timeEach = TIME_BUDGET / clusters.size();
+        //NaiveMCTS ns = new NaiveMCTS(timeEach, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
+        IA1.setTimeBudget(timeEach);
+        //PlayerAction pateste = ns.getAction(playerForThisComputation, gs_to_start_from.clone());
+        //System.out.println("actions="+ pateste.toString());
+        //collect actions
+        HashSet<PlayerAction> actions = new HashSet<>();
+        for (GameState statePT : states) {
+            actions.add(IA1.getAction(playerForThisComputation, statePT));
+        }
+        //join action
+        PlayerAction paFull = new PlayerAction();
+        for (PlayerAction action : actions) {
+            //System.out.println("actions="+ actions.toString());
+            for (Pair<Unit, UnitAction> ua : action.getActions()) {
+                //paFull.addUnitAction(gs_to_start_from.getUnit(ua.m_a.getID()), ua.m_b);
+                // check to see if the action is legal!
+                PhysicalGameState pgs = gs_to_start_from.getPhysicalGameState();
+                ResourceUsage r = ua.m_b.resourceUsage(ua.m_a, pgs);
+                boolean targetOccupied = false;
+                for (int position : r.getPositionsUsed()) {
+                    int y = position / pgs.getWidth();
+                    int x = position % pgs.getWidth();
+                    if (pgs.getTerrain(x, y) != PhysicalGameState.TERRAIN_NONE
+                            || pgs.getUnitAt(x, y) != null) {
+                        targetOccupied = true;
+                        break;
+                    }
+                }
+                if (!targetOccupied && r.consistentWith(paFull.getResourceUsage(), gs_to_start_from)) {
+                    paFull.addUnitAction(gs_to_start_from.getUnit(ua.m_a.getID()), ua.m_b);
+                    paFull.getResourceUsage().merge(r);
+                    
+                        //System.out.println("Frame: " + gs_to_start_from.getTime() + ", extra action: " + ua);
+                    
+                } else {
+                    
+                        //System.out.println("inconsistent"+ ua);
+                }
             }
-            //System.out.println("----------------------------------------" + _unitsAbsAB);
-            PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
-            //System.out.println(_ab.toString());
-            //System.out.println("Results AB= "+ _ab.statisticsString());
-            //if(_ab.getBestScore() > _pgs.getBestScore()){
-            //if(playoutAnalise(paAB)> playoutAnalise(paPGS)){
-            //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
-            //System.out.println("Escolhido paAB");
-            //currentScriptData = new UnitScriptData(playerForThisComputation);
-                return paAB;
-            //}
         }
-
-        //System.out.println("Escolhido paPGS");
-        //currentScriptData = new UnitScriptData(playerForThisComputation);
-        return paPGS;
+        System.out.println("actions=" + paFull.toString());
+        //Thread.sleep(3000);
+        return paFull;
 
     }
 
-    /**
-     * Função que executa um playout de 1 ação e o restante de passos com o
-     * script default escolhido pelo pgs.
-     *
-     * @param pa
-     * @return
-     */
-    protected double playoutAnalise(PlayerAction pa) throws Exception {
-
-        //AI ai1 = _pgs.getDefaultScript();
-        //AI ai2 = _pgs.getEnemyScript();
-        
-        AI ai1 = rAI;
-        AI ai2 = rAI;
-
-        //boolean paUsed = false;
-        //System.out.println(pa.toString());
-        GameState gs2 = gs_to_start_from.clone();
-
-        pa = changePlayer(playerForThisComputation, pa, gs2);
-        gs2.issue(pa);
-
-        ai1.reset();
-        ai2.reset();
-        int timeLimit = gs2.getTime() + _max_playouts;
-        boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
-            if (gs2.isComplete()) {
-                gameover = gs2.cycle();
-            } else {
-
-                PlayerAction pa1 = ai1.getAction(playerForThisComputation, gs2);
-                gs2.issue(pa1);
-
-                PlayerAction pa2 = ai2.getAction(1 - playerForThisComputation, gs2);
-                gs2.issue(pa2);
+    private GameState buildNewState(ArrayList<Unit> cluster, GameState rgs) {
+        GameState rgsRet = rgs.clone();
+        for (Unit un : rgs.getUnits()) {
+            if (!cluster.contains(un) && un.getPlayer() >= 0) {
+                Unit unRem = rgsRet.getUnit(un.getID());
+                rgsRet.removeUnit(unRem);
             }
         }
-        double e = evaluation.evaluate(playerForThisComputation, 1 - playerForThisComputation, gs2);
 
-        return e;
-    }
-
-    protected PlayerAction changePlayer(int player, PlayerAction pa, GameState gs) {
-        PlayerAction paR = new PlayerAction();
-
-        for (Pair<Unit, UnitAction> tmp : pa.getActions()) {
-            paR.addUnitAction(gs.getUnit(tmp.m_a.getID()), tmp.m_b);
-        }
-
-        return paR;
+        return rgsRet;
     }
 
     protected PlayerAction checkIntegrity(int player, PlayerAction pa) {
@@ -310,20 +213,6 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         return pa;
     }
 
-    //verifica se o UnitScriptData contem todas as unidades.
-    private boolean hasNewUnitToImprove() {
-        ArrayList<Unit> unitsPlayer = getUnits(playerForThisComputation);
-        List<Unit> unitsComputed = currentScriptData.getUnits();
-
-        for (Unit unit : unitsPlayer) {
-            if (!unitsComputed.contains(unit)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private ArrayList<Unit> getUnits(int player) {
         ArrayList<Unit> unitsPlayer = new ArrayList<>();
         for (Unit u : gs_to_start_from.getUnits()) {
@@ -334,21 +223,185 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         return unitsPlayer;
     }
 
-    private void updateCurrentScriptData() {
-        ArrayList<Unit> unitsPlayer = getUnits(playerForThisComputation);
-        List<Unit> unitsComputed = currentScriptData.getUnits();
-
-        for (Unit unit : unitsPlayer) {
-            if (!unitsComputed.contains(unit)) {
-                currentScriptData.setUnitScript(unit, _pgs.getDefaultScript());
-            }
-        }
-    }
-
     @Override
     public String toString() {
-        //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "GAB_SandBox_" + _numUnits + "_" + _numManager;
+        return "CIA";
+    }
+
+    private void findBestClusters() {
+        //[total units] [2] (x,y)
+        ArrayList<Unit> unitsCl = getUnits(playerForThisComputation);
+        unitsCl.addAll(getUnits(1 - playerForThisComputation));
+        double[][] dataSet = new double[unitsCl.size()][2];
+        int idx = 0;
+        for (Unit unit : unitsCl) {
+            double[] tempPosition = new double[2];
+            tempPosition[0] = unit.getX();
+            tempPosition[1] = unit.getY();
+            //System.out.println(unit.getX()+","+unit.getY());
+            dataSet[idx] = tempPosition;
+            idx++;
+        }
+
+        try {
+            int[] clusterInt = HDBSCANStarObject.runHDBSCAN(dataSet, 2, 2, true);
+            //System.out.println(Arrays.toString(clusterInt));
+            buildClusters(dataSet, clusterInt, unitsCl);
+        } catch (IOException ex) {
+            Logger.getLogger(CIA.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
+        this.clusters.clear();
+        int control = clusterInt[0];
+        ArrayList<Unit> cluster = new ArrayList<>();
+        for (int i = 0; i < clusterInt.length; i++) {
+            if (control != clusterInt[i]) {
+                this.clusters.add(cluster);
+                control = clusterInt[i];
+                cluster = new ArrayList<>();
+            }
+            double[] tPos = dataSet[i];
+            Unit untC = getUnitByPos(tPos, unitsCl);
+            cluster.add(untC);
+        }
+        this.clusters.add(cluster);
+    }
+
+    private Unit getUnitByPos(double[] tPos, ArrayList<Unit> unitsCl) {
+        for (Unit unit : unitsCl) {
+            if (unit.getX() == tPos[0] && unit.getY() == tPos[1]) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Follow these steps: 1 - Join clusters where you don't have an enemy
+     * present with a enemy cluster. 2 - Remove cluster that haven't our units.
+     */
+    private void filterClusters() {
+        ArrayList<ArrayList<Unit>> newClusters = new ArrayList<>();
+        for (ArrayList<Unit> cluster : clusters) {
+            if (playerCluster(cluster, playerForThisComputation)) {
+                //join with the enemy cluster more closest
+                ArrayList<Unit> newCluster;
+                newCluster = new ArrayList<>();
+                newCluster.addAll(cluster);
+                newCluster.addAll(getEnemyClusterClosest(cluster));
+                newClusters.add(newCluster);
+            } else {
+                //keep this cluster
+                newClusters.add(cluster);
+            }
+        }
+        this.clusters = newClusters;
+    }
+
+    private boolean playerCluster(ArrayList<Unit> cluster, int playerEv) {
+        for (Unit unit : cluster) {
+            if (unit.getPlayer() != playerEv) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Retorna o cluster com distancia euclidiana mais próxima
+     *
+     * @param cluster
+     * @return
+     */
+    private ArrayList<Unit> getEnemyClusterClosest(ArrayList<Unit> cluster) {
+        Unit Enbase = getClosestEnemyUnit(cluster.get(0), gs_to_start_from, cluster.get(0).getPlayer());
+        return getClusterWithUnit(Enbase);
+
+    }
+
+    private Unit getClosestEnemyUnit(Unit allyUnit, GameState state, int player) {
+        PhysicalGameState pgs = state.getPhysicalGameState();
+        Unit closestEnemy = null;
+        int closestDistance = 0;
+        for (Unit u2 : pgs.getUnits()) {
+            if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
+                int d = Math.abs(u2.getX() - allyUnit.getX()) + Math.abs(u2.getY() - allyUnit.getY());
+                if (closestEnemy == null || d < closestDistance) {
+                    closestEnemy = u2;
+                    closestDistance = d;
+                }
+            }
+        }
+        return closestEnemy;
+    }
+
+    private ArrayList<Unit> getClusterWithUnit(Unit Enbase) {
+        for (ArrayList<Unit> cluster : clusters) {
+            for (Unit unit : cluster) {
+                if (unit.getID() == Enbase.getID()) {
+                    return cluster;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Remove clusters just with enemy units
+     */
+    private void removeEnemyClusters() {
+        ArrayList<ArrayList<Unit>> remCluster = new ArrayList<>();
+        for (ArrayList<Unit> cluster : clusters) {
+            if (playerCluster(cluster, (1 - playerForThisComputation))) {
+                remCluster.add(cluster);
+            }
+        }
+        for (ArrayList<Unit> enC : remCluster) {
+            this.clusters.remove(enC);
+        }
+
+    }
+
+    private void groupClustersWithBasesAndBarracks() {
+        ArrayList<ArrayList<Unit>> clusterJoin = new ArrayList<>();
+        
+        for (ArrayList<Unit> cluster : clusters) {
+            if(existBaseBarrack(cluster, playerForThisComputation)){
+                clusterJoin.add(cluster);
+            }
+        }
+        //remove from clusters' variable and make the new cluster
+        ArrayList<Unit> newCluster = new ArrayList<>();
+        for (ArrayList<Unit> rem : clusterJoin) {
+            this.clusters.remove(rem);
+            newCluster.addAll(rem);
+        }
+        
+        //add new cluster in clusters' variable
+        this.clusters.add(newCluster);
+    }
+
+    /**
+     * Analisa se existe bases e barracas referentes ao playerForThisComputation no cluster
+     * @param cluster
+     * @param playerForThisComputation
+     * @return 
+     */
+    private boolean existBaseBarrack(ArrayList<Unit> cluster, int player) {
+        UnitType baseType = utt.getUnitType("Base");
+        UnitType barracksType = utt.getUnitType("Barracks");
+        for (Unit unit : cluster) {
+            
+            if( (unit.getPlayer() == player) && (unit.getType() == baseType || unit.getType() == barracksType)){
+                return true;
+            }
+            
+        }
+        return false;
     }
 
 }

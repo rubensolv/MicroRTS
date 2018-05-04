@@ -204,10 +204,10 @@ public class ClusterTesteLeve {
         
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
-                "maps/DoubleGame24x24.xml"
+                //"maps/DoubleGame24x24.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
                 
                 
         ));
@@ -233,7 +233,7 @@ public class ClusterTesteLeve {
             MAXCYCLES = 7000;
         }
         if (pgs.getHeight() == 64) {
-            MAXCYCLES = 9000;
+            MAXCYCLES = 12000;
         }
 
         /*
@@ -306,9 +306,9 @@ public class ClusterTesteLeve {
          */            
         
         //best response GA PGS
-        String GA_PGS = "64;288;"; 
+        String GA_PGS = "65;184;217;"; 
         //best response GA SSS
-        String GA_SSS = "8;216;"; 
+        String GA_SSS = "25;86;194;281;"; 
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
@@ -417,7 +417,7 @@ public class ClusterTesteLeve {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
             
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 15));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;

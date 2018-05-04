@@ -33,6 +33,7 @@ import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
 import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.cluster.CIA;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.EvaluationFunctionForwarding;
@@ -72,20 +73,20 @@ public class GameVisualSimulationTest {
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
+      //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //testes GAB
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);  
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
@@ -112,7 +113,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RangedDefense(utt);
         //AI ai1 = new EconomyRushBurster(utt);        
         //AI ai1 = new PassiveAI(utt);
-        //AI ai1 = new NaiveMCTS(utt);
+        AI ai1 = new NaiveMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
         //AI ai1 = new PVAI(utt);
         //AI ai1 = new WorkerRushPlusPlus(utt);
@@ -128,9 +129,11 @@ public class GameVisualSimulationTest {
         //AI ai1 = new IDABCD(utt);
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
-        AI ai1 = new SSSmRTS(utt);
+        //AI ai1 = new SSSmRTS(utt);
         
-        AI ai2 = new SAB(utt);
+        AI ai2 = new CIA(utt);
+        //AI ai1 = new PassiveAI();
+        //AI ai2 = new SAB(utt);
         //AI ai2 = new Cluster(utt);
         //AI ai2 = new KitterDPS(utt);
         //AI ai2 = new NOKDPS(utt);
@@ -177,9 +180,9 @@ public class GameVisualSimulationTest {
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                if( (System.currentTimeMillis() - startTime) >0){
-                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
-                }
+                //if( (System.currentTimeMillis() - startTime) >0){
+                   //System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                //}
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);
