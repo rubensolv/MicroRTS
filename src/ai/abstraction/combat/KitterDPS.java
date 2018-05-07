@@ -171,7 +171,7 @@ public class KitterDPS extends AbstractionLayerAI {
                 bestMoveIndex = actionMoveIndex;
             } else {// otherwise use the closest move to the opponent
                 // if we are in attack range of the unit, back up
-                if (CanAttackTarget(closestUnit,ourUnit)) {
+                if (CanAttackTarget(closestUnit, ourUnit)) {
                     bestMoveIndex = furthestMoveIndex;
                 } else {// otherwise get back into the fight
                     bestMoveIndex = closestMoveIndex;
@@ -206,7 +206,7 @@ public class KitterDPS extends AbstractionLayerAI {
             }
         }
         //action return back
-        
+
         if (!ActionsT.isEmpty()) {
             UnitAction t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY() - 1, pf).execute(gs_to_Compute);
             if (t4 != null) {
@@ -215,6 +215,20 @@ public class KitterDPS extends AbstractionLayerAI {
             UnitAction t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY() + 1, pf).execute(gs_to_Compute);
             if (t5 != null) {
                 ActionsT.add(t5);
+            }
+        }
+
+        //add all news attack actions
+        for (Unit unitEn : gs_to_Compute.getUnits()) {
+            if (unitEn.getPlayer() == (1 - playerForComputation)) {
+                //try attack that unit
+                t = new Attack(ourUnit, unitEn, pf).execute(gs_to_Compute);
+                if (t != null) {
+                    if (t.getType() == UnitAction.TYPE_ATTACK_LOCATION) {
+                        ActionsT.add(t);
+                    }
+
+                }
             }
         }
         return ActionsT;

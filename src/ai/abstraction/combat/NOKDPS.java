@@ -191,10 +191,24 @@ public class NOKDPS extends AbstractionLayerAI {
         if (t != null) {
             actions.add(t);
         } else {
-           UnitAction t2 = new Move(ourUnit,enemy.getX(),enemy.getY(), pf).execute(gs_to_Compute);
-           if(t2!= null){
-               actions.add(t2);
-           }
+            UnitAction t2 = new Move(ourUnit, enemy.getX(), enemy.getY(), pf).execute(gs_to_Compute);
+            if (t2 != null) {
+                actions.add(t2);
+            }
+        }
+
+        //add all news attack actions
+        for (Unit unitEn : gs_to_Compute.getUnits()) {
+            if (unitEn.getPlayer() == (1 - playerForComputation)) {
+                //try attack that unit
+                t = new Attack(ourUnit, unitEn, pf).execute(gs_to_Compute);
+                if (t != null) {
+                    if(t.getType() == UnitAction.TYPE_ATTACK_LOCATION){
+                        actions.add(t);    
+                    }
+                    
+                }
+            }
         }
 
         //actions.addAll(ourUnit.getUnitActions(gs_to_Compute));
