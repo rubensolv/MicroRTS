@@ -33,7 +33,10 @@ import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
 import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.cluster.CABA;
+import ai.cluster.CABA_Enemy;
 import ai.cluster.CIA;
+import ai.cluster.CIA_Enemy;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.EvaluationFunctionForwarding;
@@ -73,7 +76,7 @@ public class GameVisualSimulationTest {
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
@@ -91,10 +94,17 @@ public class GameVisualSimulationTest {
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
        //combate tests 
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
+       PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/melee2x2Mixed_map8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/melee4x4light2.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/ClusterTestMap_map8x8.xml", utt);
+       //combat tests CIA
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_map8x8.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/four_goups_Battle_8x8.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/lineBattle8x8.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml", utt);
 
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
@@ -130,8 +140,11 @@ public class GameVisualSimulationTest {
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
-        
-        AI ai2 = new CIA(utt);
+  
+        AI ai2 = new CABA(utt);
+        //AI ai2 = new CABA_Enemy(utt);
+        //AI ai2 = new CIA_Enemy(utt);
+        //AI ai2 = new CIA(utt);
         //AI ai1 = new PassiveAI();
         //AI ai2 = new SAB(utt);
         //AI ai2 = new Cluster(utt);

@@ -5,6 +5,9 @@
  */
 package ai.aiSelection.AlphaBetaSearch;
 
+import ai.abstraction.combat.Cluster;
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.MoveOrderMethod;
@@ -65,9 +68,9 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
-        _params.setPlayerModel(Players.Player_One.codigo(), new POWorkerRush(utt));
-        _params.setPlayerModel(Players.Player_Two.codigo(), new POWorkerRush(utt));
-        _params.setSimScripts(new POLightRush(utt), new POLightRush(utt));
+        _params.setPlayerModel(Players.Player_One.codigo(), new NOKDPS(utt));
+        _params.setPlayerModel(Players.Player_Two.codigo(), new NOKDPS(utt));
+        _params.setSimScripts(new NOKDPS(utt), new NOKDPS(utt));
 
         ScriptsCreator sc = new ScriptsCreator(utt,300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
@@ -76,10 +79,15 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             {
                // add(0, new POLightRush(utt));
                // add(1, new POWorkerRush(utt));
-                add(0, scriptsCompleteSet.get(0));
-                add(1, scriptsCompleteSet.get(1));
-                add(2, scriptsCompleteSet.get(2));
-                add(3, scriptsCompleteSet.get(3));
+                //add(0, scriptsCompleteSet.get(0));
+                //add(1, scriptsCompleteSet.get(1));
+                //add(2, scriptsCompleteSet.get(2));
+                //add(3, scriptsCompleteSet.get(3));
+                
+                //combat settings
+                add(0, new NOKDPS(utt));
+                add(1, new KitterDPS(utt));
+                add(2, new Cluster(utt));
             }
         });
         
@@ -775,5 +783,13 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             
         }
     }
+
+    @Override
+    public void setTimeBudget(int a_tb) {
+        super.setTimeBudget(a_tb); //To change body of generated methods, choose Tools | Templates.
+        this._params.setTimeLimit(a_tb);
+    }
+    
+    
 
 }

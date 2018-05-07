@@ -5,10 +5,7 @@
  */
 package ai.cluster;
 
-import Standard.CombinedEvaluation;
-import Standard.ReducedGameState;
-import ai.RandomBiasedAI;
-import ai.abstraction.partialobservability.POLightRush;
+import ai.abstraction.Attack;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
@@ -19,12 +16,10 @@ import ai.core.InterruptibleAI;
 import ai.core.ParameterSpecification;
 import ai.evaluation.EvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
-import ai.mcts.naivemcts.NaiveMCTS;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import rts.GameState;
@@ -32,18 +27,19 @@ import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.ResourceUsage;
 import rts.UnitAction;
+import rts.UnitActionAssignment;
 import rts.units.Unit;
 import rts.units.UnitType;
 import rts.units.UnitTypeTable;
 import util.Pair;
 
 /**
- * Cluster Independent Action (CIA) Use HDBScan* to choose the clusters and
+ * Cluster Alpha-Beta Action (CABA) Use HDBScan* to choose the clusters and
  * apply in each cluster NaiveMCTS
  *
  * @author rubens
  */
-public class CIA extends AIWithComputationBudget implements InterruptibleAI {
+public class CABA_Enemy extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -51,23 +47,23 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
     ArrayList<ArrayList<Unit>> clusters;
-    //AlphaBetaSearch IA1;
-    NaiveMCTS IA1;
+    AlphaBetaSearch IA1;
+    //NaiveMCTS IA1;
 
-    public CIA(UnitTypeTable utt) {
+    public CABA_Enemy(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 utt,
                 new AStarPathFinding());
     }
 
-    public CIA(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public CABA_Enemy(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
         clusters = new ArrayList<>();
-        //IA1 = new AlphaBetaSearch(utt);
-        IA1 = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
+        IA1 = new AlphaBetaSearch(utt);
+        //IA1 = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
     }
 
     @Override
@@ -93,7 +89,7 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new CIA(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
+        return new CABA_Enemy(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
     }
 
     @Override
@@ -120,8 +116,8 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
         findBestClusters();
         filterClusters();
         removeEnemyClusters();
-        groupClustersWithBasesAndBarracks();
-        System.out.println("Total Cluster:" + this.clusters.size());
+        //groupClustersWithBasesAndBarracks();
+        //System.out.println("Total Cluster:" + this.clusters.size());
     }
 
     @Override
@@ -149,40 +145,10 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
         for (GameState statePT : states) {
             actions.add(IA1.getAction(playerForThisComputation, statePT));
         }
-        //join action
-        PlayerAction paFull = new PlayerAction();
-        for (PlayerAction action : actions) {
-            //System.out.println("actions="+ actions.toString());
-            for (Pair<Unit, UnitAction> ua : action.getActions()) {
-                //paFull.addUnitAction(gs_to_start_from.getUnit(ua.m_a.getID()), ua.m_b);
-                // check to see if the action is legal!
-                PhysicalGameState pgs = gs_to_start_from.getPhysicalGameState();
-                ResourceUsage r = ua.m_b.resourceUsage(ua.m_a, pgs);
-                boolean targetOccupied = false;
-                for (int position : r.getPositionsUsed()) {
-                    int y = position / pgs.getWidth();
-                    int x = position % pgs.getWidth();
-                    if (pgs.getTerrain(x, y) != PhysicalGameState.TERRAIN_NONE
-                            || pgs.getUnitAt(x, y) != null) {
-                        targetOccupied = true;
-                        break;
-                    }
-                }
-                if (!targetOccupied && r.consistentWith(paFull.getResourceUsage(), gs_to_start_from)) {
-                    paFull.addUnitAction(gs_to_start_from.getUnit(ua.m_a.getID()), ua.m_b);
-                    paFull.getResourceUsage().merge(r);
-                    
-                        //System.out.println("Frame: " + gs_to_start_from.getTime() + ", extra action: " + ua);
-                    
-                } else {
-                    
-                        //System.out.println("inconsistent"+ ua);
-                }
-            }
-        }
-        System.out.println("actions=" + paFull.toString());
+
+        //System.out.println("actions=" + paFull.toString());
         //Thread.sleep(3000);
-        return paFull;
+        return joinActions(actions);
 
     }
 
@@ -225,7 +191,7 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public String toString() {
-        return "CIA";
+        return "CABA_Enemy";
     }
 
     private void findBestClusters() {
@@ -248,7 +214,7 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
             //System.out.println(Arrays.toString(clusterInt));
             buildClusters(dataSet, clusterInt, unitsCl);
         } catch (IOException ex) {
-            Logger.getLogger(CIA.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CABA_Enemy.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -291,7 +257,9 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
                 ArrayList<Unit> newCluster;
                 newCluster = new ArrayList<>();
                 newCluster.addAll(cluster);
-                newCluster.addAll(getEnemyClusterClosest(cluster));
+                //get unit more closest 
+                newCluster.add(getEnemyClosestByCentroid(cluster));
+                
                 newClusters.add(newCluster);
             } else {
                 //keep this cluster
@@ -320,6 +288,45 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
         Unit Enbase = getClosestEnemyUnit(cluster.get(0), gs_to_start_from, cluster.get(0).getPlayer());
         return getClusterWithUnit(Enbase);
 
+    }
+    private Unit getEnemyClosestByCentroid(ArrayList<Unit> cluster) {
+        ArrayList<Unit> unidades = new ArrayList<>();
+        for (Unit unit : cluster) {
+            if(unit.getPlayer() == playerForThisComputation){
+                unidades.add(unit);
+            }
+        }
+        //find the centroid
+        int x = 0, y = 0;
+        for (Unit un : unidades) {
+            x += un.getX();
+            y += un.getY();
+        }
+        x = x / unidades.size();
+        y = y / unidades.size();
+        return getEnemyClosest(x, y);
+    }
+    
+    private Unit getEnemyClosest(int xCentroid, int yCentroid) {
+        Unit Enbase = getClosestEnemyUnit(xCentroid, yCentroid, gs_to_start_from, playerForThisComputation);
+        return Enbase;
+
+    }
+    
+     private Unit getClosestEnemyUnit(int xCent, int yCent, GameState state, int player) {
+        PhysicalGameState pgs = state.getPhysicalGameState();
+        Unit closestEnemy = null;
+        int closestDistance = 0;
+        for (Unit u2 : pgs.getUnits()) {
+            if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
+                int d = Math.abs(u2.getX() - xCent) + Math.abs(u2.getY() - yCent);
+                if (closestEnemy == null || d < closestDistance) {
+                    closestEnemy = u2;
+                    closestDistance = d;
+                }
+            }
+        }
+        return closestEnemy;
     }
 
     private Unit getClosestEnemyUnit(Unit allyUnit, GameState state, int player) {
@@ -368,9 +375,9 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
 
     private void groupClustersWithBasesAndBarracks() {
         ArrayList<ArrayList<Unit>> clusterJoin = new ArrayList<>();
-        
+
         for (ArrayList<Unit> cluster : clusters) {
-            if(existBaseBarrack(cluster, playerForThisComputation)){
+            if (existBaseBarrack(cluster, playerForThisComputation)) {
                 clusterJoin.add(cluster);
             }
         }
@@ -380,28 +387,87 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
             this.clusters.remove(rem);
             newCluster.addAll(rem);
         }
-        
+
         //add new cluster in clusters' variable
         this.clusters.add(newCluster);
     }
 
     /**
-     * Analisa se existe bases e barracas referentes ao playerForThisComputation no cluster
+     * Analisa se existe bases e barracas referentes ao playerForThisComputation
+     * no cluster
+     *
      * @param cluster
      * @param playerForThisComputation
-     * @return 
+     * @return
      */
     private boolean existBaseBarrack(ArrayList<Unit> cluster, int player) {
         UnitType baseType = utt.getUnitType("Base");
         UnitType barracksType = utt.getUnitType("Barracks");
         for (Unit unit : cluster) {
-            
-            if( (unit.getPlayer() == player) && (unit.getType() == baseType || unit.getType() == barracksType)){
+
+            if ((unit.getPlayer() == player) && (unit.getType() == baseType || unit.getType() == barracksType)) {
                 return true;
             }
-            
+
         }
         return false;
+    }
+
+    private PlayerAction joinActions(HashSet<PlayerAction> actions) {
+        ResourceUsage base_ru = new ResourceUsage();
+        GameState gs = gs_to_start_from;
+        PhysicalGameState pgs = gs_to_start_from.getPhysicalGameState();
+        //sum the base_ru used
+        for (Unit u : pgs.getUnits()) {
+            UnitActionAssignment uaa = gs.getUnitActions().get(u);
+            if (uaa != null) {
+                ResourceUsage ru = uaa.action.resourceUsage(u, pgs);
+                base_ru.merge(ru);
+            }
+        }
+
+        //join action
+        PlayerAction paFull = new PlayerAction();
+        for (PlayerAction action : actions) {
+            //System.out.println("actions="+ actions.toString());
+            for (Pair<Unit, UnitAction> ua : action.getActions()) {
+                // check to see if the action is legal!
+                ResourceUsage r = ua.m_b.resourceUsage(ua.m_a, pgs);
+                boolean targetOccupied = false;
+                for (int position : r.getPositionsUsed()) {
+                    int y = position / pgs.getWidth();
+                    int x = position % pgs.getWidth();
+                    if (pgs.getTerrain(x, y) != PhysicalGameState.TERRAIN_NONE
+                            || pgs.getUnitAt(x, y) != null) {
+                        targetOccupied = true;
+                        break;
+                    }
+                }
+                if (!targetOccupied && r.consistentWith(paFull.getResourceUsage(), gs_to_start_from)) {
+                    if (base_ru.consistentWith(r, gs)) {
+                        paFull.addUnitAction(gs_to_start_from.getUnit(ua.m_a.getID()), ua.m_b);
+                        paFull.getResourceUsage().merge(r);
+                        base_ru.merge(r);
+                    } else {
+                        Unit t = gs_to_start_from.getUnit(ua.m_a.getID());
+                        UnitAction unt = new Attack(t, getClosestEnemyUnit(t, gs, playerForThisComputation), pf).execute(gs, base_ru);
+                        if (unt != null) {
+                            paFull.addUnitAction(t, unt);
+                            ResourceUsage r2 = unt.resourceUsage(t, pgs);
+                            paFull.getResourceUsage().merge(r2);
+                            base_ru.merge(r2);
+                        }
+                        //System.out.println("new attack move action");
+                    }
+                    //System.out.println("Frame: " + gs_to_start_from.getTime() + ", extra action: " + ua);
+
+                } else {
+
+                    //System.out.println("inconsistent"+ ua);
+                }
+            }
+        }
+        return paFull;
     }
 
 }

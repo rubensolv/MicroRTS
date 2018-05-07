@@ -72,7 +72,7 @@ import util.XMLWriter;
  *
  * @author Rubens
  */
-public class ClusterTesteLeve {
+public class ClusterTesteLeve_Cluster {
 
     public static void main(String args[]) throws Exception {
         int iAi1 = Integer.parseInt(args[0]);
@@ -203,13 +203,12 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
-                //"maps/DoubleGame24x24.xml"
-                //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/BWDistantResources32x32.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
-                
-                
+                "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
+                "maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
+                "maps/battleMaps/8x8/4x4Mixed_map8x8.xml",
+                "maps/battleMaps/8x8/four_goups_Battle_8x8.xml",
+                "maps/battleMaps/8x8/lineBattle8x8.xml",
+                "maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml"
         ));
         
         UnitTypeTable utt = new UnitTypeTable();
