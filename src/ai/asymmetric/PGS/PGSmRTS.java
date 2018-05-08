@@ -12,6 +12,8 @@ import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.asymmetric.common.UnitScriptData;
+import ai.configurablescript.BasicExpandedConfigurableScript;
+import ai.configurablescript.ScriptsCreator;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.InterruptibleAI;
@@ -75,16 +77,16 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     }
 
     protected void buildPortfolio() {
+        this.scripts.add(new POWorkerRush(utt));
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
-        this.scripts.add(new POWorkerRush(utt));
+        
         //this.scripts.add(new EconomyMilitaryRush(utt));
         
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new PORangedRush(utt, new FloodFillPathFinding()));
-
     }
 
     @Override
@@ -94,7 +96,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     
     protected void evalPortfolio(int heightMap){
         if(heightMap <= 16 && !portfolioHasWorkerRush()){
-            this.scripts.add(new POWorkerRush(utt));
+            //this.scripts.add(new POWorkerRush(utt));
         }
     }
 
@@ -124,9 +126,8 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         currentScriptData.setSeedUnits(seedPlayer);
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
         if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
-            doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
+            currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
-
         return getFinalAction(currentScriptData);
     }
 
@@ -293,7 +294,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         }
     }
 
-    private void doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
+    private UnitScriptData doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
         int enemy = 1 - player;
 
         UnitScriptData bestScriptData = currentScriptData.clone();
@@ -306,7 +307,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
                 if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                    return;
+                    return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
@@ -322,6 +323,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 currentScriptData = bestScriptData.clone();
             }
         }
+        return currentScriptData;
     }
 
     private ArrayList<Unit> getUnitsPlayer(int player) {

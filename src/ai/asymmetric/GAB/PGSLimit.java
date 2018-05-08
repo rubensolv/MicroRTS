@@ -118,7 +118,7 @@ public class PGSLimit extends AIWithComputationBudget implements InterruptibleAI
         currentScriptData.setSeedUnits(seedPlayer);
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
         if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
-            doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
+            currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
         
         return getFinalAction(currentScriptData);
@@ -336,7 +336,7 @@ public class PGSLimit extends AIWithComputationBudget implements InterruptibleAI
         }
     }
 
-    private void doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
+    private UnitScriptData doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
         int enemy = 1-player;
         
         UnitScriptData bestScriptData = currentScriptData.clone();
@@ -351,7 +351,7 @@ public class PGSLimit extends AIWithComputationBudget implements InterruptibleAI
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
                 if(System.currentTimeMillis() >= (start_time + (TIME_BUDGET-10))  ){
-                    return;
+                    return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
                 for(AI ai : scripts){
@@ -372,10 +372,12 @@ public class PGSLimit extends AIWithComputationBudget implements InterruptibleAI
                 currentScriptData = bestScriptData.clone();
             }
             if(!hasImproved){
-                return;
+                return currentScriptData;
             }
             counterIterations++;
         }
+        
+        return currentScriptData;
     }
 
     private ArrayList<Unit> getUnitsPlayer(int player) {

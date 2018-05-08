@@ -99,7 +99,7 @@ public class PGSmRTS_SandBox extends AIWithComputationBudget implements Interrup
     
     protected void evalPortfolio(int heightMap){
         if(heightMap <= 16 && !portfolioHasWorkerRush()){
-            this.scripts.add(new POWorkerRush(utt));
+            //this.scripts.add(new POWorkerRush(utt));
         }
     }
 
@@ -139,7 +139,7 @@ public class PGSmRTS_SandBox extends AIWithComputationBudget implements Interrup
         System.out.println("Tempo gasto até o momento= "+(System.currentTimeMillis()-start_time ));
         
         if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
-            doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
+            currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
 
         System.out.println("Tempo gasto pelo PGS = "+(System.currentTimeMillis()-start_time ));
@@ -310,7 +310,7 @@ public class PGSmRTS_SandBox extends AIWithComputationBudget implements Interrup
         }
     }
 
-    private void doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
+    private UnitScriptData doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
         int enemy = 1 - player;
 
         UnitScriptData bestScriptData = currentScriptData.clone();
@@ -322,7 +322,7 @@ public class PGSmRTS_SandBox extends AIWithComputationBudget implements Interrup
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
                 if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                    return;
+                    return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
                 long startTime ;
@@ -341,6 +341,7 @@ public class PGSmRTS_SandBox extends AIWithComputationBudget implements Interrup
                 currentScriptData = bestScriptData.clone();
             }
         }
+        return currentScriptData;
     }
 
     private ArrayList<Unit> getUnitsPlayer(int player) {

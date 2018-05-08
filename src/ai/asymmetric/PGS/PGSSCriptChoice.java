@@ -142,7 +142,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         currentScriptData.setSeedUnits(seedPlayer);
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
         if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
-            doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
+            currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
         //teste
         //currentScriptData.print();
@@ -314,7 +314,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         }
     }
 
-    private void doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
+    private UnitScriptData doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
         int enemy = 1 - player;
 
         UnitScriptData bestScriptData = currentScriptData.clone();
@@ -328,7 +328,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
                 if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                    return;
+                    return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
@@ -344,6 +344,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
                 currentScriptData = bestScriptData.clone();
             }
         }
+        return currentScriptData;
     }
 
     private ArrayList<Unit> getUnitsPlayer(int player) {
