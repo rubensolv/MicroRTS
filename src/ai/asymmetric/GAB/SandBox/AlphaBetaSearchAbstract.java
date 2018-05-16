@@ -5,6 +5,8 @@
  */
 package ai.asymmetric.GAB.SandBox;
 
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.aiSelection.AlphaBetaSearch.*;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.POWorkerRush;
@@ -85,8 +87,10 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
                 // add(1, new POWorkerRush(utt));
                 add(0, scriptsCompleteSet.get(0));
                 add(1, scriptsCompleteSet.get(1));
-                //add(2, scriptsCompleteSet.get(2));
-                //add(3, scriptsCompleteSet.get(3));
+                add(2, scriptsCompleteSet.get(2));
+                add(3, scriptsCompleteSet.get(3));
+                //add(0, new NOKDPS(utt));
+                //add(1, new KitterDPS(utt));
                 
             }
         });

@@ -20,6 +20,7 @@ import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.mcts.naivemcts.NaiveMCTS;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -138,6 +139,10 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
 
         //calculate time for each state
         int timeEach = TIME_BUDGET / clusters.size();
+
+        //debug
+        //printClusters();
+
         //NaiveMCTS ns = new NaiveMCTS(timeEach, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
         IA1.setTimeBudget(timeEach);
         //PlayerAction pateste = ns.getAction(playerForThisComputation, gs_to_start_from.clone());
@@ -223,6 +228,29 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
 
     private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
         this.clusters.clear();
+        HashSet<Integer> labels = new HashSet<>();
+        for (int i = 0; i < clusterInt.length; i++) {
+            labels.add(clusterInt[i]);
+        }
+            
+        for (Integer label : labels) {
+            ArrayList<Unit> cluster = new ArrayList<>();
+
+            for (int i = 0; i < clusterInt.length; i++) {
+                if (clusterInt[i] == label) {
+                    double[] tPos = dataSet[i];
+                    Unit untC = getUnitByPos(tPos, unitsCl);
+                    cluster.add(untC);
+                }
+            }
+
+            this.clusters.add(cluster);
+        }
+    }
+
+    /*
+    private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
+        this.clusters.clear();
         int control = clusterInt[0];
         ArrayList<Unit> cluster = new ArrayList<>();
         for (int i = 0; i < clusterInt.length; i++) {
@@ -236,7 +264,7 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
             cluster.add(untC);
         }
         this.clusters.add(cluster);
-    }
+    } */
 
     private Unit getUnitByPos(double[] tPos, ArrayList<Unit> unitsCl) {
         for (Unit unit : unitsCl) {
@@ -429,6 +457,17 @@ public class CIA extends AIWithComputationBudget implements InterruptibleAI {
             }
         }
         return paFull;
+    }
+
+    private void printClusters() {
+        int count = 1;
+        for (ArrayList<Unit> cluster : clusters) {
+            System.out.println("Cluster " + count);
+            for (Unit unit : cluster) {
+                System.out.println("--" + unit.toString());
+            }
+            count++;
+        }
     }
 
 }

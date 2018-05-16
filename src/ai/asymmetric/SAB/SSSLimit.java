@@ -84,10 +84,11 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
     }
 
     protected void buildPortfolio() {
+        this.scripts.add(new POWorkerRush(utt));
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
-        this.scripts.add(new POWorkerRush(utt));
+        
         
         //ScriptsCreator sc = new ScriptsCreator(utt,300);
         //ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
@@ -155,26 +156,26 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
     }
 
     public UnitScriptData continueImproveUnitScript(int player, GameState gs, UnitScriptData currentScriptData) throws Exception {
-        GameState gs2 = gs.clone();
-        gs2.cycle();
-        startNewComputation(player, gs2);
+        //GameState gs2 = gs.clone();
+        //gs2.cycle();
+        startNewComputation(player, gs);
 
         //pego o melhor script do portfolio para ser a semente
-        AI seedPlayer = getSeedPlayer(playerForThisComputation);
-        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+        //AI seedPlayer = getSeedPlayer(playerForThisComputation);
+        //AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
 
-        enemyScript = seedEnemy;
-        defaultScript = seedPlayer;
+        //enemyScript = seedEnemy;
+        //defaultScript = seedPlayer;
 
         // set up the root script data
-        currentScriptData.setSeedUnits(seedPlayer);
-        setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
+        currentScriptData.setSeedUnits(defaultScript);
+        //setAllScripts(playerForThisComputation, currentScriptData, defaultScript);
 
         // do the initial root portfolio search for our player
         numberTypes = 0;
         timePlayout = 0.0;
 
-        if (doStratifiedSearch(playerForThisComputation, currentScriptData, seedEnemy)) {
+        if (doStratifiedSearch(playerForThisComputation, currentScriptData, defaultScript)) {
             /*
             System.out.print("Time Playout ");
             AdaptableStratType.printType();

@@ -37,6 +37,7 @@ import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SAB_oldVersion;
+import ai.asymmetric.SAB.SAB_seed;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -420,7 +421,7 @@ public class ClusterTesteLeve_GAB_SAB {
 
     private static AI getIA(UnitTypeTable utt, int iAi2) {
         ArrayList<Integer>  choices = mapElements.get(iAi2);
-        return new SAB(utt, choices.get(0), choices.get(1));
+        return new SAB_seed(utt, choices.get(0), choices.get(1));
     }
 
 }

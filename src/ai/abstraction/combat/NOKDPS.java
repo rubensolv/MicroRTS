@@ -147,8 +147,8 @@ public class NOKDPS extends AbstractionLayerAI {
                         foundAction = true;
                     }
                 } else if ((move.getType() == UnitAction.TYPE_MOVE)) {
-                    int destX = move.getLocationX() + move.getDirection();
-                    int destY = move.getLocationY() + move.getDirection();
+                    int destX = move.getLocationX(); //+ move.getDirection();
+                    int destY = move.getLocationY(); //+ move.getDirection();
 
                     int dist = getDistanceSqToUnit(destX, destY, closestUnit.getX(), closestUnit.getY());
                     if (dist < closestMoveDist) {
@@ -386,8 +386,8 @@ public class NOKDPS extends AbstractionLayerAI {
     }
 
     private int getDistanceSqToUnit(int pXinicial, int pYinicial, int pXfinal, int pYfinal) {
-        return ((pXinicial - pXfinal) * (pXinicial - pXfinal))
-                + ((pYinicial - pYfinal) * (pYinicial - pYfinal));
+        return (int) Math.sqrt( ((pXinicial - pXfinal) * (pXinicial - pXfinal))
+                + ((pYinicial - pYfinal) * (pYinicial - pYfinal)) );
     }
 
 }

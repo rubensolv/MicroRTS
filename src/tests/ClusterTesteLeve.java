@@ -205,9 +205,9 @@ public class ClusterTesteLeve {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/DoubleGame24x24.xml"
-                //"maps/32x32/basesWorkers32x32A.xml"
+                "maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
                 
                 
         ));
@@ -306,9 +306,9 @@ public class ClusterTesteLeve {
          */            
         
         //best response GA PGS
-        String GA_PGS = "65;184;217;"; 
+        String GA_PGS = "4;271;177;"; 
         //best response GA SSS
-        String GA_SSS = "25;86;194;281;"; 
+        String GA_SSS = "205;90;167;93;216;"; 
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(

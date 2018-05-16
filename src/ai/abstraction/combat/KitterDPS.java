@@ -149,10 +149,10 @@ public class KitterDPS extends AbstractionLayerAI {
                         foundAction = true;
                     }
                 } else if ((move.getType() == UnitAction.TYPE_MOVE)) {
-                    int destX = move.getLocationX() + move.getDirection();
-                    int destY = move.getLocationY() + move.getDirection();
+                    int destX = move.getLocationX(); //+ move.getDirection();
+                    int destY = move.getLocationY(); //+ move.getDirection();
 
-                    int dist = getDistanceSqToUnit(closestUnit.getX(), closestUnit.getY(), destX, destY);
+                    int dist = getDistanceSqToUnit(destX, destY, closestUnit.getX(), closestUnit.getY());
                     if (dist > furthestMoveDist) {
                         furthestMoveDist = dist;
                         furthestMoveIndex = move;
@@ -200,23 +200,12 @@ public class KitterDPS extends AbstractionLayerAI {
         if (t != null) {
             ActionsT.add(t);
         } else {
-            UnitAction t2 = new Move(ourUnit, enemy.getX(), enemy.getY(), pf).execute(gs_to_Compute);
-            if (t2 != null) {
-                ActionsT.add(t2);
+            t = new Move(ourUnit, enemy.getX(), enemy.getY(), pf).execute(gs_to_Compute);
+            if (t != null) {
+                ActionsT.add(t);
             }
         }
-        //action return back
-
-        if (!ActionsT.isEmpty()) {
-            UnitAction t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY() - 1, pf).execute(gs_to_Compute);
-            if (t4 != null) {
-                ActionsT.add(t4);
-            }
-            UnitAction t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY() + 1, pf).execute(gs_to_Compute);
-            if (t5 != null) {
-                ActionsT.add(t5);
-            }
-        }
+        
 
         //add all news attack actions
         for (Unit unitEn : gs_to_Compute.getUnits()) {
@@ -229,6 +218,34 @@ public class KitterDPS extends AbstractionLayerAI {
                     }
 
                 }
+            }
+        }
+        
+        //action return back
+        if (!ActionsT.isEmpty()) {
+            UnitAction t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY() - 1, pf).execute(gs_to_Compute);
+            if (t4 != null) {
+                ActionsT.add(t4);
+            }
+            t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY(), pf).execute(gs_to_Compute);
+            if (t4 != null) {
+                ActionsT.add(t4);
+            }
+            t4 = new Move(ourUnit, ourUnit.getX(), ourUnit.getY() - 1, pf).execute(gs_to_Compute);
+            if (t4 != null) {
+                ActionsT.add(t4);
+            }
+            UnitAction t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY() + 1, pf).execute(gs_to_Compute);
+            if (t5 != null) {
+                ActionsT.add(t5);
+            }
+            t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY(), pf).execute(gs_to_Compute);
+            if (t5 != null) {
+                ActionsT.add(t5);
+            }
+            t5 = new Move(ourUnit, ourUnit.getX(), ourUnit.getY() + 1, pf).execute(gs_to_Compute);
+            if (t5 != null) {
+                ActionsT.add(t5);
             }
         }
         return ActionsT;
@@ -405,8 +422,8 @@ public class KitterDPS extends AbstractionLayerAI {
     }
 
     private int getDistanceSqToUnit(int pXinicial, int pYinicial, int pXfinal, int pYfinal) {
-        return ((pXinicial - pXfinal) * (pXinicial - pXfinal))
-                + ((pYinicial - pYfinal) * (pYinicial - pYfinal));
+        return (int) Math.sqrt(((pXinicial - pXfinal) * (pXinicial - pXfinal))
+                + ((pYinicial - pYfinal) * (pYinicial - pYfinal)));
     }
 
     private Unit getClosestEnemyUnit(Unit allyUnit, PhysicalGameState pgs) {

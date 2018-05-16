@@ -28,6 +28,7 @@ import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
+import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.aiSelection.IDABCD.ABSelection;
 import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.GAB;
@@ -36,6 +37,14 @@ import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SAB.SAB_oldVersion;
+import ai.cluster.CABA;
+import ai.cluster.CABA_Enemy;
+import ai.cluster.CIA;
+import ai.cluster.CIA_Enemy;
+import ai.cluster.CIA_EnemyEuclidieanInfluence;
+import ai.cluster.CIA_EnemyWithTime;
+import ai.cluster.CIA_PlayoutCluster;
+import ai.cluster.CIA_PlayoutPower;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -65,6 +74,7 @@ import rts.PhysicalGameState;
 import rts.Player;
 import rts.PlayerAction;
 import rts.units.Unit;
+import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import util.XMLWriter;
 
@@ -83,134 +93,28 @@ public class ClusterTesteLeve_Cluster {
         Instant timeInicial = Instant.now();
         Duration duracao;
         
-        /*
-        
-       
-        
-        "maps/BroodWar/(3)Aztec.scxA.xml", 
-            "maps/BroodWar/(3)Aztec.scxC.xml", 
-            "maps/BroodWar/(4)Andromeda.scxB.xml",
-            "maps/BroodWar/(4)Andromeda.scxF.xml",
-            "maps/BroodWar/(4)Fortress.scxD.xml", 
-            "maps/BroodWar/(4)Fortress.scxA.xml", 
-            "maps/BroodWar/(4)EmpireoftheSun.scmC.xml",
-            "maps/BroodWar/(4)EmpireoftheSun.scmF.xml"
-        
-            "maps/BroodWar/(3)TauCross.scxA.xml",
-                "maps/BroodWar/(3)TauCross.scxB.xml",
-                "maps/BroodWar/(3)TauCross.scxC.xml",
-                "maps/BroodWar/(4)CircuitBreaker.scxB.xml",
-                "maps/BroodWar/(4)CircuitBreaker.scxD.xml",
-                "maps/BroodWar/(4)CircuitBreaker.scxF.xml",
-                "maps/BroodWar/(4)Python.scxA.xml",
-                "maps/BroodWar/(4)Python.scxC.xml",
-                "maps/BroodWar/(4)Python.scxF.xml"
-        
-             
-             
-            "maps/8x8/basesWorkers8x8A.xml" 
-             "maps/16x16/basesWorkers16x16A.xml" 
-        "maps/NoWhereToRun9x8.xml"     
-            
-        "maps/8x8/basesWorkers8x8A.xml", 
-                "maps/8x8/basesWorkers8x8C.xml",
-                "maps/8x8/basesWorkers8x8F.xml",
-                "maps/8x8/basesWorkers8x8E.xml",
-                "maps/8x8/basesWorkers8x8H.xml",
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml"
-        
-                
-        
-                //novos mapas de treino
-         "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml",
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                "maps/9x8/BlockWall9x8.xml",
-                "maps/9x8/BlockDiagonal9x8.xml",
-                "maps/9x8/BlockTwoResources9x8.xml",
-                "maps/9x8/BlockTwoResourcesWithBarracks9x8.xml",
-                "maps/16x16/EightBasesWorkers16x16.xml",
-                "maps/16x16/BasesWithWalls16x16.xml",
-                "maps/16x16/BasesTwoBarracksWithWalls16x16.xml",
-                "maps/16x16/NoWhereWithBlocks16x16.xml",
-                "maps/24x24/basesWorkers24x24A.xml",
-                "maps/24x24/DoubleMapaWithBlock24x24.xml",
-                "maps/24x24/DoubleMapaWithBlockTwoBarracks24x24.xml",
-                "maps/24x24/DoubleMapaWithBlockTwoBases24x24.xml",
-                "maps/32x32/ComplexPathToFight32x32.xml",
-                "maps/32x32/DiagonalRuntoGold32x32.xml",
-                "maps/32x32/RuntoGoldWithBlocksBarracks32x32.xml",
-                "maps/32x32/SimplePathToFight32x32.xml",
-                "maps/64x64/ComplexPathToFight64x64.xml",
-                "maps/64x64/SimplePathExplore64x64.xml",
-                "maps/64x64/SimplePathToFight64x64.xml"
-                
-        mapas scv teste
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/NoWhereToRun9x8.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                "maps/DoubleGame24x24.xml",
-                "maps/BWDistantResources32x32.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml", 
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                "maps/9x8/BlockWall9x8.xml"
-        
-        mapas scv totais de teste SCV
-                //5 mapas 8x8
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml", 
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                //5 mapas 16x16
-                "maps/16x16/basesWorkers16x16C.xml",
-                "maps/16x16/basesWorkers16x16G.xml",
-                "maps/16x16/basesWorkers16x16K.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                //5 mapas 24x24
-                "maps/24x24/basesWorkers24x24C.xml",
-                "maps/24x24/basesWorkers24x24E.xml",
-                "maps/24x24/basesWorkers24x24F.xml",
-                "maps/24x24/basesWorkers24x24I.xml",
-                "maps/DoubleGame24x24.xml",
-                //5 mapas 32x32
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/32x32/basesWorkersBarracks32x32.xml",
-                "maps/32x32/RunToFight32x32A.xml",
-                "maps/32x32/centerResources32x32.xml",
-                "maps/BWDistantResources32x32.xml",
-                //5 mapas 64x46
-                "maps/BroodWar/(4)BloodBath.scmA.xml",
-                "maps/BroodWar/(4)BloodBath.scmC.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmF.xml"
-                //5 mapas 128x128
-                (3)TauCross.scxA.xml
-                (3)TauCross.scxC.xml
-                (4)CircuitBreaker.scxB.xml
-                (4)Python.scxA.xml
-                (4)Python.scxF.xml
-
-        */
-        
         List<String> maps = new ArrayList<>(Arrays.asList(
                 "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
                 "maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
                 "maps/battleMaps/8x8/4x4Mixed_map8x8.xml",
                 "maps/battleMaps/8x8/four_goups_Battle_8x8.xml",
                 "maps/battleMaps/8x8/lineBattle8x8.xml",
-                "maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml"
+                "maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml",
+                "maps/battleMaps/16x16/ComplexBattleWithWalls16x16.xml",
+                "maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml",
+                "maps/battleMaps/16x16/melee7x7Mixed16.xml",
+                "maps/battleMaps/16x16/melee16x16Mixed8.xml",
+                "maps/battleMaps/16x16/melee16x16Mixed12.xml",
+                "maps/battleMaps/16x16/melee18x18Mixed4groups.xml",
+                "maps/battleMaps/24x24/ConfinedFourGroupsMixed24x24.xml",
+                "maps/battleMaps/24x24/ConfinedTwoGroupsMixed24x24.xml",
+                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsLightHeavy24x24.xml",
+                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
+                "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
+                "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"
         ));
         
+        //UnitTypeTable utt = new UnitTYpeTableBattle();
         UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
@@ -234,99 +138,25 @@ public class ClusterTesteLeve_Cluster {
         if (pgs.getHeight() == 64) {
             MAXCYCLES = 12000;
         }
-
-        /*
-            new NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new BS3_NaiveMCTS(utt),
-                new AHTNAI(utt),
-        
-                new LightRush(utt),
-                new WorkerRush(utt),
-                new HeavyRush(utt),
-                new RangedRush(utt),
-                new EconomyRush(utt),
-                new SCV(utt),
-                new SCV_GAB(utt),
-                new PVAIML_SL_ONE_STRATEGY(utt),
-                new PVAI(utt)
-        
-                new WorkerRush(utt),
-                new POLightRush(utt),
-                new RandomBiasedAI(),
-                new POHeavyRush(utt),
-                new PORangedRush(utt),
-                new LightDefense(utt),
-                new RangedDefense(utt),
-                new WorkerDefense(utt),
-                new EconomyMilitaryRush(utt),
-            
-        
-        //IAs GA 
-                new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               new BS3_NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new SSSmRTS(utt),
-               new GAB(utt),
-               new GAB_ABActionGeneration(utt),
-               new SAB_oldVersion(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, best), "BR"), //PGS com o best response do GA
-               new GAB_ScriptC(utt, decodeScripts(utt, best), "BR"), //GAB com o best response do GA
-               new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Nash"), //PGS com o best response do Nash
-               new GAB_ScriptC(utt, decodeScripts(utt, sc2Nash), "Nash"),  //GAB com o best response do Nash
-               new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA"), //PGS com o melhor GA
-               new GAB_ScriptC(utt, decodeScripts(utt, bestGA), "bGA")  //GAB com o melhor GA
-        
-        
-        
-        //IAS SCV
-                //IA's SCV usadas
-                //new WorkerDefense(utt),
-                //new WorkerRush(utt),
-                //new RangedDefense(utt),
-                //new RangedRush(utt),
-                //new LightRush(utt),
-                //new LightDefense(utt),
-                //new HeavyDefense(utt),
-                //new HeavyRush(utt),
-                //new EMRDeterministico(utt),
-                new PVAIML_SL_ONE_STRATEGY(utt),  //SBS
-                new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                new BS3_NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new SCV_Full(utt, pgs.getHeight(), pgs.getWidth()),
-                new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
-         */            
-        
-        //best response GA PGS
-        String GA_PGS = "65;184;217;"; 
-        //best response GA SSS
-        String GA_SSS = "25;86;194;281;"; 
-        
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               new AHTNAI(utt),
+               //new AHTNAI(utt),
                new NaiveMCTS(utt),
-               new BS3_NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new SSSmRTS(utt),
-               new POLightRush(utt),
-               new POHeavyRush(utt),
-               new PORangedRush(utt),
-               new POWorkerRush(utt),
+               //new BS3_NaiveMCTS(utt),
+               //new PuppetSearchMCTS(utt),
+               //new StrategyTactics(utt),
+               //new PGSmRTS(utt),
+               //new SSSmRTS(utt),
+               //new POLightRush(utt),
+               //new POWorkerRush(utt),
+               //new CIA(utt),
+               new CIA_Enemy(utt),
+               //new CIA_EnemyWithTime(utt),
+               //new CIA_EnemyEuclidieanInfluence(utt),
+               new AlphaBetaSearch(utt),
+               new CIA_PlayoutCluster(utt),
+               new CIA_PlayoutPower(utt)
                
-               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "bGA"), //PGS com o melhor GA
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "SSS_GA")
-               
-                
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -416,7 +246,7 @@ public class ClusterTesteLeve_Cluster {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
             
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 15));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;

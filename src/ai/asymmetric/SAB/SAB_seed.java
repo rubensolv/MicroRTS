@@ -6,6 +6,7 @@
 package ai.asymmetric.SAB;
 
 import ai.RandomAI;
+import ai.RandomBiasedAI;
 import ai.asymmetric.GAB.SandBox.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
@@ -40,7 +41,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class SAB extends AIWithComputationBudget implements InterruptibleAI {
+public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -59,9 +60,9 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
     //tste
     UnitScriptData currentScriptData;
-    RandomAI rAI ;
+    RandomBiasedAI rAI ;
 
-    public SAB(UnitTypeTable utt) {
+    public SAB_seed(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -69,11 +70,11 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
                 new AStarPathFinding());
     }
 
-    public SAB(UnitTypeTable utt, int numUnits, int numManager) {
+    public SAB_seed(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
 
-    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SAB_seed(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         evaluation = e;
@@ -84,12 +85,12 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
-        _numUnits = 0;
-        _numManager = 2;
-        rAI = new RandomAI(utt);
+        _numUnits = 2;
+        _numManager = 1;
+        rAI = new RandomBiasedAI(utt);
     }
 
-    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+    public SAB_seed(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
 
         evaluation = e;
@@ -102,7 +103,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         _unitsAbsAB = new HashSet<>();
         _numUnits = numUnits;
         _numManager = numManager;
-        rAI = new RandomAI(utt);
+        rAI = new RandomBiasedAI(utt);
     }
 
     @Override
@@ -165,7 +166,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new SAB(_time, _max_playouts, evaluation, utt, pf);
+        return new SAB_seed(_time, _max_playouts, evaluation, utt, pf);
     }
 
     @Override
@@ -200,7 +201,8 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             currentScriptData = _sss.getUnitScript(playerForThisComputation, gs_to_start_from);
             this.firstTime = false;
         } else if (hasNewUnitToImprove()) {
-            currentScriptData = _sss.getUnitScript(playerForThisComputation, gs_to_start_from);
+            //currentScriptData = _sss.getUnitScript(playerForThisComputation, gs_to_start_from);
+            currentScriptData = _sss.continueImproveUnitScript(playerForThisComputation, gs_to_start_from, currentScriptData);
         }
         PlayerAction paSSS = _sss.getFinalAction(currentScriptData);
         if(_numUnits == 0){
@@ -225,13 +227,14 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             //System.out.println("----------------------------------------" + _unitsAbsAB);
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
             //System.out.println("Results AB= "+ _ab.statisticsString());
+            //System.out.println("Results AB= "+ paAB.toString());
             //if(_ab.getBestScore() > _pgs.getBestScore()){
-            //if(playoutAnalise(paAB)> playoutAnalise(paSSS)){
+            if(playoutAnalise(paAB)> playoutAnalise(paSSS)){
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
             //System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
                 return paAB;
-            //}
+            }
         }
 
         //System.out.println("Escolhido paPGS");
@@ -249,11 +252,11 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
      */
     protected double playoutAnalise(PlayerAction pa) throws Exception {
 
-        //AI ai1 = _sss.getDefaultScript();
-        //AI ai2 = _sss.getEnemyScript();
+        AI ai1 = _sss.getDefaultScript();
+        AI ai2 = _sss.getEnemyScript();
         
-        AI ai1 = rAI;
-        AI ai2 = rAI;
+        //AI ai1 = rAI;
+        //AI ai2 = rAI;
 
         //boolean paUsed = false;
         //System.out.println(pa.toString());
@@ -264,7 +267,8 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
         ai1.reset();
         ai2.reset();
-        int timeLimit = gs2.getTime() + _max_playouts;
+        //int timeLimit = gs2.getTime() + _max_playouts;
+        int timeLimit = gs2.getTime() + 100;
         boolean gameover = false;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
@@ -272,9 +276,8 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             } else {
 
                 PlayerAction pa1 = ai1.getAction(playerForThisComputation, gs2);
-                gs2.issue(pa1);
-
                 PlayerAction pa2 = ai2.getAction(1 - playerForThisComputation, gs2);
+                gs2.issue(pa1);
                 gs2.issue(pa2);
             }
         }
@@ -346,7 +349,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "SAB_SandBox_" + _numUnits + "_" + _numManager;
+        return "SAB_Seed_" + _numUnits + "_" + _numManager;
     }
 
 }

@@ -72,7 +72,7 @@ import util.XMLWriter;
  *
  * @author Rubens
  */
-public class ClusterTesteLeve {
+public class ClusterTesteLeve_Combination {
 
     public static void main(String args[]) throws Exception {
         int iAi1 = Integer.parseInt(args[0]);
@@ -204,10 +204,10 @@ public class ClusterTesteLeve {
         
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
-                //"maps/DoubleGame24x24.xml"
+                "maps/DoubleGame24x24.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
                 
                 
         ));
@@ -305,29 +305,27 @@ public class ClusterTesteLeve {
                 new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
          */            
         
-        //best response GA PGS
-        String GA_PGS = "65;184;217;"; 
-        //best response GA SSS
-        String GA_SSS = "25;86;194;281;"; 
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               new BS3_NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new SSSmRTS(utt),
-               new POLightRush(utt),
-               new POHeavyRush(utt),
-               new PORangedRush(utt),
-               new POWorkerRush(utt),
-               
-               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "bGA"), //PGS com o melhor GA
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "SSS_GA")
-               
-                
+               new PGSSCriptChoice(utt, decodeScripts(utt, "0;"), "0"), 
+                new PGSSCriptChoice(utt, decodeScripts(utt, "232;"), "232"), 
+                new PGSSCriptChoice(utt, decodeScripts(utt, "101;"), "101"), 
+                new PGSSCriptChoice(utt, decodeScripts(utt, "0;232;"), "0-232"), 
+                new PGSSCriptChoice(utt, decodeScripts(utt, "0;101;"), "0-101"), 
+                new PGSSCriptChoice(utt, decodeScripts(utt, "232;101;"), "232-101"), 
+                new PGSSCriptChoice(utt, decodeScripts(utt, "0;101;232;"), "0-101-232"),
+                new AHTNAI(utt),
+                new NaiveMCTS(utt),
+                new BS3_NaiveMCTS(utt),
+                new PuppetSearchMCTS(utt),
+                new StrategyTactics(utt),
+                new PGSmRTS(utt),
+                new SSSmRTS(utt),
+                new POLightRush(utt),
+                new POHeavyRush(utt),
+                new PORangedRush(utt),
+                new POWorkerRush(utt)
         ));
 
         AI ai1 = ais.get(iAi1);

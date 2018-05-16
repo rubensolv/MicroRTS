@@ -218,21 +218,26 @@ public class CABA extends AIWithComputationBudget implements InterruptibleAI {
 
     }
 
-    private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
+     private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
         this.clusters.clear();
-        int control = clusterInt[0];
-        ArrayList<Unit> cluster = new ArrayList<>();
+        HashSet<Integer> labels = new HashSet<>();
         for (int i = 0; i < clusterInt.length; i++) {
-            if (control != clusterInt[i]) {
-                this.clusters.add(cluster);
-                control = clusterInt[i];
-                cluster = new ArrayList<>();
-            }
-            double[] tPos = dataSet[i];
-            Unit untC = getUnitByPos(tPos, unitsCl);
-            cluster.add(untC);
+            labels.add(clusterInt[i]);
         }
-        this.clusters.add(cluster);
+            
+        for (Integer label : labels) {
+            ArrayList<Unit> cluster = new ArrayList<>();
+
+            for (int i = 0; i < clusterInt.length; i++) {
+                if (clusterInt[i] == label) {
+                    double[] tPos = dataSet[i];
+                    Unit untC = getUnitByPos(tPos, unitsCl);
+                    cluster.add(untC);
+                }
+            }
+
+            this.clusters.add(cluster);
+        }
     }
 
     private Unit getUnitByPos(double[] tPos, ArrayList<Unit> unitsCl) {

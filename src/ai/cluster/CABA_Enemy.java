@@ -221,19 +221,24 @@ public class CABA_Enemy extends AIWithComputationBudget implements Interruptible
 
     private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
         this.clusters.clear();
-        int control = clusterInt[0];
-        ArrayList<Unit> cluster = new ArrayList<>();
+        HashSet<Integer> labels = new HashSet<>();
         for (int i = 0; i < clusterInt.length; i++) {
-            if (control != clusterInt[i]) {
-                this.clusters.add(cluster);
-                control = clusterInt[i];
-                cluster = new ArrayList<>();
-            }
-            double[] tPos = dataSet[i];
-            Unit untC = getUnitByPos(tPos, unitsCl);
-            cluster.add(untC);
+            labels.add(clusterInt[i]);
         }
-        this.clusters.add(cluster);
+
+        for (Integer label : labels) {
+            ArrayList<Unit> cluster = new ArrayList<>();
+
+            for (int i = 0; i < clusterInt.length; i++) {
+                if (clusterInt[i] == label) {
+                    double[] tPos = dataSet[i];
+                    Unit untC = getUnitByPos(tPos, unitsCl);
+                    cluster.add(untC);
+                }
+            }
+
+            this.clusters.add(cluster);
+        }
     }
 
     private Unit getUnitByPos(double[] tPos, ArrayList<Unit> unitsCl) {
@@ -259,7 +264,7 @@ public class CABA_Enemy extends AIWithComputationBudget implements Interruptible
                 newCluster.addAll(cluster);
                 //get unit more closest 
                 newCluster.add(getEnemyClosestByCentroid(cluster));
-                
+
                 newClusters.add(newCluster);
             } else {
                 //keep this cluster
@@ -289,10 +294,11 @@ public class CABA_Enemy extends AIWithComputationBudget implements Interruptible
         return getClusterWithUnit(Enbase);
 
     }
+
     private Unit getEnemyClosestByCentroid(ArrayList<Unit> cluster) {
         ArrayList<Unit> unidades = new ArrayList<>();
         for (Unit unit : cluster) {
-            if(unit.getPlayer() == playerForThisComputation){
+            if (unit.getPlayer() == playerForThisComputation) {
                 unidades.add(unit);
             }
         }
@@ -306,14 +312,14 @@ public class CABA_Enemy extends AIWithComputationBudget implements Interruptible
         y = y / unidades.size();
         return getEnemyClosest(x, y);
     }
-    
+
     private Unit getEnemyClosest(int xCentroid, int yCentroid) {
         Unit Enbase = getClosestEnemyUnit(xCentroid, yCentroid, gs_to_start_from, playerForThisComputation);
         return Enbase;
 
     }
-    
-     private Unit getClosestEnemyUnit(int xCent, int yCent, GameState state, int player) {
+
+    private Unit getClosestEnemyUnit(int xCent, int yCent, GameState state, int player) {
         PhysicalGameState pgs = state.getPhysicalGameState();
         Unit closestEnemy = null;
         int closestDistance = 0;

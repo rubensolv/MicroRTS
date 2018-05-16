@@ -155,8 +155,8 @@ public class Cluster extends AbstractionLayerAI {
             for (UnitAction move : actionsUnit) {
                  if ((move.getType() == UnitAction.TYPE_MOVE)) {
 
-                    int dist = getDistanceSqToUnit(move.getLocationX()+move.getDirection(), 
-                                                   move.getLocationY()+move.getDirection(), 
+                    int dist = getDistanceSqToUnit(move.getLocationX(),//+move.getDirection(), 
+                                                   move.getLocationY(),//+move.getDirection(), 
                                                    _cenX, _cenY);
 
                     if (dist < closestMoveDist) {
@@ -397,8 +397,8 @@ public class Cluster extends AbstractionLayerAI {
     }
 
     private int getDistanceSqToUnit(int pXinicial, int pYinicial, int pXfinal, int pYfinal) {
-        return ((pXinicial - pXfinal) * (pXinicial - pXfinal))
-                + ((pYinicial - pYfinal) * (pYinicial - pYfinal));
+        return (int) Math.sqrt( ((pXinicial - pXfinal) * (pXinicial - pXfinal))
+                + ((pYinicial - pYfinal) * (pYinicial - pYfinal)) );
     }
 
     private Unit getClosestEnemyUnit(Unit allyUnit, PhysicalGameState pgs) {

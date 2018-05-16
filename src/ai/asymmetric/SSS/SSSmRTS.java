@@ -78,10 +78,11 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     }
 
     protected void buildPortfolio() {
+        this.scripts.add(new POWorkerRush(utt));
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
-        this.scripts.add(new POWorkerRush(utt));
+        
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
@@ -154,6 +155,8 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
             AdaptableStratType.decrease(numberTypes);
         }
 
+        //System.out.println("Result final");
+        //currentScriptData.print();
         return getFinalAction(currentScriptData);
     }
 
@@ -366,6 +369,8 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 for (Unit un : typeUnits.get(ordemAdapt.get(typeIndex))) {
                     currentScriptData.setUnitScript(un, bestScriptVec[typeIndex]);
                 }
+                //System.out.println("Analisando....");
+                //currentScriptData.print();
                 
                 if( System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0)) ){
                     timePlayout =  (double)(System.currentTimeMillis() - start_time) /(numberEvals);

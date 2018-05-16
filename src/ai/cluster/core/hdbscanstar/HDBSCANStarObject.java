@@ -9,7 +9,8 @@ import ai.cluster.core.distance.EuclideanDistance;
 import ai.cluster.core.distance.ManhattanDistance;
 import ai.cluster.core.distance.PearsonCorrelation;
 import ai.cluster.core.distance.SupremumDistance;
-import java.util.Arrays;
+import java.io.File;
+import java.util.Random;
 
 /**
  * Entry point for the HDBSCAN* algorithm.
@@ -30,6 +31,8 @@ public class HDBSCANStarObject {
     private static final String PEARSON_CORRELATION = "pearson";
     private static final String MANHATTAN_DISTANCE = "manhattan";
     private static final String SUPREMUM_DISTANCE = "supremum";
+    static Random rd = new Random(System.currentTimeMillis());
+    static String hierarchyFile = "hierarchy"+System.currentTimeMillis()+"_"+rd.nextInt()+".csv";
 
     /**
      * Runs the HDBSCAN* algorithm given an input data set file and a value for
@@ -52,7 +55,8 @@ public class HDBSCANStarObject {
         String constraintsFile = null;
         DistanceCalculator distanceFunction = new EuclideanDistance();
         long overallStartTime = System.currentTimeMillis();
-        String hierarchyFile = "hierarchy.csv";
+        
+        
 
         //Parse input parameters from program arguments: //all parameters will be provided by parameters function
         //HDBSCANStarParameters parameters = checkInputParameters(args);
@@ -115,7 +119,9 @@ public class HDBSCANStarObject {
                 coreDistances, parameters.outlierScoreFile, ",", infiniteStability);
         System.out.println("Time to compute outlier scores (ms): " + (System.currentTimeMillis() - startTime));
         */
+        removeFile();
         //System.out.println("Overall runtime (ms): " + (System.currentTimeMillis() - overallStartTime));
+        
         return bestCluster;
     }
 
@@ -298,6 +304,166 @@ public class HDBSCANStarObject {
         System.exit(0);
     }
 
+    
+
+    protected static void removeFile(){
+        File f = new File(hierarchyFile);
+        if(f.isFile()){
+            f.deleteOnExit();
+        }
+    }
+    
+    
+    public static int[] runHDBSCAN(double[][] dataSet, Integer minPoints, Integer minClusterSize, boolean compactHierarchy, DistanceCalculator function) throws IOException {
+        String constraintsFile = null;
+        DistanceCalculator distanceFunction = function;
+        long overallStartTime = System.currentTimeMillis();
+        
+        
+
+        //Parse input parameters from program arguments: //all parameters will be provided by parameters function
+        //HDBSCANStarParameters parameters = checkInputParameters(args);
+
+        //System.out.println("Running HDBSCAN* on " + parameters.inputFile + " with minPts=" + parameters.minPoints
+        //        + ", minClSize=" + parameters.minClusterSize + ", constraints=" + parameters.constraintsFile
+        //        + ", compact=" + parameters.compactHierarchy + ", dist_function=" + parameters.distanceFunction.getName());
+
+        //Read in input file:
+        //double[][] dataSet = null;   // parameter now
+        //dataSet = HDBSCANStar.readInDataSet(parameters.inputFile, ",");
+        int numPoints = dataSet.length;
+
+        //Read in constraints:
+        ArrayList<Constraint> constraints = null;
+        if (constraintsFile != null) {
+            constraints = HDBSCANStar.readInConstraints(constraintsFile, ",");
+        }
+
+        //Compute core distances:
+        long startTime = System.currentTimeMillis();
+        double[] coreDistances = HDBSCANStar.calculateCoreDistances(dataSet, minPoints, distanceFunction);
+        //System.out.println("Time to compute core distances (ms): " + (System.currentTimeMillis() - startTime));
+
+        //Calculate minimum spanning tree:
+        startTime = System.currentTimeMillis();
+        UndirectedGraph mst = HDBSCANStar.constructMST(dataSet, coreDistances, true, distanceFunction);
+        mst.quicksortByEdgeWeight();
+        //System.out.println("Time to calculate MST (ms): " + (System.currentTimeMillis() - startTime));
+
+        //Remove references to unneeded objects:
+        dataSet = null;
+
+        double[] pointNoiseLevels = new double[numPoints];
+        int[] pointLastClusters = new int[numPoints];
+
+        //Compute hierarchy and cluster tree:
+        ArrayList<Cluster> clusters = null;
+        startTime = System.currentTimeMillis();
+        clusters = HDBSCANStar.computeHierarchyAndClusterTree(mst, minClusterSize,
+                compactHierarchy, constraints, hierarchyFile ,",", pointNoiseLevels, pointLastClusters);
+        //System.out.println("Time to compute hierarchy and cluster tree (ms): " + (System.currentTimeMillis() - startTime));
+        
+        //Remove references to unneeded objects:
+        mst = null;
+
+        //Propagate clusters:
+        boolean infiniteStability = HDBSCANStar.propagateTree(clusters);
+
+        //Compute final flat partitioning:
+        startTime = System.currentTimeMillis();
+        int[] bestCluster = HDBSCANStar.findProminentClusters(clusters, hierarchyFile, ",", numPoints, infiniteStability);
+        //System.out.println(Arrays.toString(bestCluster)); 
+        //System.out.println("Time to find flat result (ms): " + (System.currentTimeMillis() - startTime));
+
+        //Compute outlier scores for each point:
+        /*
+        startTime = System.currentTimeMillis();
+        HDBSCANStar.calculateOutlierScores(clusters, pointNoiseLevels, pointLastClusters,
+                coreDistances, parameters.outlierScoreFile, ",", infiniteStability);
+        System.out.println("Time to compute outlier scores (ms): " + (System.currentTimeMillis() - startTime));
+        */
+        removeFile();
+        //System.out.println("Overall runtime (ms): " + (System.currentTimeMillis() - overallStartTime));
+        
+        return bestCluster;
+    }
+    
+    
+        
+    public static int[] runHDBSCANGraph(int numPoints, UndirectedGraph mstGraph, Integer minPoints, Integer minClusterSize, boolean compactHierarchy) throws IOException {
+        String constraintsFile = null;
+        long overallStartTime = System.currentTimeMillis();
+        
+        
+
+        //Parse input parameters from program arguments: //all parameters will be provided by parameters function
+        //HDBSCANStarParameters parameters = checkInputParameters(args);
+
+        //System.out.println("Running HDBSCAN* on " + parameters.inputFile + " with minPts=" + parameters.minPoints
+        //        + ", minClSize=" + parameters.minClusterSize + ", constraints=" + parameters.constraintsFile
+        //        + ", compact=" + parameters.compactHierarchy + ", dist_function=" + parameters.distanceFunction.getName());
+
+        //Read in input file:
+        //double[][] dataSet = null;   // parameter now
+        //dataSet = HDBSCANStar.readInDataSet(parameters.inputFile, ",");
+        //int numPoints = dataSet.length;
+
+        //Read in constraints:
+        ArrayList<Constraint> constraints = null;
+        if (constraintsFile != null) {
+            constraints = HDBSCANStar.readInConstraints(constraintsFile, ",");
+        }
+
+        //Compute core distances:
+        long startTime = System.currentTimeMillis();
+        //double[] coreDistances = HDBSCANStar.calculateCoreDistances(dataSet, minPoints, distanceFunction);
+        //System.out.println("Time to compute core distances (ms): " + (System.currentTimeMillis() - startTime));
+
+        //Calculate minimum spanning tree:
+        startTime = System.currentTimeMillis();
+        //UndirectedGraph mst = HDBSCANStar.constructMST(dataSet, coreDistances, true, distanceFunction);
+        UndirectedGraph mst = mstGraph;
+        mst.quicksortByEdgeWeight();
+        //System.out.println("Time to calculate MST (ms): " + (System.currentTimeMillis() - startTime));
+
+        //Remove references to unneeded objects:
+        //dataSet = null;
+
+        double[] pointNoiseLevels = new double[numPoints];
+        int[] pointLastClusters = new int[numPoints];
+
+        //Compute hierarchy and cluster tree:
+        ArrayList<Cluster> clusters = null;
+        startTime = System.currentTimeMillis();
+        clusters = HDBSCANStar.computeHierarchyAndClusterTree(mst, minClusterSize,
+                compactHierarchy, constraints, hierarchyFile ,",", pointNoiseLevels, pointLastClusters);
+        //System.out.println("Time to compute hierarchy and cluster tree (ms): " + (System.currentTimeMillis() - startTime));
+        
+        //Remove references to unneeded objects:
+        mst = null;
+
+        //Propagate clusters:
+        boolean infiniteStability = HDBSCANStar.propagateTree(clusters);
+
+        //Compute final flat partitioning:
+        startTime = System.currentTimeMillis();
+        int[] bestCluster = HDBSCANStar.findProminentClusters(clusters, hierarchyFile, ",", numPoints, infiniteStability);
+        //System.out.println(Arrays.toString(bestCluster)); 
+        //System.out.println("Time to find flat result (ms): " + (System.currentTimeMillis() - startTime));
+
+        //Compute outlier scores for each point:
+        /*
+        startTime = System.currentTimeMillis();
+        HDBSCANStar.calculateOutlierScores(clusters, pointNoiseLevels, pointLastClusters,
+                coreDistances, parameters.outlierScoreFile, ",", infiniteStability);
+        System.out.println("Time to compute outlier scores (ms): " + (System.currentTimeMillis() - startTime));
+        */
+        removeFile();
+        //System.out.println("Overall runtime (ms): " + (System.currentTimeMillis() - overallStartTime));
+        
+        return bestCluster;
+    }
+    
     /**
      * Simple class for storing input parameters.
      */

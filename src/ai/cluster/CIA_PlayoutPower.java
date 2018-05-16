@@ -8,9 +8,13 @@ package ai.cluster;
 import Standard.CombinedEvaluation;
 import ai.RandomBiasedAI;
 import ai.abstraction.Attack;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
+import ai.cluster.MST.Graph;
+import ai.cluster.MST.GraphTemporal;
 import ai.cluster.core.hdbscanstar.HDBSCANStarObject;
+import ai.cluster.core.hdbscanstar.UndirectedGraph;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.InterruptibleAI;
@@ -20,6 +24,7 @@ import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.mcts.naivemcts.NaiveMCTS;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,11 +42,12 @@ import util.Pair;
 
 /**
  * Cluster Independent Action (CIA) Use HDBScan* to choose the clusters and
- * apply in each cluster NaiveMCTS
- * If one cluster don't have enemy reference, it will search for the unit more closest to centroid of cluster. 
+ * apply in each cluster NaiveMCTS If one cluster don't have enemy reference, it
+ * will search for the unit more closest to centroid of cluster.
+ *
  * @author rubens
  */
-public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleAI {
+public class CIA_PlayoutPower extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -51,14 +57,20 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
     ArrayList<ArrayList<Unit>> clusters;
     //AlphaBetaSearch IA1;
     NaiveMCTS IA1;
+    AI playoutAI1;
+    AI playoutAI2;
+    GraphTemporal graph;
+    int timeLimitMSTPlayout;
+    boolean isClusterZero;
+    ArrayList<Unit> clusterZero;
 
-    public CIA_Enemy(UnitTypeTable utt) {
+    public CIA_PlayoutPower(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 utt,
                 new AStarPathFinding());
     }
 
-    public CIA_Enemy(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public CIA_PlayoutPower(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
         evaluation = e;
         utt = a_utt;
@@ -66,6 +78,11 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
         clusters = new ArrayList<>();
         //IA1 = new AlphaBetaSearch(utt);
         IA1 = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
+        //for run the playout's cluster analyse
+        playoutAI1 = new NOKDPS(a_utt);
+        playoutAI2 = new NOKDPS(a_utt);
+        graph = new GraphTemporal();
+        timeLimitMSTPlayout = 0;
     }
 
     @Override
@@ -91,7 +108,7 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
 
     @Override
     public AI clone() {
-        return new CIA_Enemy(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
+        return new CIA_PlayoutPower(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
     }
 
     @Override
@@ -115,9 +132,11 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
 
     @Override
     public void computeDuringOneGameFrame() throws Exception {
-        findBestClusters();
-        filterClusters();
-        removeEnemyClusters();
+        if (timeLimitMSTPlayout == gs_to_start_from.getTime()) {
+            findBestClusters();
+            filterClusters();
+            removeEnemyClusters();
+        }
         //groupClustersWithBasesAndBarracks();
         //System.out.println("Total Cluster:" + this.clusters.size());
     }
@@ -130,6 +149,10 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
             IA1.setTimeBudget(100);
             return IA1.getAction(playerForThisComputation, gs_to_start_from);
         }
+        //System.out.println("Tem mais de 1 cluster");
+        //System.out.println("Grafo");
+        //graph.print();
+
         //build temporary states
         ArrayList<GameState> states = new ArrayList<>();
         for (ArrayList<Unit> cluster : clusters) {
@@ -145,7 +168,16 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
         //collect actions
         HashSet<PlayerAction> actions = new HashSet<>();
         for (GameState statePT : states) {
-            actions.add(IA1.getAction(playerForThisComputation, statePT));
+            if (isClusterZero) {
+                if(statePT.getUnit(clusterZero.get(0).getID()) != null){
+                    actions.add(playoutAI1.getAction(playerForThisComputation, statePT));
+                    isClusterZero = false;
+                }else{
+                    actions.add(IA1.getAction(playerForThisComputation, statePT));
+                }
+            } else {
+                actions.add(IA1.getAction(playerForThisComputation, statePT));
+            }
         }
 
         //System.out.println("actions=" + paFull.toString());
@@ -162,7 +194,7 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
                 rgsRet.removeUnit(unRem);
             }
         }
-
+        //System.out.println(rgsRet.toString());
         return rgsRet;
     }
 
@@ -193,49 +225,49 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
 
     @Override
     public String toString() {
-        return "CIA_Enemy";
+        return "CIA_PlayoutPower";
     }
 
-    private void findBestClusters() {
-        //[total units] [2] (x,y)
-        ArrayList<Unit> unitsCl = getUnits(playerForThisComputation);
-        unitsCl.addAll(getUnits(1 - playerForThisComputation));
-        double[][] dataSet = new double[unitsCl.size()][2];
-        int idx = 0;
-        for (Unit unit : unitsCl) {
-            double[] tempPosition = new double[2];
-            tempPosition[0] = unit.getX();
-            tempPosition[1] = unit.getY();
-            //System.out.println(unit.getX()+","+unit.getY());
-            dataSet[idx] = tempPosition;
-            idx++;
-        }
+    private void findBestClusters() throws Exception {
+
+        UndirectedGraph mst = contructMSTByPlayout();
 
         try {
-            int[] clusterInt = HDBSCANStarObject.runHDBSCAN(dataSet, 2, 2, true);
+            int[] clusterInt = HDBSCANStarObject.runHDBSCANGraph(graph.getTotalNodos(), mst, 5, 2, true);
             //System.out.println(Arrays.toString(clusterInt));
-            buildClusters(dataSet, clusterInt, unitsCl);
+            buildClusters(graph.generateDataSet(gs_to_start_from), clusterInt, graph.getUnitsOrdered(gs_to_start_from));
         } catch (IOException ex) {
-            Logger.getLogger(CIA_Enemy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CIA_PlayoutPower.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
         this.clusters.clear();
-        int control = clusterInt[0];
-        ArrayList<Unit> cluster = new ArrayList<>();
+        this.isClusterZero = false;
+                
+        HashSet<Integer> labels = new HashSet<>();
         for (int i = 0; i < clusterInt.length; i++) {
-            if (control != clusterInt[i]) {
-                this.clusters.add(cluster);
-                control = clusterInt[i];
-                cluster = new ArrayList<>();
-            }
-            double[] tPos = dataSet[i];
-            Unit untC = getUnitByPos(tPos, unitsCl);
-            cluster.add(untC);
+            labels.add(clusterInt[i]);
         }
-        this.clusters.add(cluster);
+
+        for (Integer label : labels) {
+            ArrayList<Unit> cluster = new ArrayList<>();
+
+            for (int i = 0; i < clusterInt.length; i++) {
+                if (clusterInt[i] == label) {
+                    double[] tPos = dataSet[i];
+                    Unit untC = getUnitByPos(tPos, unitsCl);
+                    cluster.add(untC);
+                }
+            }
+            if (label == 0) {
+                this.isClusterZero = true;
+                this.clusterZero = cluster;
+            }
+
+            this.clusters.add(cluster);
+        }
     }
 
     private Unit getUnitByPos(double[] tPos, ArrayList<Unit> unitsCl) {
@@ -261,7 +293,7 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
                 newCluster.addAll(cluster);
                 //get unit more closest 
                 newCluster.add(getEnemyClosestByCentroid(cluster));
-                
+
                 newClusters.add(newCluster);
             } else {
                 //keep this cluster
@@ -291,10 +323,11 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
         return getClusterWithUnit(Enbase);
 
     }
+
     private Unit getEnemyClosestByCentroid(ArrayList<Unit> cluster) {
         ArrayList<Unit> unidades = new ArrayList<>();
         for (Unit unit : cluster) {
-            if(unit.getPlayer() == playerForThisComputation){
+            if (unit.getPlayer() == playerForThisComputation) {
                 unidades.add(unit);
             }
         }
@@ -308,14 +341,14 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
         y = y / unidades.size();
         return getEnemyClosest(x, y);
     }
-    
+
     private Unit getEnemyClosest(int xCentroid, int yCentroid) {
         Unit Enbase = getClosestEnemyUnit(xCentroid, yCentroid, gs_to_start_from, playerForThisComputation);
         return Enbase;
 
     }
-    
-     private Unit getClosestEnemyUnit(int xCent, int yCent, GameState state, int player) {
+
+    private Unit getClosestEnemyUnit(int xCent, int yCent, GameState state, int player) {
         PhysicalGameState pgs = state.getPhysicalGameState();
         Unit closestEnemy = null;
         int closestDistance = 0;
@@ -470,6 +503,43 @@ public class CIA_Enemy extends AIWithComputationBudget implements InterruptibleA
             }
         }
         return paFull;
+    }
+
+    protected UndirectedGraph contructMSTByPlayout() throws Exception {
+        HashMap<GameState, List<PlayerAction>> listActionByState = new HashMap<>();
+        GameState gs = gs_to_start_from.clone();
+        timeLimitMSTPlayout = 100 + gs.getTime();
+        boolean gameover = false;
+
+        do {
+            if (gs.isComplete()) {
+                gameover = gs.cycle();
+            } else {
+                ArrayList<PlayerAction> actions = new ArrayList<>();
+
+                PlayerAction p1 = playoutAI1.getAction(0, gs);
+                PlayerAction p2 = playoutAI2.getAction(1, gs);
+
+                if (p1.getActions().size() > 0) {
+                    actions.add(p1);
+                }
+                if (p2.getActions().size() > 0) {
+                    actions.add(p2);
+                }
+                if (actions.size() > 0) {
+                    listActionByState.put(gs.clone(), actions);
+                }
+
+                gs.issue(p1);
+                gs.issue(p2);
+            }
+        } while (!gameover && gs.getTime() < timeLimitMSTPlayout);
+        //teste for update
+        timeLimitMSTPlayout = gs_to_start_from.getTime() + 20;
+
+        UndirectedGraph ret = graph.build(listActionByState, playerForThisComputation);
+        return ret;
+
     }
 
 }
