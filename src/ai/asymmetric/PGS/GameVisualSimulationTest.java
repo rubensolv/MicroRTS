@@ -110,12 +110,13 @@ public class GameVisualSimulationTest {
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_map8x8.xml", utt);
-       PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/four_goups_Battle_8x8.xml", utt);
+       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/four_goups_Battle_8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/lineBattle8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/melee16x16Mixed8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/1x1.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
         int PERIOD = 20;
@@ -212,9 +213,9 @@ public class GameVisualSimulationTest {
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                //if( (System.currentTimeMillis() - startTime) >0){
-                  // System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
-                //}
+                if( (System.currentTimeMillis() - startTime) >0){
+                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                }
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);

@@ -66,6 +66,7 @@ import rts.Player;
 import rts.PlayerAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import static tests.ClusterTesteLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -203,8 +204,8 @@ public class ClusterTesteLeve_Combination {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
-                "maps/DoubleGame24x24.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/DoubleGame24x24.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
@@ -305,7 +306,10 @@ public class ClusterTesteLeve_Combination {
                 new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
          */            
         
-        
+        //best response GA PGS
+        String GA_PGS = "32;285;107;267;225;"; 
+        //best response GA SSS
+        String GA_SSS = "233;97;93;246;117;"; 
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                new PGSSCriptChoice(utt, decodeScripts(utt, "0;"), "0"), 
@@ -325,7 +329,9 @@ public class ClusterTesteLeve_Combination {
                 new POLightRush(utt),
                 new POHeavyRush(utt),
                 new PORangedRush(utt),
-                new POWorkerRush(utt)
+                new POWorkerRush(utt),
+                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "bGA"), //PGS com o melhor GA
+                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "SSS_GA")
         ));
 
         AI ai1 = ais.get(iAi1);

@@ -25,45 +25,47 @@ import util.Pair;
 public class GraphTempSum {
 
     private List<Nodo> graph;
+    private final double C = 1;
 
     public GraphTempSum() {
         this.graph = new ArrayList<>();
+
     }
 
     public UndirectedGraph build(HashMap<GameState, List<PlayerAction>> listActionByState, int playerForThisComputation) {
         graph.clear();
         buildNodosBase(listActionByState.values());
 
-        buildGraph(listActionByState);
+        buildGraphComplex(listActionByState);
         double[] coreDistances = calculateCoreDistances(2);
         return constructMST(coreDistances, true);
         //return new UndirectedGraph(graph.size(), verticesA, verticesB, edgeWeights);
     }
 
-    public int getTotalNodos(){
+    public int getTotalNodos() {
         return graph.size();
     }
-    
-    public ArrayList<Unit> getUnitsOrdered(GameState gs){
+
+    public ArrayList<Unit> getUnitsOrdered(GameState gs) {
         ArrayList<Unit> unitsCl = new ArrayList<>();
         for (Nodo nodo : graph) {
             Unit un = gs.getUnit(nodo.getIdUnidade());
-            if(un != null){
+            if (un != null) {
                 unitsCl.add(un);
             }
         }
         return unitsCl;
     }
-    
-    public double[][] generateDataSet(GameState gs){
+
+    public double[][] generateDataSet(GameState gs) {
         ArrayList<Unit> unitsCl = new ArrayList<>();
         for (Nodo nodo : graph) {
             Unit un = gs.getUnit(nodo.getIdUnidade());
-            if(un != null){
+            if (un != null) {
                 unitsCl.add(un);
             }
         }
-        
+
         double[][] dataSet = new double[unitsCl.size()][2];
         int idx = 0;
         for (Unit unit : unitsCl) {
@@ -74,10 +76,10 @@ public class GraphTempSum {
             dataSet[idx] = tempPosition;
             idx++;
         }
-        
+
         return dataSet;
     }
-    
+
     private void buildNodosBase(Collection<List<PlayerAction>> values) {
         HashSet<Long> ids = new HashSet<>();
         for (List<PlayerAction> value : values) {
@@ -91,6 +93,81 @@ public class GraphTempSum {
         for (long l : ids) {
             graph.add(new Nodo(l));
         }
+    }
+
+    /**
+     * This function will build a graph using the number of iteration to
+     * calculate the edge. function C/(sum(iterations))
+     *
+     * @param listActionByState
+     */
+    private void buildGraphComplex(HashMap<GameState, List<PlayerAction>> listActionByState) {
+        ArrayList<Unit> units = getAllUnits(listActionByState);
+        Unit[] unitArray = new Unit[units.size()];
+        units.toArray(unitArray);
+        Unit unit = null;
+        Unit unit2 = null;
+        for (int i = 0; i < unitArray.length; i++) {
+            unit = unitArray[i];
+            for (int j = i + 1; j < unitArray.length; j++) {
+                unit2 = unitArray[j];
+                int numberIteration = getNumberIterations(unit, unit2, listActionByState);
+                //update both units... 
+                updateGraph(unit, unit2, numberIteration);
+            }
+        }
+    }
+    
+    private void updateGraph(Unit unit, Unit unit2, int numberIteration) {
+        Nodo nodeOne = null;
+        Nodo nodeTwo = null;
+        //looking for the nodes
+        for (Nodo nodo : graph) {
+            if (nodo.getIdUnidade() == unit.getID()) {
+                nodeOne = nodo;
+            }
+            if (nodo.getIdUnidade() == unit2.getID()) {
+                nodeTwo = nodo;
+            }
+        }
+        //insert nodes if didn't find
+        if(nodeOne == null){
+            //include new node
+            nodeOne = new Nodo(unit.getID());
+            graph.add(nodeOne);
+        }
+        if(nodeTwo == null){
+            //include new node
+            nodeTwo = new Nodo(unit2.getID());
+            graph.add(nodeTwo);
+        }
+        //update edge
+        double valueEdgeIteration = C/numberIteration;
+        nodeOne.updateNodeAdj(valueEdgeIteration, nodeTwo);
+        nodeTwo.updateNodeAdj(valueEdgeIteration, nodeOne);
+    }
+
+    private void addNodeRelation(Pair<Unit, UnitAction> action, Unit enemy, GameState gameState) {
+        Unit un = action.m_a;
+        UnitAction uAct = action.m_b;
+        //get enemy nodo. 
+        Nodo searchEn = null;
+        Nodo searchAly = null;
+        for (Nodo nodo : graph) {
+            if (nodo.getIdUnidade() == enemy.getID()) {
+                searchEn = nodo;
+            }
+            if (nodo.getIdUnidade() == un.getID()) {
+                searchAly = nodo;
+            }
+        }
+        if (searchEn == null) {
+            //include new unit
+            searchEn = new Nodo(enemy.getID());
+            graph.add(searchEn);
+        }
+        //vinculo nodo
+        searchAly.addNodeAdj(un.getAttackRange(), searchEn);
     }
 
     private void buildGraph(HashMap<GameState, List<PlayerAction>> listActionByState) {
@@ -112,7 +189,7 @@ public class GraphTempSum {
 
     private Unit getUnitEnemyByLocation(UnitAction action, GameState gameState) {
         for (Unit unit : gameState.getUnits()) {
-            if (unit.getPlayer() > 0) {
+            if (unit.getPlayer() >= 0) {
                 if (unit.getX() == action.getLocationX() && unit.getY() == action.getLocationY()) {
                     return unit;
                 }
@@ -120,29 +197,6 @@ public class GraphTempSum {
         }
 
         return null;
-    }
-
-    private void addNodeRelation(Pair<Unit, UnitAction> action, Unit enemy, GameState gameState) {
-        Unit un = action.m_a;
-        UnitAction uAct = action.m_b;
-        //get enemy nodo. 
-        Nodo searchEn = null;
-        Nodo searchAly = null;
-        for (Nodo nodo : graph) {
-            if (nodo.getIdUnidade() == enemy.getID()) {
-                searchEn = nodo;
-            }
-            if (nodo.getIdUnidade() == un.getID()) {
-                searchAly = nodo;
-            }
-        }
-        if(searchEn == null){
-            //include new unit
-            searchEn = new Nodo(enemy.getID());
-            graph.add(searchEn);
-        }
-        //vinculo nodo
-        searchAly.addNodeAdj(un.getAttackRange(), searchEn);
     }
 
     public void print() {
@@ -239,7 +293,7 @@ public class GraphTempSum {
         return new UndirectedGraph(graph.size(), nearestMRDNeighbors, otherVertexIndices, nearestMRDDistances);
     }
 
-    private double[] calculateCoreDistances( int k) {
+    private double[] calculateCoreDistances(int k) {
         int numNeighbors = k - 1;
         double[] coreDistances = new double[graph.size()];
 
@@ -295,24 +349,75 @@ public class GraphTempSum {
                 }
             }
         }
-        
+
         idNodoBase = graph.get(PosNodoEnemy).getIdUnidade();
         idNodoEnemy = graph.get(PosNodoBase).getIdUnidade();
-        try{
-        for (Nodo nodo : graph) {
-            if (nodo.getIdUnidade() == idNodoBase) {
-                for (Incidencia inc : nodo.incidencias) {
-                    if (inc.nodo.getIdUnidade() == idNodoEnemy) {
-                        return inc.edge;
+        try {
+            for (Nodo nodo : graph) {
+                if (nodo.getIdUnidade() == idNodoBase) {
+                    for (Incidencia inc : nodo.incidencias) {
+                        if (inc.nodo.getIdUnidade() == idNodoEnemy) {
+                            return inc.edge;
+                        }
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            System.out.println("ai.cluster.MST.Graph.getEdgeValue()");
+            System.out.println("ai.cluster.MST.Graph.getEdgeValue()" + e);
+        }
+        return Double.MAX_VALUE;
+    }
+
+    private ArrayList<Unit> getAllUnits(HashMap<GameState, List<PlayerAction>> listActionByState) {
+        HashSet<Unit> units = new HashSet<>();
+        for (GameState gameState : listActionByState.keySet()) {
+            for (Unit unit : gameState.getUnits()) {
+                if (unit.getPlayer() >= 0 && !existUnitInSet(units, unit)) {
+                    units.add(unit);
+                }
+            }
+        }
+
+        return new ArrayList<>(units);
+    }
+    
+    private boolean existUnitInSet(HashSet<Unit> units, Unit un){
+        for (Unit unit : units) {
+            if(unit.getID() == un.getID()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int getNumberIterations(Unit unit, Unit unit2, HashMap<GameState, List<PlayerAction>> listActionByState) {
+        int countIter = 0;
+
+        for (GameState gameState : listActionByState.keySet()) {
+            List<PlayerAction> lPlayer = listActionByState.get(gameState);
+            for (PlayerAction playerAction : lPlayer) {
+                for (Pair<Unit, UnitAction> action : playerAction.getActions()) {
+                    if (action.m_b.getType() == UnitAction.TYPE_ATTACK_LOCATION) {
+                        //I need to take the unit position (enemy)
+                        Unit enemy = getUnitEnemyByLocation(action.m_b, gameState);
+                        if (enemy != null) {
+                            if (action.m_a.getID() == unit.getID()
+                                    && enemy.getID() == unit2.getID()) {
+                                countIter++;
+                            } else if (action.m_a.getID() == unit2.getID()
+                                    && enemy.getID() == unit.getID()) {
+                                countIter++;
+                            }
+                        }
                     }
                 }
             }
         }
-        }catch(NullPointerException e ){
-            System.out.println("ai.cluster.MST.Graph.getEdgeValue()");
-            System.out.println("ai.cluster.MST.Graph.getEdgeValue()"+ e);
-        }
-        return Double.MAX_VALUE;
+
+        return countIter;
     }
+
+    
 
 }

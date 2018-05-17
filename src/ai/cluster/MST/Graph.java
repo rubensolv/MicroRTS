@@ -114,7 +114,7 @@ public class Graph {
 
     private Unit getUnitEnemyByLocation(UnitAction action, GameState gameState) {
         for (Unit unit : gameState.getUnits()) {
-            if (unit.getPlayer() > 0) {
+            if (unit.getPlayer() >= 0) {
                 if (unit.getX() == action.getLocationX() && unit.getY() == action.getLocationY()) {
                     return unit;
                 }

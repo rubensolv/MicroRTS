@@ -31,7 +31,45 @@ public class Nodo {
 
     public void addNodeAdj(double edge, Nodo node) {
         this.incidencias.add(new Incidencia(node, edge));
+    }
+    
+    public void updateNodeAdj(double edge, Nodo node){
+        if(existIncidencia(node)){
+            //if node exist, update edge
+            getIncidencia(node).setEdge(edge);
+        }else{
+            addNodeAdj(edge, node);
+        }
+    }
+    
+    private Incidencia getIncidencia(Nodo node){
+        for (Incidencia incidencia : incidencias) {
+            if(incidencia.nodo.idUnidade == node.idUnidade){
+                return incidencia;
+            }
+        }
         
+        return null;
+    }
+    
+    public double getEdgeIncidencia(Nodo node){
+        for (Incidencia incidencia : incidencias) {
+            if(incidencia.nodo.idUnidade == node.idUnidade){
+                return incidencia.edge;
+            }
+        }
+        
+        return 0.0;
+    }
+    
+    public boolean existIncidencia(Nodo node){
+        for (Incidencia incidencia : incidencias) {
+            if(incidencia.nodo.idUnidade == node.idUnidade){
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     public void print(){        

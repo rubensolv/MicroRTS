@@ -39,7 +39,7 @@ public class Incidencia {
     
     public void print(){
         System.out.println("   Edge ="+ edge);
-        nodo.print();
+        System.out.println("   Nodo ="+ nodo.getIdUnidade());
     }
 
 

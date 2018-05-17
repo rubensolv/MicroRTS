@@ -11,7 +11,6 @@ import ai.abstraction.Attack;
 import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
-import ai.cluster.MST.Graph;
 import ai.cluster.MST.GraphTempSum;
 import ai.cluster.core.hdbscanstar.HDBSCANStarObject;
 import ai.cluster.core.hdbscanstar.UndirectedGraph;
@@ -61,11 +60,21 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
     AI playoutAI1;
     AI playoutAI2;
     GraphTempSum graph;
+    long startTime;
+    int minPoints = 2;
+    int minClusterSize = 3;
 
     public CIA_PlayoutTemporal(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 utt,
                 new AStarPathFinding());
+    }
+    public CIA_PlayoutTemporal(UnitTypeTable utt, int minPoints, int minSize) {
+        this(100, 200, new SimpleSqrtEvaluationFunction3(),
+                utt,
+                new AStarPathFinding());
+        this.minPoints = minPoints;
+        this.minClusterSize = minSize;
     }
 
     public CIA_PlayoutTemporal(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
@@ -125,6 +134,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
     public void startNewComputation(int player, GameState gs) throws Exception {
         playerForThisComputation = player;
         gs_to_start_from = gs;
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -179,7 +189,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
                 rgsRet.removeUnit(unRem);
             }
         }
-
+        //System.out.println(rgsRet.toString());
         return rgsRet;
     }
 
@@ -207,10 +217,20 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
         }
         return unitsPlayer;
     }
+    
+    private ArrayList<Unit> getUnits(GameState gs, int player) {
+        ArrayList<Unit> unitsPlayer = new ArrayList<>();
+        for (Unit u : gs.getUnits()) {
+            if (u.getPlayer() == player) {
+                unitsPlayer.add(u);
+            }
+        }
+        return unitsPlayer;
+    }
 
     @Override
     public String toString() {
-        return "CIA_PlayoutCluster";
+        return "CIA_PlayoutCluster_"+minPoints+"_"+minClusterSize;
     }
 
     private void findBestClusters() throws Exception {
@@ -218,7 +238,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
         UndirectedGraph mst = contructMSTByPlayout();
 
         try {
-            int[] clusterInt = HDBSCANStarObject.runHDBSCANGraph(graph.getTotalNodos(), mst, 2, 2, true);
+            int[] clusterInt = HDBSCANStarObject.runHDBSCANGraph(graph.getTotalNodos(), mst, minPoints, minClusterSize, true);
             //System.out.println(Arrays.toString(clusterInt));
             buildClusters(graph.generateDataSet(gs_to_start_from), clusterInt, graph.getUnitsOrdered(gs_to_start_from));
         } catch (IOException ex) {
@@ -487,7 +507,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
 
     protected UndirectedGraph contructMSTByPlayout() throws Exception {
         PlayerActionGenerator moveGenerator;
-        
+
         HashMap<GameState, List<PlayerAction>> listActionByState = new HashMap<>();
         int time = 100;
         GameState gs = gs_to_start_from.clone();
@@ -509,10 +529,22 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
                 if (p2.getActions().size() > 0) {
                     actions.add(p2);
                 }
+
+                /*//generate all actions possible
+                moveGenerator = new PlayerActionGenerator(gs, playerForThisComputation);
+                PlayerAction gener = moveGenerator.getNextAction(startTime + 5);
+                while (gener != null) {
+
+                    actions.add(gener);
+                    gener = moveGenerator.getNextAction(startTime + 5);
+                }
+                */
+                //generate all attack's possible
+                actions.addAll(generatedAttacks(gs,playerForThisComputation));
+
                 if (actions.size() > 0) {
                     listActionByState.put(gs.clone(), actions);
                 }
-
                 gs.issue(p1);
                 gs.issue(p2);
             }
@@ -521,6 +553,28 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
         UndirectedGraph ret = graph.build(listActionByState, playerForThisComputation);
         return ret;
 
+    }
+
+    private List<PlayerAction> generatedAttacks(GameState gs, int player) {
+        List<PlayerAction> itens = new ArrayList<>();
+        
+        PlayerAction act = new PlayerAction();
+        for(Unit un : getUnits(gs,player)){
+            ArrayList<Unit> untEn = getUnits(gs, (1-player));
+            for (Unit unEn : untEn) {
+                UnitAction unT = new Attack(un, unEn, pf).execute(gs);
+                if(unT != null){
+                    act.addUnitAction(un, unT);
+                }
+            }
+            if(!act.isEmpty()){
+                itens.add(act);
+                act = new PlayerAction();
+            }
+        }
+        
+       
+        return itens;
     }
 
 }
