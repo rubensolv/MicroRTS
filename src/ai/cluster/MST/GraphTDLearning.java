@@ -22,18 +22,22 @@ import util.Pair;
  *
  * @author rubens
  */
-public class GraphTempSum {
+public class GraphTDLearning {
 
     private List<Nodo> graph;
     private final double C = 1;
+    private int initialTime;
+    private double gama = 0.99;
+    
 
-    public GraphTempSum() {
+    public GraphTDLearning() {
         this.graph = new ArrayList<>();
 
     }
 
-    public UndirectedGraph build(HashMap<GameState, List<PlayerAction>> listActionByState, int playerForThisComputation) {
+    public UndirectedGraph build(HashMap<GameState, List<PlayerAction>> listActionByState, int playerForThisComputation, int timeBase) {
         graph.clear();
+        this.initialTime = timeBase;
         buildNodosBase(listActionByState.values());
 
         buildGraphComplex(listActionByState);
@@ -111,14 +115,15 @@ public class GraphTempSum {
             unit = unitArray[i];
             for (int j = i + 1; j < unitArray.length; j++) {
                 unit2 = unitArray[j];
-                int numberIteration = getNumberIterations(unit, unit2, listActionByState);
+                //int numberIteration = getNumberIterations(unit, unit2, listActionByState);
+                ArrayList<Integer> timesIteration = getTimeIterations(unit, unit2, listActionByState);
                 //update both units... 
-                updateGraph(unit, unit2, numberIteration);
+                updateGraph(unit, unit2, timesIteration);
             }
         }
     }
     
-    private void updateGraph(Unit unit, Unit unit2, int numberIteration) {
+    private void updateGraph(Unit unit, Unit unit2,  ArrayList<Integer> timesIteration) {
         Nodo nodeOne = null;
         Nodo nodeTwo = null;
         //looking for the nodes
@@ -128,6 +133,9 @@ public class GraphTempSum {
             }
             if (nodo.getIdUnidade() == unit2.getID()) {
                 nodeTwo = nodo;
+            }
+            if(nodeOne!= null && nodeTwo != null){
+                break;
             }
         }
         //insert nodes if didn't find
@@ -142,7 +150,14 @@ public class GraphTempSum {
             graph.add(nodeTwo);
         }
         //update edge
-        double valueEdgeIteration = C/numberIteration;
+        //double valueEdgeIteration = C/numberIteration;
+        double valueEdgeIteration = 0.00;
+        //ArrayList<Integer> timeRecalculated = recalculateTimes(timesIteration);
+        for (Integer timeIt : timesIteration) {
+            valueEdgeIteration += Math.pow(gama, (timeIt-initialTime) );
+        }
+        valueEdgeIteration = C/valueEdgeIteration;
+        
         nodeOne.updateNodeAdj(valueEdgeIteration, nodeTwo);
         nodeTwo.updateNodeAdj(valueEdgeIteration, nodeOne);
     }
@@ -417,6 +432,34 @@ public class GraphTempSum {
 
         return countIter;
     }
+    
+     private ArrayList<Integer> getTimeIterations(Unit unit, Unit unit2, HashMap<GameState, List<PlayerAction>> listActionByState) {
+        ArrayList<Integer> times = new ArrayList<>();
+
+        for (GameState gameState : listActionByState.keySet()) {
+            List<PlayerAction> lPlayer = listActionByState.get(gameState);
+            for (PlayerAction playerAction : lPlayer) {
+                for (Pair<Unit, UnitAction> action : playerAction.getActions()) {
+                    if (action.m_b.getType() == UnitAction.TYPE_ATTACK_LOCATION) {
+                        //I need to take the unit position (enemy)
+                        Unit enemy = getUnitEnemyByLocation(action.m_b, gameState);
+                        if (enemy != null) {
+                            if (action.m_a.getID() == unit.getID()
+                                    && enemy.getID() == unit2.getID()) {
+                                times.add(gameState.getTime());;
+                            } else if (action.m_a.getID() == unit2.getID()
+                                    && enemy.getID() == unit.getID()) {
+                                times.add(gameState.getTime());;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return times;
+    }
+
 
     
 

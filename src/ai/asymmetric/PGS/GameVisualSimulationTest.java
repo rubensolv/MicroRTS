@@ -43,6 +43,7 @@ import ai.cluster.CIA_EnemyWithTime;
 import ai.cluster.CIA_PlayoutCluster;
 import ai.cluster.CIA_PlayoutPower;
 import ai.cluster.CIA_PlayoutTemporal;
+import ai.cluster.CIA_TDLearning;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.EvaluationFunctionForwarding;
@@ -153,7 +154,8 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
   
-        AI ai2 = new CIA_PlayoutTemporal(utt);
+        AI ai2 = new CIA_TDLearning(utt);
+        //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
         //AI ai2 = new CIA_PlayoutCluster(utt);
         //AI ai2 = new AlphaBetaSearch(utt);

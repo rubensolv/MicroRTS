@@ -11,7 +11,7 @@ import ai.abstraction.Attack;
 import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
-import ai.cluster.MST.GraphTempSum;
+import ai.cluster.MST.GraphTDLearning;
 import ai.cluster.core.hdbscanstar.HDBSCANStarObject;
 import ai.cluster.core.hdbscanstar.UndirectedGraph;
 import ai.core.AI;
@@ -47,7 +47,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class CIA_PlayoutTemporal extends AIWithComputationBudget implements InterruptibleAI {
+public class CIA_TDLearning extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -59,17 +59,17 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
     NaiveMCTS IA1;
     AI playoutAI1;
     AI playoutAI2;
-    GraphTempSum graph;
+    GraphTDLearning graph;
     long startTime;
     int minPoints = 2;
-    int minClusterSize = 3;
+    int minClusterSize = 2;
 
-    public CIA_PlayoutTemporal(UnitTypeTable utt) {
+    public CIA_TDLearning(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 utt,
                 new AStarPathFinding());
     }
-    public CIA_PlayoutTemporal(UnitTypeTable utt, int minPoints, int minSize) {
+    public CIA_TDLearning(UnitTypeTable utt, int minPoints, int minSize) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 utt,
                 new AStarPathFinding());
@@ -77,7 +77,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
         this.minClusterSize = minSize;
     }
 
-    public CIA_PlayoutTemporal(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public CIA_TDLearning(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
         evaluation = e;
         utt = a_utt;
@@ -88,7 +88,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
         //for run the playout's cluster analyse
         playoutAI1 = new NOKDPS(a_utt);
         playoutAI2 = new NOKDPS(a_utt);
-        graph = new GraphTempSum();
+        graph = new GraphTDLearning();
     }
 
     @Override
@@ -114,7 +114,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
 
     @Override
     public AI clone() {
-        return new CIA_PlayoutTemporal(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
+        return new CIA_TDLearning(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
     }
 
     @Override
@@ -148,7 +148,8 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-        long start = System.currentTimeMillis();
+        
+        graph.print();
         if (clusters.size() == 1) {
             //NaiveMCTS ns = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
             IA1.setTimeBudget(100);
@@ -156,8 +157,8 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
         }
         //build temporary states
         //System.out.println("Tem mais de 1 cluster");
+        //long start = System.currentTimeMillis();
         //System.out.println("Grafo");
-        //graph.print();
         ArrayList<GameState> states = new ArrayList<>();
         for (ArrayList<Unit> cluster : clusters) {
             states.add(buildNewState(cluster, gs_to_start_from));
@@ -242,7 +243,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
             //System.out.println(Arrays.toString(clusterInt));
             buildClusters(graph.generateDataSet(gs_to_start_from), clusterInt, graph.getUnitsOrdered(gs_to_start_from));
         } catch (IOException ex) {
-            Logger.getLogger(CIA_PlayoutTemporal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CIA_TDLearning.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -523,10 +524,10 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
                 PlayerAction p1 = playoutAI1.getAction(0, gs);
                 PlayerAction p2 = playoutAI2.getAction(1, gs);
 
-                if (p1.getActions().size() > 0) {
+                if (p1.getActions().size() > 0 && playerForThisComputation != 0) {
                     actions.add(p1);
                 }
-                if (p2.getActions().size() > 0) {
+                if (p2.getActions().size() > 0 && playerForThisComputation != 1) {
                     actions.add(p2);
                 }
 
@@ -550,7 +551,7 @@ public class CIA_PlayoutTemporal extends AIWithComputationBudget implements Inte
             }
         } while (!gameover && gs.getTime() < time);
 
-        UndirectedGraph ret = graph.build(listActionByState, playerForThisComputation);
+        UndirectedGraph ret = graph.build(listActionByState, playerForThisComputation, gs_to_start_from.getTime());
         return ret;
 
     }
