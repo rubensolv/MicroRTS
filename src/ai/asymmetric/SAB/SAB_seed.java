@@ -60,7 +60,7 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
 
     //tste
     UnitScriptData currentScriptData;
-    RandomBiasedAI rAI ;
+    RandomBiasedAI rAI;
 
     public SAB_seed(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
@@ -118,7 +118,7 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
             startNewComputation(player, gs);
             return getBestActionSoFar();
         } else {
-            if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
+            if ((gs.getNextChangeTime() - 1) == gs.getTime()) {
                 //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
                 startNewComputation(player, gs);
                 _sss.setTimeBudget(100);
@@ -205,7 +205,7 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
             currentScriptData = _sss.continueImproveUnitScript(playerForThisComputation, gs_to_start_from, currentScriptData);
         }
         PlayerAction paSSS = _sss.getFinalAction(currentScriptData);
-        if(_numUnits == 0){
+        if (_numUnits == 0) {
             return paSSS;
         }
 
@@ -216,8 +216,8 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
 
             _ab.setPlayoutAI(_sss.getDefaultScript().clone());
             _ab.setPlayoutAIEnemy(_sss.getEnemyScript().clone());
-            _ab.setPlayerModel((1-playerForThisComputation), _sss.getEnemyScript().clone());
-            
+            _ab.setPlayerModel((1 - playerForThisComputation), _sss.getEnemyScript().clone());
+
             int timeUsed = (int) (System.currentTimeMillis() - start);
             if (timeUsed < 80) {
                 _ab.setTimeBudget(100 - timeUsed);
@@ -229,10 +229,11 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
             //System.out.println("Results AB= "+ _ab.statisticsString());
             //System.out.println("Results AB= "+ paAB.toString());
             //if(_ab.getBestScore() > _pgs.getBestScore()){
-            if(playoutAnalise(paAB)> playoutAnalise(paSSS)){
-            //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
-            //System.out.println("Escolhido paAB");
-            //currentScriptData = new UnitScriptData(playerForThisComputation);
+            //if(playoutAnalise(paAB)> playoutAnalise(paSSS)){
+            if (playoutAnaliseAVG(paAB) > playoutAnaliseAVG(paSSS)) { // playout with avg between playouts
+                //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
+                //System.out.println("Escolhido paAB");
+                //currentScriptData = new UnitScriptData(playerForThisComputation);
                 return paAB;
             }
         }
@@ -254,10 +255,9 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
 
         AI ai1 = _sss.getDefaultScript();
         AI ai2 = _sss.getEnemyScript();
-        
+
         //AI ai1 = rAI;
         //AI ai2 = rAI;
-
         //boolean paUsed = false;
         //System.out.println(pa.toString());
         GameState gs2 = gs_to_start_from.clone();
@@ -284,6 +284,46 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
         double e = evaluation.evaluate(playerForThisComputation, 1 - playerForThisComputation, gs2);
 
         return e;
+    }
+
+    protected double playoutAnaliseAVG(PlayerAction pa) throws Exception {
+
+        AI ai1 = rAI.clone();
+        AI ai2 = rAI.clone();
+        ai1.reset();
+        ai2.reset();
+        double e = 0.0000;
+        //AI ai1 = rAI;
+        //AI ai2 = rAI;
+
+        //boolean paUsed = false;
+        //System.out.println(pa.toString());
+        for (int i = 0; i < 4; i++) {
+            GameState gs2 = gs_to_start_from.clone();
+
+            pa = changePlayer(playerForThisComputation, pa, gs2);
+            gs2.issue(pa);
+
+            ai1.reset();
+            ai2.reset();
+            //int timeLimit = gs2.getTime() + _max_playouts;
+            int timeLimit = gs2.getTime() + 50;
+            boolean gameover = false;
+            while (!gameover && gs2.getTime() < timeLimit) {
+                if (gs2.isComplete()) {
+                    gameover = gs2.cycle();
+                } else {
+
+                    PlayerAction pa1 = ai1.getAction(playerForThisComputation, gs2);
+                    PlayerAction pa2 = ai2.getAction(1 - playerForThisComputation, gs2);
+                    gs2.issue(pa1);
+                    gs2.issue(pa2);
+                }
+            }
+            e += evaluation.evaluate(playerForThisComputation, 1 - playerForThisComputation, gs2);
+        }
+        //System.out.println("Eval ="+ (e/4.0) );
+        return e/4.0;
     }
 
     protected PlayerAction changePlayer(int player, PlayerAction pa, GameState gs) {
