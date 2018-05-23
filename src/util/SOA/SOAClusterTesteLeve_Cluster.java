@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTO {
+public class SOAClusterTesteLeve_Cluster {
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
@@ -37,6 +37,7 @@ public class SOARoundRobinTO {
                         //remove o arquivo da pasta 
                         File remove = new File(arquivo);
                         remove.delete();
+                        System.gc();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -65,14 +66,14 @@ public class SOARoundRobinTO {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinTOMatch control = new RoundRobinTOMatch();
+        RoundRobinClusterLeve_Cluster control = new RoundRobinClusterLeve_Cluster();
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
-                    Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog);
+                    itens[2].trim(),
+                    itens[3].trim(), pathLog);
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOAClusterTesteLeve_Cluster.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
@@ -100,9 +101,9 @@ public class SOARoundRobinTO {
     private static boolean finalizarSOA(String pathSOA) {
         ArrayList<String> arquivos = new ArrayList<>();
         File diretorio = new File(pathSOA);
-        buscar(diretorio, "exit", arquivos);
+        buscarParcial(diretorio, ".txt", arquivos);
 
-        if (arquivos.size() > 0) {
+        if (arquivos.isEmpty()) {
             return true;
         }
 

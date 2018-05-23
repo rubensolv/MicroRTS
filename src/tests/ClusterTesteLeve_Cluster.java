@@ -96,7 +96,7 @@ public class ClusterTesteLeve_Cluster {
         Duration duracao;
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
+               /* "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
                 "maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
                 "maps/battleMaps/8x8/4x4Mixed_map8x8.xml",
                 "maps/battleMaps/8x8/four_goups_Battle_8x8.xml",
@@ -113,11 +113,12 @@ public class ClusterTesteLeve_Cluster {
                 "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsLightHeavy24x24.xml",
                 "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
                 "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"
+                "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"*/
+                "maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
         ));
         
-        //UnitTypeTable utt = new UnitTYpeTableBattle();
-        UnitTypeTable utt = new UnitTypeTable();
+        UnitTypeTable utt = new UnitTYpeTableBattle();
+        //UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);
@@ -155,14 +156,12 @@ public class ClusterTesteLeve_Cluster {
                new CIA_Enemy(utt),
                //new CIA_EnemyWithTime(utt),
                //new CIA_EnemyEuclidieanInfluence(utt),
-               //new AlphaBetaSearch(utt),
+               new AlphaBetaSearch(utt),
                //new CIA_PlayoutCluster(utt),
                //new CIA_PlayoutPower(utt)
                new CIA_PlayoutTemporal(utt, 2, 2),
-               new CIA_PlayoutTemporal(utt, 2, 3),
                new CIA_PlayoutTemporal(utt, 2, 4),
-               new CIA_TDLearning(utt, 2, 2),
-               new CIA_TDLearning(utt, 2, 3),
+               new CIA_TDLearning(utt, 2, 2),               
                new CIA_TDLearning(utt, 2, 4)
         ));
 
@@ -253,7 +252,7 @@ public class ClusterTesteLeve_Cluster {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
             
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 15));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;

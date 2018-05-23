@@ -260,10 +260,6 @@ public class ClusterTesteLeve_GAB_SAB {
                 new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
          */            
         
-        //best response GA 
-        String bestGA = "57;94;205;"; 
-        //String sc2Nash = "25;15;13;11;21;"; 
-        //String bestGA = "240;1;238;21;"; // colocar o melhor cromossomo
         generateConfig();
         List<AI> ais = new ArrayList<>();
 

@@ -68,10 +68,10 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
-        //_params.setPlayerModel(Players.Player_One.codigo(), new NOKDPS(utt));
-        //_params.setPlayerModel(Players.Player_Two.codigo(), new NOKDPS(utt));
-        _params.setPlayerModel(Players.Player_One.codigo(), null);
-        _params.setPlayerModel(Players.Player_Two.codigo(), null);
+        _params.setPlayerModel(Players.Player_One.codigo(), new NOKDPS(utt));
+        _params.setPlayerModel(Players.Player_Two.codigo(), new NOKDPS(utt));
+        //_params.setPlayerModel(Players.Player_One.codigo(), null);
+        //_params.setPlayerModel(Players.Player_Two.codigo(), null);
         _params.setSimScripts(new NOKDPS(utt), new NOKDPS(utt));
 
         ScriptsCreator sc = new ScriptsCreator(utt,300);
@@ -88,8 +88,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                 //add(3, scriptsCompleteSet.get(3));
                 
                 //combat settings
-                //add(0, new NOKDPS(utt));
-                //add(1, new KitterDPS(utt));
+                add(0, new NOKDPS(utt));
+                add(1, new KitterDPS(utt));
                 //add(2, new Cluster(utt));
             }
         });

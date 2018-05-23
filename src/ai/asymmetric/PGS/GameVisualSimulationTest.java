@@ -82,8 +82,8 @@ public class GameVisualSimulationTest {
     static AI[] strategies = null;
 
     public static void main(String args[]) throws Exception {
-        UnitTypeTable utt = new UnitTypeTable();
-        //UnitTypeTable utt = new UnitTYpeTableBattle();
+        //UnitTypeTable utt = new UnitTypeTable();
+        UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
@@ -117,7 +117,8 @@ public class GameVisualSimulationTest {
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/melee16x16Mixed8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/1x1.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml", utt);
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
         int PERIOD = 20;
