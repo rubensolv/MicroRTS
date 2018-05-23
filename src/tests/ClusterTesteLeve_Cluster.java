@@ -46,6 +46,7 @@ import ai.cluster.CIA_EnemyWithTime;
 import ai.cluster.CIA_PlayoutCluster;
 import ai.cluster.CIA_PlayoutPower;
 import ai.cluster.CIA_PlayoutTemporal;
+import ai.cluster.CIA_TDLearning;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -154,15 +155,15 @@ public class ClusterTesteLeve_Cluster {
                new CIA_Enemy(utt),
                //new CIA_EnemyWithTime(utt),
                //new CIA_EnemyEuclidieanInfluence(utt),
-               new AlphaBetaSearch(utt),
+               //new AlphaBetaSearch(utt),
                //new CIA_PlayoutCluster(utt),
                //new CIA_PlayoutPower(utt)
                new CIA_PlayoutTemporal(utt, 2, 2),
                new CIA_PlayoutTemporal(utt, 2, 3),
-               new CIA_PlayoutTemporal(utt, 2, 3),
-               new CIA_PlayoutTemporal(utt, 2, 5),
-               new CIA_PlayoutTemporal(utt, 2, 6)
-               
+               new CIA_PlayoutTemporal(utt, 2, 4),
+               new CIA_TDLearning(utt, 2, 2),
+               new CIA_TDLearning(utt, 2, 3),
+               new CIA_TDLearning(utt, 2, 4)
         ));
 
         AI ai1 = ais.get(iAi1);

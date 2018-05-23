@@ -54,9 +54,11 @@ import ai.minimax.ABCD.IDABCD;
 import ai.portfolio.PortfolioAI;
 import ai.puppet.PuppetSearchMCTS;
 import gui.PhysicalGameStatePanel;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -76,7 +78,7 @@ import util.XMLWriter;
  *
  * @author santi
  */
-public class GameVisualSimulationTest {
+public class GameVisualSimulationSetCover {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
@@ -117,8 +119,11 @@ public class GameVisualSimulationTest {
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/melee16x16Mixed8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/1x1.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
-        GameState gs = new GameState(pgs, utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.fromJSON(readFile("/home/rubens/SetCoverProblemforMRTS/SetCoverProblemRTS/state_0.txt"), utt);
+        //GameState gs = new GameState(pgs, utt);
+        GameState gs = GameState.fromJSON(readFile("/home/rubens/SetCoverProblemforMRTS/state_34.txt"), utt);
+        
         int MAXCYCLES = 8000;
         int PERIOD = 20;
         boolean gameover = false;
@@ -127,7 +132,7 @@ public class GameVisualSimulationTest {
         
         //AI ai1 = new RangedRush(utt);
         //AI ai1 = new WorkerRush(utt);
-        //AI ai1 = new LightRush(utt);
+        AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
         //AI ai1 = new PassiveAI();
         //AI ai1 = new POLightRush(utt);
@@ -135,7 +140,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RangedDefense(utt);
         //AI ai1 = new EconomyRushBurster(utt);        
         //AI ai1 = new PassiveAI(utt);
-        AI ai1 = new NaiveMCTS(utt);
+        //AI ai1 = new NaiveMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
         //AI ai1 = new PVAI(utt);
         //AI ai1 = new WorkerRushPlusPlus(utt);
@@ -154,7 +159,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
   
-        AI ai2 = new CIA_TDLearning(utt);
+        //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
         //AI ai2 = new CIA_PlayoutCluster(utt);
@@ -182,7 +187,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
         
-        //AI ai2 = new RangedDefense(utt);
+        AI ai2 = new RangedDefense(utt);
         //AI ai2 = new PVAI(utt);
         //AI ai2 = new PVAIML_onlyEnemy(utt);
         //AI ai2 = new PVAIML_SLMS(utt);
@@ -211,14 +216,14 @@ public class GameVisualSimulationTest {
                 startTime = System.currentTimeMillis();
                 PlayerAction pa1 = ai1.getAction(0, gs);  
                 //System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
-                //System.out.println("Action A1 ="+ pa1.toString());
+                System.out.println("Action A1 ="+ pa1.toString());
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
                 if( (System.currentTimeMillis() - startTime) >0){
                    System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
                 }
-                //System.out.println("Action A2 ="+ pa2.toString());
+                System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);
                 gs.issueSafe(pa2);
@@ -272,6 +277,23 @@ public class GameVisualSimulationTest {
 
         return scriptsAI;
     }
+    
+    public static String readFile(String fileName) throws IOException {
+	    BufferedReader br = new BufferedReader(new FileReader(fileName));
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
+
+	        while (line != null) {
+	            sb.append(line);
+	            sb.append("\n");
+	            line = br.readLine();
+	        }
+	        return sb.toString();
+	    } finally {
+	        br.close();
+	    }
+	}
 
 
 }

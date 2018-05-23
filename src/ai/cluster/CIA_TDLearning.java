@@ -149,7 +149,7 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
         
-        graph.print();
+        //graph.print();
         if (clusters.size() == 1) {
             //NaiveMCTS ns = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
             IA1.setTimeBudget(100);
@@ -231,7 +231,7 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
 
     @Override
     public String toString() {
-        return "CIA_PlayoutCluster_"+minPoints+"_"+minClusterSize;
+        return "CIA_TDLearning_"+minPoints+"_"+minClusterSize;
     }
 
     private void findBestClusters() throws Exception {
