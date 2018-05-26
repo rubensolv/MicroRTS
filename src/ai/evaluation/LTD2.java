@@ -47,7 +47,7 @@ public class LTD2 extends EvaluationFunction {
     }
     
     private float dpf(Unit target) {
-        return Float.max(target.getMinDamage(), (((float) target.getMaxDamage()) / ((float) target.getAttackTime() + 1.0)));
+        return Float.max(target.getMinDamage(), (float) (((float) target.getMaxDamage()) / ((float) target.getAttackTime() + 1.0)));
     }
     
     public float base_score(int player, GameState gs) {
