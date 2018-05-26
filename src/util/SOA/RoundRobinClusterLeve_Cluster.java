@@ -4,16 +4,23 @@
  */
 package util.SOA;
 
+import Standard.StrategyTactics;
+import ai.abstraction.partialobservability.POLightRush;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.cluster.CABA;
+import ai.cluster.CABA_Enemy;
+import ai.cluster.CABA_TDLearning;
 import ai.cluster.CIA_Enemy;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
+import ai.mcts.believestatemcts.BS3_NaiveMCTS;
 import ai.mcts.naivemcts.NaiveMCTS;
+import ai.puppet.PuppetSearchMCTS;
 import gui.PhysicalGameStatePanel;
 import java.io.File;
 import java.io.FileWriter;
@@ -70,6 +77,8 @@ public class RoundRobinClusterLeve_Cluster {
                 "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
                 "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
                 "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"*/
+                "maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
+                "maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",
                 "maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
         ));
 
@@ -100,15 +109,17 @@ public class RoundRobinClusterLeve_Cluster {
         List<AI> ais = new ArrayList<>(Arrays.asList(
                 //new AHTNAI(utt),
                 new NaiveMCTS(utt),
-                //new BS3_NaiveMCTS(utt),
-                //new PuppetSearchMCTS(utt),
-                //new StrategyTactics(utt),
+                new BS3_NaiveMCTS(utt),
+                new PuppetSearchMCTS(utt),
+                new StrategyTactics(utt),
                 //new PGSmRTS(utt),
                 //new SSSmRTS(utt),
-                //new POLightRush(utt),
+                new POLightRush(utt),
                 //new POWorkerRush(utt),
                 //new CIA(utt),
                 new CIA_Enemy(utt),
+                //new CABA(utt),
+                new CABA_Enemy(utt),
                 //new CIA_EnemyWithTime(utt),
                 //new CIA_EnemyEuclidieanInfluence(utt),
                 new AlphaBetaSearch(utt),
@@ -117,7 +128,9 @@ public class RoundRobinClusterLeve_Cluster {
                 new CIA_PlayoutTemporal(utt, 2, 2),
                 new CIA_PlayoutTemporal(utt, 2, 4),
                 new CIA_TDLearning(utt, 2, 2),
-                new CIA_TDLearning(utt, 2, 4)
+                new CIA_TDLearning(utt, 2, 4),
+                new CABA_TDLearning(utt, 2, 2),
+                new CABA_TDLearning(utt, 2, 4)
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -136,7 +149,7 @@ public class RoundRobinClusterLeve_Cluster {
         log.add("AI 2 = " + ai2.toString() + "\n");
 
         log.add("---------Mapa---------");
-        log.add("Mapa= " + map + "\n");
+        log.add("Mapa= " + maps.get(map) + "\n");
 
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);

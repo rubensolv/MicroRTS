@@ -4,16 +4,29 @@
  */
 package util.SOA;
 
+import Standard.StrategyTactics;
+import ai.abstraction.partialobservability.POHeavyRush;
+import ai.abstraction.partialobservability.POLightRush;
+import ai.abstraction.partialobservability.PORangedRush;
+import ai.abstraction.partialobservability.POWorkerRush;
+import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.cluster.CABA;
+import ai.cluster.CABA_Enemy;
+import ai.cluster.CABA_TDLearning;
 import ai.cluster.CIA_Enemy;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
+import ai.mcts.believestatemcts.BS3_NaiveMCTS;
 import ai.mcts.naivemcts.NaiveMCTS;
+import ai.puppet.PuppetSearchMCTS;
 import gui.PhysicalGameStatePanel;
 import java.io.File;
 import java.io.FileWriter;
@@ -30,13 +43,14 @@ import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
+import static tests.ClusterTesteLeve.decodeScripts;
 
 /**
  *
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinClusterLeve_Cluster {
+public class RoundRobinClusterLeve {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
@@ -70,10 +84,13 @@ public class RoundRobinClusterLeve_Cluster {
                 "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
                 "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
                 "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"*/
-                "maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
+                //"maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
+                //"maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",
+                //"maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
         ));
 
-        UnitTypeTable utt = new UnitTYpeTableBattle();
+        UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);
@@ -97,27 +114,32 @@ public class RoundRobinClusterLeve_Cluster {
             MAXCYCLES = 12000;
         }
 
+        //best response GA PGS
+        String GA_PGS = "32;285;107;267;225;"; 
+        String ST_PGS = "289;2;172;200;"; 
+        String ST_PGS2 = "289;2;172;"; 
+        //best response GA SSS
+        String GA_SSS = "233;97;93;246;117;"; 
+        
+        
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                //new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                //new BS3_NaiveMCTS(utt),
-                //new PuppetSearchMCTS(utt),
-                //new StrategyTactics(utt),
-                //new PGSmRTS(utt),
-                //new SSSmRTS(utt),
-                //new POLightRush(utt),
-                //new POWorkerRush(utt),
-                //new CIA(utt),
-                new CIA_Enemy(utt),
-                //new CIA_EnemyWithTime(utt),
-                //new CIA_EnemyEuclidieanInfluence(utt),
-                new AlphaBetaSearch(utt),
-                //new CIA_PlayoutCluster(utt),
-                //new CIA_PlayoutPower(utt)
-                new CIA_PlayoutTemporal(utt, 2, 2),
-                new CIA_PlayoutTemporal(utt, 2, 4),
-                new CIA_TDLearning(utt, 2, 2),
-                new CIA_TDLearning(utt, 2, 4)
+               new AHTNAI(utt),
+               new NaiveMCTS(utt),
+               new BS3_NaiveMCTS(utt),
+               new PuppetSearchMCTS(utt),
+               new StrategyTactics(utt),
+               new PGSmRTS(utt),
+               new SSSmRTS(utt),
+               new POLightRush(utt),
+               new POHeavyRush(utt),
+               new PORangedRush(utt),
+               new POWorkerRush(utt),
+               
+               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "S_289"),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
+                
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -136,7 +158,7 @@ public class RoundRobinClusterLeve_Cluster {
         log.add("AI 2 = " + ai2.toString() + "\n");
 
         log.add("---------Mapa---------");
-        log.add("Mapa= " + map + "\n");
+        log.add("Mapa= " + maps.get(map) + "\n");
 
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);

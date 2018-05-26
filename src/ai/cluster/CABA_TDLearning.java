@@ -11,6 +11,7 @@ import ai.abstraction.Attack;
 import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
+import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.cluster.MST.GraphTDLearning;
 import ai.cluster.core.hdbscanstar.HDBSCANStarObject;
 import ai.cluster.core.hdbscanstar.UndirectedGraph;
@@ -47,7 +48,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class CIA_TDLearning extends AIWithComputationBudget implements InterruptibleAI {
+public class CABA_TDLearning extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
@@ -55,8 +56,8 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
     ArrayList<ArrayList<Unit>> clusters;
-    //AlphaBetaSearch IA1;
-    NaiveMCTS IA1;
+    AlphaBetaSearch IA1;
+    //NaiveMCTS IA1;
     AI playoutAI1;
     AI playoutAI2;
     GraphTDLearning graph;
@@ -64,12 +65,12 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
     int minPoints = 2;
     int minClusterSize = 2;
 
-    public CIA_TDLearning(UnitTypeTable utt) {
+    public CABA_TDLearning(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 utt,
                 new AStarPathFinding());
     }
-    public CIA_TDLearning(UnitTypeTable utt, int minPoints, int minSize) {
+    public CABA_TDLearning(UnitTypeTable utt, int minPoints, int minSize) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 utt,
                 new AStarPathFinding());
@@ -77,14 +78,14 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
         this.minClusterSize = minSize;
     }
 
-    public CIA_TDLearning(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public CABA_TDLearning(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
         clusters = new ArrayList<>();
-        //IA1 = new AlphaBetaSearch(utt);
-        IA1 = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
+        IA1 = new AlphaBetaSearch(utt);
+        //IA1 = new NaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, new RandomBiasedAI(), new CombinedEvaluation(), true);
         //for run the playout's cluster analyse
         playoutAI1 = new NOKDPS(a_utt);
         playoutAI2 = new NOKDPS(a_utt);
@@ -114,7 +115,7 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
 
     @Override
     public AI clone() {
-        return new CIA_TDLearning(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
+        return new CABA_TDLearning(TIME_BUDGET, ITERATIONS_BUDGET, evaluation, utt, pf);
     }
 
     @Override
@@ -231,7 +232,7 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
 
     @Override
     public String toString() {
-        return "CIA_TDLearning_"+minPoints+"_"+minClusterSize;
+        return "CABA_TDLearning_"+minPoints+"_"+minClusterSize;
     }
 
     private void findBestClusters() throws Exception {
@@ -243,7 +244,7 @@ public class CIA_TDLearning extends AIWithComputationBudget implements Interrupt
             //System.out.println(Arrays.toString(clusterInt));
             buildClusters(graph.generateDataSet(gs_to_start_from), clusterInt, graph.getUnitsOrdered(gs_to_start_from));
         } catch (IOException ex) {
-            Logger.getLogger(CIA_TDLearning.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CABA_TDLearning.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

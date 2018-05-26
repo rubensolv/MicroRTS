@@ -10,22 +10,44 @@ import rts.units.*;
 
 /**
  *
- * @author santi
+ * @author rubens
  * 
- * This function uses the same base evaluation as SimpleSqrtEvaluationFunction and SimpleSqrtEvaluationFunction2, but returns the (proportion*2)-1 of the total score on the board that belongs to one player.
- * The advantage of this function is that evaluation is bounded between -1 and 1.
+ * This function uses the same base evaluation as SparCraft LTD2
  */
-public class SimpleSqrtEvaluationFunction3 extends EvaluationFunction {    
+public class LTD2 extends EvaluationFunction {    
     public static float RESOURCE = 20;
     public static float RESOURCE_IN_WORKER = 10;
     public static float UNIT_BONUS_MULTIPLIER = 40.0f;
     
     
+    @Override
     public float evaluate(int maxplayer, int minplayer, GameState gs) {
-        float s1 = base_score(maxplayer,gs);
-        float s2 = base_score(minplayer,gs);
-        if (s1 + s2 == 0) return 0.5f;
-        return  (2*s1 / (s1 + s2))-1;
+        //float s1 = LTD2_score(maxplayer,gs);
+        //float s2 = LTD2_score(minplayer,gs);
+        return  LTD2_score(maxplayer,gs) - LTD2_score(minplayer,gs);
+    }
+    
+    protected float LTD2_score(int player, GameState gs){
+        if(numUnits(player, gs) == 0){
+            return 0.0f;
+        }
+        
+        float sum = 0.0f;
+        float totalSQRT = 0.0f;
+        
+        for (Unit unit : gs.getUnits()) {
+            if(unit.getPlayer() == player){
+                totalSQRT += Math.sqrt(unit.getMaxHitPoints()) * dpf(unit);
+                sum += Math.sqrt(unit.getHitPoints()) * dpf(unit);
+            }
+        }
+        float ret = (1000*sum / totalSQRT);
+        
+        return ret;
+    }
+    
+    private float dpf(Unit target) {
+        return Float.max(target.getMinDamage(), (((float) target.getMaxDamage()) / ((float) target.getAttackTime() + 1.0)));
     }
     
     public float base_score(int player, GameState gs) {
@@ -43,7 +65,18 @@ public class SimpleSqrtEvaluationFunction3 extends EvaluationFunction {
         return score;
     }    
     
+    @Override
     public float upperBound(GameState gs) {
         return 1.0f;
+    }
+
+    private int numUnits(int player, GameState gs) {
+        int qtdUnits = 0;
+        for (Unit unit : gs.getUnits()) {
+            if(unit.getPlayer() == player){
+                qtdUnits++;
+            }
+        }
+        return qtdUnits;
     }
 }
