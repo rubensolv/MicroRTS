@@ -42,6 +42,8 @@ public class GameVisualSimulationTest {
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)Python.scxF.xml", utt);
+      //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A_Barrack.xml", utt);
+        
 
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
