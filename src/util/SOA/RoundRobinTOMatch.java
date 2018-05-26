@@ -43,13 +43,13 @@ public class RoundRobinTOMatch {
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
 
-        String map = "maps/BroodWar/(4)BloodBath.scmB.xml";
+        String map = "maps/24x24/basesWorkers24x24A_Barrack.xml";
 
         UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(map, utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 10000;
+        int MAXCYCLES = 5000;
         int PERIOD = 20;
         boolean gameover = false;
 
@@ -142,7 +142,7 @@ public class RoundRobinTOMatch {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 7));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 

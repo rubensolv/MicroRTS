@@ -92,7 +92,7 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
-      PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
+      //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
@@ -118,7 +118,7 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/1x1.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml", utt);
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
         int PERIOD = 20;
@@ -136,7 +136,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RangedDefense(utt);
         //AI ai1 = new EconomyRushBurster(utt);        
         //AI ai1 = new PassiveAI(utt);
-        //AI ai1 = new NaiveMCTS(utt);
+        AI ai1 = new NaiveMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
         //AI ai1 = new PVAI(utt);
         //AI ai1 = new WorkerRushPlusPlus(utt);
@@ -153,13 +153,13 @@ public class GameVisualSimulationTest {
         //AI ai1 = new IDABCD(utt);
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
-        AI ai1 = new SSSmRTS(utt);
+        //AI ai1 = new SSSmRTS(utt);
   
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
         //AI ai2 = new CIA_PlayoutCluster(utt);
-        //AI ai2 = new AlphaBetaSearch(utt);
+        AI ai2 = new AlphaBetaSearch(utt);
         //AI ai2 = new SSSmRTS(utt);
         //AI ai2 = new CABA(utt);
         //AI ai2 = new CABA_Enemy(utt);
@@ -169,7 +169,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new CIA_EnemyWithTime(utt);
         //AI ai1 = new PassiveAI();
         //AI ai2 = new SAB(utt);
-        AI ai2 = new SAB_seed(utt);
+        //AI ai2 = new SAB_seed(utt);
         //AI ai2 = new Cluster(utt);
         //AI ai2 = new KitterDPS(utt);
         //AI ai2 = new NOKDPS(utt);
