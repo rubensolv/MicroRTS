@@ -60,9 +60,19 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     //class to control a relation between unit ID and Unit Index (limited to 100).
     LookUpUnits lKp = new LookUpUnits();
+    //using to identify the ABCD version.
+    String ABCD_Ident = "";
 
     public AlphaBetaSearch(UnitTypeTable utt) {
         this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
+    }
+    
+    public AlphaBetaSearch(UnitTypeTable utt, EvaluationFunction eval, String ident) {
+        this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
+        this.ABCD_Ident =ident;
+        _params.setEvalMethod(eval);
+        evaluation = eval;
+        
     }
 
     public AlphaBetaSearch(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
@@ -89,7 +99,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                 
                 //combat settings
                 add(0, new NOKDPS(utt));
-                //add(1, new KitterDPS(utt));
+                add(1, new KitterDPS(utt));
                 //add(2, new Cluster(utt));
             }
         });
@@ -760,7 +770,12 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
 
     @Override
     public String toString() {
-        return "AlphaBetaSearch{" + "_params=" + _params.getDescription() + '}';
+        if(this.ABCD_Ident.equals("")){
+            //return "AlphaBetaSearch{" + "_params=" + _params.getDescription() + '}';
+            return "AlphaBetaSearch_original";
+        }
+        //return "AlphaBetaSearch_"+ABCD_Ident+"_"+_params.getEvalMethod().toString()+"_"+evaluation.toString();
+        return "AlphaBetaSearch_"+ABCD_Ident+"_"+_params.getEvalMethod().toString();
     }
 
     protected void stopSearch() throws Exception {
@@ -792,6 +807,14 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
     public void setTimeBudget(int a_tb) {
         super.setTimeBudget(a_tb); //To change body of generated methods, choose Tools | Templates.
         this._params.setTimeLimit(a_tb);
+    }
+
+    public String getABCD_Ident() {
+        return ABCD_Ident;
+    }
+
+    public void setABCD_Ident(String ABCD_Ident) {
+        this.ABCD_Ident = ABCD_Ident;
     }
     
     

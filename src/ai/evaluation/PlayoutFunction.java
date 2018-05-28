@@ -4,6 +4,9 @@
  */
 package ai.evaluation;
 
+import ai.core.AI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.units.*;
@@ -14,17 +17,42 @@ import rts.units.*;
  * 
  * This function uses the same base evaluation as SparCraft LTD2
  */
-public class LTD2 extends EvaluationFunction {    
+public class PlayoutFunction extends EvaluationFunction {    
     public static float RESOURCE = 20;
     public static float RESOURCE_IN_WORKER = 10;
     public static float UNIT_BONUS_MULTIPLIER = 40.0f;
-    
+    public AI p1;
+    public AI p2;
+    public EvaluationFunction eval;
+
+    public PlayoutFunction(AI p1, AI p2, EvaluationFunction eval) {
+        this.p1 = p1;
+        this.p2 = p2;
+        this.eval = eval;
+    }
+
     
     @Override
     public float evaluate(int maxplayer, int minplayer, GameState gs) {
-        //float s1 = LTD2_score(maxplayer,gs);
-        //float s2 = LTD2_score(minplayer,gs);
-        return  LTD2_score(maxplayer,gs) - LTD2_score(minplayer,gs);
+        
+        GameState gs2 = gs.clone();
+        boolean gameover = false;
+        int time = gs2.getTime() + 100;
+        do{
+            if (gs2.isComplete()) {
+                gameover = gs2.cycle();
+            } else {
+                try {
+                    gs2.issue(p1.getAction(0, gs2));
+                    gs2.issue(p2.getAction(1, gs2));
+                } catch (Exception ex) {
+                    Logger.getLogger(PlayoutFunction.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }while(!gameover && gs2.getTime()< time);
+        
+        
+        return  eval.evaluate(maxplayer, minplayer, gs2);
     }
     
     protected float LTD2_score(int player, GameState gs){
@@ -79,4 +107,11 @@ public class LTD2 extends EvaluationFunction {
         }
         return qtdUnits;
     }
+
+    @Override
+    public String toString() {
+        return "PlayoutFunction{" + "p1=" + p1 + ", p2=" + p2 + ", eval=" + eval + '}';
+    }
+    
+    
 }

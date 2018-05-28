@@ -116,8 +116,7 @@ public class RoundRobinClusterLeve {
 
         //best response GA PGS
         String GA_PGS = "32;285;107;267;225;"; 
-        String ST_PGS = "289;2;172;200;"; 
-        String ST_PGS2 = "289;2;172;"; 
+        String ST_PGS = "201;232;151;"; 
         //best response GA SSS
         String GA_SSS = "233;97;93;246;117;"; 
         
@@ -137,7 +136,6 @@ public class RoundRobinClusterLeve {
                
                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
                new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "S_289"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
                 
         ));

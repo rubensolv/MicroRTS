@@ -47,7 +47,9 @@ import ai.cluster.CIA_TDLearning;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.EvaluationFunctionForwarding;
+import ai.evaluation.LTD2;
 import ai.evaluation.LanchesterEvaluationFunction;
+import ai.evaluation.PlayoutFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.mcts.naivemcts.NaiveMCTS;
 import ai.minimax.ABCD.IDABCD;
@@ -136,7 +138,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RangedDefense(utt);
         //AI ai1 = new EconomyRushBurster(utt);        
         //AI ai1 = new PassiveAI(utt);
-        AI ai1 = new NaiveMCTS(utt);
+        //AI ai1 = new NaiveMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
         //AI ai1 = new PVAI(utt);
         //AI ai1 = new WorkerRushPlusPlus(utt);
@@ -154,6 +156,8 @@ public class GameVisualSimulationTest {
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
+        //AI ai1 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
+        AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2");
   
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
