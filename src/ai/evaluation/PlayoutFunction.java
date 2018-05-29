@@ -34,28 +34,26 @@ public class PlayoutFunction extends EvaluationFunction {
 
     @Override
     public float evaluate(int maxplayer, int minplayer, GameState gs) {
-        try {
-            GameState gs2 = gs.clone();
-            boolean gameover = false;
-            int time = gs2.getTime() + 100;
-            do {
-                if (gs2.isComplete()) {
-                    gameover = gs2.cycle();
-                } else {
-                    try {
-                        gs2.issue(p1.getAction(0, gs2));
-                        gs2.issue(p2.getAction(1, gs2));
-                    } catch (Exception ex) {
-                        //Logger.getLogger(PlayoutFunction.class.getName()).log(Level.SEVERE, null, ex);
-                        return eval.evaluate(maxplayer, minplayer, gs2);
-                    }
-                }
-            } while (!gameover && gs2.getTime() < time);
 
-            return eval.evaluate(maxplayer, minplayer, gs2);
-        } catch (Exception ex) {
-            return eval.evaluate(maxplayer, minplayer, gs);
-        }
+        GameState gs2 = gs.clone();
+        boolean gameover = false;
+        int time = gs2.getTime() + 100;
+        do {
+            if (gs2.isComplete()) {
+                gameover = gs2.cycle();
+            } else {
+                try {
+                    gs2.issue(p1.getAction(0, gs2));
+                    gs2.issue(p2.getAction(1, gs2));
+                } catch (Exception ex) {
+                    //Logger.getLogger(PlayoutFunction.class.getName()).log(Level.SEVERE, null, ex);
+                    return eval.evaluate(maxplayer, minplayer, gs2);
+                }
+            }
+        } while (!gameover && gs2.getTime() < time);
+
+        return eval.evaluate(maxplayer, minplayer, gs2);
+
     }
 
     protected float LTD2_score(int player, GameState gs) {

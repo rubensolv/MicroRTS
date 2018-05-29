@@ -73,7 +73,8 @@ public class SOAClusterTesteLeve_Cluster {
                     itens[2].trim(),
                     itens[3].trim(), pathLog);
         } catch (Exception ex) {
-            Logger.getLogger(SOAClusterTesteLeve_Cluster.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(SOAClusterTesteLeve_Cluster.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Continuar....");
         }
         return false;
     }

@@ -306,15 +306,16 @@ public class ClusterTesteLeve {
          */            
         
         //best response GA PGS
-        String GA_PGS = "32;285;107;267;225;"; 
-        String ST_PGS = "289;2;172;0;200;"; 
-        String ST_PGS2 = "289;"; 
+        //String GA_PGS = "32;285;107;267;225;"; 
+        String ST_PGS = "201;232;"; 
+        String ST_PGS2 = "201;232;151;189;"; 
         //best response GA SSS
-        String GA_SSS = "233;97;93;246;117;"; 
+        //String GA_SSS = "233;97;93;246;117;"; 
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               new AHTNAI(utt),
+               /*
+                new AHTNAI(utt),
                new NaiveMCTS(utt),
                new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
@@ -325,11 +326,11 @@ public class ClusterTesteLeve {
                new POHeavyRush(utt),
                new PORangedRush(utt),
                new POWorkerRush(utt),
-               
-               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "S_289"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
+               */
+               //new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2")
+               //new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
                
                 
         ));

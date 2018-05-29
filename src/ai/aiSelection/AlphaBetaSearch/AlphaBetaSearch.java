@@ -269,10 +269,10 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                         && !child.canExecuteAnyAction(0)
                         && !child.canExecuteAnyAction(1)) {
                     child.cycle();
-                    stopSearch();
                 }
                 stopSearch();
                 // get the alpha beta value
+                
                 val = alphaBeta(child, (depth - 1), playerToMove, null, alpha, beta);
             }
 
@@ -656,7 +656,10 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         PlayerAction act = new PlayerAction();
         for (Action action : movesToAplly) {
             if (lKp.getOrigIDUnit(action.getUnit()) != null) {
-                act.addUnitAction(child.getUnit(lKp.getOrigIDUnit(action.getUnit())), action.getUnitAction());
+                Unit un = child.getUnit(lKp.getOrigIDUnit(action.getUnit()));
+                if(un != null){
+                    act.addUnitAction(un, action.getUnitAction());
+                }
             } else {
                 System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.applyActionState() Erro ao encontrar unidade");
             }
@@ -664,7 +667,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
         try {
             child.issue(act);
         } catch (Exception e) {
-            System.out.println("Erro applyActionState " + e.toString());
+            System.out.println("Big Problem Erro applyActionState " + e.toString());
         }
 
     }

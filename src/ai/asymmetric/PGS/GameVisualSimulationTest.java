@@ -157,16 +157,16 @@ public class GameVisualSimulationTest {
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
-        AI ai2 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
+        //AI ai2 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
         //AI ai2 = new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2");
-        //AI ai2 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
-        //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");
+        AI ai2 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
+        //AI ai2 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");
   
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
         //AI ai2 = new CIA_PlayoutCluster(utt);
-        AI ai1 = new AlphaBetaSearch(utt);
+        //AI ai1 = new AlphaBetaSearch(utt);
         //AI ai2 = new SSSmRTS(utt);
         //AI ai2 = new CABA(utt);
         //AI ai2 = new CABA_Enemy(utt);
@@ -179,7 +179,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new SAB_seed(utt);
         //AI ai2 = new Cluster(utt);
         //AI ai2 = new KitterDPS(utt);
-        //AI ai2 = new NOKDPS(utt);
+        //AI ai1 = new NOKDPS(utt);
         //AI ai2 = new GAB(utt);
         //AI ai2 = new GAB(utt);
         //AI ai2 = new AlphaBetaSearchAbstract(utt);
@@ -187,8 +187,8 @@ public class GameVisualSimulationTest {
         //AI ai2 = new GAB(utt);
         //AI ai2 = new PGSmRTS(utt); 
         //AI ai2 = new WorkerRush(utt);
-        //AI ai2 = new PuppetSearchMCTS(utt);
-        //AI ai2 = new POLightRush(utt);
+        AI ai1 = new PuppetSearchMCTS(utt);
+        //AI ai1 = new POLightRush(utt);
         
         //AI ai2 = new RangedDefense(utt);
         //AI ai2 = new PVAI(utt);
@@ -223,9 +223,9 @@ public class GameVisualSimulationTest {
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                if( (System.currentTimeMillis() - startTime) >0){
-                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
-                }
+                //if( (System.currentTimeMillis() - startTime) >0){
+                //   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                //}
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);
