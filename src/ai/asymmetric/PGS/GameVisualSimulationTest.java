@@ -120,7 +120,8 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/1x1.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",utt);
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
         int PERIOD = 20;
@@ -156,14 +157,16 @@ public class GameVisualSimulationTest {
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
-        //AI ai1 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
-        AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2");
+        AI ai2 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
+        //AI ai2 = new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2");
+        //AI ai2 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
+        //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");
   
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
         //AI ai2 = new CIA_PlayoutCluster(utt);
-        AI ai2 = new AlphaBetaSearch(utt);
+        AI ai1 = new AlphaBetaSearch(utt);
         //AI ai2 = new SSSmRTS(utt);
         //AI ai2 = new CABA(utt);
         //AI ai2 = new CABA_Enemy(utt);

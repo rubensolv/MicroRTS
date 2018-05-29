@@ -137,47 +137,49 @@ public class KitterDPS extends AbstractionLayerAI {
 
             Unit ourUnit = unit;
             Unit closestUnit = getClosestEnemyUnit(ourUnit, pgs);
-
-            for (UnitAction move : getUnitActions(ourUnit)) {
-                if ((move.getType() == UnitAction.TYPE_ATTACK_LOCATION)) {
-                    Unit target = getEnemyByPosition(enemyUnits, move);
-                    double dpsHPValue = (dpf(target) / target.getHitPoints());
-
-                    if (dpsHPValue > actionHighestDPS) {
-                        actionHighestDPS = dpsHPValue;
-                        actionMoveIndex = move;
-                        foundAction = true;
-                    }
-                } else if ((move.getType() == UnitAction.TYPE_MOVE)) {
-                    int destX = move.getLocationX(); //+ move.getDirection();
-                    int destY = move.getLocationY(); //+ move.getDirection();
-
-                    int dist = getDistanceSqToUnit(destX, destY, closestUnit.getX(), closestUnit.getY());
-                    if (dist > furthestMoveDist) {
-                        furthestMoveDist = dist;
-                        furthestMoveIndex = move;
-                    }
-                    if (dist < closestMoveDist) {
-                        closestMoveDist = dist;
-                        closestMoveIndex = move;
-                    }
-                }
-            }
             // the move we will be returning
-            UnitAction bestMoveIndex;
+            UnitAction bestMoveIndex = null;
+            if (closestUnit != null) {
 
-            // if we have an attack move we will use that one
-            if (foundAction) {
-                bestMoveIndex = actionMoveIndex;
-            } else {// otherwise use the closest move to the opponent
-                // if we are in attack range of the unit, back up
-                if (CanAttackTarget(closestUnit, ourUnit)) {
-                    bestMoveIndex = furthestMoveIndex;
-                } else {// otherwise get back into the fight
-                    bestMoveIndex = closestMoveIndex;
+                for (UnitAction move : getUnitActions(ourUnit)) {
+                    if ((move.getType() == UnitAction.TYPE_ATTACK_LOCATION)) {
+                        Unit target = getEnemyByPosition(enemyUnits, move);
+                        double dpsHPValue = (dpf(target) / target.getHitPoints());
+
+                        if (dpsHPValue > actionHighestDPS) {
+                            actionHighestDPS = dpsHPValue;
+                            actionMoveIndex = move;
+                            foundAction = true;
+                        }
+                    } else if ((move.getType() == UnitAction.TYPE_MOVE)) {
+                        int destX = move.getLocationX(); //+ move.getDirection();
+                        int destY = move.getLocationY(); //+ move.getDirection();
+
+                        int dist = getDistanceSqToUnit(destX, destY, closestUnit.getX(), closestUnit.getY());
+                        if (dist > furthestMoveDist) {
+                            furthestMoveDist = dist;
+                            furthestMoveIndex = move;
+                        }
+                        if (dist < closestMoveDist) {
+                            closestMoveDist = dist;
+                            closestMoveIndex = move;
+                        }
+                    }
+                }
+                
+
+                // if we have an attack move we will use that one
+                if (foundAction) {
+                    bestMoveIndex = actionMoveIndex;
+                } else {// otherwise use the closest move to the opponent
+                    // if we are in attack range of the unit, back up
+                    if (CanAttackTarget(closestUnit, ourUnit)) {
+                        bestMoveIndex = furthestMoveIndex;
+                    } else {// otherwise get back into the fight
+                        bestMoveIndex = closestMoveIndex;
+                    }
                 }
             }
-
             if (bestMoveIndex == null) {
                 bestMoveIndex = new UnitAction(UnitAction.TYPE_NONE, 10);
             }
@@ -196,56 +198,57 @@ public class KitterDPS extends AbstractionLayerAI {
         ArrayList<UnitAction> ActionsT = new ArrayList<>();
         //attack action : attack unit more close
         Unit enemy = getClosestEnemyUnit(ourUnit, gs_to_Compute.getPhysicalGameState());
-        UnitAction t = new Attack(ourUnit, enemy, pf).execute(gs_to_Compute);
-        if (t != null) {
-            ActionsT.add(t);
-        } else {
-            t = new Move(ourUnit, enemy.getX(), enemy.getY(), pf).execute(gs_to_Compute);
+        if (enemy != null) {
+            UnitAction t = new Attack(ourUnit, enemy, pf).execute(gs_to_Compute);
             if (t != null) {
                 ActionsT.add(t);
-            }
-        }
-        
-
-        //add all news attack actions
-        for (Unit unitEn : gs_to_Compute.getUnits()) {
-            if (unitEn.getPlayer() == (1 - playerForComputation)) {
-                //try attack that unit
-                t = new Attack(ourUnit, unitEn, pf).execute(gs_to_Compute);
+            } else {
+                t = new Move(ourUnit, enemy.getX(), enemy.getY(), pf).execute(gs_to_Compute);
                 if (t != null) {
-                    if (t.getType() == UnitAction.TYPE_ATTACK_LOCATION) {
-                        ActionsT.add(t);
-                    }
-
+                    ActionsT.add(t);
                 }
             }
-        }
-        
-        //action return back
-        if (!ActionsT.isEmpty()) {
-            UnitAction t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY() - 1, pf).execute(gs_to_Compute);
-            if (t4 != null) {
-                ActionsT.add(t4);
+
+            //add all news attack actions
+            for (Unit unitEn : gs_to_Compute.getUnits()) {
+                if (unitEn.getPlayer() == (1 - playerForComputation)) {
+                    //try attack that unit
+                    t = new Attack(ourUnit, unitEn, pf).execute(gs_to_Compute);
+                    if (t != null) {
+                        if (t.getType() == UnitAction.TYPE_ATTACK_LOCATION) {
+                            ActionsT.add(t);
+                        }
+
+                    }
+                }
             }
-            t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY(), pf).execute(gs_to_Compute);
-            if (t4 != null) {
-                ActionsT.add(t4);
-            }
-            t4 = new Move(ourUnit, ourUnit.getX(), ourUnit.getY() - 1, pf).execute(gs_to_Compute);
-            if (t4 != null) {
-                ActionsT.add(t4);
-            }
-            UnitAction t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY() + 1, pf).execute(gs_to_Compute);
-            if (t5 != null) {
-                ActionsT.add(t5);
-            }
-            t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY(), pf).execute(gs_to_Compute);
-            if (t5 != null) {
-                ActionsT.add(t5);
-            }
-            t5 = new Move(ourUnit, ourUnit.getX(), ourUnit.getY() + 1, pf).execute(gs_to_Compute);
-            if (t5 != null) {
-                ActionsT.add(t5);
+
+            //action return back
+            if (!ActionsT.isEmpty()) {
+                UnitAction t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY() - 1, pf).execute(gs_to_Compute);
+                if (t4 != null) {
+                    ActionsT.add(t4);
+                }
+                t4 = new Move(ourUnit, ourUnit.getX() - 1, ourUnit.getY(), pf).execute(gs_to_Compute);
+                if (t4 != null) {
+                    ActionsT.add(t4);
+                }
+                t4 = new Move(ourUnit, ourUnit.getX(), ourUnit.getY() - 1, pf).execute(gs_to_Compute);
+                if (t4 != null) {
+                    ActionsT.add(t4);
+                }
+                UnitAction t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY() + 1, pf).execute(gs_to_Compute);
+                if (t5 != null) {
+                    ActionsT.add(t5);
+                }
+                t5 = new Move(ourUnit, ourUnit.getX() + 1, ourUnit.getY(), pf).execute(gs_to_Compute);
+                if (t5 != null) {
+                    ActionsT.add(t5);
+                }
+                t5 = new Move(ourUnit, ourUnit.getX(), ourUnit.getY() + 1, pf).execute(gs_to_Compute);
+                if (t5 != null) {
+                    ActionsT.add(t5);
+                }
             }
         }
         return ActionsT;

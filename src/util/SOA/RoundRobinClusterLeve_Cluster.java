@@ -5,7 +5,11 @@
 package util.SOA;
 
 import Standard.StrategyTactics;
+import ai.RandomBiasedAI;
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POLightRush;
+import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
@@ -18,6 +22,8 @@ import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
+import ai.evaluation.LTD2;
+import ai.evaluation.PlayoutFunction;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
 import ai.mcts.naivemcts.NaiveMCTS;
 import ai.puppet.PuppetSearchMCTS;
@@ -91,19 +97,19 @@ public class RoundRobinClusterLeve_Cluster {
         boolean gameover = false;
 
         if (pgs.getHeight() == 8) {
-            MAXCYCLES = 4000;
-        }
-        if (pgs.getHeight() == 16) {
-            MAXCYCLES = 5000;
-        }
-        if (pgs.getHeight() == 24) {
             MAXCYCLES = 6000;
         }
+        if (pgs.getHeight() == 16) {
+            MAXCYCLES = 9000;
+        }
+        if (pgs.getHeight() == 24) {
+            MAXCYCLES = 10000;
+        }
         if (pgs.getHeight() == 32) {
-            MAXCYCLES = 7000;
+            MAXCYCLES = 11000;
         }
         if (pgs.getHeight() == 64) {
-            MAXCYCLES = 12000;
+            MAXCYCLES = 15000;
         }
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
@@ -117,20 +123,26 @@ public class RoundRobinClusterLeve_Cluster {
                 new POLightRush(utt),
                 //new POWorkerRush(utt),
                 //new CIA(utt),
-                new CIA_Enemy(utt),
+                //new CIA_Enemy(utt),
                 //new CABA(utt),
-                new CABA_Enemy(utt),
+                //new CABA_Enemy(utt),
                 //new CIA_EnemyWithTime(utt),
                 //new CIA_EnemyEuclidieanInfluence(utt),
                 new AlphaBetaSearch(utt),
                 //new CIA_PlayoutCluster(utt),
                 //new CIA_PlayoutPower(utt)
-                new CIA_PlayoutTemporal(utt, 2, 2),
+                //new CIA_PlayoutTemporal(utt, 2, 2),
                 new CIA_PlayoutTemporal(utt, 2, 4),
-                new CIA_TDLearning(utt, 2, 2),
-                new CIA_TDLearning(utt, 2, 4),
-                new CABA_TDLearning(utt, 2, 2),
-                new CABA_TDLearning(utt, 2, 4)
+                //new CIA_TDLearning(utt, 2, 2),
+                //new CIA_TDLearning(utt, 2, 4),
+                //new CABA_TDLearning(utt, 2, 2),
+                new CABA_TDLearning(utt, 2, 4),
+                new AlphaBetaSearch(utt, new LTD2(), "LTD2"),
+                new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2"),
+                new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2"),
+                new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2"),
+                new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2")
+                
         ));
 
         AI ai1 = ais.get(iAi1);
