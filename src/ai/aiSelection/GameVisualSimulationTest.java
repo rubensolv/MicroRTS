@@ -31,10 +31,10 @@ public class GameVisualSimulationTest {
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        PhysicalGameState pgs =  PhysicalGameState.load("maps/64x64/SimplePathExplore64x64.xml", utt);
+        //PhysicalGameState pgs =  PhysicalGameState.load("maps/64x64/SimplePathExplore64x64.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
@@ -56,14 +56,17 @@ public class GameVisualSimulationTest {
         //scripts ai1
         List<AI> scripts1 = new ArrayList<>();
         scripts1.add(scriptsCompleteSet.get(0));
-        //scripts1.add(scriptsCompleteSet.get(1));
+        scripts1.add(scriptsCompleteSet.get(1));
+        scripts1.add(scriptsCompleteSet.get(2));
+        scripts1.add(scriptsCompleteSet.get(3));
         //scripts ai2
         List<AI> scripts2 = new ArrayList<>();
         
-        scripts2.add(scriptsCompleteSet.get(3));
-        scripts2.add(scriptsCompleteSet.get(2));
-        scripts2.add(scriptsCompleteSet.get(1));
-        //scripts2.add(scriptsCompleteSet.get(0));
+        scripts2.add(scriptsCompleteSet.get(201));
+        scripts2.add(scriptsCompleteSet.get(232));
+        scripts2.add(scriptsCompleteSet.get(188));
+        scripts2.add(scriptsCompleteSet.get(151));
+        scripts2.add(scriptsCompleteSet.get(26));
         //scripts2.add(new WorkerRush(utt));
         //scripts2.add(new RangedRush(utt));
         //scripts2.add(new LightRush(utt));
@@ -72,13 +75,13 @@ public class GameVisualSimulationTest {
         
         
         //AI ai1 = new PassiveAI();
-        //AI ai1 = new PGSSCriptChoice(utt, scripts1);
+        AI ai2 = new PGSSCriptChoice(utt, scripts1);
         //AI ai1 = new WorkerRush(utt);
-        AI ai1 = new LightRush(utt);
+        //AI ai1 = new LightRush(utt);
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PuppetSearchMCTS(utt);
         
-        AI ai2 = new PGSSCriptChoice(utt, scripts2);
+        AI ai1 = new PGSSCriptChoice(utt, scripts2);
         
         
         System.out.println("---------AI's---------");

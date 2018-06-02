@@ -241,7 +241,15 @@ public class BehaviorDefense {
 			if (p.getResources() >= bec.barracksType.cost + bec.resourcesUsed && !freeWorkers.isEmpty() && bases.size()>0) {
 				Unit u = freeWorkers.remove(0);
 				Unit b = bases.get(bec.nbarracks);
-				bec.buildIfNotAlreadyBuilding(u,bec.barracksType,b.getX(),b.getY(),reservedPositions,p,pgs);
+				int xCoord=b.getX();
+				int yCoord=b.getY();
+				
+				if(player==0)
+				{
+					xCoord=b.getX()+2;
+					yCoord=b.getY()+2;
+				}
+				bec.buildIfNotAlreadyBuilding(u,bec.barracksType,xCoord,yCoord,reservedPositions,p,pgs);
 				bec.resourcesUsed += bec.barracksType.cost;
 			}
 		}
@@ -297,7 +305,15 @@ public class BehaviorDefense {
 					Unit b =bases.get(0);
 					if(bases.size()>=bec.nbarracks+1)
 						b = bases.get(bec.nbarracks);
-					bec.buildIfNotAlreadyBuilding(u, bec.barracksType, b.getX(), b.getY(), reservedPositions, p, pgs);
+					int xCoord=b.getX();
+					int yCoord=b.getY();
+					
+					if(player==0)
+					{
+						xCoord=b.getX()+2;
+						yCoord=b.getY()+2;
+					}
+					bec.buildIfNotAlreadyBuilding(u,bec.barracksType,xCoord,yCoord,reservedPositions,p,pgs);
 					bec.resourcesUsed += bec.barracksType.cost;
 				}
 			}
