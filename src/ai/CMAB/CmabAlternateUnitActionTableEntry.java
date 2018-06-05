@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.mcts.naivemcts;
+package ai.CMAB;
 
+import ai.mcts.naivemcts.*;
 import java.util.List;
 import rts.UnitAction;
 import rts.units.Unit;
@@ -12,7 +13,7 @@ import rts.units.Unit;
  *
  * @author santi
  */
-public class UnitActionTableEntry {
+public class CmabAlternateUnitActionTableEntry {
     public Unit u;
     public int nactions = 0;
     public List<UnitAction> actions = null;

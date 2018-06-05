@@ -1,12 +1,12 @@
-/********************************************************************************
-Organization		: Drexel University
-Institute		: Computer Science Department
-Authors			: Santiago Ontanon
-Class			: Sampler
-Function		: This class contains methods to sample
-                          from a given distribution. Including support
-                          for exploration vs exploitation.
- *********************************************************************************/
+/** ******************************************************************************
+ * Organization		: Drexel University
+ * Institute		: Computer Science Department
+ * Authors			: Santiago Ontanon
+ * Class			: Sampler
+ * Function		: This class contains methods to sample
+ * from a given distribution. Including support
+ * for exploration vs exploitation.
+ ******************************************************************************** */
 package util;
 
 import java.util.LinkedList;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Sampler {
+
     static Random generator = new Random();
 
     /*
@@ -83,8 +84,10 @@ public class Sampler {
         for (double f : distribution) {
             total += f;
         }
-        
-        if (total==0) return random(distribution);
+
+        if (total == 0) {
+            return random(distribution);
+        }
 
         tmp = generator.nextDouble() * total;
         for (int i = 0; i < distribution.length; i++) {
@@ -96,8 +99,7 @@ public class Sampler {
 
         throw new Exception("Input distribution empty in Sampler.weighted!");
     }
-    
-    
+
     /*
      * Returns an element in the distribution, using the weights as their relative probabilities
      */
@@ -107,8 +109,10 @@ public class Sampler {
         for (double f : distribution) {
             total += f;
         }
-        
-        if (total==0) return outputs.get(generator.nextInt(outputs.size()));
+
+        if (total == 0) {
+            return outputs.get(generator.nextInt(outputs.size()));
+        }
 
         tmp = generator.nextDouble() * total;
         for (int i = 0; i < distribution.size(); i++) {
@@ -119,7 +123,7 @@ public class Sampler {
         }
 
         throw new Exception("Input distribution empty in Sampler.weighted!");
-    }    
+    }
 
     /*
      * Returns an element in the distribution following the probabilities, but using 'e' as the exploration factor.
@@ -142,14 +146,14 @@ public class Sampler {
         }
         double[] exponentiated = new double[distribution.length];
 
-        for (int i = 0;i<distribution.length;i++) {
-            exponentiated[i]=Math.pow(distribution[i], exponent);
+        for (int i = 0; i < distribution.length; i++) {
+            exponentiated[i] = Math.pow(distribution[i], exponent);
         }
 
         return weighted(exponentiated);
     }
 
-/*
+    /*
     // Example:
     public static void main(String args[]) {
         int histo[] = {0, 0, 0, 0, 0};
@@ -191,5 +195,5 @@ public class Sampler {
             e.printStackTrace();
         }
     }
- */
+     */
 }

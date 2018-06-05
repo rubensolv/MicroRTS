@@ -24,6 +24,7 @@ import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.LTD2;
 import ai.evaluation.PlayoutFunction;
+import ai.evaluation.SimpleEvaluationFunction;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
 import ai.mcts.naivemcts.NaiveMCTS;
 import ai.puppet.PuppetSearchMCTS;
@@ -65,8 +66,9 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                /* "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
-                "maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
+                 "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml"
+                //"maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
+                /*"maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
                 "maps/battleMaps/8x8/4x4Mixed_map8x8.xml",
                 "maps/battleMaps/8x8/four_goups_Battle_8x8.xml",
                 "maps/battleMaps/8x8/lineBattle8x8.xml",
@@ -83,12 +85,13 @@ public class RoundRobinClusterLeve_Cluster {
                 "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
                 "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
                 "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"*/
-                "maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
-                "maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",
-                "maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
+                //"maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
+                //"maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",
+                //"maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
         ));
 
-        UnitTypeTable utt = new UnitTYpeTableBattle();
+        //UnitTypeTable utt = new UnitTYpeTableBattle();
+        UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);
@@ -114,7 +117,8 @@ public class RoundRobinClusterLeve_Cluster {
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
                 //new AHTNAI(utt),
-                new NaiveMCTS(utt),
+                //new NaiveMCTS(utt),
+                new NaiveMCTS(100, -1, 100 , 10, 0.3f, 0.0f, 0.4f, new POLightRush(utt), new SimpleEvaluationFunction(), true),
                 new BS3_NaiveMCTS(utt),
                 new PuppetSearchMCTS(utt),
                 new StrategyTactics(utt),
@@ -128,20 +132,20 @@ public class RoundRobinClusterLeve_Cluster {
                 //new CABA_Enemy(utt),
                 //new CIA_EnemyWithTime(utt),
                 //new CIA_EnemyEuclidieanInfluence(utt),
-                new AlphaBetaSearch(utt),
+                new AlphaBetaSearch(utt)
                 //new CIA_PlayoutCluster(utt),
                 //new CIA_PlayoutPower(utt)
                 //new CIA_PlayoutTemporal(utt, 2, 2),
-                new CIA_PlayoutTemporal(utt, 2, 4),
+                //new CIA_PlayoutTemporal(utt, 2, 4),
                 //new CIA_TDLearning(utt, 2, 2),
                 //new CIA_TDLearning(utt, 2, 4),
                 //new CABA_TDLearning(utt, 2, 2),
-                new CABA_TDLearning(utt, 2, 4),
-                new AlphaBetaSearch(utt, new LTD2(), "LTD2"),
-                new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2"),
-                new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2"),
-                new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2"),
-                new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2")
+                //new CABA_TDLearning(utt, 2, 4),
+                //new AlphaBetaSearch(utt, new LTD2(), "LTD2"),
+                //new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2"),
+                //new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2"),
+                //new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2"),
+                //new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2")
                 
         ));
 

@@ -203,11 +203,11 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/DoubleGame24x24.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
                 
                 
         ));
@@ -306,16 +306,16 @@ public class ClusterTesteLeve {
          */            
         
         //best response GA PGS
-        //String GA_PGS = "32;285;107;267;225;"; 
-        String ST_PGS = "201;232;"; 
-        String ST_PGS2 = "201;232;151;189;"; 
+        String GA_PGS = "222;173;226;9;"; 
+        //String ST_PGS = "201;232;"; 
+        //String ST_PGS2 = "201;232;151;189;"; 
         //best response GA SSS
-        //String GA_SSS = "233;97;93;246;117;"; 
+        String GA_SSS = "25;86;194;281;"; 
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               /*
-                new AHTNAI(utt),
+               
+               new AHTNAI(utt),
                new NaiveMCTS(utt),
                new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
@@ -326,11 +326,11 @@ public class ClusterTesteLeve {
                new POHeavyRush(utt),
                new PORangedRush(utt),
                new POWorkerRush(utt),
-               */
-               //new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2")
-               //new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
+               
+               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
+               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
+               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2")
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
                
                 
         ));

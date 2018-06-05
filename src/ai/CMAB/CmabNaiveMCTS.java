@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.mcts.naivemcts;
+package ai.CMAB;
 
+import ai.mcts.naivemcts.*;
 import ai.*;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
@@ -20,9 +21,9 @@ import ai.core.InterruptibleAI;
 
 /**
  *
- * @author santi
+ * @author rubens and santi
  */
-public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleAI {
+public class CmabNaiveMCTS extends AIWithComputationBudget implements InterruptibleAI {
     public static int DEBUG = 0;
     public EvaluationFunction ef = null;
        
@@ -31,7 +32,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     protected long max_actions_so_far = 0;
     
     protected GameState gs_to_start_from = null;
-    protected NaiveMCTSNode tree = null;
+    protected CmabNaiveMCTSNode tree = null;
     protected int current_iteration = 0;
             
     public int MAXSIMULATIONTIME = 1024;
@@ -52,7 +53,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     public float discount_l = 0.999f;
     public float discount_g = 0.999f;
     
-    public int global_strategy = NaiveMCTSNode.E_GREEDY;
+    public int global_strategy = CmabNaiveMCTSNode.E_GREEDY;
     public boolean forceExplorationOfNonSampledActions = true;
     
     // statistics:
@@ -61,16 +62,21 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     public long total_actions_issued = 0;
     public long total_time = 0;
     
+    UnitTypeTable utt;
+    String classGeneratorMove;
     
-    public NaiveMCTS(UnitTypeTable utt) {
+    
+    public CmabNaiveMCTS(UnitTypeTable utt) {
         this(100,-1,100,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
              new SimpleSqrtEvaluationFunction3(), true);
+        this.utt = utt;
+        classGeneratorMove = "CmabPlayerActionGenerator";
     }    
     
     
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
+    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
                                float e_l, float discout_l,
                                float e_g, float discout_g, 
                                float e_0, float discout_0, 
@@ -90,7 +96,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         forceExplorationOfNonSampledActions = fensa;
     }    
 
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -105,7 +111,23 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         forceExplorationOfNonSampledActions = fensa;
     }    
     
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction) {
+        super(available_time, max_playouts);
+        MAXSIMULATIONTIME = lookahead;
+        playoutPolicy = policy;
+        MAX_TREE_DEPTH = max_depth;
+        initial_epsilon_l = epsilon_l = e_l;
+        initial_epsilon_g = epsilon_g = e_g;
+        initial_epsilon_0 = epsilon_0 = e_0;
+        discount_l = 1.0f;
+        discount_g = 1.0f;
+        discount_0 = 1.0f;
+        ef = a_ef;
+        forceExplorationOfNonSampledActions = fensa;
+        this.classGeneratorMove = classGeneratorAction;
+    } 
+    
+    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -119,7 +141,26 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         global_strategy = a_global_strategy;
         ef = a_ef;
         forceExplorationOfNonSampledActions = fensa;
+    }     
+    
+    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction, UnitTypeTable utt) {
+        super(available_time, max_playouts);
+        MAXSIMULATIONTIME = lookahead;
+        playoutPolicy = policy;
+        MAX_TREE_DEPTH = max_depth;
+        initial_epsilon_l = epsilon_l = e_l;
+        initial_epsilon_g = epsilon_g = e_g;
+        initial_epsilon_0 = epsilon_0 = e_0;
+        discount_l = 1.0f;
+        discount_g = 1.0f;
+        discount_0 = 1.0f;
+        global_strategy = a_global_strategy;
+        ef = a_ef;
+        forceExplorationOfNonSampledActions = fensa;
+        this.classGeneratorMove = classGeneratorAction;
+        this.utt = utt;
     }        
+    
     
     public void reset() {
         tree = null;
@@ -133,7 +174,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         
     
     public AI clone() {
-        return new NaiveMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
+        return new CmabNaiveMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
     }    
     
     
@@ -152,7 +193,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     public void startNewComputation(int a_player, GameState gs) throws Exception {
         player = a_player;
         current_iteration = 0;
-        tree = new NaiveMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions);
+        tree = new CmabNaiveMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions, utt, classGeneratorMove);
         
         if (tree.moveGenerator==null) {
             max_actions_so_far = 0;
@@ -194,7 +235,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     
     public boolean iteration(int player) throws Exception {
         
-        NaiveMCTSNode leaf = tree.selectLeaf(player, 1-player, epsilon_l, epsilon_g, epsilon_0, global_strategy, MAX_TREE_DEPTH, current_iteration++);
+        CmabNaiveMCTSNode leaf = tree.selectLeaf(player, 1-player, epsilon_l, epsilon_g, epsilon_0, global_strategy, MAX_TREE_DEPTH, current_iteration++);
 
         if (leaf!=null) {            
             GameState gs2 = leaf.gs.clone();
@@ -229,7 +270,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         }
         if (DEBUG>=2) tree.showNode(0,1,ef);
         if (DEBUG>=1) {
-            NaiveMCTSNode best = (NaiveMCTSNode) tree.children.get(idx);
+            CmabNaiveMCTSNode best = (CmabNaiveMCTSNode) tree.children.get(idx);
             System.out.println("NaiveMCTS selected children " + tree.actions.get(idx) + " explored " + best.visit_count + " Avg evaluation: " + (best.accum_evaluation/((double)best.visit_count)));
         }
         return tree.actions.get(idx);
@@ -240,7 +281,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         total_actions_issued++;
             
         int bestIdx = -1;
-        NaiveMCTSNode best = null;
+        CmabNaiveMCTSNode best = null;
         if (DEBUG>=2) {
 //            for(Player p:gs_to_start_from.getPlayers()) {
 //                System.out.println("Resources P" + p.getID() + ": " + p.getResources());
@@ -250,7 +291,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         }
         if (tree.children==null) return -1;
         for(int i = 0;i<tree.children.size();i++) {
-            NaiveMCTSNode child = (NaiveMCTSNode)tree.children.get(i);
+            CmabNaiveMCTSNode child = (CmabNaiveMCTSNode)tree.children.get(i);
             if (DEBUG>=2) {
                 System.out.println("child " + tree.actions.get(i) + " explored " + child.visit_count + " Avg evaluation: " + (child.accum_evaluation/((double)child.visit_count)));
             }
@@ -269,7 +310,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         total_actions_issued++;
             
         int bestIdx = -1;
-        NaiveMCTSNode best = null;
+        CmabNaiveMCTSNode best = null;
         if (DEBUG>=2) {
 //            for(Player p:gs_to_start_from.getPlayers()) {
 //                System.out.println("Resources P" + p.getID() + ": " + p.getResources());
@@ -278,7 +319,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
             tree.printUnitActionTable();
         }
         for(int i = 0;i<tree.children.size();i++) {
-            NaiveMCTSNode child = (NaiveMCTSNode)tree.children.get(i);
+            CmabNaiveMCTSNode child = (CmabNaiveMCTSNode)tree.children.get(i);
             if (DEBUG>=2) {
                 System.out.println("child " + tree.actions.get(i) + " explored " + child.visit_count + " Avg evaluation: " + (child.accum_evaluation/((double)child.visit_count)));
             }
@@ -306,7 +347,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         }while(!gameover && gs.getTime()<time);   
     }
     
-    public NaiveMCTSNode getTree() {
+    public CmabNaiveMCTSNode getTree() {
         return tree;
     }
     

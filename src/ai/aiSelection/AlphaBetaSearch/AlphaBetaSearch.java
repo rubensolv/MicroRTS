@@ -342,7 +342,7 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
             }
 
         }
-        //results.print(); // remover
+        //_results.print(); // remover
         return val;
     }
 
