@@ -6,10 +6,8 @@ package util.SOA;
 
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
-import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
-import gui.PhysicalGameStatePanel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,7 +16,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
@@ -29,7 +26,7 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOMatch {
+public class RoundRobinTOMatch_SetCover {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
@@ -43,7 +40,7 @@ public class RoundRobinTOMatch {
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
 
-        String map = "maps/24x24/basesWorkers24x24A_Barrack.xml";
+        String map = "maps/24x24/basesWorkers24x24A.xml";
 
         UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(map, utt);
@@ -170,8 +167,27 @@ public class RoundRobinTOMatch {
         ScriptsCreator sc = new ScriptsCreator(utt,300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
 
+        //take the setCover
+        AI[] AIs = new AI[16];
+        AIs[0] = scriptsCompleteSet.get(0);
+        AIs[1] = scriptsCompleteSet.get(189);
+        AIs[2] = scriptsCompleteSet.get(290);
+        AIs[3] = scriptsCompleteSet.get(188);
+        AIs[4] = scriptsCompleteSet.get(232);
+        AIs[5] = scriptsCompleteSet.get(151);
+        AIs[6] = scriptsCompleteSet.get(26);
+        AIs[7] = scriptsCompleteSet.get(202);
+        AIs[8] = scriptsCompleteSet.get(172);
+        AIs[9] = scriptsCompleteSet.get(64);
+        AIs[10] = scriptsCompleteSet.get(180);
+        AIs[11] = scriptsCompleteSet.get(265);
+        AIs[12] = scriptsCompleteSet.get(1);
+        AIs[13] = scriptsCompleteSet.get(225);
+        AIs[14] = scriptsCompleteSet.get(101);
+        AIs[15] = scriptsCompleteSet.get(116);
+        
         for (Integer idSc : iScripts) {
-            scriptsAI.add(scriptsCompleteSet.get(idSc));
+            scriptsAI.add(AIs[idSc]);
         }
 
         return scriptsAI;
