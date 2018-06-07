@@ -23,6 +23,10 @@ public class ManagerUnitsMelee extends ManagerAbstraction {
 
     @Override
     public void controlUnitsForAB(GameState state, HashSet<Unit> unidades) {
+        if(getNumUnits() == 0){
+            unidades.clear();
+            return ;
+        }
         //verifico se as unidades não foram mortas
         HashSet<Unit> unTemp = new HashSet<>();
         for (Unit unidade : unidades) {

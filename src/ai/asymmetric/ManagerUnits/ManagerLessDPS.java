@@ -26,6 +26,9 @@ public class ManagerLessDPS extends ManagerAbstraction {
     @Override
     public void controlUnitsForAB(GameState state, HashSet<Unit> unidades) {
         unidades.clear();
+        if(getNumUnits() == 0){
+            return ;
+        }
         if (unidades.isEmpty()) {
             Unit u = state.getUnit(getIDUnitLessDPS(state));
             unidades.add(u);

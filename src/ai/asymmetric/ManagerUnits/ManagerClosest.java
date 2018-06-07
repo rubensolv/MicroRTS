@@ -24,6 +24,10 @@ public class ManagerClosest extends ManagerAbstraction {
 
     @Override
     public void controlUnitsForAB(GameState state, HashSet<Unit> unidades) {
+        if(getNumUnits() == 0){
+            unidades.clear();
+            return ;
+        }
         unitsDie(state, unidades);
 
         if (unidades.isEmpty()) {

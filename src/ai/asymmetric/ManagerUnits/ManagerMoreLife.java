@@ -26,6 +26,9 @@ public class ManagerMoreLife extends ManagerAbstraction {
     @Override
     public void controlUnitsForAB(GameState state, HashSet<Unit> unidades) {
         unidades.clear();
+        if(getNumUnits() == 0){
+            return ;
+        }
         if (unidades.isEmpty()) {
             Unit u = state.getUnit(getIDUnitMoreLife(state));
             unidades.add(u);
