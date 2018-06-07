@@ -90,7 +90,7 @@ public class GameVisualSimulationCMAB {
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
@@ -105,7 +105,7 @@ public class GameVisualSimulationCMAB {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);  
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
+       PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
        //combate tests 
        //PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/melee2x2Mixed_map8x8.xml", utt);
@@ -158,7 +158,7 @@ public class GameVisualSimulationCMAB {
         //AI ai1 = new GAB(utt);
         //AI ai1 = new SAB(utt);
         //AI ai1 = new IDABCD(utt);
-        //AI ai1 = new StrategyTactics(utt);
+        AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
         //AI ai1 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
@@ -166,7 +166,7 @@ public class GameVisualSimulationCMAB {
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");        
-        AI ai1 = new CMABBuilder(utt);
+        //AI ai1 = new CMABBuilder(utt);
         
         //AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
@@ -192,7 +192,8 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new AlphaBetaSearchAbstract(utt);
         //AI ai2 = new GAB_SandBox_Parcial_State(utt);
         //AI ai2 = new GAB(utt);
-        AI ai2 = new PGSmRTS(utt); 
+        //AI ai2 = new PGSmRTS(utt); 
+        AI ai2  = new  SSSmRTS(utt);
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
@@ -225,16 +226,16 @@ public class GameVisualSimulationCMAB {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
                 PlayerAction pa1 = ai1.getAction(0, gs);  
-                if( (System.currentTimeMillis() - startTime) >0){
-                System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
-                }
+                //if( (System.currentTimeMillis() - startTime) >0){
+                //System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
+                //}
                 //System.out.println("Action A1 ="+ pa1.toString());
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                //if( (System.currentTimeMillis() - startTime) >0){
-                //   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
-                //}
+                if( (System.currentTimeMillis() - startTime) >0){
+                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                }
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);

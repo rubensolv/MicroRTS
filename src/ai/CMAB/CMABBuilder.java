@@ -6,6 +6,8 @@
 package ai.CMAB;
 
 import ai.RandomBiasedAI;
+import ai.asymmetric.ManagerUnits.IManagerAbstraction;
+import ai.asymmetric.ManagerUnits.ManagerClosest;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.InterruptibleAI;
@@ -23,73 +25,97 @@ import rts.units.UnitTypeTable;
  * @author rubens
  */
 public class CMABBuilder extends AIWithComputationBudget implements InterruptibleAI {
+
     private AI CMABAI;
+    private String moveString;
+    private String behavior;
 
     public CMABBuilder(UnitTypeTable utt) {
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabPlayerActionGenerator");
-        this(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 1, utt, new ArrayList<AI>(),"CmabCombinatorialGenerator");
+        //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabHillClimbingGenerator");
-        
+
+        //assymetric
+        this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosest");
     }
+    //used to build the NaiveMCTS Assymetric
+    public CMABBuilder(int available_time, int max_playouts, int lookahead, int max_depth, int police_Exp,
+            AI policyPlayout, EvaluationFunction a_ef, int global_strategy,
+            UnitTypeTable utt, List<AI> abstraction, String generatorMoves, String behavior) {
+        super(available_time, max_playouts);
+        this.moveString = generatorMoves;
+        this.behavior = behavior;
+        this.CMABAI = new CmabAssymetricMCTS(utt);
+    }
+
     /**
-     * 
+     *
      * @param available_time 100 ms
-     * @param max_playouts -1 
+     * @param max_playouts -1
      * @param lookahead 100 times
      * @param max_depth 10 (default) - 2 = 1-ply
-     * @param police_Exp 0 = E-greedy  and 1 = Alternate
+     * @param police_Exp 0 = E-greedy and 1 = Alternate
      * @param policyPlayout = IA to playout simulation
      * @param a_ef = Evaluation function
-     * @param global_strategy E_GREEDY = 0, UCB1 = 1, HC = 2, HC_ST = 3, CLUSTER = 4, GA = 5, COMB = 6
+     * @param global_strategy E_GREEDY = 0, UCB1 = 1, HC = 2, HC_ST = 3, CLUSTER
+     * = 4, GA = 5, COMB = 6
      * @param utt Unit Type Table
-     * @param abstraction size == 0 (none), size > 0 == abstraction. 
-     * @param generatorMoves 
+     * @param abstraction size == 0 (none), size > 0 == abstraction.
+     * @param generatorMoves
      */
-    public CMABBuilder(int available_time, int max_playouts, int lookahead, int max_depth, int police_Exp, 
-                        AI policyPlayout, EvaluationFunction a_ef, int global_strategy, 
-                        UnitTypeTable utt, List<AI> abstraction, String generatorMoves){
+    public CMABBuilder(int available_time, int max_playouts, int lookahead, int max_depth, int police_Exp,
+            AI policyPlayout, EvaluationFunction a_ef, int global_strategy,
+            UnitTypeTable utt, List<AI> abstraction, String generatorMoves) {
         super(available_time, max_playouts);
+        this.moveString = generatorMoves;
         //eval process to build the AI
-        if(police_Exp == 0){ //E-Greedy exploration
-            switch(global_strategy){
-                case 0: CMABAI =  new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth, 
-                                                    0.3f, 0.0f, 0.4f, global_strategy, policyPlayout, a_ef, 
-                                                    true, generatorMoves, utt);
-                        System.out.println("NaiveMCTS E-Greedy "+generatorMoves);
-                        break; //NaiveMCTS E- Greedy
-                case 1: CMABAI =  new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth, 
-                                                    0.3f, 0.0f, 0.4f, global_strategy, policyPlayout, a_ef, 
-                                                    true, generatorMoves, utt);
-                        System.out.println("NaiveMCTS UCB1 "+generatorMoves);
-                        break; //NaiveMCTS UCB1
-                default: CMABAI = new CmabNaiveMCTS(utt); 
-                        System.out.println("NaiveMCTS E-Greedy "+generatorMoves);
-                        break;
+        if (police_Exp == 0) { //E-Greedy exploration
+            switch (global_strategy) {
+                case 0:
+                    CMABAI = new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth,
+                            0.3f, 0.0f, 0.4f, global_strategy, policyPlayout, a_ef,
+                            true, generatorMoves, utt);
+                    System.out.println("NaiveMCTS E-Greedy " + generatorMoves);
+                    break; //NaiveMCTS E- Greedy
+                case 1:
+                    CMABAI = new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth,
+                            0.3f, 0.0f, 0.4f, global_strategy, policyPlayout, a_ef,
+                            true, generatorMoves, utt);
+                    System.out.println("NaiveMCTS UCB1 " + generatorMoves);
+                    break; //NaiveMCTS UCB1
+                default:
+                    CMABAI = new CmabNaiveMCTS(utt);
+                    System.out.println("NaiveMCTS E-Greedy " + generatorMoves);
+                    break;
             }
-            
-        }else{ //alternate exploration
-            switch(global_strategy){
-                case 0: CMABAI =  new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth, 
-                                                    1.0f, 0.0f, 0.5f, global_strategy, policyPlayout, a_ef, 
-                                                    true, generatorMoves, utt);
-                        System.out.println("NaiveMCTS E-Greedy "+generatorMoves);
-                        break; //NaiveMCTS E- Greedy
-                case 1: CMABAI =  new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth, 
-                                                    1.0f, 0.0f, 0.5f, global_strategy, policyPlayout, a_ef, 
-                                                    true, generatorMoves, utt);
-                        System.out.println("NaiveMCTS UCB1 "+generatorMoves);
-                        break; //NaiveMCTS UCB1
-                case 2: CMABAI =  new CmabAlternateMCTS(available_time, max_playouts, lookahead, max_depth, 
-                                                    1.0f, 0.0f, 0.5f, global_strategy, policyPlayout, a_ef, 
-                                                    true, generatorMoves, utt);
-                        System.out.println("MCTS Alternate HC "+generatorMoves);
-                        break; //MCTS Alternate HC
-                default: CMABAI = new CmabNaiveMCTS(utt); 
-                        System.out.println("NaiveMCTS E-Greedy "+generatorMoves);
-                        break;
+
+        } else { //alternate exploration
+            switch (global_strategy) {
+                case 0:
+                    CMABAI = new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth,
+                            1.0f, 0.0f, 0.5f, global_strategy, policyPlayout, a_ef,
+                            true, generatorMoves, utt);
+                    System.out.println("NaiveMCTS E-Greedy " + generatorMoves);
+                    break; //NaiveMCTS E- Greedy
+                case 1:
+                    CMABAI = new CmabNaiveMCTS(available_time, max_playouts, lookahead, max_depth,
+                            1.0f, 0.0f, 0.5f, global_strategy, policyPlayout, a_ef,
+                            true, generatorMoves, utt);
+                    System.out.println("NaiveMCTS UCB1 " + generatorMoves);
+                    break; //NaiveMCTS UCB1
+                case 2:
+                    CMABAI = new CmabAlternateMCTS(available_time, max_playouts, lookahead, max_depth,
+                            1.0f, 0.0f, 0.5f, global_strategy, policyPlayout, a_ef,
+                            true, generatorMoves, utt);
+                    System.out.println("MCTS Alternate HC " + generatorMoves);
+                    break; //MCTS Alternate HC
+                default:
+                    CMABAI = new CmabNaiveMCTS(utt);
+                    System.out.println("NaiveMCTS E-Greedy " + generatorMoves);
+                    break;
             }
         }
-        
+
     }
 
     @Override
@@ -126,5 +152,10 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
     public PlayerAction getBestActionSoFar() throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    public String toString() {
+        return CMABAI.toString() + " " + moveString;
+    }
+
 }

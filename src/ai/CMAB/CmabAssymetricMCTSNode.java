@@ -4,6 +4,7 @@
  */
 package ai.CMAB;
 
+import ai.CMAB.ActionGenerator.CmabAssymetricGenerator;
 import ai.mcts.MCTSNode;
 import java.math.BigInteger;
 import java.util.*;
@@ -18,7 +19,7 @@ import rts.units.UnitTypeTable;
  *
  * @author santi
  */
-public class CmabAlternateMCTSNode extends MCTSNode {
+public class CmabAssymetricMCTSNode extends MCTSNode {
 
     //strategies epsilon_g
     public static final int E_GREEDY = 0;
@@ -35,20 +36,21 @@ public class CmabAlternateMCTSNode extends MCTSNode {
     boolean forceExplorationOfNonSampledActions = true;
     boolean hasMoreActions = true;
     public ICMAB_ActionGenerator moveGenerator = null;
-    HashMap<BigInteger, CmabAlternateMCTSNode> childrenMap = new LinkedHashMap<BigInteger, CmabAlternateMCTSNode>();    // associates action codes with children
+    HashMap<BigInteger, CmabAssymetricMCTSNode> childrenMap = new LinkedHashMap<>();    // associates action codes with children
     // Decomposition of the player actions in unit actions, and their contributions:
-    public List<CmabAlternateUnitActionTableEntry> unitActionTable = null;
+    public List<CmabAssymetricUnitActionTableEntry> unitActionTable = null;
     double evaluation_bound;    // this is the maximum positive value that the evaluation function can return
     public BigInteger multipliers[];
 
     UnitTypeTable utt;
-    String classGeneratorMove;
+    String behavior;
 
-    public CmabAlternateMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabAlternateMCTSNode a_parent, double a_evaluation_bound, int a_creation_ID, boolean fensa, UnitTypeTable a_utt, String classGenerator) throws Exception {
+    public CmabAssymetricMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabAssymetricMCTSNode a_parent, double a_evaluation_bound, int a_creation_ID, boolean fensa, UnitTypeTable a_utt, String behavior) throws Exception {
         this.utt = a_utt;
         parent = a_parent;
         gs = a_gs;
-        classGeneratorMove = classGenerator;
+        this.behavior = behavior;
+        
         if (parent == null) {
             depth = 0;
         } else {
@@ -68,15 +70,15 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             type = -1;
         } else if (gs.canExecuteAnyAction(maxplayer)) {
             type = 0;
-            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+classGenerator).getConstructors()[0].newInstance(gs,maxplayer, utt);
-            actions = new ArrayList<PlayerAction>();
-            children = new ArrayList<MCTSNode>();
-            unitActionTable = new LinkedList<CmabAlternateUnitActionTableEntry>();
+            moveGenerator = new CmabAssymetricGenerator(gs,maxplayer, utt, behavior);
+            actions = new ArrayList<>();
+            children = new ArrayList<>();
+            unitActionTable = new LinkedList<>();
             multipliers = new BigInteger[moveGenerator.getChoices().size()];
             BigInteger baseMultiplier = BigInteger.ONE;
             int idx = 0;
             for (Pair<Unit, List<UnitAction>> choice : moveGenerator.getChoices()) {
-                CmabAlternateUnitActionTableEntry ae = new CmabAlternateUnitActionTableEntry();
+                CmabAssymetricUnitActionTableEntry ae = new CmabAssymetricUnitActionTableEntry();
                 ae.u = choice.m_a;
                 ae.nactions = choice.m_b.size();
                 ae.actions = choice.m_b;
@@ -93,15 +95,15 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             }
         } else if (gs.canExecuteAnyAction(minplayer)) {
             type = 1;
-            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+classGenerator).getConstructors()[0].newInstance(gs,minplayer, utt);
-            actions = new ArrayList<PlayerAction>();
-            children = new ArrayList<MCTSNode>();
-            unitActionTable = new LinkedList<CmabAlternateUnitActionTableEntry>();
+            moveGenerator = new CmabAssymetricGenerator(gs,minplayer, utt, behavior);
+            actions = new ArrayList<>();
+            children = new ArrayList<>();
+            unitActionTable = new LinkedList<>();
             multipliers = new BigInteger[moveGenerator.getChoices().size()];
             BigInteger baseMultiplier = BigInteger.ONE;
             int idx = 0;
             for (Pair<Unit, List<UnitAction>> choice : moveGenerator.getChoices()) {
-                CmabAlternateUnitActionTableEntry ae = new CmabAlternateUnitActionTableEntry();
+                CmabAssymetricUnitActionTableEntry ae = new CmabAssymetricUnitActionTableEntry();
                 ae.u = choice.m_a;
                 ae.nactions = choice.m_b.size();
                 ae.actions = choice.m_b;
@@ -122,8 +124,8 @@ public class CmabAlternateMCTSNode extends MCTSNode {
         }
     }
 
-    // Naive Sampling:
-    public CmabAlternateMCTSNode selectLeaf(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
+    // Alternated Sampling:
+    public CmabAssymetricMCTSNode selectLeaf(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
         if (unitActionTable == null) {
             return this;
         }
@@ -131,22 +133,9 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             return this;
         }
 
-        /*
-        // DEBUG:
-        for(PlayerAction a:actions) {
-            for(Pair<Unit,UnitAction> tmp:a.getActions()) {
-                if (!gs.getUnits().contains(tmp.m_a)) new Error("DEBUG!!!!");
-                boolean found = false;
-                for(CmabNaiveUnitActionTableEntry e:unitActionTable) {
-                    if (e.u == tmp.m_a) found = true;
-                }
-                if (!found) new Error("DEBUG 2!!!!!");
-            }
-        } 
-         */
         if (children.size() > 0 && r.nextFloat() >= epsilon_0) {
             // sample from the global MAB:
-            CmabAlternateMCTSNode selected = null;
+            CmabAssymetricMCTSNode selected = null;
             if (global_strategy == E_GREEDY) {
                 selected = selectFromAlreadySampledEpsilonGreedy(epsilon_g);
             } else if (global_strategy == UCB1) {
@@ -159,19 +148,19 @@ public class CmabAlternateMCTSNode extends MCTSNode {
         }
     }
 
-    public CmabAlternateMCTSNode selectFromAlreadySampledEpsilonGreedy(float epsilon_g) throws Exception {
+    public CmabAssymetricMCTSNode selectFromAlreadySampledEpsilonGreedy(float epsilon_g) throws Exception {
         if (r.nextFloat() >= epsilon_g) {
-            CmabAlternateMCTSNode best = null;
+            CmabAssymetricMCTSNode best = null;
             for (MCTSNode pate : children) {
                 if (type == 0) {
                     // max node:
                     if (best == null || (pate.accum_evaluation / pate.visit_count) > (best.accum_evaluation / best.visit_count)) {
-                        best = (CmabAlternateMCTSNode) pate;
+                        best = (CmabAssymetricMCTSNode) pate;
                     }
                 } else {
                     // min node:
                     if (best == null || (pate.accum_evaluation / pate.visit_count) < (best.accum_evaluation / best.visit_count)) {
-                        best = (CmabAlternateMCTSNode) pate;
+                        best = (CmabAssymetricMCTSNode) pate;
                     }
                 }
             }
@@ -179,13 +168,13 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             return best;
         } else {
             // choose one at random from the ones seen so far:
-            CmabAlternateMCTSNode best = (CmabAlternateMCTSNode) children.get(r.nextInt(children.size()));
+            CmabAssymetricMCTSNode best = (CmabAssymetricMCTSNode) children.get(r.nextInt(children.size()));
             return best;
         }
     }
 
-    public CmabAlternateMCTSNode selectFromAlreadySampledUCB1(float C) throws Exception {
-        CmabAlternateMCTSNode best = null;
+    public CmabAssymetricMCTSNode selectFromAlreadySampledUCB1(float C) throws Exception {
+        CmabAssymetricMCTSNode best = null;
         double bestScore = 0;
         for (MCTSNode pate : children) {
             double exploitation = ((double) pate.accum_evaluation) / pate.visit_count;
@@ -200,7 +189,7 @@ public class CmabAlternateMCTSNode extends MCTSNode {
 
             double tmp = C * exploitation + exploration;
             if (best == null || tmp > bestScore) {
-                best = (CmabAlternateMCTSNode) pate;
+                best = (CmabAssymetricMCTSNode) pate;
                 bestScore = tmp;
             }
         }
@@ -208,14 +197,14 @@ public class CmabAlternateMCTSNode extends MCTSNode {
         return best;
     }
 
-    public CmabAlternateMCTSNode selectLeafUsingLocalMABs(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
+    public CmabAssymetricMCTSNode selectLeafUsingLocalMABs(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
         PlayerAction pa2;
         BigInteger actionCode;
 
         // For each unit, rank the unitActions according to preference:
-        List<double[]> distributions = new LinkedList<double[]>();
-        List<Integer> notSampledYet = new LinkedList<Integer>();
-        for (CmabAlternateUnitActionTableEntry ate : unitActionTable) {
+        List<double[]> distributions = new LinkedList<>();
+        List<Integer> notSampledYet = new LinkedList<>();
+        for (CmabAssymetricUnitActionTableEntry ate : unitActionTable) {
             double[] dist = new double[ate.nactions];
             int bestIdx = -1;
             double bestEvaluation = 0;
@@ -296,7 +285,7 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             int i = notSampledYet.remove(r.nextInt(notSampledYet.size()));
 
             try {
-                CmabAlternateUnitActionTableEntry ate = unitActionTable.get(i);
+                CmabAssymetricUnitActionTableEntry ate = unitActionTable.get(i);
                 int code;
                 UnitAction ua;
                 ResourceUsage r2;
@@ -308,8 +297,8 @@ public class CmabAlternateMCTSNode extends MCTSNode {
                 r2 = ua.resourceUsage(ate.u, gs.getPhysicalGameState());
                 if (!pa2.getResourceUsage().consistentWith(r2, gs)) {
                     // sample at random, eliminating the ones that have not worked so far:
-                    List<Double> dist_l = new ArrayList<Double>();
-                    List<Integer> dist_outputs = new ArrayList<Integer>();
+                    List<Double> dist_l = new ArrayList<>();
+                    List<Integer> dist_outputs = new ArrayList<>();
 
                     for (int j = 0; j < distribution.length; j++) {
                         dist_l.add(distribution[j]);
@@ -341,11 +330,11 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             }
         }
 
-        CmabAlternateMCTSNode pate = childrenMap.get(actionCode);
+        CmabAssymetricMCTSNode pate = childrenMap.get(actionCode);
         if (pate == null) {
             actions.add(pa2);
             GameState gs2 = gs.cloneIssue(pa2);
-            CmabAlternateMCTSNode node = new CmabAlternateMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, classGeneratorMove);
+            CmabAssymetricMCTSNode node = new CmabAssymetricMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, behavior);
             childrenMap.put(actionCode, node);
             children.add(node);
             return node;
@@ -354,8 +343,8 @@ public class CmabAlternateMCTSNode extends MCTSNode {
         return pate.selectLeaf(maxplayer, minplayer, epsilon_l, epsilon_g, epsilon_0, global_strategy, max_depth, a_creation_ID);
     }
 
-    public CmabAlternateUnitActionTableEntry getActionTableEntry(Unit u) {
-        for (CmabAlternateUnitActionTableEntry e : unitActionTable) {
+    public CmabAssymetricUnitActionTableEntry getActionTableEntry(Unit u) {
+        for (CmabAssymetricUnitActionTableEntry e : unitActionTable) {
             if (e.u == u) {
                 return e;
             }
@@ -363,7 +352,7 @@ public class CmabAlternateMCTSNode extends MCTSNode {
         throw new Error("Could not find Action Table Entry!");
     }
 
-    public void propagateEvaluation(double evaluation, CmabAlternateMCTSNode child) {
+    public void propagateEvaluation(double evaluation, CmabAssymetricMCTSNode child) {
         accum_evaluation += evaluation;
         visit_count++;
 
@@ -374,7 +363,7 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             PlayerAction pa = actions.get(idx);
 
             for (Pair<Unit, UnitAction> ua : pa.getActions()) {
-                CmabAlternateUnitActionTableEntry actionTable = getActionTableEntry(ua.m_a);
+                CmabAssymetricUnitActionTableEntry actionTable = getActionTableEntry(ua.m_a);
                 idx = actionTable.actions.indexOf(ua.m_b);
 
                 if (idx == -1) {
@@ -388,16 +377,20 @@ public class CmabAlternateMCTSNode extends MCTSNode {
         }
 
         if (parent != null) {
-            ((CmabAlternateMCTSNode) parent).propagateEvaluation(evaluation, this);
+            ((CmabAssymetricMCTSNode) parent).propagateEvaluation(evaluation, this);
         }
     }
 
     public void printUnitActionTable() {
-        for (CmabAlternateUnitActionTableEntry uat : unitActionTable) {
+        for (CmabAssymetricUnitActionTableEntry uat : unitActionTable) {
             System.out.println("Actions for unit " + uat.u);
             for (int i = 0; i < uat.nactions; i++) {
                 System.out.println("   " + uat.actions.get(i) + " visited " + uat.visit_count[i] + " with average evaluation " + (uat.accum_evaluation[i] / uat.visit_count[i]));
             }
         }
+    }
+
+    private CmabAssymetricMCTSNode selectFromAlreadySampledAlternate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

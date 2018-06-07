@@ -113,7 +113,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception {
         if (gs.canExecuteAnyAction(player)) {
-            evalPortfolio(gs.getPhysicalGameState().getHeight());
+            //evalPortfolio(gs.getPhysicalGameState().getHeight());
             startNewComputation(player, gs);
             return getBestActionSoFar();
         } else {

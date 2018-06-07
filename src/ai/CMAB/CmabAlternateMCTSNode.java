@@ -122,7 +122,7 @@ public class CmabAlternateMCTSNode extends MCTSNode {
         }
     }
 
-    // Naive Sampling:
+    // Alternated Sampling:
     public CmabAlternateMCTSNode selectLeaf(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
         if (unitActionTable == null) {
             return this;
@@ -131,27 +131,18 @@ public class CmabAlternateMCTSNode extends MCTSNode {
             return this;
         }
 
-        /*
-        // DEBUG:
-        for(PlayerAction a:actions) {
-            for(Pair<Unit,UnitAction> tmp:a.getActions()) {
-                if (!gs.getUnits().contains(tmp.m_a)) new Error("DEBUG!!!!");
-                boolean found = false;
-                for(CmabNaiveUnitActionTableEntry e:unitActionTable) {
-                    if (e.u == tmp.m_a) found = true;
-                }
-                if (!found) new Error("DEBUG 2!!!!!");
-            }
-        } 
-         */
         if (children.size() > 0 && r.nextFloat() >= epsilon_0) {
             // sample from the global MAB:
             CmabAlternateMCTSNode selected = null;
-            if (global_strategy == E_GREEDY) {
+            /*if (global_strategy == E_GREEDY) {
                 selected = selectFromAlreadySampledEpsilonGreedy(epsilon_g);
             } else if (global_strategy == UCB1) {
                 selected = selectFromAlreadySampledUCB1(C);
             }
+            */
+            //sample from the global MAB select by the local exploration that didn't sample yet.
+            selected = selectFromAlreadySampledAlternate();
+            
             return selected.selectLeaf(maxplayer, minplayer, epsilon_l, epsilon_g, epsilon_0, global_strategy, max_depth, a_creation_ID);
         } else {
             // sample from the local MABs (this might recursively call "selectLeaf" internally):
@@ -399,5 +390,9 @@ public class CmabAlternateMCTSNode extends MCTSNode {
                 System.out.println("   " + uat.actions.get(i) + " visited " + uat.visit_count[i] + " with average evaluation " + (uat.accum_evaluation[i] / uat.visit_count[i]));
             }
         }
+    }
+
+    private CmabAlternateMCTSNode selectFromAlreadySampledAlternate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

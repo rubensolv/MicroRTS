@@ -116,31 +116,59 @@ public class RoundRobinClusterLeve {
 
         //best response GA PGS
         String GA_PGS = "32;285;107;267;225;"; 
-        String ST_PGS = "201;232;188;151;26;"; 
-        String ST_PGS2 = "201;232;188;164;26;172;";
+        String ST_PGS = "225;290;101;";
         //best response GA SSS
         String GA_SSS = "233;97;93;246;117;"; 
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
+               /*
                new AHTNAI(utt),
                new NaiveMCTS(utt),
                new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
                new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new SSSmRTS(utt),
                new POLightRush(utt),
                new POHeavyRush(utt),
                new PORangedRush(utt),
                new POWorkerRush(utt),
                
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS*"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
                new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
+               */
+               
+                decodeScripts(utt, "0;").get(0),
+                decodeScripts(utt, "189;").get(0),
+                decodeScripts(utt, "290;").get(0),
+                decodeScripts(utt, "232;").get(0),
+                decodeScripts(utt, "188;").get(0),
+                decodeScripts(utt, "151;").get(0),
+                decodeScripts(utt, "26;").get(0),
+                decodeScripts(utt, "202;").get(0),
+                decodeScripts(utt, "172;").get(0),
+                decodeScripts(utt, "1;").get(0),
+                decodeScripts(utt, "225;").get(0),
+                decodeScripts(utt, "101;").get(0),
+                decodeScripts(utt, "116;").get(0),
+                decodeScripts(utt, "265;").get(0),
                 
+                decodeScripts(utt, "32;").get(0),
+                decodeScripts(utt, "285;").get(0),
+                decodeScripts(utt, "107;").get(0),
+                decodeScripts(utt, "267;").get(0),
+
+                decodeScripts(utt, "233;").get(0),
+                decodeScripts(utt, "97;").get(0),
+                decodeScripts(utt, "93;").get(0),
+                decodeScripts(utt, "246;").get(0),
+                decodeScripts(utt, "117;").get(0),
+                new POLightRush(utt),
+                new PORangedRush(utt),
+                new POWorkerRush(utt),
+                new POHeavyRush(utt)
         ));
 
         AI ai1 = ais.get(iAi1);

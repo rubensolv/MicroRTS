@@ -5,14 +5,20 @@
 package util.SOA;
 
 import Standard.StrategyTactics;
+import ai.CMAB.CMABBuilder;
 import ai.RandomBiasedAI;
 import ai.abstraction.combat.KitterDPS;
 import ai.abstraction.combat.NOKDPS;
+import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
+import ai.abstraction.partialobservability.PORangedRush;
+import ai.abstraction.partialobservability.POWorkerRush;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.cluster.CABA;
 import ai.cluster.CABA_Enemy;
@@ -25,8 +31,13 @@ import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.LTD2;
 import ai.evaluation.PlayoutFunction;
 import ai.evaluation.SimpleEvaluationFunction;
+import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
 import ai.mcts.naivemcts.NaiveMCTS;
+import ai.mcts.uct.UCT;
+import ai.minimax.ABCD.ABCD;
+import ai.montecarlo.MonteCarlo;
+import ai.montecarlo.lsi.LSI;
 import ai.puppet.PuppetSearchMCTS;
 import gui.PhysicalGameStatePanel;
 import java.io.File;
@@ -66,28 +77,23 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                 "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml"
-                //"maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
-                /*"maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
-                "maps/battleMaps/8x8/4x4Mixed_map8x8.xml",
-                "maps/battleMaps/8x8/four_goups_Battle_8x8.xml",
-                "maps/battleMaps/8x8/lineBattle8x8.xml",
-                "maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml",
-                "maps/battleMaps/16x16/ComplexBattleWithWalls16x16.xml",
-                "maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml",
-                "maps/battleMaps/16x16/melee7x7Mixed16.xml",
-                "maps/battleMaps/16x16/melee16x16Mixed8.xml",
-                "maps/battleMaps/16x16/melee16x16Mixed12.xml",
-                "maps/battleMaps/16x16/melee18x18Mixed4groups.xml",
-                "maps/battleMaps/24x24/ConfinedFourGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/ConfinedTwoGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsLightHeavy24x24.xml",
-                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"*/
-                //"maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
-                //"maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",
-                //"maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/NoWhereToRun9x8.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
+                "maps/16x16/TwoBasesBarracks16x16.xml",
+                "maps/24x24/basesWorkers24x24A.xml",
+                "maps/DoubleGame24x24.xml",
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/BWDistantResources32x32.xml",  //8 maps
+                //maps article JAIR
+                "maps/8x8/OneBaseWorker8x8.xml",
+                "maps/8x8/TwoBasesWorkers8x8.xml",
+                "maps/8x8/ThreeBasesWorkers8x8.xml",
+                "maps/8x8/FourBasesWorkers8x8.xml",
+                "maps/12x12/OneBaseWorker12x12.xml",
+                "maps/12x12/TwoBasesWorkers12x12.xml",
+                "maps/12x12/ThreeBasesWorkers12x12.xml",
+                "maps/12x12/FourBasesWorkers12x12.xml" //+ 8 maps
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -116,37 +122,27 @@ public class RoundRobinClusterLeve_Cluster {
         }
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                //new AHTNAI(utt),
-                //new NaiveMCTS(utt),
-                new NaiveMCTS(100, -1, 100 , 10, 0.3f, 0.0f, 0.4f, new POLightRush(utt), new SimpleEvaluationFunction(), true),
+                new RandomBiasedAI(utt), //RND
+                new POLightRush(utt),
+                new POWorkerRush(utt),
+                new AHTNAI(utt),
+                new NaiveMCTS(utt),
                 new BS3_NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
+                new ABCD(utt),
+                //new AlphaBetaSearch(utt),
+                new UCT(utt),
+                new MonteCarlo(utt),
+                new NaiveMCTS(100, -1, 100, 1, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Egreedy MonteCarlo using 0.25 epsilon
+                new NaiveMCTS(100, -1, 100, 1, 0.33f, 0.0f, 0.75f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Naive MonteCarlo
+                new NaiveMCTS(100, -1, 100, 10, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true),//e-greedy MCTS
+                
+                //new PuppetSearchMCTS(utt),
+                //new StrategyTactics(utt),
                 //new PGSmRTS(utt),
                 //new SSSmRTS(utt),
-                new POLightRush(utt),
-                //new POWorkerRush(utt),
-                //new CIA(utt),
-                //new CIA_Enemy(utt),
-                //new CABA(utt),
-                //new CABA_Enemy(utt),
-                //new CIA_EnemyWithTime(utt),
-                //new CIA_EnemyEuclidieanInfluence(utt),
-                new AlphaBetaSearch(utt)
-                //new CIA_PlayoutCluster(utt),
-                //new CIA_PlayoutPower(utt)
-                //new CIA_PlayoutTemporal(utt, 2, 2),
-                //new CIA_PlayoutTemporal(utt, 2, 4),
-                //new CIA_TDLearning(utt, 2, 2),
-                //new CIA_TDLearning(utt, 2, 4),
-                //new CABA_TDLearning(utt, 2, 2),
-                //new CABA_TDLearning(utt, 2, 4),
-                //new AlphaBetaSearch(utt, new LTD2(), "LTD2"),
-                //new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2"),
-                //new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2"),
-                //new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2"),
-                //new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2")
-                
+                //new PORangedRush(utt),
+                //new POHeavyRush(utt),
+                new CMABBuilder(utt)
         ));
 
         AI ai1 = ais.get(iAi1);

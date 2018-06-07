@@ -13,7 +13,7 @@ import rts.units.Unit;
  *
  * @author santi
  */
-public class CmabNaiveUnitActionTableEntry {
+public class CmabAssymetricUnitActionTableEntry {
     public Unit u;
     public int nactions = 0;
     public List<UnitAction> actions = null;

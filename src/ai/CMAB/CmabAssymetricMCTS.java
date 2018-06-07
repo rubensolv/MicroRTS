@@ -23,7 +23,7 @@ import ai.core.InterruptibleAI;
  *
  * @author rubens and santi
  */
-public class CmabNaiveMCTS extends AIWithComputationBudget implements InterruptibleAI {
+public class CmabAssymetricMCTS extends AIWithComputationBudget implements InterruptibleAI {
     public static int DEBUG = 0;
     public EvaluationFunction ef = null;
        
@@ -32,7 +32,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     protected long max_actions_so_far = 0;
     
     protected GameState gs_to_start_from = null;
-    protected CmabNaiveMCTSNode tree = null;
+    protected CmabAssymetricMCTSNode tree = null;
     protected int current_iteration = 0;
             
     public int MAXSIMULATIONTIME = 1024;
@@ -53,7 +53,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     public float discount_l = 0.999f;
     public float discount_g = 0.999f;
     
-    public int global_strategy = CmabNaiveMCTSNode.E_GREEDY;
+    public int global_strategy = CmabAssymetricMCTSNode.E_GREEDY;
     public boolean forceExplorationOfNonSampledActions = true;
     
     // statistics:
@@ -64,9 +64,10 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     
     UnitTypeTable utt;
     String classGeneratorMove;
+    String behavior;
     
     
-    public CmabNaiveMCTS(UnitTypeTable utt) {
+    public CmabAssymetricMCTS(UnitTypeTable utt) {
         this(100,-1,100,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
@@ -76,7 +77,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     }    
     
     
-    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
                                float e_l, float discout_l,
                                float e_g, float discout_g, 
                                float e_0, float discout_0, 
@@ -96,7 +97,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         forceExplorationOfNonSampledActions = fensa;
     }    
 
-    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -111,7 +112,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         forceExplorationOfNonSampledActions = fensa;
     }    
     
-    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction) {
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -127,7 +128,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         this.classGeneratorMove = classGeneratorAction;
     } 
     
-    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -143,7 +144,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         forceExplorationOfNonSampledActions = fensa;
     }     
     
-    public CmabNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction, UnitTypeTable utt) {
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction, UnitTypeTable utt) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -159,9 +160,28 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         forceExplorationOfNonSampledActions = fensa;
         this.classGeneratorMove = classGeneratorAction;
         this.utt = utt;
-    }        
+    }    
+
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, UnitTypeTable utt, String behavior) {
+        super(available_time, max_playouts);
+        MAXSIMULATIONTIME = lookahead;
+        playoutPolicy = policy;
+        MAX_TREE_DEPTH = max_depth;
+        initial_epsilon_l = epsilon_l = e_l;
+        initial_epsilon_g = epsilon_g = e_g;
+        initial_epsilon_0 = epsilon_0 = e_0;
+        discount_l = 1.0f;
+        discount_g = 1.0f;
+        discount_0 = 1.0f;
+        global_strategy = a_global_strategy;
+        ef = a_ef;
+        forceExplorationOfNonSampledActions = fensa;        
+        this.utt = utt;
+        this.behavior = behavior;
+    }     
     
     
+    @Override
     public void reset() {
         tree = null;
         gs_to_start_from = null;
@@ -173,11 +193,13 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     }    
         
     
+    @Override
     public AI clone() {
-        return new CmabNaiveMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
+        return new CmabAssymetricMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
     }    
     
     
+    @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception
     {
         if (gs.canExecuteAnyAction(player)) {
@@ -190,10 +212,11 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     }
     
     
+    @Override
     public void startNewComputation(int a_player, GameState gs) throws Exception {
         player = a_player;
         current_iteration = 0;
-        tree = new CmabNaiveMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions, utt, classGeneratorMove);
+        tree = new CmabAssymetricMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions, utt,  behavior);
         
         if (tree.moveGenerator==null) {
             max_actions_so_far = 0;
@@ -215,6 +238,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     }
     
 
+    @Override
     public void computeDuringOneGameFrame() throws Exception {        
         if (DEBUG>=2) System.out.println("Search...");
         long start = System.currentTimeMillis();
@@ -235,7 +259,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     
     public boolean iteration(int player) throws Exception {
         
-        CmabNaiveMCTSNode leaf = tree.selectLeaf(player, 1-player, epsilon_l, epsilon_g, epsilon_0, global_strategy, MAX_TREE_DEPTH, current_iteration++);
+        CmabAssymetricMCTSNode leaf = tree.selectLeaf(player, 1-player, epsilon_l, epsilon_g, epsilon_0, global_strategy, MAX_TREE_DEPTH, current_iteration++);
 
         if (leaf!=null) {            
             GameState gs2 = leaf.gs.clone();
@@ -262,6 +286,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         return true;
     }
     
+    @Override
     public PlayerAction getBestActionSoFar() {
         int idx = getMostVisitedActionIdx();
         if (idx==-1) {
@@ -281,7 +306,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         total_actions_issued++;
             
         int bestIdx = -1;
-        CmabNaiveMCTSNode best = null;
+        CmabAssymetricMCTSNode best = null;
         if (DEBUG>=2) {
 //            for(Player p:gs_to_start_from.getPlayers()) {
 //                System.out.println("Resources P" + p.getID() + ": " + p.getResources());
@@ -291,7 +316,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         }
         if (tree.children==null) return -1;
         for(int i = 0;i<tree.children.size();i++) {
-            CmabNaiveMCTSNode child = (CmabNaiveMCTSNode)tree.children.get(i);
+            CmabAssymetricMCTSNode child = (CmabAssymetricMCTSNode)tree.children.get(i);
             if (DEBUG>=2) {
                 System.out.println("child " + tree.actions.get(i) + " explored " + child.visit_count + " Avg evaluation: " + (child.accum_evaluation/((double)child.visit_count)));
             }
@@ -347,7 +372,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         }while(!gameover && gs.getTime()<time);   
     }
     
-    public CmabNaiveMCTSNode getTree() {
+    public CmabAssymetricMCTSNode getTree() {
         return tree;
     }
     

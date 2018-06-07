@@ -88,7 +88,7 @@ public class GameVisualSimulationSetCover {
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
@@ -121,86 +121,22 @@ public class GameVisualSimulationSetCover {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/1x1.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.fromJSON(readFile("/home/rubens/SetCoverProblemforMRTS/SetCoverProblemRTS/state_0.txt"), utt);
-        //GameState gs = new GameState(pgs, utt);
-        GameState gs = GameState.fromJSON(readFile("/home/rubens/SetCoverProblemforMRTS/state_34.txt"), utt);
+        GameState gs = new GameState(pgs, utt);
+        //GameState gs = GameState.fromJSON(readFile("/home/rubens/SetCoverProblemforMRTS/state_34.txt"), utt);
         
         int MAXCYCLES = 8000;
         int PERIOD = 20;
         boolean gameover = false;
 
         
+        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
         
-        //AI ai1 = new RangedRush(utt);
-        //AI ai1 = new WorkerRush(utt);
-        AI ai1 = new LightRush(utt);
-        //AI ai1 = new HeavyRush(utt);
-        //AI ai1 = new PassiveAI();
-        //AI ai1 = new POLightRush(utt);
-        //AI ai1 = new EconomyRush(utt);        
-        //AI ai1 = new RangedDefense(utt);
-        //AI ai1 = new EconomyRushBurster(utt);        
-        //AI ai1 = new PassiveAI(utt);
-        //AI ai1 = new NaiveMCTS(utt);
-        //AI ai1 = new PortfolioAI(utt);
-        //AI ai1 = new PVAI(utt);
-        //AI ai1 = new WorkerRushPlusPlus(utt);
-        //AI ai1 = new RandomBiasedAI(utt);
-        //AI ai1 = new PuppetSearchMCTS(utt);
-        //AI ai1 = new PortfolioAI(utt);
-        //AI ai1 = new GAB(utt);
-        //AI ai1 = new POLightRush(utt);
-        //AI ai1 = new WorkerRush(utt);
-        //AI ai1 = new PGSmRTS_SandBox(utt);
-        //AI ai1 = new PGSmRTS(utt); 
-        //AI ai1 = new GAB(utt);
-        //AI ai1 = new SAB(utt);
-        //AI ai1 = new IDABCD(utt);
-        //AI ai1 = new StrategyTactics(utt);
-        //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
-        //AI ai1 = new SSSmRTS(utt);
-  
-        //AI ai2 = new CIA_TDLearning(utt);
-        //AI ai2 = new CIA_PlayoutTemporal(utt);
-        //AI ai2 = new CIA_PlayoutPower(utt);
-        //AI ai2 = new CIA_PlayoutCluster(utt);
-        //AI ai2 = new AlphaBetaSearch(utt);
-        //AI ai2 = new SSSmRTS(utt);
-        //AI ai2 = new CABA(utt);
-        //AI ai2 = new CABA_Enemy(utt);
-        //AI ai2 = new CIA_Enemy(utt);
-        //AI ai2 = new CIA(utt);
-        //AI ai2 = new CIA_EnemyEuclidieanInfluence(utt);
-        //AI ai2 = new CIA_EnemyWithTime(utt);
-        //AI ai1 = new PassiveAI();
-        //AI ai2 = new SAB(utt);
-        //AI ai2 = new SAB_seed(utt);
-        //AI ai2 = new Cluster(utt);
-        //AI ai2 = new KitterDPS(utt);
-        //AI ai2 = new NOKDPS(utt);
-        //AI ai2 = new GAB(utt);
-        //AI ai2 = new GAB(utt);
-        //AI ai2 = new AlphaBetaSearchAbstract(utt);
-        //AI ai2 = new GAB_SandBox_Parcial_State(utt);
-        //AI ai2 = new GAB(utt);
-        //AI ai2 = new PGSmRTS(utt); 
-        //AI ai2 = new WorkerRush(utt);
-        //AI ai2 = new PuppetSearchMCTS(utt);
-        //AI ai2 = new POLightRush(utt);
+        AI ai1 = scriptsCompleteSet.get(93);
         
-        AI ai2 = new RangedDefense(utt);
-        //AI ai2 = new PVAI(utt);
-        //AI ai2 = new PVAIML_onlyEnemy(utt);
-        //AI ai2 = new PVAIML_SLMS(utt);
-        //AI ai2 = new PVAIML_NaiveMS(utt);
-        //AI ai2 = new PVAIML_ED(utt);
-        //AI ai2 = new PVAIML_SLFW(utt);
-        //AI ai2 = new PVAIML_SL(utt);
-        //AI ai2 = new PVAIML_Naive(utt);
-        //AI ai2 = new PVAIML_NaiveFW(utt);
-        //AI ai2 = new PVAIML_FW(utt);
-        //AI ai2 = new PVAIML_EDP(utt);
-        //AI ai2 = new PVAIML_SLFWMS(utt);
-        //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
+        
+        AI ai2 = scriptsCompleteSet.get(246);
+        
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());

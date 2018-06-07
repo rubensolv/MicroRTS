@@ -98,8 +98,8 @@ public class AlphaBetaSearch extends AIWithComputationBudget implements Interrup
                 //add(3, scriptsCompleteSet.get(3));
                 
                 //combat settings
-                add(0, new NOKDPS(utt));
-                add(1, new KitterDPS(utt));
+                //add(0, new NOKDPS(utt));
+                //add(1, new KitterDPS(utt));
                 //add(2, new Cluster(utt));
             }
         });
