@@ -65,13 +65,14 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     UnitTypeTable utt;
     String classGeneratorMove;
     String behavior;
+    int qtdUnits;
     
     
     public CmabAssymetricMCTS(UnitTypeTable utt) {
         this(100,-1,100,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
-             new SimpleSqrtEvaluationFunction3(), true);
+             new SimpleSqrtEvaluationFunction3(), false);
         this.utt = utt;
         classGeneratorMove = "CmabPlayerActionGenerator";
     }    
@@ -162,7 +163,9 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         this.utt = utt;
     }    
 
-    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, UnitTypeTable utt, String behavior) {
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, 
+                              float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, 
+                              UnitTypeTable utt, String behavior, int qtdUnits) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -178,6 +181,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         forceExplorationOfNonSampledActions = fensa;        
         this.utt = utt;
         this.behavior = behavior;
+        this.qtdUnits = qtdUnits;
     }     
     
     
@@ -216,7 +220,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     public void startNewComputation(int a_player, GameState gs) throws Exception {
         player = a_player;
         current_iteration = 0;
-        tree = new CmabAssymetricMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions, utt,  behavior);
+        tree = new CmabAssymetricMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions, utt,  behavior, qtdUnits);
         
         if (tree.moveGenerator==null) {
             max_actions_so_far = 0;

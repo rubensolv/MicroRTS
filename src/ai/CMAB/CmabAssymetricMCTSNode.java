@@ -44,12 +44,16 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
 
     UnitTypeTable utt;
     String behavior;
+    int qtdUnits;
 
-    public CmabAssymetricMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabAssymetricMCTSNode a_parent, double a_evaluation_bound, int a_creation_ID, boolean fensa, UnitTypeTable a_utt, String behavior) throws Exception {
+    public CmabAssymetricMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabAssymetricMCTSNode a_parent, 
+                                  double a_evaluation_bound, int a_creation_ID, boolean fensa, UnitTypeTable a_utt, 
+                                  String behavior, int qtdUnits) throws Exception {
         this.utt = a_utt;
         parent = a_parent;
         gs = a_gs;
         this.behavior = behavior;
+        this.qtdUnits = qtdUnits;
         
         if (parent == null) {
             depth = 0;
@@ -70,7 +74,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             type = -1;
         } else if (gs.canExecuteAnyAction(maxplayer)) {
             type = 0;
-            moveGenerator = new CmabAssymetricGenerator(gs,maxplayer, utt, behavior);
+            moveGenerator = new CmabAssymetricGenerator(gs,maxplayer, utt, behavior, qtdUnits);
             actions = new ArrayList<>();
             children = new ArrayList<>();
             unitActionTable = new LinkedList<>();
@@ -95,7 +99,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             }
         } else if (gs.canExecuteAnyAction(minplayer)) {
             type = 1;
-            moveGenerator = new CmabAssymetricGenerator(gs,minplayer, utt, behavior);
+            moveGenerator = new CmabAssymetricGenerator(gs,minplayer, utt, behavior, qtdUnits);
             actions = new ArrayList<>();
             children = new ArrayList<>();
             unitActionTable = new LinkedList<>();
@@ -309,7 +313,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
                         int idx = dist_outputs.indexOf(code);
                         dist_l.remove(idx);
                         dist_outputs.remove(idx);
-                        code = (Integer) Sampler.weighted(dist_l, dist_outputs);
+                        code = (Integer) Sampler.weighted(dist_l, dist_outputs);                        
                         ua = ate.actions.get(code);
                         r2 = ua.resourceUsage(ate.u, gs.getPhysicalGameState());
                     } while (!pa2.getResourceUsage().consistentWith(r2, gs));
@@ -334,7 +338,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
         if (pate == null) {
             actions.add(pa2);
             GameState gs2 = gs.cloneIssue(pa2);
-            CmabAssymetricMCTSNode node = new CmabAssymetricMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, behavior);
+            CmabAssymetricMCTSNode node = new CmabAssymetricMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, behavior, qtdUnits);
             childrenMap.put(actionCode, node);
             children.add(node);
             return node;

@@ -35,17 +35,18 @@ public class CmabAssymetricGenerator implements ICMAB_ActionGenerator{
     PhysicalGameState pgs;
     ResourceUsage base_ru;
     private final int playerForThisComputation;
-    private List<Pair<Unit, List<UnitAction>>> choices;
+    private final List<Pair<Unit, List<UnitAction>>> choices;
     private long size = 1;  // this will be capped at Long.MAX_VALUE;
     private final IManagerAbstraction behaviorAbs;
     HashSet<Unit> unitsControled = new HashSet<>();
     
 
-    public CmabAssymetricGenerator( GameState gs_to_start_from, int playerForThisComputation, UnitTypeTable a_utt, String Behavior) throws Exception{
+    public CmabAssymetricGenerator( GameState gs_to_start_from, int playerForThisComputation, UnitTypeTable a_utt, String Behavior, int qtdUNits) throws Exception{
         this.scripts = new ArrayList<>();
         this.gs_to_start_from = gs_to_start_from;
         this.playerForThisComputation = playerForThisComputation;
-        this.behaviorAbs = new ManagerClosest(playerForThisComputation, 2);
+        //this.behaviorAbs = new ManagerClosest(playerForThisComputation, 2);
+        this.behaviorAbs = (IManagerAbstraction) Class.forName("ai.asymmetric.ManagerUnits."+Behavior).getConstructors()[0].newInstance(playerForThisComputation, qtdUNits);
         choices = new ArrayList<>();
         size = 1;
         buildPortfolio(a_utt);
@@ -158,6 +159,8 @@ public class CmabAssymetricGenerator implements ICMAB_ActionGenerator{
         for (PlayerAction playerAction : playerActions) {
             unAction.add(playerAction.getAction(u));
         }
+        //inserted wait action to fix move problem
+        unAction.add(new UnitAction(UnitAction.TYPE_NONE, 10));
         return new ArrayList<>(unAction);
     }
     

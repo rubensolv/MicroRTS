@@ -29,6 +29,7 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
     private AI CMABAI;
     private String moveString;
     private String behavior;
+    private int qtdUnits;
 
     public CMABBuilder(UnitTypeTable utt) {
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabPlayerActionGenerator");
@@ -36,16 +37,21 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabHillClimbingGenerator");
 
         //assymetric
-        this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosest");
+        this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, 
+                new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosest", 2);
     }
     //used to build the NaiveMCTS Assymetric
     public CMABBuilder(int available_time, int max_playouts, int lookahead, int max_depth, int police_Exp,
             AI policyPlayout, EvaluationFunction a_ef, int global_strategy,
-            UnitTypeTable utt, List<AI> abstraction, String generatorMoves, String behavior) {
+            UnitTypeTable utt, List<AI> abstraction, String generatorMoves, String behavior, int qtdUnits) {
         super(available_time, max_playouts);
         this.moveString = generatorMoves;
         this.behavior = behavior;
-        this.CMABAI = new CmabAssymetricMCTS(utt);
+        this.qtdUnits = qtdUnits;
+        //this.CMABAI = new CmabAssymetricMCTS(utt);
+        this.CMABAI = new CmabAssymetricMCTS(available_time, max_playouts, lookahead, max_depth, 0.3f, 
+                                             0.0f, 0.4f, global_strategy, policyPlayout, 
+                                             a_ef, true, utt, behavior, 2);
     }
 
     /**
@@ -155,7 +161,7 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
 
     @Override
     public String toString() {
-        return CMABAI.toString() + " " + moveString;
+        return CMABAI.toString() + "_"+behavior+"_"+qtdUnits;
     }
 
 }

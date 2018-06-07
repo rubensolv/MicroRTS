@@ -96,6 +96,8 @@ public class CmabCombinatorialGenerator implements ICMAB_ActionGenerator {
         for (PlayerAction playerAction : playerActions) {
             unAction.add(playerAction.getAction(u));
         }
+        //inserted wait action to fix move problem
+        unAction.add(new UnitAction(UnitAction.TYPE_NONE, 10));
         return new ArrayList<>(unAction);
     }
 

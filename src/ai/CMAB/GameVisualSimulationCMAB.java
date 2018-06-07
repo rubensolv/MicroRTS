@@ -158,7 +158,7 @@ public class GameVisualSimulationCMAB {
         //AI ai1 = new GAB(utt);
         //AI ai1 = new SAB(utt);
         //AI ai1 = new IDABCD(utt);
-        AI ai1 = new StrategyTactics(utt);
+        //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
         //AI ai1 = new SSSmRTS(utt);
         //AI ai1 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
@@ -166,9 +166,9 @@ public class GameVisualSimulationCMAB {
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");        
-        //AI ai1 = new CMABBuilder(utt);
+        AI ai1 = new CMABBuilder(utt);
         
-        //AI ai2 = new NaiveMCTS(utt);
+        AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
@@ -193,7 +193,6 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new GAB_SandBox_Parcial_State(utt);
         //AI ai2 = new GAB(utt);
         //AI ai2 = new PGSmRTS(utt); 
-        AI ai2  = new  SSSmRTS(utt);
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
@@ -233,9 +232,9 @@ public class GameVisualSimulationCMAB {
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                if( (System.currentTimeMillis() - startTime) >0){
-                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
-                }
+                //if( (System.currentTimeMillis() - startTime) >0){
+                //   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                //}
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);
