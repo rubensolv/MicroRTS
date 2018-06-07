@@ -43,13 +43,13 @@ public class RoundRobinTOMatch {
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
 
-        String map = "maps/24x24/basesWorkers24x24A_Barrack.xml";
+        String map = "maps/24x24/basesWorkers24x24A.xml";
 
         UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(map, utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 5000;
+        int MAXCYCLES = 6000;
         int PERIOD = 20;
         boolean gameover = false;
 
@@ -142,7 +142,7 @@ public class RoundRobinTOMatch {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 7));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 

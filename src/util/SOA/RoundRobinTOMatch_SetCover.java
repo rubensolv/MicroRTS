@@ -46,7 +46,7 @@ public class RoundRobinTOMatch_SetCover {
         PhysicalGameState pgs = PhysicalGameState.load(map, utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 5000;
+        int MAXCYCLES = 6000;
         int PERIOD = 20;
         boolean gameover = false;
 
@@ -139,7 +139,7 @@ public class RoundRobinTOMatch_SetCover {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 7));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -168,23 +168,22 @@ public class RoundRobinTOMatch_SetCover {
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
 
         //take the setCover
+        //[0, 189, 290, 188, 200, 151, 26, 201, 172, 180, 225, 1, 100]
+        
         AI[] AIs = new AI[16];
         AIs[0] = scriptsCompleteSet.get(0);
         AIs[1] = scriptsCompleteSet.get(189);
         AIs[2] = scriptsCompleteSet.get(290);
         AIs[3] = scriptsCompleteSet.get(188);
-        AIs[4] = scriptsCompleteSet.get(232);
+        AIs[4] = scriptsCompleteSet.get(200);
         AIs[5] = scriptsCompleteSet.get(151);
         AIs[6] = scriptsCompleteSet.get(26);
-        AIs[7] = scriptsCompleteSet.get(202);
+        AIs[7] = scriptsCompleteSet.get(201);
         AIs[8] = scriptsCompleteSet.get(172);
-        AIs[9] = scriptsCompleteSet.get(64);
-        AIs[10] = scriptsCompleteSet.get(180);
-        AIs[11] = scriptsCompleteSet.get(265);
-        AIs[12] = scriptsCompleteSet.get(1);
-        AIs[13] = scriptsCompleteSet.get(225);
-        AIs[14] = scriptsCompleteSet.get(101);
-        AIs[15] = scriptsCompleteSet.get(116);
+        AIs[9] = scriptsCompleteSet.get(180);
+        AIs[10] = scriptsCompleteSet.get(225);
+        AIs[11] = scriptsCompleteSet.get(1);
+        AIs[12] = scriptsCompleteSet.get(100);
         
         for (Integer idSc : iScripts) {
             scriptsAI.add(AIs[idSc]);
