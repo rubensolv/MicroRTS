@@ -170,7 +170,7 @@ public class RoundRobinTOMatch_SetCover {
         //take the setCover
         //[0, 189, 290, 188, 200, 151, 26, 201, 172, 180, 225, 1, 100]
         
-        AI[] AIs = new AI[16];
+        AI[] AIs = new AI[13];
         AIs[0] = scriptsCompleteSet.get(0);
         AIs[1] = scriptsCompleteSet.get(189);
         AIs[2] = scriptsCompleteSet.get(290);
