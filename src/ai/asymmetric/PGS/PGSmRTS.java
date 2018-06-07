@@ -104,7 +104,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     public PlayerAction getAction(int player, GameState gs) throws Exception {
         if (gs.canExecuteAnyAction(player)) {
             
-            evalPortfolio(gs.getPhysicalGameState().getHeight());
+            //evalPortfolio(gs.getPhysicalGameState().getHeight());
             startNewComputation(player, gs);
             return getBestActionSoFar();
         } else {
@@ -317,6 +317,9 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                     if (scoreTemp > bestScore) {
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
+                    }
+                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
+                        return bestScriptData.clone();
                     }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações

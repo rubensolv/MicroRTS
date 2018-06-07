@@ -339,6 +339,9 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
+                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
+                        return bestScriptData.clone();
+                    }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();
