@@ -128,8 +128,8 @@ public class RoundRobinClusterLeve_Cluster {
                 new AHTNAI(utt),
                 new NaiveMCTS(utt),
                 new BS3_NaiveMCTS(utt),
-                new ABCD(utt),
-                //new AlphaBetaSearch(utt),
+                //new ABCD(utt), inutilizável
+                new AlphaBetaSearch(utt),
                 new UCT(utt),
                 new MonteCarlo(utt),
                 new NaiveMCTS(100, -1, 100, 1, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Egreedy MonteCarlo using 0.25 epsilon

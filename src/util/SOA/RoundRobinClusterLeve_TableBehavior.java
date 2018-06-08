@@ -18,6 +18,7 @@ import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SAB.SAB_seed;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.cluster.CABA;
@@ -48,6 +49,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -55,20 +57,20 @@ import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
+import static tests.ClusterTesteLeve_GAB_SAB.generateConfig;
 
 /**
  *
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinClusterLeve_Cluster {
+public class RoundRobinClusterLeve_TableBehavior {
 
-    static String _nameStrategies = "", _enemy = "";
-    static AI[] strategies = null;
+    static HashMap<Integer, ArrayList<Integer>> mapElements = new HashMap<>();
 
-    public boolean run(String sIA1, String sIA2, String sMap, String sIte, String pathLog) throws Exception {
+    public boolean run(String sIA1, String sSide, String sMap, String sIte, String pathLog) throws Exception {
         int iAi1 = Integer.parseInt(sIA1);
-        int iAi2 = Integer.parseInt(sIA2);
+        int side = Integer.parseInt(sSide);
         int map = Integer.parseInt(sMap);
 
         ArrayList<String> log = new ArrayList<>();
@@ -84,7 +86,7 @@ public class RoundRobinClusterLeve_Cluster {
                 "maps/24x24/basesWorkers24x24A.xml",
                 "maps/DoubleGame24x24.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml",  //8 maps
+                "maps/BWDistantResources32x32.xml", //8 maps
                 //maps article JAIR
                 "maps/8x8/OneBaseWorker8x8.xml",
                 "maps/8x8/TwoBasesWorkers8x8.xml",
@@ -120,7 +122,7 @@ public class RoundRobinClusterLeve_Cluster {
         if (pgs.getHeight() == 64) {
             MAXCYCLES = 15000;
         }
-
+        /*
         List<AI> ais = new ArrayList<>(Arrays.asList(
                 new RandomBiasedAI(utt), //RND
                 new POLightRush(utt),
@@ -128,8 +130,8 @@ public class RoundRobinClusterLeve_Cluster {
                 new AHTNAI(utt),
                 new NaiveMCTS(utt),
                 new BS3_NaiveMCTS(utt),
-                new ABCD(utt),
-                //new AlphaBetaSearch(utt),
+                //new ABCD(utt), inutilizável
+                new AlphaBetaSearch(utt),
                 new UCT(utt),
                 new MonteCarlo(utt),
                 new NaiveMCTS(100, -1, 100, 1, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Egreedy MonteCarlo using 0.25 epsilon
@@ -144,9 +146,15 @@ public class RoundRobinClusterLeve_Cluster {
                 //new POHeavyRush(utt),
                 new CMABBuilder(utt)
         ));
-
-        AI ai1 = ais.get(iAi1);
-        AI ai2 = ais.get(iAi2);
+         */
+        generateConfig();
+        AI ai1 = getIA(utt, iAi1);
+        AI ai2 = new NaiveMCTS(utt);
+        if (side == 1) {
+            AI temp = ai1;
+            ai1 = ai2;
+            ai2 = temp;
+        }
 
         /*
             Variáveis para coleta de tempo
@@ -236,7 +244,7 @@ public class RoundRobinClusterLeve_Cluster {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
 
-        gravarLog(log, sIA1, sIA2, sMap, sIte, pathLog);
+        gravarLog(log, sIA1, sSide, sMap, sIte, pathLog);
         //System.exit(0);
         return true;
     }
@@ -266,4 +274,66 @@ public class RoundRobinClusterLeve_Cluster {
             e.printStackTrace();
         }
     }
+
+    public static void generateConfig() {
+        int cont = 0;
+        for (int i = 0; i <= 10; i++) {
+            for (int j = 0; j < 9; j++) {
+                ArrayList<Integer> choices = new ArrayList<>();
+                choices.add(0, i);
+                choices.add(1, j);
+                mapElements.put(cont, choices);
+                cont++;
+
+            }
+        }
+        //System.out.println("tests.ClusterTesteLeve_GAB_SAB.generateConfig() teste total ="+ mapElements.keySet().size());
+
+    }
+
+    private static AI getIA(UnitTypeTable utt, int ia) {
+        ArrayList<Integer> choices = mapElements.get(ia);
+        //return new SAB_seed(utt, choices.get(0), choices.get(1));
+
+        return new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt,
+                new ArrayList<>(), "CmabCombinatorialGenerator", getManager(choices.get(1)), choices.get(0));
+    }
+
+    protected static String getManager(int idBehavior) {
+        String ret;
+        switch (idBehavior) {
+            case 0:
+                ret = "ManagerRandom";
+                break;
+            case 1:
+                ret = "ManagerClosest";
+                break;
+            case 2:
+                ret = "ManagerClosestEnemy";
+                break;
+            case 3:
+                ret = "ManagerFather";
+                break;
+            case 4:
+                ret = "ManagerFartherEnemy";
+                break;
+            case 5:
+                ret = "ManagerLessLife";
+                break;
+            case 6:
+                ret = "ManagerMoreLife";
+                break;
+            case 7:
+                ret = "ManagerLessDPS";
+                break;
+            case 8:
+                ret = "ManagerMoreDPS";
+                break;
+            default:
+                ret = "ManagerRandom";
+        }
+        
+        return ret;
+    }
+
 }

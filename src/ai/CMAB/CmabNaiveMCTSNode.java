@@ -4,7 +4,6 @@
  */
 package ai.CMAB;
 
-import ai.CMAB.ActionGenerator.*;
 import ai.mcts.MCTSNode;
 import java.math.BigInteger;
 import java.util.*;
@@ -36,7 +35,7 @@ public class CmabNaiveMCTSNode extends MCTSNode {
     boolean forceExplorationOfNonSampledActions = true;
     boolean hasMoreActions = true;
     public ICMAB_ActionGenerator moveGenerator = null;
-    HashMap<BigInteger, CmabNaiveMCTSNode> childrenMap = new LinkedHashMap<BigInteger, CmabNaiveMCTSNode>();    // associates action codes with children
+    HashMap<BigInteger, CmabNaiveMCTSNode> childrenMap = new LinkedHashMap<>();    // associates action codes with children
     // Decomposition of the player actions in unit actions, and their contributions:
     public List<CmabNaiveUnitActionTableEntry> unitActionTable = null;
     double evaluation_bound;    // this is the maximum positive value that the evaluation function can return
@@ -70,9 +69,9 @@ public class CmabNaiveMCTSNode extends MCTSNode {
         } else if (gs.canExecuteAnyAction(maxplayer)) {
             type = 0;
             moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+classGenerator).getConstructors()[0].newInstance(gs,maxplayer, utt);
-            actions = new ArrayList<PlayerAction>();
-            children = new ArrayList<MCTSNode>();
-            unitActionTable = new LinkedList<CmabNaiveUnitActionTableEntry>();
+            actions = new ArrayList<>();
+            children = new ArrayList<>();
+            unitActionTable = new LinkedList<>();
             multipliers = new BigInteger[moveGenerator.getChoices().size()];
             BigInteger baseMultiplier = BigInteger.ONE;
             int idx = 0;
@@ -95,9 +94,9 @@ public class CmabNaiveMCTSNode extends MCTSNode {
         } else if (gs.canExecuteAnyAction(minplayer)) {
             type = 1;
             moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+classGenerator).getConstructors()[0].newInstance(gs,minplayer, utt);
-            actions = new ArrayList<PlayerAction>();
-            children = new ArrayList<MCTSNode>();
-            unitActionTable = new LinkedList<CmabNaiveUnitActionTableEntry>();
+            actions = new ArrayList<>();
+            children = new ArrayList<>();
+            unitActionTable = new LinkedList<>();
             multipliers = new BigInteger[moveGenerator.getChoices().size()];
             BigInteger baseMultiplier = BigInteger.ONE;
             int idx = 0;
@@ -214,8 +213,8 @@ public class CmabNaiveMCTSNode extends MCTSNode {
         BigInteger actionCode;
 
         // For each unit, rank the unitActions according to preference:
-        List<double[]> distributions = new LinkedList<double[]>();
-        List<Integer> notSampledYet = new LinkedList<Integer>();
+        List<double[]> distributions = new LinkedList<>();
+        List<Integer> notSampledYet = new LinkedList<>();
         for (CmabNaiveUnitActionTableEntry ate : unitActionTable) {
             double[] dist = new double[ate.nactions];
             int bestIdx = -1;
@@ -309,8 +308,8 @@ public class CmabNaiveMCTSNode extends MCTSNode {
                 r2 = ua.resourceUsage(ate.u, gs.getPhysicalGameState());
                 if (!pa2.getResourceUsage().consistentWith(r2, gs)) {
                     // sample at random, eliminating the ones that have not worked so far:
-                    List<Double> dist_l = new ArrayList<Double>();
-                    List<Integer> dist_outputs = new ArrayList<Integer>();
+                    List<Double> dist_l = new ArrayList<>();
+                    List<Integer> dist_outputs = new ArrayList<>();
 
                     for (int j = 0; j < distribution.length; j++) {
                         dist_l.add(distribution[j]);

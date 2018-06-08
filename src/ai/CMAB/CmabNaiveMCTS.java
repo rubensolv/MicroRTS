@@ -4,7 +4,6 @@
  */
 package ai.CMAB;
 
-import ai.mcts.naivemcts.*;
 import ai.*;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
@@ -162,6 +161,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
     }        
     
     
+    @Override
     public void reset() {
         tree = null;
         gs_to_start_from = null;
@@ -172,12 +172,12 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         current_iteration = 0;
     }    
         
-    
+    @Override
     public AI clone() {
         return new CmabNaiveMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
     }    
     
-    
+    @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception
     {
         if (gs.canExecuteAnyAction(player)) {
@@ -189,7 +189,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         }       
     }
     
-    
+    @Override
     public void startNewComputation(int a_player, GameState gs) throws Exception {
         player = a_player;
         current_iteration = 0;
@@ -214,7 +214,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         gs_to_start_from = null;
     }
     
-
+    @Override
     public void computeDuringOneGameFrame() throws Exception {        
         if (DEBUG>=2) System.out.println("Search...");
         long start = System.currentTimeMillis();
@@ -262,6 +262,7 @@ public class CmabNaiveMCTS extends AIWithComputationBudget implements Interrupti
         return true;
     }
     
+    @Override
     public PlayerAction getBestActionSoFar() {
         int idx = getMostVisitedActionIdx();
         if (idx==-1) {

@@ -127,14 +127,14 @@ public class CmabAssymetricGenerator implements ICMAB_ActionGenerator{
                 }
             }
         }  
-        //System.out.println("---"+choices.toString());
+        //System.out.println("---Asymmetric--"+choices.toString());
 
     }
     protected final void buildPortfolio(UnitTypeTable utt) {
-        this.scripts.add(new POWorkerRush(utt));     
         this.scripts.add(new POLightRush(utt));
+        this.scripts.add(new PORangedRush(utt)); 
         this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));        
+        this.scripts.add(new POWorkerRush(utt));     
     }
 
     @Override

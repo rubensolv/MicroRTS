@@ -38,7 +38,7 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
 
         //assymetric
         this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, 
-                new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 0);
+                new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerRandom", 3);
     }
     //used to build the NaiveMCTS Assymetric
     public CMABBuilder(int available_time, int max_playouts, int lookahead, int max_depth, int police_Exp,

@@ -41,10 +41,10 @@ public class CmabCombinatorialGenerator implements ICMAB_ActionGenerator {
     }
 
     protected final void buildPortfolio(UnitTypeTable utt) {
-        this.scripts.add(new POWorkerRush(utt));
         this.scripts.add(new POLightRush(utt));
+        this.scripts.add(new PORangedRush(utt)); 
         this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));        
+        this.scripts.add(new POWorkerRush(utt));             
     }
 
     @Override

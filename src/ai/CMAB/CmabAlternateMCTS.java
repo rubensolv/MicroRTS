@@ -161,6 +161,7 @@ public class CmabAlternateMCTS extends AIWithComputationBudget implements Interr
     }        
     
     
+    @Override
     public void reset() {
         tree = null;
         gs_to_start_from = null;
@@ -172,11 +173,13 @@ public class CmabAlternateMCTS extends AIWithComputationBudget implements Interr
     }    
         
     
+    @Override
     public AI clone() {
         return new CmabAlternateMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
     }    
     
     
+    @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception
     {
         if (gs.canExecuteAnyAction(player)) {
@@ -189,6 +192,7 @@ public class CmabAlternateMCTS extends AIWithComputationBudget implements Interr
     }
     
     
+    @Override
     public void startNewComputation(int a_player, GameState gs) throws Exception {
         player = a_player;
         current_iteration = 0;
@@ -214,6 +218,7 @@ public class CmabAlternateMCTS extends AIWithComputationBudget implements Interr
     }
     
 
+    @Override
     public void computeDuringOneGameFrame() throws Exception {        
         if (DEBUG>=2) System.out.println("Search...");
         long start = System.currentTimeMillis();
@@ -261,6 +266,7 @@ public class CmabAlternateMCTS extends AIWithComputationBudget implements Interr
         return true;
     }
     
+    @Override
     public PlayerAction getBestActionSoFar() {
         int idx = getMostVisitedActionIdx();
         if (idx==-1) {
