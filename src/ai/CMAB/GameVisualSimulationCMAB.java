@@ -167,6 +167,7 @@ public class GameVisualSimulationCMAB {
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");        
         AI ai1 = new CMABBuilder(utt);
+        //AI ai1 = new AlphaBetaSearch(utt);
         
         AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
@@ -210,7 +211,7 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new PVAIML_FW(utt);
         //AI ai2 = new PVAIML_EDP(utt);
         //AI ai2 = new PVAIML_SLFWMS(utt);
-        //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
+        //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");       
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());

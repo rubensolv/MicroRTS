@@ -34,6 +34,7 @@ import ai.evaluation.SimpleEvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
 import ai.mcts.naivemcts.NaiveMCTS;
+import ai.mcts.naivemcts.NaiveMCTSNoGamma;
 import ai.mcts.uct.UCT;
 import ai.minimax.ABCD.ABCD;
 import ai.montecarlo.MonteCarlo;
@@ -84,16 +85,8 @@ public class RoundRobinClusterLeve_Cluster {
                 "maps/24x24/basesWorkers24x24A.xml",
                 "maps/DoubleGame24x24.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml",  //8 maps
-                //maps article JAIR
-                "maps/8x8/OneBaseWorker8x8.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml",
-                "maps/8x8/ThreeBasesWorkers8x8.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/12x12/OneBaseWorker12x12.xml",
-                "maps/12x12/TwoBasesWorkers12x12.xml",
-                "maps/12x12/ThreeBasesWorkers12x12.xml",
-                "maps/12x12/FourBasesWorkers12x12.xml" //+ 8 maps
+                "maps/BWDistantResources32x32.xml"  //8 maps
+                //"maps/BroodWar/(4)BloodBath.scmB.xml" //9 maps
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -125,24 +118,26 @@ public class RoundRobinClusterLeve_Cluster {
                 new RandomBiasedAI(utt), //RND
                 new POLightRush(utt),
                 new POWorkerRush(utt),
+                new PORangedRush(utt),
+                new POHeavyRush(utt),
                 new AHTNAI(utt),
                 new NaiveMCTS(utt),
+                new NaiveMCTSNoGamma(utt),
                 new BS3_NaiveMCTS(utt),
-                //new ABCD(utt), inutilizável
-                new AlphaBetaSearch(utt),
-                new UCT(utt),
-                new MonteCarlo(utt),
-                new NaiveMCTS(100, -1, 100, 1, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Egreedy MonteCarlo using 0.25 epsilon
-                new NaiveMCTS(100, -1, 100, 1, 0.33f, 0.0f, 0.75f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Naive MonteCarlo
-                new NaiveMCTS(100, -1, 100, 10, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true),//e-greedy MCTS
-                
-                //new PuppetSearchMCTS(utt),
-                //new StrategyTactics(utt),
-                //new PGSmRTS(utt),
-                //new SSSmRTS(utt),
-                //new PORangedRush(utt),
-                //new POHeavyRush(utt),
-                new CMABBuilder(utt)
+                new PuppetSearchMCTS(utt),
+                new StrategyTactics(utt), //11
+                //NSS
+                new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator"),
+                //asymmetric cluster
+                new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 2, 2),
+                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 4, 2),
+                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 6, 2),
+                new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 2, 2),
+                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 4, 2),
+                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 6, 2),
+                new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 2, 2)
+                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 4, 2),
+                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 6, 2)
         ));
 
         AI ai1 = ais.get(iAi1);

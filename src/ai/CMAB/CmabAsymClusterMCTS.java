@@ -4,7 +4,6 @@
  */
 package ai.CMAB;
 
-import ai.mcts.naivemcts.*;
 import ai.*;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
@@ -23,7 +22,7 @@ import ai.core.InterruptibleAI;
  *
  * @author rubens and santi
  */
-public class CmabAssymetricMCTS extends AIWithComputationBudget implements InterruptibleAI {
+public class CmabAsymClusterMCTS extends AIWithComputationBudget implements InterruptibleAI {
     public static int DEBUG = 0;
     public EvaluationFunction ef = null;
        
@@ -32,7 +31,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     protected long max_actions_so_far = 0;
     
     protected GameState gs_to_start_from = null;
-    protected CmabAssymetricMCTSNode tree = null;
+    protected CmabAsymClusterMCTSNode tree = null;
     protected int current_iteration = 0;
             
     public int MAXSIMULATIONTIME = 1024;
@@ -64,11 +63,11 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     
     UnitTypeTable utt;
     String classGeneratorMove;
-    String behavior;
-    int qtdUnits;
+    int minSize;
+    int minPoint;
     
     
-    public CmabAssymetricMCTS(UnitTypeTable utt) {
+    public CmabAsymClusterMCTS(UnitTypeTable utt) {
         this(100,-1,100,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
@@ -78,7 +77,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     }    
     
     
-    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
+    public CmabAsymClusterMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
                                float e_l, float discout_l,
                                float e_g, float discout_g, 
                                float e_0, float discout_0, 
@@ -98,7 +97,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         forceExplorationOfNonSampledActions = fensa;
     }    
 
-    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public CmabAsymClusterMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -113,7 +112,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         forceExplorationOfNonSampledActions = fensa;
     }    
     
-    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction) {
+    public CmabAsymClusterMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -129,7 +128,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         this.classGeneratorMove = classGeneratorAction;
     } 
     
-    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public CmabAsymClusterMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -145,7 +144,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         forceExplorationOfNonSampledActions = fensa;
     }     
     
-    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction, UnitTypeTable utt) {
+    public CmabAsymClusterMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, String classGeneratorAction, UnitTypeTable utt) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -163,9 +162,9 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         this.utt = utt;
     }    
 
-    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, 
+    public CmabAsymClusterMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, 
                               float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, 
-                              UnitTypeTable utt, String behavior, int qtdUnits) {
+                              UnitTypeTable utt, String generatorMoves, int minSize, int minPoint) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -180,8 +179,9 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         ef = a_ef;
         forceExplorationOfNonSampledActions = fensa;        
         this.utt = utt;
-        this.behavior = behavior;
-        this.qtdUnits = qtdUnits;
+        this.classGeneratorMove = generatorMoves;
+        this.minSize = minSize;
+        this.minPoint  = minPoint;
     }     
     
     
@@ -199,7 +199,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     
     @Override
     public AI clone() {
-        return new CmabAssymetricMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
+        return new CmabAsymClusterMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
     }    
     
     
@@ -220,7 +220,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     public void startNewComputation(int a_player, GameState gs) throws Exception {
         player = a_player;
         current_iteration = 0;
-        tree = new CmabAssymetricMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions, utt,  behavior, qtdUnits);
+        tree = new CmabAsymClusterMCTSNode(player, 1-player, gs, null, ef.upperBound(gs), current_iteration++, forceExplorationOfNonSampledActions, utt, classGeneratorMove, minSize, minPoint);
         
         if (tree.moveGenerator==null) {
             max_actions_so_far = 0;
@@ -263,14 +263,14 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     
     public boolean iteration(int player) throws Exception {
         
-        CmabAssymetricMCTSNode leaf = tree.selectLeaf(player, 1-player, epsilon_l, epsilon_g, epsilon_0, global_strategy, MAX_TREE_DEPTH, current_iteration++);
+        CmabAsymClusterMCTSNode leaf = tree.selectLeaf(player, 1-player, epsilon_l, epsilon_g, epsilon_0, global_strategy, MAX_TREE_DEPTH, current_iteration++);
 
         if (leaf!=null) {            
             GameState gs2 = leaf.gs.clone();
             simulate(gs2, gs2.getTime() + MAXSIMULATIONTIME);
 
             int time = gs2.getTime() - gs_to_start_from.getTime();
-            double evaluation = ef.evaluate(player, 1-player, gs2)*Math.pow(0.99,time/10.0);
+            double evaluation = ef.evaluate(player, 1-player, gs2);//*Math.pow(0.99,time/10.0);
 
             leaf.propagateEvaluation(evaluation,null);            
 
@@ -310,7 +310,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         total_actions_issued++;
             
         int bestIdx = -1;
-        CmabAssymetricMCTSNode best = null;
+        CmabAsymClusterMCTSNode best = null;
         if (DEBUG>=2) {
 //            for(Player p:gs_to_start_from.getPlayers()) {
 //                System.out.println("Resources P" + p.getID() + ": " + p.getResources());
@@ -320,7 +320,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         }
         if (tree.children==null) return -1;
         for(int i = 0;i<tree.children.size();i++) {
-            CmabAssymetricMCTSNode child = (CmabAssymetricMCTSNode)tree.children.get(i);
+            CmabAsymClusterMCTSNode child = (CmabAsymClusterMCTSNode)tree.children.get(i);
             if (DEBUG>=2) {
                 System.out.println("child " + tree.actions.get(i) + " explored " + child.visit_count + " Avg evaluation: " + (child.accum_evaluation/((double)child.visit_count)));
             }
@@ -376,7 +376,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         }while(!gameover && gs.getTime()<time);   
     }
     
-    public CmabAssymetricMCTSNode getTree() {
+    public CmabAsymClusterMCTSNode getTree() {
         return tree;
     }
     

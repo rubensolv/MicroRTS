@@ -86,16 +86,8 @@ public class RoundRobinClusterLeve_TableBehavior {
                 "maps/24x24/basesWorkers24x24A.xml",
                 "maps/DoubleGame24x24.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml", //8 maps
-                //maps article JAIR
-                "maps/8x8/OneBaseWorker8x8.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml",
-                "maps/8x8/ThreeBasesWorkers8x8.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/12x12/OneBaseWorker12x12.xml",
-                "maps/12x12/TwoBasesWorkers12x12.xml",
-                "maps/12x12/ThreeBasesWorkers12x12.xml",
-                "maps/12x12/FourBasesWorkers12x12.xml" //+ 8 maps
+                "maps/BWDistantResources32x32.xml", 
+                "maps/BroodWar/(4)BloodBath.scmB.xml" //9 maps
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -149,7 +141,7 @@ public class RoundRobinClusterLeve_TableBehavior {
          */
         generateConfig();
         AI ai1 = getIA(utt, iAi1);
-        AI ai2 = new NaiveMCTS(utt);
+        AI ai2 = new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator");
         if (side == 1) {
             AI temp = ai1;
             ai1 = ai2;
@@ -295,7 +287,7 @@ public class RoundRobinClusterLeve_TableBehavior {
         ArrayList<Integer> choices = mapElements.get(ia);
         //return new SAB_seed(utt, choices.get(0), choices.get(1));
 
-        return new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt,
+        return new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt,
                 new ArrayList<>(), "CmabCombinatorialGenerator", getManager(choices.get(1)), choices.get(0));
     }
 

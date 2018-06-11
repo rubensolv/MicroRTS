@@ -4,7 +4,6 @@
  */
 package ai.CMAB;
 
-import ai.CMAB.ActionGenerator.CmabAssymetricGenerator;
 import ai.mcts.MCTSNode;
 import java.math.BigInteger;
 import java.util.*;
@@ -19,7 +18,7 @@ import rts.units.UnitTypeTable;
  *
  * @author santi
  */
-public class CmabAssymetricMCTSNode extends MCTSNode {
+public class CmabAsymClusterMCTSNode extends MCTSNode {
 
     //strategies epsilon_g
     public static final int E_GREEDY = 0;
@@ -36,24 +35,26 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
     boolean forceExplorationOfNonSampledActions = true;
     boolean hasMoreActions = true;
     public ICMAB_ActionGenerator moveGenerator = null;
-    HashMap<BigInteger, CmabAssymetricMCTSNode> childrenMap = new LinkedHashMap<>();    // associates action codes with children
+    HashMap<BigInteger, CmabAsymClusterMCTSNode> childrenMap = new LinkedHashMap<>();    // associates action codes with children
     // Decomposition of the player actions in unit actions, and their contributions:
-    public List<CmabAssymetricUnitActionTableEntry> unitActionTable = null;
+    public List<CmabAsymClusterUnitActionTableEntry> unitActionTable = null;
     double evaluation_bound;    // this is the maximum positive value that the evaluation function can return
     public BigInteger multipliers[];
 
     UnitTypeTable utt;
-    String behavior;
-    int qtdUnits;
+    String generatorMoves;
+    int minSize;
+    int minPoint;
 
-    public CmabAssymetricMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabAssymetricMCTSNode a_parent, 
+    public CmabAsymClusterMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabAsymClusterMCTSNode a_parent, 
                                   double a_evaluation_bound, int a_creation_ID, boolean fensa, UnitTypeTable a_utt, 
-                                  String behavior, int qtdUnits) throws Exception {
+                                  String generatorMoves, int minSize, int minPoint) throws Exception {
         this.utt = a_utt;
         parent = a_parent;
         gs = a_gs;
-        this.behavior = behavior;
-        this.qtdUnits = qtdUnits;
+        this.generatorMoves = generatorMoves;
+        this.minSize = minSize;
+        this.minPoint = minPoint;
         
         if (parent == null) {
             depth = 0;
@@ -74,7 +75,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             type = -1;
         } else if (gs.canExecuteAnyAction(maxplayer)) {
             type = 0;
-            moveGenerator = new CmabAssymetricGenerator(gs,maxplayer, utt, behavior, qtdUnits);
+            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+generatorMoves).getConstructors()[0].newInstance(gs,maxplayer, utt, minSize, minPoint);
             actions = new ArrayList<>();
             children = new ArrayList<>();
             unitActionTable = new LinkedList<>();
@@ -82,7 +83,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             BigInteger baseMultiplier = BigInteger.ONE;
             int idx = 0;
             for (Pair<Unit, List<UnitAction>> choice : moveGenerator.getChoices()) {
-                CmabAssymetricUnitActionTableEntry ae = new CmabAssymetricUnitActionTableEntry();
+                CmabAsymClusterUnitActionTableEntry ae = new CmabAsymClusterUnitActionTableEntry();
                 ae.u = choice.m_a;
                 ae.nactions = choice.m_b.size();
                 ae.actions = choice.m_b;
@@ -99,7 +100,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             }
         } else if (gs.canExecuteAnyAction(minplayer)) {
             type = 1;
-            moveGenerator = new CmabAssymetricGenerator(gs,minplayer, utt, behavior, qtdUnits);
+            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+generatorMoves).getConstructors()[0].newInstance(gs,minplayer, utt, minSize, minPoint);
             actions = new ArrayList<>();
             children = new ArrayList<>();
             unitActionTable = new LinkedList<>();
@@ -107,7 +108,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             BigInteger baseMultiplier = BigInteger.ONE;
             int idx = 0;
             for (Pair<Unit, List<UnitAction>> choice : moveGenerator.getChoices()) {
-                CmabAssymetricUnitActionTableEntry ae = new CmabAssymetricUnitActionTableEntry();
+                CmabAsymClusterUnitActionTableEntry ae = new CmabAsymClusterUnitActionTableEntry();
                 ae.u = choice.m_a;
                 ae.nactions = choice.m_b.size();
                 ae.actions = choice.m_b;
@@ -129,7 +130,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
     }
 
     // Alternated Sampling:
-    public CmabAssymetricMCTSNode selectLeaf(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
+    public CmabAsymClusterMCTSNode selectLeaf(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
         if (unitActionTable == null) {
             return this;
         }
@@ -139,7 +140,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
 
         if (children.size() > 0 && r.nextFloat() >= epsilon_0) {
             // sample from the global MAB:
-            CmabAssymetricMCTSNode selected = null;
+            CmabAsymClusterMCTSNode selected = null;
             if (global_strategy == E_GREEDY) {
                 selected = selectFromAlreadySampledEpsilonGreedy(epsilon_g);
             } else if (global_strategy == UCB1) {
@@ -152,19 +153,19 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
         }
     }
 
-    public CmabAssymetricMCTSNode selectFromAlreadySampledEpsilonGreedy(float epsilon_g) throws Exception {
+    public CmabAsymClusterMCTSNode selectFromAlreadySampledEpsilonGreedy(float epsilon_g) throws Exception {
         if (r.nextFloat() >= epsilon_g) {
-            CmabAssymetricMCTSNode best = null;
+            CmabAsymClusterMCTSNode best = null;
             for (MCTSNode pate : children) {
                 if (type == 0) {
                     // max node:
                     if (best == null || (pate.accum_evaluation / pate.visit_count) > (best.accum_evaluation / best.visit_count)) {
-                        best = (CmabAssymetricMCTSNode) pate;
+                        best = (CmabAsymClusterMCTSNode) pate;
                     }
                 } else {
                     // min node:
                     if (best == null || (pate.accum_evaluation / pate.visit_count) < (best.accum_evaluation / best.visit_count)) {
-                        best = (CmabAssymetricMCTSNode) pate;
+                        best = (CmabAsymClusterMCTSNode) pate;
                     }
                 }
             }
@@ -172,13 +173,13 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             return best;
         } else {
             // choose one at random from the ones seen so far:
-            CmabAssymetricMCTSNode best = (CmabAssymetricMCTSNode) children.get(r.nextInt(children.size()));
+            CmabAsymClusterMCTSNode best = (CmabAsymClusterMCTSNode) children.get(r.nextInt(children.size()));
             return best;
         }
     }
 
-    public CmabAssymetricMCTSNode selectFromAlreadySampledUCB1(float C) throws Exception {
-        CmabAssymetricMCTSNode best = null;
+    public CmabAsymClusterMCTSNode selectFromAlreadySampledUCB1(float C) throws Exception {
+        CmabAsymClusterMCTSNode best = null;
         double bestScore = 0;
         for (MCTSNode pate : children) {
             double exploitation = ((double) pate.accum_evaluation) / pate.visit_count;
@@ -193,7 +194,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
 
             double tmp = C * exploitation + exploration;
             if (best == null || tmp > bestScore) {
-                best = (CmabAssymetricMCTSNode) pate;
+                best = (CmabAsymClusterMCTSNode) pate;
                 bestScore = tmp;
             }
         }
@@ -201,14 +202,14 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
         return best;
     }
 
-    public CmabAssymetricMCTSNode selectLeafUsingLocalMABs(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
+    public CmabAsymClusterMCTSNode selectLeafUsingLocalMABs(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
         PlayerAction pa2;
         BigInteger actionCode;
 
         // For each unit, rank the unitActions according to preference:
         List<double[]> distributions = new LinkedList<>();
         List<Integer> notSampledYet = new LinkedList<>();
-        for (CmabAssymetricUnitActionTableEntry ate : unitActionTable) {
+        for (CmabAsymClusterUnitActionTableEntry ate : unitActionTable) {
             double[] dist = new double[ate.nactions];
             int bestIdx = -1;
             double bestEvaluation = 0;
@@ -289,7 +290,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             int i = notSampledYet.remove(r.nextInt(notSampledYet.size()));
 
             try {
-                CmabAssymetricUnitActionTableEntry ate = unitActionTable.get(i);
+                CmabAsymClusterUnitActionTableEntry ate = unitActionTable.get(i);
                 int code;
                 UnitAction ua;
                 ResourceUsage r2;
@@ -334,11 +335,11 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             }
         }
 
-        CmabAssymetricMCTSNode pate = childrenMap.get(actionCode);
+        CmabAsymClusterMCTSNode pate = childrenMap.get(actionCode);
         if (pate == null) {
             actions.add(pa2);
             GameState gs2 = gs.cloneIssue(pa2);
-            CmabAssymetricMCTSNode node = new CmabAssymetricMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, behavior, qtdUnits);
+            CmabAsymClusterMCTSNode node = new CmabAsymClusterMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, generatorMoves, minSize, minPoint);
             childrenMap.put(actionCode, node);
             children.add(node);
             return node;
@@ -347,8 +348,8 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
         return pate.selectLeaf(maxplayer, minplayer, epsilon_l, epsilon_g, epsilon_0, global_strategy, max_depth, a_creation_ID);
     }
 
-    public CmabAssymetricUnitActionTableEntry getActionTableEntry(Unit u) {
-        for (CmabAssymetricUnitActionTableEntry e : unitActionTable) {
+    public CmabAsymClusterUnitActionTableEntry getActionTableEntry(Unit u) {
+        for (CmabAsymClusterUnitActionTableEntry e : unitActionTable) {
             if (e.u == u) {
                 return e;
             }
@@ -356,7 +357,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
         throw new Error("Could not find Action Table Entry!");
     }
 
-    public void propagateEvaluation(double evaluation, CmabAssymetricMCTSNode child) {
+    public void propagateEvaluation(double evaluation, CmabAsymClusterMCTSNode child) {
         accum_evaluation += evaluation;
         visit_count++;
 
@@ -367,7 +368,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
             PlayerAction pa = actions.get(idx);
 
             for (Pair<Unit, UnitAction> ua : pa.getActions()) {
-                CmabAssymetricUnitActionTableEntry actionTable = getActionTableEntry(ua.m_a);
+                CmabAsymClusterUnitActionTableEntry actionTable = getActionTableEntry(ua.m_a);
                 idx = actionTable.actions.indexOf(ua.m_b);
 
                 if (idx == -1) {
@@ -381,12 +382,12 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
         }
 
         if (parent != null) {
-            ((CmabAssymetricMCTSNode) parent).propagateEvaluation(evaluation, this);
+            ((CmabAsymClusterMCTSNode) parent).propagateEvaluation(evaluation, this);
         }
     }
 
     public void printUnitActionTable() {
-        for (CmabAssymetricUnitActionTableEntry uat : unitActionTable) {
+        for (CmabAsymClusterUnitActionTableEntry uat : unitActionTable) {
             System.out.println("Actions for unit " + uat.u);
             for (int i = 0; i < uat.nactions; i++) {
                 System.out.println("   " + uat.actions.get(i) + " visited " + uat.visit_count[i] + " with average evaluation " + (uat.accum_evaluation[i] / uat.visit_count[i]));
@@ -394,7 +395,7 @@ public class CmabAssymetricMCTSNode extends MCTSNode {
         }
     }
 
-    private CmabAssymetricMCTSNode selectFromAlreadySampledAlternate() {
+    private CmabAsymClusterMCTSNode selectFromAlreadySampledAlternate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

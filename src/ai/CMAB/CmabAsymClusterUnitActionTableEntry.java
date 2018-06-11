@@ -4,7 +4,6 @@
  */
 package ai.CMAB;
 
-import ai.mcts.naivemcts.*;
 import java.util.List;
 import rts.UnitAction;
 import rts.units.Unit;
@@ -13,7 +12,7 @@ import rts.units.Unit;
  *
  * @author santi
  */
-public class CmabAssymetricUnitActionTableEntry {
+public class CmabAsymClusterUnitActionTableEntry {
     public Unit u;
     public int nactions = 0;
     public List<UnitAction> actions = null;

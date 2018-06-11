@@ -20,9 +20,9 @@ import rts.units.*;
 
 /**
  *
- * @author santi
+ * @author Rbens
  */
-public class WorkerRush extends AbstractionLayerAI {
+public class WorkerHarvestRush extends AbstractionLayerAI {
     Random r = new Random();
     protected UnitTypeTable utt;
     UnitType workerType;
@@ -32,12 +32,13 @@ public class WorkerRush extends AbstractionLayerAI {
     // If we have more than 1 "Worker": send the extra workers to attack to the nearest enemy unit
     // If we have a base: train workers non-stop
     // If we have a worker: do this if needed: build base, harvest resources
-    public WorkerRush(UnitTypeTable a_utt) {
+    // If we have workers with resources, return to base. 
+    public WorkerHarvestRush(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
 
         
-    public WorkerRush(UnitTypeTable a_utt, PathFinding a_pf) {
+    public WorkerHarvestRush(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
@@ -57,7 +58,7 @@ public class WorkerRush extends AbstractionLayerAI {
     
     
     public AI clone() {
-        return new WorkerRush(utt, pf);
+        return new WorkerHarvestRush(utt, pf);
     }
     
     public PlayerAction getAction(int player, GameState gs) {
@@ -152,9 +153,9 @@ public class WorkerRush extends AbstractionLayerAI {
         if (freeWorkers.size()>0) harvestWorker = freeWorkers.remove(0);
         
         // harvest with the harvest worker:
-        if (harvestWorker!=null) {
-            Unit closestBase = null;
-            Unit closestResource = null;
+        Unit closestBase = null;
+        Unit closestResource = null;
+        if (harvestWorker!=null) {    
             int closestDistance = 0;
             for(Unit u2:pgs.getUnits()) {
                 if (u2.getType().isResource) { 
@@ -186,7 +187,16 @@ public class WorkerRush extends AbstractionLayerAI {
             }
         }
         
-        for(Unit u:freeWorkers) meleeUnitBehavior(u, p, gs);
+        //check if there are workers with resources harvested  
+        
+        for(Unit u:freeWorkers){
+            if(u.getResources()>0 && closestResource!=null && closestBase!=null){
+                harvest(u, closestResource, closestBase);
+            }else{
+                
+                meleeUnitBehavior(u, p, gs);
+            }
+        }
         
     }
     

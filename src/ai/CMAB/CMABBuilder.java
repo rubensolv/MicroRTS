@@ -6,6 +6,7 @@
 package ai.CMAB;
 
 import ai.RandomBiasedAI;
+import ai.abstraction.partialobservability.POLightRush;
 import ai.asymmetric.ManagerUnits.IManagerAbstraction;
 import ai.asymmetric.ManagerUnits.ManagerClosest;
 import ai.core.AI;
@@ -30,16 +31,39 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
     private String moveString;
     private String behavior;
     private int qtdUnits;
+    private int minSize;
+    private int minPoint;
 
     public CMABBuilder(UnitTypeTable utt) {
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabPlayerActionGenerator");
-        //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
+        //this(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabHillClimbingGenerator");
 
         //assymetric
-        this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, 
-                new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerRandom", 3);
+        //this(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, 
+        //        new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 2);
+        //assymetric Cluster  
+        //CmabClusterEuDistGenerator
+        //CmabClusterPlayoutGenerator
+        //CmabClusterGammaGenerator
+        this(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, 
+                new ArrayList<AI>(), "CmabClusterGammaGenerator", 2, 2);
     }
+    
+    //used to build the NaiveMCTS Assymetric Cluster
+    public CMABBuilder(int available_time, int max_playouts, int lookahead, int max_depth, int police_Exp,
+            AI policyPlayout, EvaluationFunction a_ef, int global_strategy,
+            UnitTypeTable utt, List<AI> abstraction, String generatorMoves, int minSize, int minPoint) {
+        super(available_time, max_playouts);
+        this.moveString = generatorMoves;
+        this.CMABAI = new CmabAsymClusterMCTS(available_time, max_playouts, lookahead, max_depth, 0.3f, 
+                                             0.0f, 0.4f, global_strategy, policyPlayout, 
+                                             a_ef, true, utt, generatorMoves, minSize, minPoint);
+        this.minSize = minSize;
+        this.minPoint = minPoint;
+    }
+    
+    
     //used to build the NaiveMCTS Assymetric
     public CMABBuilder(int available_time, int max_playouts, int lookahead, int max_depth, int police_Exp,
             AI policyPlayout, EvaluationFunction a_ef, int global_strategy,
@@ -161,7 +185,11 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
 
     @Override
     public String toString() {
-        return CMABAI.toString() + "_"+behavior+"_"+qtdUnits;
+        if(behavior != null){
+            return CMABAI.toString() + "_"+behavior+"_"+qtdUnits;
+        }else{
+            return CMABAI.toString() + "_"+moveString+"_"+minSize+"_"+minPoint;
+        }
     }
 
 }
