@@ -5,6 +5,7 @@
  */
 package ai.CMAB;
 
+import Standard.CombinedEvaluation;
 import ai.RandomBiasedAI;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.asymmetric.ManagerUnits.IManagerAbstraction;
@@ -36,18 +37,18 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
 
     public CMABBuilder(UnitTypeTable utt) {
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabPlayerActionGenerator");
-        //this(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
+        this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabHillClimbingGenerator");
 
         //assymetric
-        //this(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, 
+        //this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new CombinedEvaluation(), 0, utt, 
         //        new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 2);
         //assymetric Cluster  
         //CmabClusterEuDistGenerator
         //CmabClusterPlayoutGenerator
         //CmabClusterGammaGenerator
-        this(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, 
-                new ArrayList<AI>(), "CmabClusterGammaGenerator", 2, 2);
+        //this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, 
+        //        new ArrayList<AI>(), "CmabClusterEuDistGenerator", 2, 2);
     }
     
     //used to build the NaiveMCTS Assymetric Cluster

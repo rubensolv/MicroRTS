@@ -139,9 +139,9 @@ public class CmabClusterEuDistGenerator implements ICMAB_ActionGenerator{
                 }
             }
         }  
-        //if(!choices.isEmpty()){
-        //    System.out.println("---Asymmetric--"+choices.toString());
-        //}
+        if(!choices.isEmpty()){
+            System.out.println("---Asymmetric--"+choices.toString());
+        }
 
     }
     protected final void buildPortfolio(UnitTypeTable utt) {
@@ -150,10 +150,11 @@ public class CmabClusterEuDistGenerator implements ICMAB_ActionGenerator{
         //this.scripts.add(new POHeavyRush(utt));
         //this.scripts.add(new POWorkerRush(utt)); 
         //this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3)); //wr
-        this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4)); //lr
         this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5)); //HR
         this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6)); //RR
-        this.scripts.add(new WorkerHarvestRush(utt));
+        this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4)); //lr
+        
+        //this.scripts.add(new WorkerHarvestRush(utt));
     }
 
     @Override

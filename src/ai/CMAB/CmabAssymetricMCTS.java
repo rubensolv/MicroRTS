@@ -270,7 +270,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
             simulate(gs2, gs2.getTime() + MAXSIMULATIONTIME);
 
             int time = gs2.getTime() - gs_to_start_from.getTime();
-            double evaluation = ef.evaluate(player, 1-player, gs2);//*Math.pow(0.99,time/10.0);
+            double evaluation = ef.evaluate(player, 1-player, gs2)*Math.pow(0.99,time/10.0);
 
             leaf.propagateEvaluation(evaluation,null);            
 

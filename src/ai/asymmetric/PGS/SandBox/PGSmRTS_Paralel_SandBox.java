@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.PGS.SandBox;
 
+import PVAI.Loop;
 import ai.asymmetric.PGS.*;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
@@ -23,6 +24,9 @@ import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.UnitAction;
@@ -51,10 +55,19 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
+    
+    seedPlayerThread t1;
+    seedPlayerThread t2;
+    seedPlayerThread t3;
+    seedPlayerThread t4;
+    
+    long startTime;
+    
+    
         
 
     public PGSmRTS_Paralel_SandBox(UnitTypeTable utt) {
-        this(100, -1, 300, 1, 1,
+        this(100, -1, 200, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -75,6 +88,10 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        t1 = new seedPlayerThread();
+        //t2 = new seedPlayerThread();
+        //t3 = new seedPlayerThread();
+        //t4 = new seedPlayerThread();
     }
 
     protected void buildPortfolio() {
@@ -121,7 +138,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         System.out.println("-----------------------------------------------------------------------");
         
         //pego o melhor script do portfolio para ser a semente
-        long startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         System.out.println("Tempo gasto definição seed player= "+ (System.currentTimeMillis()-startTime));
         
@@ -140,7 +157,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         System.out.println("Tempo gasto até o momento= "+(System.currentTimeMillis()-start_time ));
         
         if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
-            doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
+            currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
 
         System.out.println("Tempo gasto pelo PGS = "+(System.currentTimeMillis()-start_time ));
@@ -153,14 +170,49 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         double bestEval = -9999;
         AI enemyAI = new POLightRush(utt);
         //vou iterar para todos os scripts do portfolio
+        
         for (AI script : scripts) {
-            double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            t1.initialInf(player, script.clone(), scripts.get(1).clone(), gs_to_start_from.clone(), LOOKAHEAD, evaluation);
+            //double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            Thread th1 = new Thread(t1);            
+            th1.start();
+            while(th1.isAlive()){
+                
+            }
+            double tEval = t1.getEval();
+            
+            
             if (tEval > bestEval) {
                 bestEval = tEval;
                 seed = script;
             }
         }
-
+       
+        /*
+        double[] values = new double[scripts.size()];
+        Loop.withIndex(0, scripts.size(), new Loop.Each() {
+            public void run(int i) {                    
+                try {
+                    values[i] = eval(player, gs_to_start_from, scripts.get(i), enemyAI);
+                } catch (Exception ex) {
+                    Logger.getLogger(PGSmRTS_Paralel_SandBox.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
+            }
+        });
+        
+        double best = values[0];
+        int id = 0;
+        for (int i = 1; i < values.length; i++) {
+            if(values[i] > best){
+                best = values[i];
+                id = i;
+            }
+            
+        }
+        seed = scripts.get(id);
+        */
+         
         return seed;
     }
 
@@ -311,7 +363,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         }
     }
 
-    private void doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
+    private UnitScriptData doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
         int enemy = 1 - player;
 
         UnitScriptData bestScriptData = currentScriptData.clone();
@@ -323,7 +375,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
                 if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                    return;
+                    return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
                 long startTime ;
@@ -342,6 +394,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
                 currentScriptData = bestScriptData.clone();
             }
         }
+        return currentScriptData;
     }
 
     private ArrayList<Unit> getUnitsPlayer(int player) {
