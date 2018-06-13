@@ -18,6 +18,13 @@ import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import rts.GameState;
 import rts.PlayerAction;
 import rts.UnitAction;
@@ -156,15 +163,48 @@ public class PGSmRTS_SandBox_Executor extends AIWithComputationBudget implements
         //AI enemyAI = new POLightRush(utt);
         AI enemyAI = defaultScript.clone();
         //vou iterar para todos os scripts do portfolio
+        
+		Stopwatch timer = new Stopwatch();
+		
+		timer.start(); 
+        
         for (AI script : scripts) {
             double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            System.out.println("tEval "+tEval);
             if (tEval > bestEval) {
                 bestEval = tEval;
                 seed = script;
             }
         }
+        
+        timer.stop(); 
+        System.out.println("Abordagem sequencial. Tempo:" + timer.getElapsed());
+ 
+        
+		timer = new Stopwatch();
+		
+		timer.start(); 
+        ExecutorService EXEC = Executors.newCachedThreadPool();
+        List<Callable<Double>> tasks = new ArrayList<Callable<Double>>();
+        for (final Object object: scripts) {
+            Callable<Double> c = new Callable<Double>() {
+                @Override
+                public Double call() throws Exception {
+                    return eval(player, gs_to_start_from, (AI)object, enemyAI);
+                }
+            };
+            //System.out.println(c.call());
+            tasks.add(c);
+        }
+        List<Future<Double>> results = EXEC.invokeAll(tasks);
+//        int sum = 0;
+//        for (Future<Double> fr : results) {
+//            System.out.println(fr.get());
+//        }       
 
 
+        timer.stop(); 
+        System.out.println("Abordagem para. Tempo:" + timer.getElapsed());
         return seed;
     }
 
