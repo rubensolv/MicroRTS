@@ -26,6 +26,7 @@ import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.BFSPathFinding;
+import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.AlphaBetaSearchAbstract;
@@ -88,9 +89,10 @@ public class GameVisualSimulationCMAB {
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(3)TauCross.scxA.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
@@ -167,8 +169,9 @@ public class GameVisualSimulationCMAB {
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");        
         AI ai1 = new CMABBuilder(utt);
+        //AI ai1 = new AlphaBetaSearch(utt);
         
-        AI ai2 = new NaiveMCTS(utt);
+        //AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
@@ -196,6 +199,7 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
+        AI ai2 = new AHTNAI(utt);
         
         //AI ai2 = new RangedDefense(utt);
         //AI ai2 = new PVAI(utt);
@@ -210,14 +214,14 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new PVAIML_FW(utt);
         //AI ai2 = new PVAIML_EDP(utt);
         //AI ai2 = new PVAIML_SLFWMS(utt);
-        //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
+        //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");       
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());
         System.out.println("AI 2 = "+ai2.toString()+"\n");        
         
         //método para fazer a troca dos players
-        JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 640, 640, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
+        JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
         long startTime = System.currentTimeMillis();
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;

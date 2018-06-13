@@ -30,6 +30,7 @@ import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.AlphaBetaSearchAbstract;
 import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.GAB.SandBox.GAB_SandBox_Parcial_State;
+import ai.asymmetric.PGS.SandBox.PGSmRTS_Paralel_SandBox;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
 import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SAB_seed;
@@ -165,7 +166,8 @@ public class GameVisualSimulationTest {
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");        
-        AI ai1 = new CmabNaiveMCTS(utt);
+        //AI ai1 = new CmabNaiveMCTS(utt);
+        AI ai1 = new PGSmRTS_Paralel_SandBox(utt);
         
         //AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);

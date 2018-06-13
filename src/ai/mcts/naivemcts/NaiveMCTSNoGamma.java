@@ -23,7 +23,7 @@ import ai.core.InterruptibleAI;
  *
  * @author santi
  */
-public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleAI {
+public class NaiveMCTSNoGamma extends AIWithComputationBudget implements InterruptibleAI {
     public static int DEBUG = 0;
     public EvaluationFunction ef = null;
        
@@ -63,15 +63,15 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     public long total_time = 0;
     
     
-    public NaiveMCTS(UnitTypeTable utt) {
-        this(100,-1,100,10,
+    public NaiveMCTSNoGamma(UnitTypeTable utt) {
+        this(100,-1,200,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
              new SimpleSqrtEvaluationFunction3(), true);
     }    
     
     
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
+    public NaiveMCTSNoGamma(int available_time, int max_playouts, int lookahead, int max_depth, 
                                float e_l, float discout_l,
                                float e_g, float discout_g, 
                                float e_0, float discout_0, 
@@ -91,7 +91,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         forceExplorationOfNonSampledActions = fensa;
     }    
 
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public NaiveMCTSNoGamma(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -106,7 +106,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         forceExplorationOfNonSampledActions = fensa;
     }    
     
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public NaiveMCTSNoGamma(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -134,7 +134,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         
     
     public AI clone() {
-        return new NaiveMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
+        return new NaiveMCTSNoGamma(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
     }    
     
     
@@ -202,7 +202,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
             simulate(gs2, gs2.getTime() + MAXSIMULATIONTIME);
 
             int time = gs2.getTime() - gs_to_start_from.getTime();
-            double evaluation = ef.evaluate(player, 1-player, gs2)*Math.pow(0.99,time/10.0);
+            double evaluation = ef.evaluate(player, 1-player, gs2);//*Math.pow(0.99,time/10.0);
 
             leaf.propagateEvaluation(evaluation,null);            
 

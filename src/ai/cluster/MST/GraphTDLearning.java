@@ -41,6 +41,9 @@ public class GraphTDLearning {
         buildNodosBase(listActionByState.values());
 
         buildGraphComplex(listActionByState);
+        if(graph.isEmpty()){
+            return null;
+        }
         double[] coreDistances = calculateCoreDistances(2);
         return constructMST(coreDistances, true);
         //return new UndirectedGraph(graph.size(), verticesA, verticesB, edgeWeights);
@@ -234,6 +237,7 @@ public class GraphTDLearning {
 
         //Each point has a current neighbor point in the tree, and a current nearest distance:
         int[] nearestMRDNeighbors = new int[graph.size() - 1 + selfEdgeCapacity];
+
         double[] nearestMRDDistances = new double[graph.size() - 1 + selfEdgeCapacity];
 
         for (int i = 0; i < graph.size() - 1; i++) {

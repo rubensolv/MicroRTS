@@ -29,7 +29,7 @@ public class GameState implements Serializable {
 
     protected int time = 0;
     protected PhysicalGameState pgs = null;
-    protected HashMap<Unit, UnitActionAssignment> unitActions = new LinkedHashMap<Unit, UnitActionAssignment>();
+    protected HashMap<Unit, UnitActionAssignment> unitActions = new LinkedHashMap<Unit, UnitActionAssignment>(); 
     protected UnitTypeTable utt = null;
 
     public GameState(PhysicalGameState a_pgs, UnitTypeTable a_utt) {
@@ -459,6 +459,7 @@ public class GameState implements Serializable {
 
         return gameover();
     }
+    
 
     public void forceExecuteAllActions() {
         List<UnitActionAssignment> readyToExecute = new LinkedList<UnitActionAssignment>();

@@ -37,6 +37,9 @@ public class Graph {
         buildNodosBase(listActionByState.values());
 
         buildGraph(listActionByState);
+        if(graph.isEmpty()){
+            return null;
+        }
         double[] coreDistances = calculateCoreDistances(2);
         return constructMST(coreDistances, true);
         //return new UndirectedGraph(graph.size(), verticesA, verticesB, edgeWeights);

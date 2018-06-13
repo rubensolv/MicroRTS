@@ -9,6 +9,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.io.Writer;
+import java.util.ArrayList;
 import rts.units.Unit;
 import java.util.LinkedList;
 import java.util.List;

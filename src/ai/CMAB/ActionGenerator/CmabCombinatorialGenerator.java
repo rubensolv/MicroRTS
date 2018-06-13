@@ -5,11 +5,15 @@
  */
 package ai.CMAB.ActionGenerator;
 
+import ai.abstraction.WorkerHarvestRush;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
+import ai.abstraction.pathfinding.AStarPathFinding;
+import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.core.AI;
+import ai.puppet.BasicConfigurableScript;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,10 +45,16 @@ public class CmabCombinatorialGenerator implements ICMAB_ActionGenerator {
     }
 
     protected final void buildPortfolio(UnitTypeTable utt) {
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new PORangedRush(utt)); 
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new POWorkerRush(utt));             
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new PORangedRush(utt)); 
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new POWorkerRush(utt));             
+        //this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3)); //wr
+        this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4)); //lr
+        this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5)); //HR
+        this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6)); //RR
+        //this.scripts.add(new WorkerHarvestRush(utt));             
+        
     }
 
     @Override
@@ -82,6 +92,7 @@ public class CmabCombinatorialGenerator implements ICMAB_ActionGenerator {
                 }
             }
         }
+        //System.out.println("Choices "+ choices.toString());
     }
 
     /**
@@ -97,7 +108,7 @@ public class CmabCombinatorialGenerator implements ICMAB_ActionGenerator {
             unAction.add(playerAction.getAction(u));
         }
         //inserted wait action to fix move problem
-        unAction.add(new UnitAction(UnitAction.TYPE_NONE, 10));
+        //unAction.add(new UnitAction(UnitAction.TYPE_NONE, 10));
         return new ArrayList<>(unAction);
     }
 

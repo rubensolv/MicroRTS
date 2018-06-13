@@ -11,12 +11,16 @@ import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
-import ai.asymmetric.ManagerUnits.IManagerAbstraction;
+import ai.cluster.CIA_Enemy;
+import ai.cluster.core.hdbscanstar.HDBSCANStarObject;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.core.AI;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
@@ -31,24 +35,27 @@ import util.Pair;
  *
  * @author rubens
  */
-public class CmabAssymetricGenerator implements ICMAB_ActionGenerator{
+public class CmabClusterEuDistGenerator implements ICMAB_ActionGenerator{
     private final List<AI> scripts;
     private final GameState gs_to_start_from;
     PhysicalGameState pgs;
     ResourceUsage base_ru;
     private final int playerForThisComputation;
     private final List<Pair<Unit, List<UnitAction>>> choices;
-    private long size = 1;  // this will be capped at Long.MAX_VALUE;
-    private final IManagerAbstraction behaviorAbs;
+    private long size = 1;  // this will be capped at Long.MAX_VALUE;    
     HashSet<Unit> unitsControled = new HashSet<>();
-    
+    ArrayList<ArrayList<Unit>> clusters;
+    int minSize;
+    int minPoint;
 
-    public CmabAssymetricGenerator( GameState gs_to_start_from, int playerForThisComputation, UnitTypeTable a_utt, String Behavior, int qtdUNits) throws Exception{
+    public CmabClusterEuDistGenerator( GameState gs_to_start_from, int playerForThisComputation, UnitTypeTable a_utt, int minSize, int minPoint) throws Exception{
         this.scripts = new ArrayList<>();
         this.gs_to_start_from = gs_to_start_from;
         this.playerForThisComputation = playerForThisComputation;
+        this.minSize = minSize;
+        this.minPoint = minPoint;
+        this.clusters = new ArrayList<>();
         //this.behaviorAbs = new ManagerClosest(playerForThisComputation, 2);
-        this.behaviorAbs = (IManagerAbstraction) Class.forName("ai.asymmetric.ManagerUnits."+Behavior).getConstructors()[0].newInstance(playerForThisComputation, qtdUNits);
         choices = new ArrayList<>();
         size = 1;
         buildPortfolio(a_utt);
@@ -98,7 +105,10 @@ public class CmabAssymetricGenerator implements ICMAB_ActionGenerator{
     
     protected final void generatedMovesAsymmetric() throws Exception{
         //unidades.clear();
-        behaviorAbs.controlUnitsForAB(gs_to_start_from, unitsControled);
+        findBestClusters();
+        filterClusters();
+        removeEnemyClusters();
+        selectUnitsControled();
         //System.out.println("units"+ unitsControled.toString()); //removes
         // Generate the reserved resources:
         base_ru = new ResourceUsage();
@@ -129,19 +139,21 @@ public class CmabAssymetricGenerator implements ICMAB_ActionGenerator{
                 }
             }
         }  
-        //System.out.println("---Asymmetric--"+choices.toString());
+        if(!choices.isEmpty()){
+            System.out.println("---Asymmetric--"+choices.toString());
+        }
 
     }
     protected final void buildPortfolio(UnitTypeTable utt) {
         //this.scripts.add(new POLightRush(utt));
         //this.scripts.add(new PORangedRush(utt)); 
         //this.scripts.add(new POHeavyRush(utt));
-        //this.scripts.add(new POWorkerRush(utt));     
-        
+        //this.scripts.add(new POWorkerRush(utt)); 
         //this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3)); //wr
         this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5)); //HR
         this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6)); //RR
         this.scripts.add(new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4)); //lr
+        
         //this.scripts.add(new WorkerHarvestRush(utt));
     }
 
@@ -172,5 +184,157 @@ public class CmabAssymetricGenerator implements ICMAB_ActionGenerator{
         return new ArrayList<>(unAction);
     }
     
+    private void findBestClusters() {
+        //[total units] [2] (x,y)
+        ArrayList<Unit> unitsCl = getUnits(playerForThisComputation);
+        unitsCl.addAll(getUnits(1 - playerForThisComputation));
+        double[][] dataSet = new double[unitsCl.size()][2];
+        int idx = 0;
+        for (Unit unit : unitsCl) {
+            double[] tempPosition = new double[2];
+            tempPosition[0] = unit.getX();
+            tempPosition[1] = unit.getY();
+            //System.out.println(unit.getX()+","+unit.getY());
+            dataSet[idx] = tempPosition;
+            idx++;
+        }
+
+        try {
+            int[] clusterInt = HDBSCANStarObject.runHDBSCAN(dataSet, minPoint, minSize,  true);
+            //System.out.println(Arrays.toString(clusterInt));
+            buildClusters(dataSet, clusterInt, unitsCl);
+        } catch (IOException ex) {
+            Logger.getLogger(CIA_Enemy.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    
+    private ArrayList<Unit> getUnits(int player) {
+        ArrayList<Unit> unitsPlayer = new ArrayList<>();
+        for (Unit u : gs_to_start_from.getUnits()) {
+            if (u.getPlayer() == player) {
+                unitsPlayer.add(u);
+            }
+        }
+        return unitsPlayer;
+    }
+    
+    
+    private void buildClusters(double[][] dataSet, int[] clusterInt, ArrayList<Unit> unitsCl) {
+        this.clusters.clear();
+        HashSet<Integer> labels = new HashSet<>();
+        for (int i = 0; i < clusterInt.length; i++) {
+            labels.add(clusterInt[i]);
+        }
+        labels.remove(0);
+        
+        for (Integer label : labels) {
+            ArrayList<Unit> cluster = new ArrayList<>();
+
+            for (int i = 0; i < clusterInt.length; i++) {
+                if (clusterInt[i] == label) {
+                    double[] tPos = dataSet[i];
+                    Unit untC = getUnitByPos(tPos, unitsCl);
+                    cluster.add(untC);
+                }
+            }
+
+            this.clusters.add(cluster);
+        }
+    }
+    
+    /**
+     * Remove clusters just with enemy units
+     */
+    private void removeEnemyClusters() {
+        ArrayList<ArrayList<Unit>> remCluster = new ArrayList<>();
+        for (ArrayList<Unit> cluster : clusters) {
+            if (playerCluster(cluster, (1 - playerForThisComputation))) {
+                remCluster.add(cluster);
+            }
+        }
+        for (ArrayList<Unit> enC : remCluster) {
+            this.clusters.remove(enC);
+        }
+
+    }
+    
+    private boolean playerCluster(ArrayList<Unit> cluster, int playerEv) {
+        for (Unit unit : cluster) {
+            if (unit.getPlayer() != playerEv) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private Unit getUnitByPos(double[] tPos, ArrayList<Unit> unitsCl) {
+        for (Unit unit : unitsCl) {
+            if (unit.getX() == tPos[0] && unit.getY() == tPos[1]) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Follow these steps: 1 - Join clusters where you don't have an enemy
+     * present with a enemy cluster. 2 - Remove cluster that haven't our units.
+     */
+    private void filterClusters() {
+        ArrayList<ArrayList<Unit>> newClusters = new ArrayList<>();
+        for (ArrayList<Unit> cluster : clusters) {
+            if (!playerCluster(cluster, playerForThisComputation)) {
+                newClusters.add(cluster);
+            } 
+        }
+        this.clusters = newClusters;
+    }
+    
+    private Unit getEnemyClosestByCentroid(ArrayList<Unit> cluster) {
+        ArrayList<Unit> unidades = new ArrayList<>();
+        for (Unit unit : cluster) {
+            if (unit.getPlayer() == playerForThisComputation) {
+                unidades.add(unit);
+            }
+        }
+        //find the centroid
+        int x = 0, y = 0;
+        for (Unit un : unidades) {
+            x += un.getX();
+            y += un.getY();
+        }
+        x = x / unidades.size();
+        y = y / unidades.size();
+        return getEnemyClosest(x, y);
+    }
+    
+    private Unit getEnemyClosest(int xCentroid, int yCentroid) {
+        Unit Enbase = getClosestEnemyUnit(xCentroid, yCentroid, gs_to_start_from, playerForThisComputation);
+        return Enbase;
+
+    }
+
+    private Unit getClosestEnemyUnit(int xCent, int yCent, GameState state, int player) {
+        PhysicalGameState pgs = state.getPhysicalGameState();
+        Unit closestEnemy = null;
+        int closestDistance = 0;
+        for (Unit u2 : pgs.getUnits()) {
+            if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
+                int d = Math.abs(u2.getX() - xCent) + Math.abs(u2.getY() - yCent);
+                if (closestEnemy == null || d < closestDistance) {
+                    closestEnemy = u2;
+                    closestDistance = d;
+                }
+            }
+        }
+        return closestEnemy;
+    }
+
+    private void selectUnitsControled() {
+        for (ArrayList<Unit> cluster : clusters) {
+            unitsControled.addAll(cluster);
+        }
+    }
     
 }
