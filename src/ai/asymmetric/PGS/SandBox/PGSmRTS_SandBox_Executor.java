@@ -28,7 +28,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements InterruptibleAI {
+public class PGSmRTS_SandBox_Executor extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 10;  // number of iterations for improving a given player
@@ -50,7 +50,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
     //tupla scripts
     String tuplaInScripts = "";
 
-    public PGSmRTS_Paralel_SandBox(UnitTypeTable utt) {
+    public PGSmRTS_SandBox_Executor(UnitTypeTable utt) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -60,7 +60,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
     }
     
     //This is the one that is being called
-    public PGSmRTS_Paralel_SandBox(UnitTypeTable utt, List<AI> scripts) {
+    public PGSmRTS_SandBox_Executor(UnitTypeTable utt, List<AI> scripts) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -70,7 +70,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         this.scripts = scripts;
     }
     
-    public PGSmRTS_Paralel_SandBox(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
+    public PGSmRTS_SandBox_Executor(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -81,7 +81,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         this.tuplaInScripts = tuplaIndSc;
     }
 
-    public PGSmRTS_Paralel_SandBox(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public PGSmRTS_SandBox_Executor(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -97,7 +97,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         
     }
     
-    public PGSmRTS_Paralel_SandBox(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
+    public PGSmRTS_SandBox_Executor(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -229,7 +229,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
 
     @Override
     public AI clone() {
-        return new PGSmRTS_Paralel_SandBox(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf, scripts);
+        return new PGSmRTS_SandBox_Executor(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf, scripts);
     }
 
     @Override
