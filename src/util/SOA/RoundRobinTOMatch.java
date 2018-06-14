@@ -68,8 +68,8 @@ public class RoundRobinTOMatch {
             iScriptsAi2.add(Integer.decode(element));
         }
 
-        AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1), tupleAi1);
-        AI ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2), tupleAi2);
+        AI ai1 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi1), tupleAi1);
+        AI ai2 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi2), tupleAi2);
 
         /*
             Variáveis para coleta de tempo
