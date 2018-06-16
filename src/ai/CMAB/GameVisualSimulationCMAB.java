@@ -171,7 +171,7 @@ public class GameVisualSimulationCMAB {
         AI ai1 = new CMABBuilder(utt);
         //AI ai1 = new AlphaBetaSearch(utt);
         
-        //AI ai2 = new NaiveMCTS(utt);
+        AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
         //AI ai2 = new CIA_PlayoutPower(utt);
@@ -199,7 +199,7 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
-        AI ai2 = new AHTNAI(utt);
+        //AI ai2 = new AHTNAI(utt);
         
         //AI ai2 = new RangedDefense(utt);
         //AI ai2 = new PVAI(utt);

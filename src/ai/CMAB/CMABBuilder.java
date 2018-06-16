@@ -37,8 +37,9 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
 
     public CMABBuilder(UnitTypeTable utt) {
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabPlayerActionGenerator");
-        this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
+        //this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabHillClimbingGenerator");
+        this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabAsyReduzedGenerator");
 
         //assymetric
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new CombinedEvaluation(), 0, utt, 

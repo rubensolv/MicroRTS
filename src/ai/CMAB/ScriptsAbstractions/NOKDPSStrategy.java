@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.abstraction.combat;
+package ai.CMAB.ScriptsAbstractions;
 
+import ai.abstraction.combat.*;
 import ai.abstraction.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.core.AI;
@@ -26,7 +27,7 @@ import rts.units.*;
  *
  * @author Rubens
  */
-public class NOKDPS extends AbstractionLayerAI {
+public class NOKDPSStrategy extends AbstractionLayerAI {
 
     Random r = new Random();
     protected UnitTypeTable utt;
@@ -47,11 +48,11 @@ public class NOKDPS extends AbstractionLayerAI {
  |    a) If it is in range to attack an enemy, WAIT until attack
  |    b) If it is not in range of enemy, MOVE towards closest
  `----------------------------------------------------------------------*/
-    public NOKDPS(UnitTypeTable a_utt) {
+    public NOKDPSStrategy(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
 
-    public NOKDPS(UnitTypeTable a_utt, PathFinding a_pf) {
+    public NOKDPSStrategy(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
@@ -72,7 +73,7 @@ public class NOKDPS extends AbstractionLayerAI {
 
     @Override
     public AI clone() {
-        return new NOKDPS(utt, pf);
+        return new NOKDPSStrategy(utt, pf);
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -101,12 +102,14 @@ public class NOKDPS extends AbstractionLayerAI {
         }
 
         // behavior of workers:
+        /*
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canHarvest
                     && u.getPlayer() == player) {
                 combatUnits.add(u);
             }
         }
+        */
         NOKDPSBehavior(combatUnits, p, pgs);
         //workersBehavior(workers, p, pgs);
 
@@ -120,8 +123,7 @@ public class NOKDPS extends AbstractionLayerAI {
         HashMap<Unit, Integer> hpRemaining = new HashMap<>();
 
         for (Unit uEnemy : pgs.getUnits()) {
-            if ((uEnemy.getType() != barracksType) && (uEnemy.getType() != baseType)
-                    && uEnemy.getPlayer() == enemyID) {
+            if ( uEnemy.getPlayer() == enemyID) {
                 hpRemaining.put(uEnemy, uEnemy.getHitPoints());
             }
         }

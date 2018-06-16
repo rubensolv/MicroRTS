@@ -5,6 +5,8 @@
  */
 package ai.asymmetric.PGS;
 
+import ai.RandomBiasedAI;
+import ai.abstraction.WorkerHarvestRush;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -12,8 +14,6 @@ import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.asymmetric.common.UnitScriptData;
-import ai.configurablescript.BasicExpandedConfigurableScript;
-import ai.configurablescript.ScriptsCreator;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.InterruptibleAI;
@@ -33,7 +33,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI {
+public class PGSmRTSRandom extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -52,8 +52,10 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
     
+    AI randAI = null;
+    int qtdSumPlayout = 1;
 
-    public PGSmRTS(UnitTypeTable utt) {
+    public PGSmRTSRandom(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -61,8 +63,17 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 utt,
                 new AStarPathFinding());
     }
+    public PGSmRTSRandom(UnitTypeTable utt, int qtdPlayout, int lookahead) {
+        this(100, -1, lookahead, 1, 1,
+                new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
+        this.qtdSumPlayout = qtdPlayout;
+    }
 
-    public PGSmRTS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public PGSmRTSRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -74,10 +85,12 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        randAI = new RandomBiasedAI(a_utt);
     }
 
     protected void buildPortfolio() {
-        this.scripts.add(new POWorkerRush(utt));
+        //this.scripts.add(new POWorkerRush(utt));
+        this.scripts.add(new WorkerHarvestRush(utt));
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
@@ -188,7 +201,10 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         AI ai2 = aiEnemy.clone();
 
         GameState gs2 = gs.clone();
-        //ai1.reset();
+         //actions default
+        gs2.issue(uScriptPlayer.getAction(player, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
+        
         ai2.reset();
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
@@ -196,10 +212,8 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                //gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));                
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
@@ -208,7 +222,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public AI clone() {
-        return new PGSmRTS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new PGSmRTSRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -228,7 +242,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + LOOKAHEAD + ", " + I + ", " + R + ", " + evaluation + ", " + pf + ")";
+        return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + LOOKAHEAD + ", " + I + ", " + R + ", " + evaluation + ", " + pf +", "+qtdSumPlayout +")";
     }
 
     public int getPlayoutLookahead() {
@@ -302,23 +316,27 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
         //controle pelo número de iterações
         //for (int i = 0; i < I; i++) {
-        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))){
+        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 2))){
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
+                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
                     return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
-                    double scoreTemp = eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    double sum = 0.0;
+                    for (int i = 0; i < qtdSumPlayout; i++) {
+                        sum += eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    }
+                    double scoreTemp = sum/qtdSumPlayout;
 
                     if (scoreTemp > bestScore) {
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
+                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-2)){
                         return bestScriptData.clone();
                     }
                 }

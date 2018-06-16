@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.abstraction.combat;
+package ai.CMAB.ScriptsAbstractions;
 
+import ai.abstraction.combat.*;
 import ai.abstraction.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.core.AI;
@@ -26,7 +27,7 @@ import rts.units.*;
  *
  * @author Rubens
  */
-public class KitterDPS extends AbstractionLayerAI {
+public class KitterDPSStrategy extends AbstractionLayerAI {
 
     Random r = new Random();
     protected UnitTypeTable utt;
@@ -47,11 +48,11 @@ public class KitterDPS extends AbstractionLayerAI {
  |    a) If it is in range to attack an enemy, move away from closest one
  |    b) If it is not in range of enemy, MOVE towards closest one
  `----------------------------------------------------------------------*/
-    public KitterDPS(UnitTypeTable a_utt) {
+    public KitterDPSStrategy(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
 
-    public KitterDPS(UnitTypeTable a_utt, PathFinding a_pf) {
+    public KitterDPSStrategy(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
@@ -72,7 +73,7 @@ public class KitterDPS extends AbstractionLayerAI {
 
     @Override
     public AI clone() {
-        return new KitterDPS(utt, pf);
+        return new KitterDPSStrategy(utt, pf);
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -101,12 +102,14 @@ public class KitterDPS extends AbstractionLayerAI {
         }
 
         // behavior of workers:
+        /*
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canHarvest
                     && u.getPlayer() == player) {
                 combatUnits.add(u);
             }
         }
+        */
         KiterKDPSBehavior(combatUnits, p, pgs);
         //workersBehavior(workers, p, pgs);
 
@@ -120,8 +123,7 @@ public class KitterDPS extends AbstractionLayerAI {
         ArrayList<Unit> enemyUnits = new ArrayList<>();
 
         for (Unit uEnemy : pgs.getUnits()) {
-            if ((uEnemy.getType() != barracksType) && (uEnemy.getType() != baseType)
-                    && uEnemy.getPlayer() == enemyID) {
+            if (uEnemy.getPlayer() == enemyID) {
                 enemyUnits.add(uEnemy);
             }
         }
@@ -144,7 +146,10 @@ public class KitterDPS extends AbstractionLayerAI {
                 for (UnitAction move : getUnitActions(ourUnit)) {
                     if ((move.getType() == UnitAction.TYPE_ATTACK_LOCATION)) {
                         Unit target = getEnemyByPosition(enemyUnits, move);
-                        double dpsHPValue = (dpf(target) / target.getHitPoints());
+                        double dpsHPValue = -9999;
+                        if(target != null){
+                            dpsHPValue = (dpf(target) / target.getHitPoints());
+                        }
 
                         if (dpsHPValue > actionHighestDPS) {
                             actionHighestDPS = dpsHPValue;
@@ -416,6 +421,7 @@ public class KitterDPS extends AbstractionLayerAI {
                 return un;
             }
         }
+        
 
         return null;
     }

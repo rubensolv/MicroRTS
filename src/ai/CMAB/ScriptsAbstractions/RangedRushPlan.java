@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.abstraction;
+package ai.CMAB.ScriptsAbstractions;
 
+import ai.abstraction.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.core.AI;
 import ai.abstraction.pathfinding.PathFinding;
@@ -20,9 +21,9 @@ import rts.units.*;
 
 /**
  *
- * @author santi
+ * @author rubens
  */
-public class RangedRush extends AbstractionLayerAI {
+public class RangedRushPlan extends AbstractionLayerAI {
 
     Random r = new Random();
     protected UnitTypeTable utt;
@@ -35,12 +36,12 @@ public class RangedRush extends AbstractionLayerAI {
     // If we have a base: train worker until we have 1 workers
     // If we have a barracks: train light
     // If we have a worker: do this if needed: build base, build barracks, harvest resources
-    public RangedRush(UnitTypeTable a_utt) {
+    public RangedRushPlan(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
 
 
-    public RangedRush(UnitTypeTable a_utt, PathFinding a_pf) {
+    public RangedRushPlan(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
@@ -58,7 +59,7 @@ public class RangedRush extends AbstractionLayerAI {
     }
 
     public AI clone() {
-        return new RangedRush(utt, pf);
+        return new RangedRushPlan(utt, pf);
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -85,6 +86,7 @@ public class RangedRush extends AbstractionLayerAI {
         }
 
         // behavior of melee units:
+        /*
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canAttack && !u.getType().canHarvest
                     && u.getPlayer() == player
@@ -92,7 +94,8 @@ public class RangedRush extends AbstractionLayerAI {
                 meleeUnitBehavior(u, p, gs);
             }
         }
-
+        */
+        
         // behavior of workers:
         List<Unit> workers = new LinkedList<Unit>();
         for (Unit u : pgs.getUnits()) {
@@ -148,6 +151,7 @@ public class RangedRush extends AbstractionLayerAI {
     public void workersBehavior(List<Unit> workers, Player p, PhysicalGameState pgs) {
         int nbases = 0;
         int nbarracks = 0;
+        List<Unit> bases = new LinkedList<>();
 
         int resourcesUsed = 0;
         List<Unit> freeWorkers = new LinkedList<Unit>();
@@ -161,6 +165,7 @@ public class RangedRush extends AbstractionLayerAI {
             if (u2.getType() == baseType
                     && u2.getPlayer() == p.getID()) {
                 nbases++;
+                bases.add(u2);
             }
             if (u2.getType() == barracksType
                     && u2.getPlayer() == p.getID()) {
@@ -178,11 +183,20 @@ public class RangedRush extends AbstractionLayerAI {
             }
         }
 
-        if (nbarracks == 0 && !freeWorkers.isEmpty()) {
+        if (nbarracks == 0 && !freeWorkers.isEmpty() ) {
             // build a barracks:
-            if (p.getResources() >= barracksType.cost + resourcesUsed) {
+            if (p.getResources() >= barracksType.cost + resourcesUsed && bases.size() > 0) {
                 Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,barracksType,u.getX(),u.getY(),reservedPositions,p,pgs);
+                Unit b = bases.get(nbarracks);
+                int xCoord = b.getX();
+                int yCoord = b.getY();
+
+                if (p.getID() == 0) {
+                    xCoord = b.getX() + 2;
+                    yCoord = b.getY() + 2;
+                }
+                
+                buildIfNotAlreadyBuilding(u, barracksType, xCoord, yCoord, reservedPositions, p, pgs);
                 resourcesUsed += barracksType.cost;
             }
         }
@@ -216,7 +230,7 @@ public class RangedRush extends AbstractionLayerAI {
                 AbstractAction aa = getAbstractAction(u);
                 if (aa instanceof Harvest) {
                     Harvest h_aa = (Harvest)aa;
-                    if (h_aa.target != closestResource || h_aa.base!=closestBase) harvest(u, closestResource, closestBase);
+                    if (h_aa.getTarget() != closestResource || h_aa.getBase()!=closestBase) harvest(u, closestResource, closestBase);
                 } else {
                     harvest(u, closestResource, closestBase);
                 }

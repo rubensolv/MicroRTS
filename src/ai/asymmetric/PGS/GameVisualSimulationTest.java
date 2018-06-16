@@ -30,6 +30,7 @@ import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.AlphaBetaSearchAbstract;
 import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.GAB.SandBox.GAB_SandBox_Parcial_State;
+import ai.asymmetric.PGS.SandBox.PGSmRTS_Paralel_JulianTest;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_Paralel_SandBox;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
 import ai.asymmetric.SAB.SAB;
@@ -74,6 +75,7 @@ import rts.units.Unit;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import static tests.ClusterTesteLeve.decodeScripts;
+import static util.SOA.RoundRobinClusterLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -167,8 +169,11 @@ public class GameVisualSimulationTest {
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");        
         //AI ai1 = new CmabNaiveMCTS(utt);
-        AI ai1 = new PGSmRTS_Paralel_SandBox(utt);
+        //AI ai1 = new PGSmRTS_Paralel_JulianTest(utt);
+        //AI ai1 = new PGSmRTSRandom(utt, 4, 200);
+        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100);
         
+        AI ai2 = new PGSmRTS(utt); 
         //AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);
@@ -193,7 +198,6 @@ public class GameVisualSimulationTest {
         //AI ai2 = new AlphaBetaSearchAbstract(utt);
         //AI ai2 = new GAB_SandBox_Parcial_State(utt);
         //AI ai2 = new GAB(utt);
-        AI ai2 = new PGSmRTS(utt); 
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
@@ -226,9 +230,9 @@ public class GameVisualSimulationTest {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
                 PlayerAction pa1 = ai1.getAction(0, gs);  
-                if( (System.currentTimeMillis() - startTime) >0){
-                System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
-                }
+                //if( (System.currentTimeMillis() - startTime) >0){
+                //System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
+                //}
                 //System.out.println("Action A1 ="+ pa1.toString());
                 
                 startTime = System.currentTimeMillis();

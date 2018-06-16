@@ -24,7 +24,10 @@ import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import rts.GameState;
@@ -37,7 +40,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements InterruptibleAI {
+public class PGSmRTS_Paralel_JulianTest extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -66,7 +69,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
     
         
 
-    public PGSmRTS_Paralel_SandBox(UnitTypeTable utt) {
+    public PGSmRTS_Paralel_JulianTest(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -76,7 +79,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         );
     }
 
-    public PGSmRTS_Paralel_SandBox(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public PGSmRTS_Paralel_JulianTest(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -88,7 +91,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
-        t1 = new seedPlayerThread();
+        //t1 = new seedPlayerThread();
         //t2 = new seedPlayerThread();
         //t3 = new seedPlayerThread();
         //t4 = new seedPlayerThread();
@@ -166,52 +169,25 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
     }
 
     protected AI getSeedPlayer(int player) throws Exception {
-        AI seed = null;
+        AI seed = scripts.get(0);
         double bestEval = -9999;
         AI enemyAI = new POLightRush(utt);
         //vou iterar para todos os scripts do portfolio
         
-        for (AI script : scripts) {
-            t1.initialInf(player, script.clone(), scripts.get(1).clone(), gs_to_start_from.clone(), LOOKAHEAD, evaluation);
-            //double tEval = eval(player, gs_to_start_from, script, enemyAI);
-            Thread th1 = new Thread(t1);            
-            th1.start();
-            while(th1.isAlive()){
-                
-            }
-            double tEval = t1.getEval();
-            
-            
-            if (tEval > bestEval) {
-                bestEval = tEval;
-                seed = script;
-            }
-        }
-       
-        /*
-        double[] values = new double[scripts.size()];
-        Loop.withIndex(0, scripts.size(), new Loop.Each() {
-            public void run(int i) {                    
-                try {
-                    values[i] = eval(player, gs_to_start_from, scripts.get(i), enemyAI);
-                } catch (Exception ex) {
-                    Logger.getLogger(PGSmRTS_Paralel_SandBox.class.getName()).log(Level.SEVERE, null, ex);
-                }
-               
-            }
-        });
-        
-        double best = values[0];
-        int id = 0;
-        for (int i = 1; i < values.length; i++) {
-            if(values[i] > best){
-                best = values[i];
-                id = i;
-            }
-            
-        }
-        seed = scripts.get(id);
-        */
+        ExecutorService EXEC = Executors.newCachedThreadPool();
+        //ExecutorService EXEC = Executors.newFixedThreadPool(4);
+       List<Callable<Double>> tasks = new ArrayList<>();
+       for (final Object object: scripts) {
+           Callable<Double> c = new Callable<Double>() {
+               @Override
+               public Double call() throws Exception {
+                   return eval(player, gs_to_start_from, (AI)object, enemyAI);
+               }
+           };
+           //System.out.println(c.call());
+           tasks.add(c);
+       }
+       List<Future<Double>> results = EXEC.invokeAll(tasks);
          
         return seed;
     }
@@ -277,7 +253,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
 
     @Override
     public AI clone() {
-        return new PGSmRTS_Paralel_SandBox(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new PGSmRTS_Paralel_JulianTest(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override

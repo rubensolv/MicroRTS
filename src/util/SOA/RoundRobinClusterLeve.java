@@ -13,6 +13,7 @@ import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
@@ -44,6 +45,7 @@ import rts.PlayerAction;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import static tests.ClusterTesteLeve.decodeScripts;
+import static tests.ClusterTesteLeve_Combination.decodeScripts;
 
 /**
  *
@@ -87,7 +89,11 @@ public class RoundRobinClusterLeve {
                 //"maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
                 //"maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",
                 //"maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
-                "maps/24x24/basesWorkers24x24A.xml"
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
+                "maps/24x24/basesWorkers24x24A.xml",                
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/BWDistantResources32x32.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -140,31 +146,32 @@ public class RoundRobinClusterLeve {
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
                */
                
-                decodeScripts(utt, "0;").get(0),
-                decodeScripts(utt, "189;").get(0),
-                decodeScripts(utt, "290;").get(0),
-                decodeScripts(utt, "232;").get(0),
-                decodeScripts(utt, "188;").get(0),
-                decodeScripts(utt, "151;").get(0),
-                decodeScripts(utt, "26;").get(0),
-                decodeScripts(utt, "202;").get(0),
-                decodeScripts(utt, "172;").get(0),
-                decodeScripts(utt, "1;").get(0),
-                decodeScripts(utt, "225;").get(0),
-                decodeScripts(utt, "101;").get(0),
-                decodeScripts(utt, "116;").get(0),
-                decodeScripts(utt, "265;").get(0),
-                
-                decodeScripts(utt, "32;").get(0),
-                decodeScripts(utt, "285;").get(0),
-                decodeScripts(utt, "107;").get(0),
-                decodeScripts(utt, "267;").get(0),
-
-                decodeScripts(utt, "233;").get(0),
-                decodeScripts(utt, "97;").get(0),
-                decodeScripts(utt, "93;").get(0),
-                decodeScripts(utt, "246;").get(0),
-                decodeScripts(utt, "117;").get(0),
+               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGSSym"), 
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",1,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",6,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",8,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",10,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",1,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",6,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",8,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",10,200),
+                new PGSSCriptChoice(utt, decodeScripts(utt, "189;225;101;26;"), "PGSSymHeavy"),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",1,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",2,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",4,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",6,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",8,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",10,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",1,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",2,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",4,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",6,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",8,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",10,200),
                 new POLightRush(utt),
                 new PORangedRush(utt),
                 new POWorkerRush(utt),
@@ -291,5 +298,27 @@ public class RoundRobinClusterLeve {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
+        
+        //decompõe a tupla
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        String[] itens = sScripts.split(";");
+
+        for (String element : itens) {
+            iScriptsAi1.add(Integer.decode(element));
+        }
+        
+        List<AI> scriptsAI = new ArrayList<>();
+
+        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
+        iScriptsAi1.forEach((idSc) -> {
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
+        });
+
+        return scriptsAI;
     }
 }

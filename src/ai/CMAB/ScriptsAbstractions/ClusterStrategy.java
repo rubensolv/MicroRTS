@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.abstraction.combat;
+package ai.CMAB.ScriptsAbstractions;
 
+import ai.abstraction.combat.*;
 import ai.abstraction.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.core.AI;
@@ -26,7 +27,7 @@ import rts.units.*;
  *
  * @author Rubens
  */
-public class Cluster extends AbstractionLayerAI {
+public class ClusterStrategy extends AbstractionLayerAI {
 
     Random r = new Random();
     protected UnitTypeTable utt;
@@ -41,16 +42,16 @@ public class Cluster extends AbstractionLayerAI {
     private int _cenX, _cenY;
 
     /*----------------------------------------------------------------------
- | Cluster Player
+ | ClusterStrategy Player
  |----------------------------------------------------------------------
  | Chooses an action with following priority:
  | 1) Move to centroid of our unit cluster
  `----------------------------------------------------------------------*/
-    public Cluster(UnitTypeTable a_utt) {
+    public ClusterStrategy(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
 
-    public Cluster(UnitTypeTable a_utt, PathFinding a_pf) {
+    public ClusterStrategy(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
@@ -71,7 +72,7 @@ public class Cluster extends AbstractionLayerAI {
 
     @Override
     public AI clone() {
-        return new Cluster(utt, pf);
+        return new ClusterStrategy(utt, pf);
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -102,6 +103,7 @@ public class Cluster extends AbstractionLayerAI {
         }
 
         // behavior of workers:
+        /*
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canHarvest
                     && gs.getActionAssignment(u) == null
@@ -109,7 +111,10 @@ public class Cluster extends AbstractionLayerAI {
                 combatUnits.add(u);
             }
         }
-        ClusterBehavior(combatUnits, p, pgs);
+        */
+        if(!combatUnits.isEmpty()){
+            ClusterBehavior(combatUnits, p, pgs);
+        }
         //workersBehavior(workers, p, pgs);
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction

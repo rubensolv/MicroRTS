@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.abstraction;
+package ai.CMAB.ScriptsAbstractions;
 
+import ai.abstraction.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.core.AI;
 import ai.abstraction.pathfinding.PathFinding;
@@ -20,9 +21,9 @@ import rts.units.*;
 
 /**
  *
- * @author santi
+ * @author rubens
  */
-public class LightRush extends AbstractionLayerAI {
+public class LightRushPlan extends AbstractionLayerAI {
 
     Random r = new Random();
     protected UnitTypeTable utt;
@@ -36,33 +37,32 @@ public class LightRush extends AbstractionLayerAI {
     // If we have a base: train worker until we have 1 workers
     // If we have a barracks: train light
     // If we have a worker: do this if needed: build base, build barracks, harvest resources
-
-    public LightRush(UnitTypeTable a_utt) {
+    public LightRushPlan(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
-    
-    
-    public LightRush(UnitTypeTable a_utt, PathFinding a_pf) {
+
+    public LightRushPlan(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
 
+    @Override
     public void reset() {
-    	super.reset();
+        super.reset();
     }
-    
-    public void reset(UnitTypeTable a_utt)  
-    {
+
+    @Override
+    public void reset(UnitTypeTable a_utt) {
         utt = a_utt;
         workerType = utt.getUnitType("Worker");
         baseType = utt.getUnitType("Base");
         barracksType = utt.getUnitType("Barracks");
         lightType = utt.getUnitType("Light");
-    }   
-    
+    }
 
+    @Override
     public AI clone() {
-        return new LightRush(utt, pf);
+        return new LightRushPlan(utt, pf);
     }
 
     /*
@@ -74,6 +74,7 @@ public class LightRush extends AbstractionLayerAI {
         This method returns the actions to be sent to each of the units in the gamestate controlled by the player,
         packaged as a PlayerAction.
      */
+    @Override
     public PlayerAction getAction(int player, GameState gs) {
         PhysicalGameState pgs = gs.getPhysicalGameState();
         Player p = gs.getPlayer(player);
@@ -98,6 +99,7 @@ public class LightRush extends AbstractionLayerAI {
         }
 
         // behavior of melee units:
+        /*
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canAttack && !u.getType().canHarvest
                     && u.getPlayer() == player
@@ -105,9 +107,10 @@ public class LightRush extends AbstractionLayerAI {
                 meleeUnitBehavior(u, p, gs);
             }
         }
+        */
 
         // behavior of workers:
-        List<Unit> workers = new LinkedList<Unit>();
+        List<Unit> workers = new LinkedList<>();
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canHarvest
                     && u.getPlayer() == player) {
@@ -161,9 +164,10 @@ public class LightRush extends AbstractionLayerAI {
     public void workersBehavior(List<Unit> workers, Player p, PhysicalGameState pgs) {
         int nbases = 0;
         int nbarracks = 0;
+        List<Unit> bases = new LinkedList<>();
 
         int resourcesUsed = 0;
-        List<Unit> freeWorkers = new LinkedList<Unit>();
+        List<Unit> freeWorkers = new LinkedList<>();
         freeWorkers.addAll(workers);
 
         if (workers.isEmpty()) {
@@ -174,6 +178,7 @@ public class LightRush extends AbstractionLayerAI {
             if (u2.getType() == baseType
                     && u2.getPlayer() == p.getID()) {
                 nbases++;
+                bases.add(u2);
             }
             if (u2.getType() == barracksType
                     && u2.getPlayer() == p.getID()) {
@@ -186,20 +191,28 @@ public class LightRush extends AbstractionLayerAI {
             // build a base:
             if (p.getResources() >= baseType.cost + resourcesUsed) {
                 Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,baseType,u.getX(),u.getY(),reservedPositions,p,pgs);
+                buildIfNotAlreadyBuilding(u, baseType, u.getX(), u.getY(), reservedPositions, p, pgs);
                 resourcesUsed += baseType.cost;
             }
         }
 
         if (nbarracks == 0) {
             // build a barracks:
-            if (p.getResources() >= barracksType.cost + resourcesUsed && !freeWorkers.isEmpty()) {
+            if (p.getResources() >= barracksType.cost + resourcesUsed && !freeWorkers.isEmpty() && bases.size() > 0) {
                 Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,barracksType,u.getX(),u.getY(),reservedPositions,p,pgs);
+                Unit b = bases.get(nbarracks);
+                int xCoord = b.getX();
+                int yCoord = b.getY();
+
+                if (p.getID() == 0) {
+                    xCoord = b.getX() + 2;
+                    yCoord = b.getY() + 2;
+                }
+                
+                buildIfNotAlreadyBuilding(u, barracksType, xCoord, yCoord, reservedPositions, p, pgs);
                 resourcesUsed += barracksType.cost;
             }
         }
-
 
         // harvest with all the free workers:
         for (Unit u : freeWorkers) {
@@ -217,7 +230,7 @@ public class LightRush extends AbstractionLayerAI {
             }
             closestDistance = 0;
             for (Unit u2 : pgs.getUnits()) {
-                if (u2.getType().isStockpile && u2.getPlayer()==p.getID()) {
+                if (u2.getType().isStockpile && u2.getPlayer() == p.getID()) {
                     int d = Math.abs(u2.getX() - u.getX()) + Math.abs(u2.getY() - u.getY());
                     if (closestBase == null || d < closestDistance) {
                         closestBase = u2;
@@ -228,8 +241,10 @@ public class LightRush extends AbstractionLayerAI {
             if (closestResource != null && closestBase != null) {
                 AbstractAction aa = getAbstractAction(u);
                 if (aa instanceof Harvest) {
-                    Harvest h_aa = (Harvest)aa;
-                    if (h_aa.getTarget() != closestResource || h_aa.getBase()!=closestBase) harvest(u, closestResource, closestBase);
+                    Harvest h_aa = (Harvest) aa;
+                    if (h_aa.getTarget() != closestResource || h_aa.getBase() != closestBase) {
+                        harvest(u, closestResource, closestBase);
+                    }
                 } else {
                     harvest(u, closestResource, closestBase);
                 }
@@ -237,15 +252,13 @@ public class LightRush extends AbstractionLayerAI {
         }
     }
 
-    
     @Override
-    public List<ParameterSpecification> getParameters()
-    {
+    public List<ParameterSpecification> getParameters() {
         List<ParameterSpecification> parameters = new ArrayList<>();
-        
+
         parameters.add(new ParameterSpecification("PathFinding", PathFinding.class, new AStarPathFinding()));
 
         return parameters;
-    }    
-    
+    }
+
 }

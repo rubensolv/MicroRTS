@@ -203,11 +203,11 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
                 //"maps/DoubleGame24x24.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
                 
                 
         ));
@@ -306,11 +306,14 @@ public class ClusterTesteLeve {
          */            
         
         //best response GA PGS
-        String GA_PGS = "222;173;226;9;"; 
-        //String ST_PGS = "201;232;"; 
-        //String ST_PGS2 = "201;232;151;189;"; 
+        String GA_PGS = "23;73;208;208;193;"; 
+        String ST_PGS = "26;1;225;"; 
+        String ST_PGS2 = "265;265;225;172;"; 
+        String ST_PGS3 = "290;225;290;200;"; 
+        String ST_PGS4 = "201;189;26;180;172;"; 
+        String ST_PGS5 = "290;200;225;"; 
         //best response GA SSS
-        String GA_SSS = "25;86;194;281;"; 
+        String GA_SSS = "46;141;273;195;"; 
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
@@ -328,8 +331,11 @@ public class ClusterTesteLeve {
                new POWorkerRush(utt),
                
                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
-               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
-               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2")
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS3), "SetC3"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS4), "SetC4"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS5), "SetC5"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
                
                 

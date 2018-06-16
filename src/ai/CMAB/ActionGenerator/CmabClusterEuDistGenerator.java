@@ -139,9 +139,9 @@ public class CmabClusterEuDistGenerator implements ICMAB_ActionGenerator{
                 }
             }
         }  
-        if(!choices.isEmpty()){
-            System.out.println("---Asymmetric--"+choices.toString());
-        }
+        //if(!choices.isEmpty()){
+        //    System.out.println("---Asymmetric--"+choices.toString());
+        //}
 
     }
     protected final void buildPortfolio(UnitTypeTable utt) {

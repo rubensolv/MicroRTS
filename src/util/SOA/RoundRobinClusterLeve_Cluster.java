@@ -135,9 +135,10 @@ public class RoundRobinClusterLeve_Cluster {
                 new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 2, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 4, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 6, 2),
-                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 2, 2)
+                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 2, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 4, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 6, 2)
+                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabAsyReduzedGenerator")
         ));
 
         AI ai1 = ais.get(iAi1);

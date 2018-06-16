@@ -33,8 +33,10 @@ import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.PGS.PGSmRTSRandom;
 import ai.asymmetric.SAB.SAB_oldVersion;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
@@ -204,10 +206,12 @@ public class ClusterTesteLeve_Combination {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
+                "maps/24x24/basesWorkers24x24A.xml",
                 //"maps/DoubleGame24x24.xml"
-                //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/BWDistantResources32x32.xml"
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
                 
                 
@@ -312,26 +316,20 @@ public class ClusterTesteLeve_Combination {
         String GA_SSS = "233;97;93;246;117;"; 
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;"), "0"), 
-                new PGSSCriptChoice(utt, decodeScripts(utt, "232;"), "232"), 
-                new PGSSCriptChoice(utt, decodeScripts(utt, "101;"), "101"), 
-                new PGSSCriptChoice(utt, decodeScripts(utt, "0;232;"), "0-232"), 
-                new PGSSCriptChoice(utt, decodeScripts(utt, "0;101;"), "0-101"), 
-                new PGSSCriptChoice(utt, decodeScripts(utt, "232;101;"), "232-101"), 
-                new PGSSCriptChoice(utt, decodeScripts(utt, "0;101;232;"), "0-101-232"),
-                new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                new BS3_NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new PGSmRTS(utt),
-                new SSSmRTS(utt),
-                new POLightRush(utt),
-                new POHeavyRush(utt),
-                new PORangedRush(utt),
-                new POWorkerRush(utt),
-                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "bGA"), //PGS com o melhor GA
-                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "SSS_GA")
+                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGSSym"), 
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",1,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",1,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,200),
+                new PGSSCriptChoice(utt, decodeScripts(utt, "189;225;101;26;"), "PGSSymHeavy"),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",1,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",2,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",4,100),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",1,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",2,200),
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",4,200)
         ));
 
         AI ai1 = ais.get(iAi1);
