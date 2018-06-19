@@ -17,13 +17,15 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.Player;
 import rts.PlayerAction;
+import rts.UnitAction;
 import rts.units.*;
+import util.Pair;
 
 /**
  *
  * @author rubens
  */
-public class LightRushPlan extends AbstractionLayerAI {
+public class AttackMoreClosestStrategy extends AbstractionLayerAI {
 
     Random r = new Random();
     protected UnitTypeTable utt;
@@ -33,15 +35,12 @@ public class LightRushPlan extends AbstractionLayerAI {
     UnitType lightType;
 
     // Strategy implemented by this class:
-    // If we have any "light": send it to attack to the nearest enemy unit
-    // If we have a base: train worker until we have 1 workers
-    // If we have a barracks: train light
-    // If we have a worker: do this if needed: build base, build barracks, harvest resources
-    public LightRushPlan(UnitTypeTable a_utt) {
+    // If we have any unit: send it to attack to the nearest enemy unit
+    public AttackMoreClosestStrategy(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
 
-    public LightRushPlan(UnitTypeTable a_utt, PathFinding a_pf) {
+    public AttackMoreClosestStrategy(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
@@ -62,7 +61,7 @@ public class LightRushPlan extends AbstractionLayerAI {
 
     @Override
     public AI clone() {
-        return new LightRushPlan(utt, pf);
+        return new AttackMoreClosestStrategy(utt, pf);
     }
 
     /*
@@ -80,26 +79,8 @@ public class LightRushPlan extends AbstractionLayerAI {
         Player p = gs.getPlayer(player);
 //        System.out.println("LightRushAI for player " + player + " (cycle " + gs.getTime() + ")");
 
-        // behavior of bases:
-        for (Unit u : pgs.getUnits()) {
-            if (u.getType() == baseType
-                    && u.getPlayer() == player
-                    && gs.getActionAssignment(u) == null) {
-                baseBehavior(u, p, pgs);
-            }
-        }
-
-        // behavior of barracks:
-        for (Unit u : pgs.getUnits()) {
-            if (u.getType() == barracksType
-                    && u.getPlayer() == player
-                    && gs.getActionAssignment(u) == null) {
-                barracksBehavior(u, p, pgs);
-            }
-        }
 
         // behavior of melee units:
-        /*
         for (Unit u : pgs.getUnits()) {
             if (u.getType().canAttack && !u.getType().canHarvest
                     && u.getPlayer() == player
@@ -107,20 +88,10 @@ public class LightRushPlan extends AbstractionLayerAI {
                 meleeUnitBehavior(u, p, gs);
             }
         }
-        */
-
-        // behavior of workers:
-        List<Unit> workers = new LinkedList<>();
-        for (Unit u : pgs.getUnits()) {
-            if (u.getType().canHarvest
-                    && u.getPlayer() == player) {
-                workers.add(u);
-            }
-        }
-        workersBehavior(workers, p, pgs);
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
-        return translateActions(player, gs);
+        PlayerAction plAc= translateActions(player, gs);
+        return removeWait(plAc);
     }
 
     public void baseBehavior(Unit u, Player p, PhysicalGameState pgs) {
@@ -259,6 +230,16 @@ public class LightRushPlan extends AbstractionLayerAI {
         parameters.add(new ParameterSpecification("PathFinding", PathFinding.class, new AStarPathFinding()));
 
         return parameters;
+    }
+
+    private PlayerAction removeWait(PlayerAction plAc) {
+        PlayerAction ret = new PlayerAction();
+        for (Pair<Unit, UnitAction> action : plAc.getActions()) {
+            if(action.m_b.getType() != UnitAction.TYPE_NONE){
+                ret.addUnitAction(action.m_a, action.m_b);
+            }
+        }
+        return ret;
     }
 
 }

@@ -17,7 +17,9 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.Player;
 import rts.PlayerAction;
+import rts.UnitAction;
 import rts.units.*;
+import util.Pair;
 
 /**
  *
@@ -120,7 +122,7 @@ public class LightRushPlan extends AbstractionLayerAI {
         workersBehavior(workers, p, pgs);
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
-        return translateActions(player, gs);
+        return removeWait(translateActions(player, gs));
     }
 
     public void baseBehavior(Unit u, Player p, PhysicalGameState pgs) {
@@ -198,6 +200,8 @@ public class LightRushPlan extends AbstractionLayerAI {
 
         if (nbarracks == 0) {
             // build a barracks:
+            
+            
             if (p.getResources() >= barracksType.cost + resourcesUsed && !freeWorkers.isEmpty() && bases.size() > 0) {
                 Unit u = freeWorkers.remove(0);
                 Unit b = bases.get(nbarracks);
@@ -261,4 +265,15 @@ public class LightRushPlan extends AbstractionLayerAI {
         return parameters;
     }
 
+    
+    private PlayerAction removeWait(PlayerAction plAc) {
+        PlayerAction ret = new PlayerAction();
+        for (Pair<Unit, UnitAction> action : plAc.getActions()) {
+            if(!"Light".equals(action.m_a.getType().name) && !"Heavy".equals(action.m_a.getType().name)
+                    && !"Ranged".equals(action.m_a.getType().name)){
+                ret.addUnitAction(action.m_a, action.m_b);
+            }
+        }
+        return ret;
+    }
 }

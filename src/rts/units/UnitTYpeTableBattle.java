@@ -35,7 +35,7 @@ public class UnitTYpeTableBattle extends UnitTypeTable {
         UnitType base = new UnitType();
         base.name = "Base";
         base.cost = 10;
-        base.hp = 100;
+        base.hp = 10;
         switch (version) {
             case VERSION_ORIGINAL:
                 base.produceTime = 250;
@@ -56,7 +56,7 @@ public class UnitTYpeTableBattle extends UnitTypeTable {
         UnitType barracks = new UnitType();
         barracks.name = "Barracks";
         barracks.cost = 5;
-        barracks.hp = 40;
+        barracks.hp = 4;
         switch (version) {
             case VERSION_ORIGINAL:
                 barracks.produceTime = 200;
@@ -78,7 +78,7 @@ public class UnitTYpeTableBattle extends UnitTypeTable {
         UnitType worker = new UnitType();
         worker.name = "Worker";
         worker.cost = 1;
-        worker.hp = 10;
+        worker.hp = 1;
         switch (version) {
             case VERSION_ORIGINAL:
             case VERSION_ORIGINAL_FINETUNED:
@@ -107,7 +107,7 @@ public class UnitTYpeTableBattle extends UnitTypeTable {
         UnitType light = new UnitType();
         light.name = "Light";
         light.cost = 2;
-        light.hp = 40;
+        light.hp = 8;
         switch (version) {
             case VERSION_ORIGINAL:
             case VERSION_ORIGINAL_FINETUNED:
@@ -148,13 +148,13 @@ public class UnitTYpeTableBattle extends UnitTypeTable {
         switch (version) {
             case VERSION_ORIGINAL:
                 heavy.moveTime = 12;
-                heavy.hp = 40;
+                heavy.hp = 8;
                 heavy.cost = 2;
                 break;
             case VERSION_ORIGINAL_FINETUNED:
             case VERSION_NON_DETERMINISTIC:
                 heavy.moveTime = 10;
-                heavy.hp = 80;
+                heavy.hp = 16;
                 heavy.cost = 3;
                 break;
         }
@@ -171,7 +171,7 @@ public class UnitTYpeTableBattle extends UnitTypeTable {
         UnitType ranged = new UnitType();
         ranged.name = "Ranged";
         ranged.cost = 2;
-        ranged.hp = 10;
+        ranged.hp = 2;
         switch (version) {
             case VERSION_ORIGINAL:
             case VERSION_ORIGINAL_FINETUNED:

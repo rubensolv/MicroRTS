@@ -33,6 +33,7 @@ import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SAB.SAB_oldVersion;
@@ -66,6 +67,7 @@ import rts.Player;
 import rts.PlayerAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import static util.SOA.RoundRobinClusterLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -331,13 +333,16 @@ public class ClusterTesteLeve {
                new POWorkerRush(utt),
                
                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS3), "SetC3"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS4), "SetC4"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS5), "SetC5"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
-               
+               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
+               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2"),
+               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS3), "SetC3"),
+               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS4), "SetC4"),
+               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS5), "SetC5"),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS"),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,100),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGSRSym",4,100),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGSRSym",4,200)
                 
         ));
 

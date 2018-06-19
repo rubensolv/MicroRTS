@@ -17,7 +17,9 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.Player;
 import rts.PlayerAction;
+import rts.UnitAction;
 import rts.units.*;
+import util.Pair;
 
 /**
  *
@@ -37,29 +39,26 @@ public class HeavyRushPlan extends AbstractionLayerAI {
     // If we have a base: train worker until we have 1 workers
     // If we have a barracks: train heavy
     // If we have a worker: do this if needed: build base, build barracks, harvest resources
-
     public HeavyRushPlan(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
-    
-    
+
     public HeavyRushPlan(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
 
     public void reset() {
-    	super.reset();
+        super.reset();
     }
-    
-    public void reset(UnitTypeTable a_utt)  
-    {
+
+    public void reset(UnitTypeTable a_utt) {
         utt = a_utt;
         workerType = utt.getUnitType("Worker");
         baseType = utt.getUnitType("Base");
         barracksType = utt.getUnitType("Barracks");
         heavyType = utt.getUnitType("Heavy");
-    }      
+    }
 
     public AI clone() {
         return new HeavyRushPlan(utt, pf);
@@ -80,6 +79,7 @@ public class HeavyRushPlan extends AbstractionLayerAI {
 //        System.out.println("HeavyRushAI for player " + player + " (cycle " + gs.getTime() + ")");
 
         // behavior of bases:
+        
         for (Unit u : pgs.getUnits()) {
             if (u.getType() == baseType
                     && u.getPlayer() == player
@@ -106,7 +106,7 @@ public class HeavyRushPlan extends AbstractionLayerAI {
                 meleeUnitBehavior(u, p, gs);
             }
         }
-        */
+         */
         // behavior of workers:
         List<Unit> workers = new LinkedList<Unit>();
         for (Unit u : pgs.getUnits()) {
@@ -118,7 +118,7 @@ public class HeavyRushPlan extends AbstractionLayerAI {
         workersBehavior(workers, p, pgs);
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
-        return translateActions(player, gs);
+        return removeWait(translateActions(player, gs));
     }
 
     public void baseBehavior(Unit u, Player p, PhysicalGameState pgs) {
@@ -189,7 +189,7 @@ public class HeavyRushPlan extends AbstractionLayerAI {
             // build a base:
             if (p.getResources() >= baseType.cost + resourcesUsed) {
                 Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,baseType,u.getX(),u.getY(),reservedPositions,p,pgs);
+                buildIfNotAlreadyBuilding(u, baseType, u.getX(), u.getY(), reservedPositions, p, pgs);
                 resourcesUsed += baseType.cost;
             }
         }
@@ -206,12 +206,11 @@ public class HeavyRushPlan extends AbstractionLayerAI {
                     xCoord = b.getX() + 2;
                     yCoord = b.getY() + 2;
                 }
-                
+
                 buildIfNotAlreadyBuilding(u, barracksType, xCoord, yCoord, reservedPositions, p, pgs);
-            	resourcesUsed += barracksType.cost;
+                resourcesUsed += barracksType.cost;
             }
         }
-
 
         // harvest with all the free workers:
         for (Unit u : freeWorkers) {
@@ -229,7 +228,7 @@ public class HeavyRushPlan extends AbstractionLayerAI {
             }
             closestDistance = 0;
             for (Unit u2 : pgs.getUnits()) {
-                if (u2.getType().isStockpile && u2.getPlayer()==p.getID()) {
+                if (u2.getType().isStockpile && u2.getPlayer() == p.getID()) {
                     int d = Math.abs(u2.getX() - u.getX()) + Math.abs(u2.getY() - u.getY());
                     if (closestBase == null || d < closestDistance) {
                         closestBase = u2;
@@ -240,8 +239,10 @@ public class HeavyRushPlan extends AbstractionLayerAI {
             if (closestResource != null && closestBase != null) {
                 AbstractAction aa = getAbstractAction(u);
                 if (aa instanceof Harvest) {
-                    Harvest h_aa = (Harvest)aa;
-                    if (h_aa.getTarget() != closestResource || h_aa.getBase()!=closestBase) harvest(u, closestResource, closestBase);
+                    Harvest h_aa = (Harvest) aa;
+                    if (h_aa.getTarget() != closestResource || h_aa.getBase() != closestBase) {
+                        harvest(u, closestResource, closestBase);
+                    }
                 } else {
                     harvest(u, closestResource, closestBase);
                 }
@@ -249,15 +250,24 @@ public class HeavyRushPlan extends AbstractionLayerAI {
         }
     }
 
-
     @Override
-    public List<ParameterSpecification> getParameters()
-    {
+    public List<ParameterSpecification> getParameters() {
         List<ParameterSpecification> parameters = new ArrayList<>();
-        
+
         parameters.add(new ParameterSpecification("PathFinding", PathFinding.class, new AStarPathFinding()));
 
         return parameters;
     }
-    
+
+    private PlayerAction removeWait(PlayerAction plAc) {
+        PlayerAction ret = new PlayerAction();
+        for (Pair<Unit, UnitAction> action : plAc.getActions()) {
+            if (!"Light".equals(action.m_a.getType().name) && !"Heavy".equals(action.m_a.getType().name)
+                    && !"Ranged".equals(action.m_a.getType().name)) {
+                ret.addUnitAction(action.m_a, action.m_b);
+            }
+        }
+        return ret;
+    }
+
 }

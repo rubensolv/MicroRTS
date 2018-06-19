@@ -17,7 +17,9 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.Player;
 import rts.PlayerAction;
+import rts.UnitAction;
 import rts.units.*;
+import util.Pair;
 
 /**
  *
@@ -40,16 +42,15 @@ public class RangedRushPlan extends AbstractionLayerAI {
         this(a_utt, new AStarPathFinding());
     }
 
-
     public RangedRushPlan(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
 
     public void reset() {
-    	super.reset();
+        super.reset();
     }
-    
+
     public void reset(UnitTypeTable a_utt) {
         utt = a_utt;
         workerType = utt.getUnitType("Worker");
@@ -66,7 +67,7 @@ public class RangedRushPlan extends AbstractionLayerAI {
         PhysicalGameState pgs = gs.getPhysicalGameState();
         Player p = gs.getPlayer(player);
 //        System.out.println("LightRushAI for player " + player + " (cycle " + gs.getTime() + ")");
-
+        
         // behavior of bases:
         for (Unit u : pgs.getUnits()) {
             if (u.getType() == baseType
@@ -94,8 +95,7 @@ public class RangedRushPlan extends AbstractionLayerAI {
                 meleeUnitBehavior(u, p, gs);
             }
         }
-        */
-        
+         */
         // behavior of workers:
         List<Unit> workers = new LinkedList<Unit>();
         for (Unit u : pgs.getUnits()) {
@@ -106,8 +106,7 @@ public class RangedRushPlan extends AbstractionLayerAI {
         }
         workersBehavior(workers, p, pgs);
 
-
-        return translateActions(player, gs);
+        return removeWait(translateActions(player, gs));
     }
 
     public void baseBehavior(Unit u, Player p, PhysicalGameState pgs) {
@@ -178,12 +177,12 @@ public class RangedRushPlan extends AbstractionLayerAI {
             // build a base:
             if (p.getResources() >= baseType.cost + resourcesUsed) {
                 Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,baseType,u.getX(),u.getY(),reservedPositions,p,pgs);
+                buildIfNotAlreadyBuilding(u, baseType, u.getX(), u.getY(), reservedPositions, p, pgs);
                 resourcesUsed += baseType.cost;
             }
         }
 
-        if (nbarracks == 0 && !freeWorkers.isEmpty() ) {
+        if (nbarracks == 0 && !freeWorkers.isEmpty()) {
             // build a barracks:
             if (p.getResources() >= barracksType.cost + resourcesUsed && bases.size() > 0) {
                 Unit u = freeWorkers.remove(0);
@@ -195,12 +194,11 @@ public class RangedRushPlan extends AbstractionLayerAI {
                     xCoord = b.getX() + 2;
                     yCoord = b.getY() + 2;
                 }
-                
+
                 buildIfNotAlreadyBuilding(u, barracksType, xCoord, yCoord, reservedPositions, p, pgs);
                 resourcesUsed += barracksType.cost;
             }
         }
-
 
         // harvest with all the free workers:
         for (Unit u : freeWorkers) {
@@ -218,7 +216,7 @@ public class RangedRushPlan extends AbstractionLayerAI {
             }
             closestDistance = 0;
             for (Unit u2 : pgs.getUnits()) {
-                if (u2.getType().isStockpile && u2.getPlayer()==p.getID()) {
+                if (u2.getType().isStockpile && u2.getPlayer() == p.getID()) {
                     int d = Math.abs(u2.getX() - u.getX()) + Math.abs(u2.getY() - u.getY());
                     if (closestBase == null || d < closestDistance) {
                         closestBase = u2;
@@ -229,8 +227,10 @@ public class RangedRushPlan extends AbstractionLayerAI {
             if (closestResource != null && closestBase != null) {
                 AbstractAction aa = getAbstractAction(u);
                 if (aa instanceof Harvest) {
-                    Harvest h_aa = (Harvest)aa;
-                    if (h_aa.getTarget() != closestResource || h_aa.getBase()!=closestBase) harvest(u, closestResource, closestBase);
+                    Harvest h_aa = (Harvest) aa;
+                    if (h_aa.getTarget() != closestResource || h_aa.getBase() != closestBase) {
+                        harvest(u, closestResource, closestBase);
+                    }
                 } else {
                     harvest(u, closestResource, closestBase);
                 }
@@ -238,14 +238,23 @@ public class RangedRushPlan extends AbstractionLayerAI {
         }
     }
 
-   
     @Override
-    public List<ParameterSpecification> getParameters()
-    {
+    public List<ParameterSpecification> getParameters() {
         List<ParameterSpecification> parameters = new ArrayList<>();
-        
+
         parameters.add(new ParameterSpecification("PathFinding", PathFinding.class, new AStarPathFinding()));
 
         return parameters;
+    }
+
+    private PlayerAction removeWait(PlayerAction plAc) {
+        PlayerAction ret = new PlayerAction();
+        for (Pair<Unit, UnitAction> action : plAc.getActions()) {
+            if (!"Light".equals(action.m_a.getType().name) && !"Heavy".equals(action.m_a.getType().name)
+                    && !"Ranged".equals(action.m_a.getType().name)) {
+                ret.addUnitAction(action.m_a, action.m_b);
+            }
+        }
+        return ret;
     }
 }

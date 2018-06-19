@@ -5,12 +5,14 @@
  */
 package ai.CMAB.ActionGenerator;
 
+import ai.CMAB.ScriptsAbstractions.AttackMoreClosestStrategy;
 import ai.CMAB.ScriptsAbstractions.ClusterStrategy;
 import ai.CMAB.ScriptsAbstractions.HeavyRushPlan;
 import ai.CMAB.ScriptsAbstractions.KitterDPSStrategy;
 import ai.CMAB.ScriptsAbstractions.LightRushPlan;
 import ai.CMAB.ScriptsAbstractions.NOKDPSStrategy;
 import ai.CMAB.ScriptsAbstractions.RangedRushPlan;
+import ai.abstraction.partialobservability.POLightRush;
 import ai.core.AI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,13 +50,14 @@ public class CmabAsyReduzedGenerator implements ICMAB_ActionGenerator {
         //this.scripts.add(new POHeavyRush(utt));
         //this.scripts.add(new POWorkerRush(utt));             
         //this.scripts.add(new WorkerHarvestRush(utt));             
+        
         this.scripts.add(new LightRushPlan(utt));
         this.scripts.add(new RangedRushPlan(utt));
         this.scripts.add(new HeavyRushPlan(utt));
         this.scripts.add(new NOKDPSStrategy(utt));
         this.scripts.add(new KitterDPSStrategy(utt));
         this.scripts.add(new ClusterStrategy(utt));
-
+        //this.scripts.add(new AttackMoreClosestStrategy(utt));
     }
 
     @Override

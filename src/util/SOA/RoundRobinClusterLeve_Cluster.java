@@ -78,15 +78,31 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/NoWhereToRun9x8.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                "maps/24x24/basesWorkers24x24A.xml",
-                "maps/DoubleGame24x24.xml",
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml"  //8 maps
+                //"maps/8x8/basesWorkers8x8A.xml",
+                //"maps/NoWhereToRun9x8.xml",
+                //"maps/16x16/basesWorkers16x16A.xml",
+                //"maps/16x16/TwoBasesBarracks16x16.xml",
+                //"maps/24x24/basesWorkers24x24A.xml",
+                //"maps/DoubleGame24x24.xml",
+                //"maps/32x32/basesWorkers32x32A.xml",
+                //"maps/BWDistantResources32x32.xml"  //8 maps
                 //"maps/BroodWar/(4)BloodBath.scmB.xml" //9 maps
+                //3 16
+                "maps/16x16/BasesWithWalls16x16.xml",
+                "maps/16x16/BasesTwoBarracksWithWalls16x16.xml",
+                "maps/16x16/NoWhereWithBlocks16x16.xml",
+                // 3 24
+                "maps/24x24/DoubleMapaWithBlockTwoBarracks24x24.xml",
+                "maps/24x24/DoubleMapaWithBlock24x24.xml",
+                "maps/24x24/DoubleMapaWithBlockTwoBases24x24.xml",
+                //3 32 
+                "maps/32x32/centerResources32x32.xml",
+                "maps/32x32/ComplexPathToFight32x32.xml",
+                "maps/32x32/RuntoGoldWithBlocksBarracks32x32.xml",
+                //3 64
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/64x64/SimplePathToFight64x64.xml",
+                "maps/64x64/ComplexPathToFight64x64.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -115,30 +131,30 @@ public class RoundRobinClusterLeve_Cluster {
         }
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                new RandomBiasedAI(utt), //RND
                 new POLightRush(utt),
                 new POWorkerRush(utt),
                 new PORangedRush(utt),
                 new POHeavyRush(utt),
                 new AHTNAI(utt),
                 new NaiveMCTS(utt),
-                new NaiveMCTSNoGamma(utt),
                 new BS3_NaiveMCTS(utt),
                 new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt), //11
+                new StrategyTactics(utt), //9
                 //NSS
-                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator"),
+                new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator"),
+                //behavior
+                new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 2),
                 //asymmetric cluster
-                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 2, 2),
+                new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 2, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 4, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 6, 2),
-                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 2, 2),
+                new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 2, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 4, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 6, 2),
-                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 2, 2),
+                new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 2, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 4, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 6, 2)
-                new CMABBuilder(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabAsyReduzedGenerator")
+                new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabAsyReduzedGenerator")
         ));
 
         AI ai1 = ais.get(iAi1);

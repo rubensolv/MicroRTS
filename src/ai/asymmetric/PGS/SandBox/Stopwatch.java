@@ -3,13 +3,13 @@ package ai.asymmetric.PGS.SandBox;
 import java.text.SimpleDateFormat;  
 import java.util.Calendar;    
   
-// Esta classe realizará a medição de tempo dos testes de desempenho
-// Seu conteúdo é baseado na classe Stopwatch produzida por Carlos Quintanilla 
-// e disponível em: http://carlosqt.blogspot.com/2011/05/stopwatch-class-for-java.html
+// Esta classe realizara a medicao de tempo dos testes de desempenho
+// Seu conteudo e baseado na classe Stopwatch produzida por Carlos Quintanilla 
+// e disponivel em: http://carlosqt.blogspot.com/2011/05/stopwatch-class-for-java.html
 
 /*
 
-Exemplo básico de uso:
+Exemplo basico de uso:
 
 Stopwatch timer = new Stopwatch();  
 
@@ -29,31 +29,31 @@ public class Stopwatch {
     private final long nsPerMs = 1000000;  
     private final long nsPerSs = 1000000000;  
   
-    // Variáveis que armazenam o tempo
+    // Variaveis que armazenam o tempo
     private long startTime = 0;  
     private long stopTime = 0;  
     private boolean running = false;  
       
-    // Iniciando a medição do intervalo de tempo 
+    // Iniciando a medicaoo do intervalo de tempo 
     public void start() {  
         this.startTime = System.nanoTime();         
         this.running = true;  
     }  
       
-     // Parando a medição do intervalo de tempo 
+     // Parando a medica0o do intervalo de tempo 
     public void stop() {  
         this.stopTime = System.nanoTime();  
         this.running = false;  
     }  
       
-     // Reinicializando a medição de tempo. 
+     // Reinicializando a medica0o de tempo. 
     public void reset() {  
         this.startTime = 0;  
         this.stopTime = 0;  
         this.running = false;  
     }  
       
-    // Obtém o tempo medido em nanosegundos 
+    // Obtem o tempo medido em nanosegundos 
      // 1 Tick = 100 nanoseguntos  
     public long getElapsedTicks() {  
         long elapsed;  

@@ -104,6 +104,7 @@ public abstract class AbstractionLayerAI extends AIWithComputationBudget {
         return pa;        
     }
     
+    
     public AbstractAction getAbstractAction(Unit u) {
         return actions.get(u);
     }
