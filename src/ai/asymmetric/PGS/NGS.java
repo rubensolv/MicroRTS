@@ -56,7 +56,7 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
     int playerForThisComputation;
 
     public NGS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 4,
+        this(100, -1, 200, 1, 2,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -83,9 +83,9 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
-        //this.scripts.add(new NOKDPS(utt));
-        //this.scripts.add(new KitterDPS(utt));
-        //this.scripts.add(new Cluster(utt));
+        this.scripts.add(new NOKDPS(utt));
+        this.scripts.add(new KitterDPS(utt));
+        this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new EconomyMilitaryRush(utt));
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));

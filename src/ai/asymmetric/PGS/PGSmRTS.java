@@ -5,6 +5,9 @@
  */
 package ai.asymmetric.PGS;
 
+import ai.abstraction.combat.Cluster;
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -54,7 +57,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     
 
     public PGSmRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 4,
+        this(100, -1, 200, 1, 2,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -81,6 +84,9 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
+        this.scripts.add(new NOKDPS(utt));
+        this.scripts.add(new KitterDPS(utt));
+        this.scripts.add(new Cluster(utt));
         
         //this.scripts.add(new EconomyMilitaryRush(utt));
         

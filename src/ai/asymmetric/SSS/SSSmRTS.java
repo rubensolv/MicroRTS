@@ -5,6 +5,9 @@
  */
 package ai.asymmetric.SSS;
 
+import ai.abstraction.combat.Cluster;
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -82,6 +85,9 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
+        this.scripts.add(new NOKDPS(utt));
+        this.scripts.add(new KitterDPS(utt));
+        this.scripts.add(new Cluster(utt));
         
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));

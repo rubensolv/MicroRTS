@@ -124,8 +124,10 @@ public class Cluster extends AbstractionLayerAI {
             x += un.getX();
             y += un.getY();
         }
-        x = x / unidades.size();
-        y = y / unidades.size();
+        if(unidades.size()>0){
+            x = x / unidades.size();
+            y = y / unidades.size();
+        }
         _cenX = x;
         _cenY = y;
     }

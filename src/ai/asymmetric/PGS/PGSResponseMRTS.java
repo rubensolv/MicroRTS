@@ -5,6 +5,9 @@
  */
 package ai.asymmetric.PGS;
 
+import ai.abstraction.combat.Cluster;
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -53,7 +56,7 @@ public class PGSResponseMRTS extends AIWithComputationBudget implements Interrup
     int playerForThisComputation;
 
     public PGSResponseMRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 4,
+        this(100, -1, 200, 1, 6,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -80,6 +83,9 @@ public class PGSResponseMRTS extends AIWithComputationBudget implements Interrup
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
+        this.scripts.add(new NOKDPS(utt));
+        this.scripts.add(new KitterDPS(utt));
+        this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new EconomyMilitaryRush(utt));
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
@@ -302,8 +308,8 @@ public class PGSResponseMRTS extends AIWithComputationBudget implements Interrup
         double bestScore = eval(player, gs_to_start_from, bestScriptData, UnEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
         //controle pelo número de iterações
-        //for (int i = 0; i < I; i++) {
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        for (int i = 0; i < I; i++) {
+        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
