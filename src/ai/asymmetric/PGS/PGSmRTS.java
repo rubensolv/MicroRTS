@@ -54,7 +54,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     
 
     public PGSmRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 1,
+        this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),

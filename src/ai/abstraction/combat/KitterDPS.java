@@ -112,6 +112,7 @@ public class KitterDPS extends AbstractionLayerAI {
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
         //return translateActions(player, gs);
+        playerActions.fillWithNones(gs, player, 10);
         return playerActions;
     }
 
@@ -144,8 +145,10 @@ public class KitterDPS extends AbstractionLayerAI {
                 for (UnitAction move : getUnitActions(ourUnit)) {
                     if ((move.getType() == UnitAction.TYPE_ATTACK_LOCATION)) {
                         Unit target = getEnemyByPosition(enemyUnits, move);
-                        double dpsHPValue = (dpf(target) / target.getHitPoints());
-
+                        double dpsHPValue = -9999;
+                        if(target != null){
+                            dpsHPValue = (dpf(target) / target.getHitPoints());
+                        }
                         if (dpsHPValue > actionHighestDPS) {
                             actionHighestDPS = dpsHPValue;
                             actionMoveIndex = move;

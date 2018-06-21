@@ -113,7 +113,8 @@ public class Cluster extends AbstractionLayerAI {
         //workersBehavior(workers, p, pgs);
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
-        //return translateActions(player, gs);        
+        //return translateActions(player, gs);   
+        playerActions.fillWithNones(gs, player, 10);
         return playerActions;
     }
     

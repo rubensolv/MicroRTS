@@ -112,6 +112,7 @@ public class NOKDPS extends AbstractionLayerAI {
 
         // This method simply takes all the unit actions executed so far, and packages them into a PlayerAction
         //return translateActions(player, gs);
+        playerActions.fillWithNones(gs, player, 10);
         return playerActions;
     }
 

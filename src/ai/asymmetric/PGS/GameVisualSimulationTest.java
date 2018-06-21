@@ -171,7 +171,9 @@ public class GameVisualSimulationTest {
         //AI ai1 = new CmabNaiveMCTS(utt);
         //AI ai1 = new PGSmRTS_Paralel_JulianTest(utt);
         //AI ai1 = new PGSmRTSRandom(utt, 4, 200);
-        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100);
+        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100);
+        //AI ai1 = new PGSResponseMRTS(utt);
+        AI ai1 = new NGS(utt);
         
         AI ai2 = new PGSmRTS(utt); 
         //AI ai2 = new NaiveMCTS(utt);
@@ -230,16 +232,16 @@ public class GameVisualSimulationTest {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
                 PlayerAction pa1 = ai1.getAction(0, gs);  
-                //if( (System.currentTimeMillis() - startTime) >0){
-                //System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
-                //}
+                if( (System.currentTimeMillis() - startTime) >0){
+                System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
+                }
                 //System.out.println("Action A1 ="+ pa1.toString());
                 
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                //if( (System.currentTimeMillis() - startTime) >0){
-                //   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
-                //}
+                if( (System.currentTimeMillis() - startTime) >0){
+                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                }
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);
