@@ -5,6 +5,9 @@
  */
 package ai.asymmetric.SSS;
 
+import ai.abstraction.combat.Cluster;
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -82,6 +85,9 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
+        this.scripts.add(new NOKDPS(utt));
+        this.scripts.add(new KitterDPS(utt));
+        this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
@@ -141,7 +147,8 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
         // do the initial root portfolio search for our player
         numberTypes = 0;
         timePlayout = 0.0;
-        while (System.currentTimeMillis() < (start_time + TIME_BUDGET)) {
+        //while (System.currentTimeMillis() < (start_time + TIME_BUDGET)) {
+        for (int i = 0; i < R; i++) {
             //enemy
             if (doStratifiedSearch(1-playerForThisComputation, enemyScriptData, currentScriptData)) {
                 AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
@@ -374,10 +381,10 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                    return hasFinishedIteration;
-                }
+                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                //    return hasFinishedIteration;
+                //}
 
             }
 

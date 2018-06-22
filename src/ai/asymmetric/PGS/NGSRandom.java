@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.PGS;
 
+import ai.RandomBiasedAI;
 import ai.abstraction.combat.Cluster;
 import ai.abstraction.combat.KitterDPS;
 import ai.abstraction.combat.NOKDPS;
@@ -31,12 +32,13 @@ import rts.PlayerAction;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
  * @author rubens
  */
-public class NGS extends AIWithComputationBudget implements InterruptibleAI {
+public class NGSRandom extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -54,9 +56,12 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
+    
+    AI randAI = null;
+    HashMap<String, PlayerAction> cache;
 
-    public NGS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 2,
+    public NGSRandom(UnitTypeTable utt) {
+        this(100, -1, 200, 4, 2,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -64,7 +69,7 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
                 new AStarPathFinding());
     }
 
-    public NGS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public NGSRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -76,6 +81,7 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        randAI = new RandomBiasedAI(a_utt);
     }
 
     protected void buildPortfolio() {
@@ -111,7 +117,7 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -128,9 +134,9 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
         setAllScripts(1 - playerForThisComputation, enemyScriptData, seedEnemy);
         // iterate as many times as required
         for (int i = 0; i < R; i++) {
-            if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
+            //if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
                 currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, enemyScriptData);
-            }
+            //}
         }
         return getFinalAction(currentScriptData);
     }
@@ -194,23 +200,56 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
         GameState gs2 = gs.clone();
         //ai1.reset();
         //ai2.reset();
+        gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
+        gs2.issue(UnEnemy.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                gs2.issue(UnEnemy.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
         return evaluation.evaluate(player, 1 - player, gs2);
     }
 
+    private void getCache() throws Exception {
+        for (AI script : scripts) {
+            cache.put(script.toString(), script.getAction(playerForThisComputation, gs_to_start_from));
+        }
+    }
+
+    private PlayerAction getActionsUScript(int player, UnitScriptData uScriptPlayer, GameState gs2) {
+        PlayerAction temp = new PlayerAction();
+        for (Unit u : gs2.getUnits()) {
+            if (u.getPlayer() == player) {
+                String sAI = uScriptPlayer.getAIUnit(u).toString();
+
+                UnitAction uAt = getUnitAction(u, cache.get(sAI));
+                if(uAt != null){
+                    temp.addUnitAction(u, uAt);
+                }
+            }
+        }
+
+        return temp;
+    }
+    
+    private UnitAction getUnitAction(Unit u, PlayerAction get) {
+        for (Pair<Unit, UnitAction> tmp : get.getActions()) {
+            if (tmp.m_a.getID() == u.getID()) {
+                return tmp.m_b;
+            }
+        }
+        return null;
+    }
+    
     @Override
     public AI clone() {
-        return new NGS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new NGSRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -280,6 +319,7 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
         nplayouts = 0;
         _startTime = gs.getTime();
         start_time = System.currentTimeMillis();
+        this.cache = new HashMap<>();
     }
 
     @Override
@@ -303,14 +343,14 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
         double bestScore = 999999; //eval(player, gs_to_start_from, bestScriptData, UnEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
         //controle pelo número de iterações
-        //for (int i = 0; i < I; i++) {
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 2))) {
+        for (int i = 0; i < I; i++) {
+        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 2))) {
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
-                    return currentScriptData;
-                }
+                //if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
+                //    return currentScriptData;
+                //}
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
@@ -320,9 +360,9 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
-                        return bestScriptData.clone();
-                    }
+                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
+                    //    return bestScriptData.clone();
+                    //}
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();
@@ -351,9 +391,9 @@ public class NGS extends AIWithComputationBudget implements InterruptibleAI {
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
-                        return bestScore;
-                    }
+                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
+                    //    return bestScore;
+                    //}
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();

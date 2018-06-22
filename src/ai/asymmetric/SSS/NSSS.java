@@ -344,8 +344,8 @@ public class NSSS extends AIWithComputationBudget implements InterruptibleAI {
         numberTypes = typeUnits.size();
 
         boolean hasFinishedIteration = false;
-        //for (int i = 0; i < I; i++) {
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        for (int i = 0; i < I; i++) {
+        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
@@ -372,10 +372,10 @@ public class NSSS extends AIWithComputationBudget implements InterruptibleAI {
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                    return hasFinishedIteration;
-                }
+                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                //    return hasFinishedIteration;
+                //}
 
             }
 
@@ -418,9 +418,9 @@ public class NSSS extends AIWithComputationBudget implements InterruptibleAI {
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
-                        return bestScore;
-                    }
+                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
+                    //    return bestScore;
+                   // }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();

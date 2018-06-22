@@ -37,7 +37,10 @@ import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SAB_seed;
 import ai.asymmetric.SSS.NSSS;
 import ai.asymmetric.SSS.NSSSLimit;
+import ai.asymmetric.SSS.NSSSRandom;
+import ai.asymmetric.SSS.SSSIterationRandom;
 import ai.asymmetric.SSS.SSSResponseMRTS;
+import ai.asymmetric.SSS.SSSResponseMRTSRandom;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.cluster.CABA;
@@ -176,12 +179,14 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PGSmRTSRandom(utt, 4, 200);
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100);
         //AI ai1 = new PGSResponseMRTS(utt);
+        AI ai1 = new NSSSRandom(utt);
+        //AI ai1 = new NGS(utt);
         //AI ai1 = new NGSLimit(utt);
         //AI ai1 = new NSSS(utt);
-        AI ai1 = new NSSSLimit(utt);
+        //AI ai1 = new NSSSLimit(utt);
         
-        AI ai2 = new SSSmRTS(utt);
-        //AI ai2 = new PGSmRTS(utt); 
+        //AI ai2 = new SSSmRTS(utt);
+        AI ai2 = new PGSmRTS(utt); 
         //AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
         //AI ai2 = new CIA_PlayoutTemporal(utt);

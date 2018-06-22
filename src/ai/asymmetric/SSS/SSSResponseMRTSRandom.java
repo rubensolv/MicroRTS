@@ -5,6 +5,10 @@
  */
 package ai.asymmetric.SSS;
 
+import ai.RandomBiasedAI;
+import ai.abstraction.combat.Cluster;
+import ai.abstraction.combat.KitterDPS;
+import ai.abstraction.combat.NOKDPS;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -26,12 +30,13 @@ import rts.PlayerAction;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
  * @author rubens
  */
-public class SSSResponseMRTS extends AIWithComputationBudget implements InterruptibleAI {
+public class SSSResponseMRTSRandom extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -52,9 +57,12 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
 
     private Integer numberTypes;
     private Double timePlayout;
+    
+    AI randAI = null;
+    HashMap<String, PlayerAction> cache;
 
-    public SSSResponseMRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 1,
+    public SSSResponseMRTSRandom(UnitTypeTable utt) {
+        this(100, -1, 200, 4, 2,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -63,7 +71,7 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
                 new AStarPathFinding());
     }
 
-    public SSSResponseMRTS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SSSResponseMRTSRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -75,6 +83,7 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        randAI = new RandomBiasedAI(a_utt);
     }
 
     protected void buildPortfolio() {
@@ -82,6 +91,9 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
+        this.scripts.add(new NOKDPS(utt));
+        this.scripts.add(new KitterDPS(utt));
+        this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
@@ -122,7 +134,7 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -141,7 +153,8 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
         // do the initial root portfolio search for our player
         numberTypes = 0;
         timePlayout = 0.0;
-        while (System.currentTimeMillis() < (start_time + TIME_BUDGET)) {
+        //while (System.currentTimeMillis() < (start_time + TIME_BUDGET)) {
+        for (int i = 0; i < R; i++) {
             //enemy
             if (doStratifiedSearch(1-playerForThisComputation, enemyScriptData, currentScriptData)) {
                 AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
@@ -220,24 +233,57 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
         GameState gs2 = gs.clone();
         //ai1.reset();
         //ai2.reset();
+        gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
+        gs2.issue(aiEnemy.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(aiEnemy.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
         return evaluation.evaluate(player, 1 - player, gs2);
     }
 
+    
+    private void getCache() throws Exception {
+        for (AI script : scripts) {
+            cache.put(script.toString(), script.getAction(playerForThisComputation, gs_to_start_from));
+        }
+    }
+
+    private PlayerAction getActionsUScript(int player, UnitScriptData uScriptPlayer, GameState gs2) {
+        PlayerAction temp = new PlayerAction();
+        for (Unit u : gs2.getUnits()) {
+            if (u.getPlayer() == player) {
+                String sAI = uScriptPlayer.getAIUnit(u).toString();
+
+                UnitAction uAt = getUnitAction(u, cache.get(sAI));
+                if(uAt != null){
+                    temp.addUnitAction(u, uAt);
+                }
+            }
+        }
+
+        return temp;
+    }
+    
+    private UnitAction getUnitAction(Unit u, PlayerAction get) {
+        for (Pair<Unit, UnitAction> tmp : get.getActions()) {
+            if (tmp.m_a.getID() == u.getID()) {
+                return tmp.m_b;
+            }
+        }
+        return null;
+    }
+    
     @Override
     public AI clone() {
-        return new SSSResponseMRTS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new SSSResponseMRTSRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -307,6 +353,7 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
         nplayouts = 0;
         _startTime = gs.getTime();
         start_time = System.currentTimeMillis();
+        this.cache = new HashMap<>();
     }
 
     @Override
@@ -374,10 +421,10 @@ public class SSSResponseMRTS extends AIWithComputationBudget implements Interrup
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                    return hasFinishedIteration;
-                }
+                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                //    return hasFinishedIteration;
+                //}
 
             }
 

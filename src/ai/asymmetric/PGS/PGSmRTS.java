@@ -84,9 +84,9 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
         this.scripts.add(new PORangedRush(utt));
-        this.scripts.add(new NOKDPS(utt));
-        this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new NOKDPS(utt));
+        //this.scripts.add(new KitterDPS(utt));
+        //this.scripts.add(new Cluster(utt));
         
         //this.scripts.add(new EconomyMilitaryRush(utt));
         

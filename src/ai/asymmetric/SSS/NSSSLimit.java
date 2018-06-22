@@ -59,7 +59,7 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
     double _bestScore;
 
     public NSSSLimit(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 4,
+        this(100, -1, 200, 1, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -348,8 +348,8 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
         numberTypes = typeUnits.size();
 
         boolean hasFinishedIteration = false;
-        //for (int i = 0; i < I; i++) {
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        for (int i = 0; i < I; i++) {
+        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
@@ -376,10 +376,10 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                    return hasFinishedIteration;
-                }
+                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                //    return hasFinishedIteration;
+                //}
 
             }
 

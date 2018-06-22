@@ -34,7 +34,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI {
+public class SSSIteration extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -56,7 +56,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     private Integer numberTypes;
     private Double timePlayout;
 
-    public SSSmRTS(UnitTypeTable utt) {
+    public SSSIteration(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
@@ -66,7 +66,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 new AStarPathFinding());
     }
 
-    public SSSmRTS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SSSIteration(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -242,7 +242,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public AI clone() {
-        return new SSSmRTS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new SSSIteration(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -350,8 +350,8 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         numberTypes = typeUnits.size();
 
         boolean hasFinishedIteration = false;
-
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        for (int i = 0; i < I; i++) {
+        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
@@ -378,10 +378,10 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
                 
-                if( System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0)) ){
-                    timePlayout =  (double)(System.currentTimeMillis() - start_time) /(numberEvals);
-                    return hasFinishedIteration;
-                }
+                //if( System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0)) ){
+                //    timePlayout =  (double)(System.currentTimeMillis() - start_time) /(numberEvals);
+                //    return hasFinishedIteration;
+                //}
                 
             }
             

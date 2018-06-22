@@ -36,7 +36,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI {
+public class PGSIteration extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -56,8 +56,8 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     int playerForThisComputation;
     
 
-    public PGSmRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 2,
+    public PGSIteration(UnitTypeTable utt) {
+        this(200, -1, 200, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -65,7 +65,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 new AStarPathFinding());
     }
 
-    public PGSmRTS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public PGSIteration(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -131,9 +131,12 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         UnitScriptData currentScriptData = new UnitScriptData(playerForThisComputation);
         currentScriptData.setSeedUnits(seedPlayer);
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
-        if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
+        //if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
+        for (int i = 0; i < R; i++) {
             currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
+            
+        //}
         return getFinalAction(currentScriptData);
     }
 
@@ -214,7 +217,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public AI clone() {
-        return new PGSmRTS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new PGSIteration(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -307,14 +310,14 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
         //controle pelo número de iterações
-        //for (int i = 0; i < I; i++) {
-        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))){
+        for (int i = 0; i < I; i++) {
+        //while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))){
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                    return currentScriptData;
-                }
+                //if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
+                //    return currentScriptData;
+                //}
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
@@ -324,9 +327,9 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
-                        return bestScriptData.clone();
-                    }
+                    //if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
+                    //    return bestScriptData.clone();
+                    //}
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();

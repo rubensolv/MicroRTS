@@ -11,10 +11,26 @@ import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
+import ai.asymmetric.PGS.NGS;
+import ai.asymmetric.PGS.NGSLimit;
+import ai.asymmetric.PGS.NGSLimitRandom;
+import ai.asymmetric.PGS.NGSRandom;
+import ai.asymmetric.PGS.PGSIteration;
+import ai.asymmetric.PGS.PGSIterationRandom;
+import ai.asymmetric.PGS.PGSResponseMRTS;
+import ai.asymmetric.PGS.PGSResponseMRTSRandom;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SSS.NSSS;
+import ai.asymmetric.SSS.NSSSLimit;
+import ai.asymmetric.SSS.NSSSLimitRandom;
+import ai.asymmetric.SSS.NSSSRandom;
+import ai.asymmetric.SSS.SSSIteration;
+import ai.asymmetric.SSS.SSSIterationRandom;
+import ai.asymmetric.SSS.SSSResponseMRTS;
+import ai.asymmetric.SSS.SSSResponseMRTSRandom;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.cluster.CABA;
@@ -68,32 +84,24 @@ public class RoundRobinClusterLeve {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                /* "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
-                "maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
-                "maps/battleMaps/8x8/4x4Mixed_map8x8.xml",
-                "maps/battleMaps/8x8/four_goups_Battle_8x8.xml",
-                "maps/battleMaps/8x8/lineBattle8x8.xml",
-                "maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml",
-                "maps/battleMaps/16x16/ComplexBattleWithWalls16x16.xml",
-                "maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml",
-                "maps/battleMaps/16x16/melee7x7Mixed16.xml",
-                "maps/battleMaps/16x16/melee16x16Mixed8.xml",
-                "maps/battleMaps/16x16/melee16x16Mixed12.xml",
-                "maps/battleMaps/16x16/melee18x18Mixed4groups.xml",
-                "maps/battleMaps/24x24/ConfinedFourGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/ConfinedTwoGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsLightHeavy24x24.xml",
-                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"*/
-                //"maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
-                //"maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",
-                //"maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
+                //4
                 "maps/8x8/basesWorkers8x8A.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/24x24/basesWorkers24x24A.xml",                
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml"
+                //"maps/8x8/basesWorkers8x8Obstacle.xml",
+                //"maps/8x8/basesWorkersBarracks8x8.xml",
+                //"maps/8x8/TwoBasesWorkers8x8.xml",
+                //4
+                "maps/12x12/basesWorkers12x12.xml",
+                //"maps/12x12/complexBasesWorkers12x12.xml",
+                //"maps/12x12/OneBaseWorker12x12.xml",
+                //"maps/12x12/TwoBasesWorkers12x12.xml",
+                //4
+                "maps/16x16/basesWorkers16x16A.xml"
+                //"maps/16x16/BasesTwoBarracksWithWalls16x16.xml",
+                //"maps/16x16/NoWhereWithBlocks16x16.xml",
+                //"maps/16x16/TwoBasesBarracks16x16.xml"
+                //"maps/24x24/basesWorkers24x24A.xml",                
+                //"maps/32x32/basesWorkers32x32A.xml",
+                //"maps/BWDistantResources32x32.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -145,37 +153,15 @@ public class RoundRobinClusterLeve {
                new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
                */
+               //new PGSIterationRandom(utt),
+               //new PGSResponseMRTSRandom(utt),
+               //new NGSRandom(utt),
+               //new NGSLimitRandom(utt)
+                new SSSIterationRandom(utt),
+                new SSSResponseMRTSRandom(utt),
+                new NSSSRandom(utt),
+                new NSSSLimitRandom(utt)
                
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGSSym"), 
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",1,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",6,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",8,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",10,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",1,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",6,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",8,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",10,200),
-                new PGSSCriptChoice(utt, decodeScripts(utt, "189;225;101;26;"), "PGSSymHeavy"),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",1,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",2,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",4,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",6,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",8,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",10,100),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",1,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",2,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",4,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",6,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",8,200),
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "189;225;101;26;"), "PGSRSymHeavy",10,200),
-                new POLightRush(utt),
-                new PORangedRush(utt),
-                new POWorkerRush(utt),
-                new POHeavyRush(utt)
         ));
 
         AI ai1 = ais.get(iAi1);

@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.SSS;
 
+import ai.RandomBiasedAI;
 import ai.abstraction.combat.Cluster;
 import ai.abstraction.combat.KitterDPS;
 import ai.abstraction.combat.NOKDPS;
@@ -29,12 +30,13 @@ import rts.PlayerAction;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
  * @author rubens
  */
-public class NSSSLimit extends AIWithComputationBudget implements InterruptibleAI {
+public class NSSSLimitRandom extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -57,9 +59,12 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
     private Double timePlayout;
     
     double _bestScore;
+    
+    AI randAI = null;
+    HashMap<String, PlayerAction> cache;
 
-    public NSSSLimit(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 4,
+    public NSSSLimitRandom(UnitTypeTable utt) {
+        this(100, -1, 200, 4, 2,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -68,7 +73,7 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
                 new AStarPathFinding());
     }
 
-    public NSSSLimit(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public NSSSLimitRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -80,6 +85,7 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        randAI = new RandomBiasedAI(a_utt);
     }
 
     protected void buildPortfolio() {
@@ -130,7 +136,7 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -220,24 +226,58 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
         GameState gs2 = gs.clone();
         //ai1.reset();
         //ai2.reset();
+        gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
+        gs2.issue(aiEnemy.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(aiEnemy.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
         return evaluation.evaluate(player, 1 - player, gs2);
     }
+    
+    
+    private void getCache() throws Exception {
+        for (AI script : scripts) {
+            cache.put(script.toString(), script.getAction(playerForThisComputation, gs_to_start_from));
+        }
+    }
+
+    private PlayerAction getActionsUScript(int player, UnitScriptData uScriptPlayer, GameState gs2) {
+        PlayerAction temp = new PlayerAction();
+        for (Unit u : gs2.getUnits()) {
+            if (u.getPlayer() == player) {
+                String sAI = uScriptPlayer.getAIUnit(u).toString();
+
+                UnitAction uAt = getUnitAction(u, cache.get(sAI));
+                if(uAt != null){
+                    temp.addUnitAction(u, uAt);
+                }
+            }
+        }
+
+        return temp;
+    }
+    
+    private UnitAction getUnitAction(Unit u, PlayerAction get) {
+        for (Pair<Unit, UnitAction> tmp : get.getActions()) {
+            if (tmp.m_a.getID() == u.getID()) {
+                return tmp.m_b;
+            }
+        }
+        return null;
+    }
+    
 
     @Override
     public AI clone() {
-        return new NSSSLimit(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new NSSSLimitRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -307,7 +347,7 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
         nplayouts = 0;
         _startTime = gs.getTime();
         start_time = System.currentTimeMillis();
-        
+        this.cache = new HashMap<>();
         _bestScore = 0.0;
     }
 
@@ -348,8 +388,8 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
         numberTypes = typeUnits.size();
 
         boolean hasFinishedIteration = false;
-        //for (int i = 0; i < I; i++) {
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        for (int i = 0; i < I; i++) {
+        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
@@ -376,10 +416,10 @@ public class NSSSLimit extends AIWithComputationBudget implements InterruptibleA
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                    return hasFinishedIteration;
-                }
+                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                //    return hasFinishedIteration;
+                //}
 
             }
 

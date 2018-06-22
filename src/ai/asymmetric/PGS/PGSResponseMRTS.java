@@ -56,7 +56,7 @@ public class PGSResponseMRTS extends AIWithComputationBudget implements Interrup
     int playerForThisComputation;
 
     public PGSResponseMRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 6,
+        this(100, -1, 200, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -130,12 +130,12 @@ public class PGSResponseMRTS extends AIWithComputationBudget implements Interrup
         setAllScripts(1 - playerForThisComputation, enemyScriptData, seedEnemy);
         // iterate as many times as required
         for (int i = 0; i < R; i++) {
-            if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
+           // if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
                 // do the portfolio search to improve the enemy's scripts
                 enemyScriptData = doPortfolioSearch(1 - playerForThisComputation, enemyScriptData, currentScriptData);
                 // then do portfolio search again for us to improve vs. enemy's update
                 currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, enemyScriptData);
-            }
+           // }
         }
         return getFinalAction(currentScriptData);
     }
@@ -313,9 +313,9 @@ public class PGSResponseMRTS extends AIWithComputationBudget implements Interrup
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                    return currentScriptData;
-                }
+                //if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
+                //    return currentScriptData;
+                //}
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
@@ -325,9 +325,9 @@ public class PGSResponseMRTS extends AIWithComputationBudget implements Interrup
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 5)) {
-                        return bestScriptData.clone();
-                    }
+                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 5)) {
+                    //    return bestScriptData.clone();
+                    //}
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();

@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.PGS;
 
+import ai.RandomBiasedAI;
 import ai.abstraction.combat.Cluster;
 import ai.abstraction.combat.KitterDPS;
 import ai.abstraction.combat.NOKDPS;
@@ -31,12 +32,13 @@ import rts.PlayerAction;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
  * @author rubens
  */
-public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI {
+public class PGSIterationRandom extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -55,9 +57,12 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
     
+    AI randAI = null;
+    HashMap<String, PlayerAction> cache;
+    
 
-    public PGSmRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 2,
+    public PGSIterationRandom(UnitTypeTable utt) {
+        this(200, -1, 200, 4, 2,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -65,7 +70,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                 new AStarPathFinding());
     }
 
-    public PGSmRTS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public PGSIterationRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -77,6 +82,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        randAI = new RandomBiasedAI(a_utt);
     }
 
     protected void buildPortfolio() {
@@ -121,7 +127,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -131,9 +137,12 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         UnitScriptData currentScriptData = new UnitScriptData(playerForThisComputation);
         currentScriptData.setSeedUnits(seedPlayer);
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
-        if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
+        //if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
+        for (int i = 0; i < R; i++) {
             currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
+            
+        //}
         return getFinalAction(currentScriptData);
     }
 
@@ -192,29 +201,61 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     public double eval(int player, GameState gs, UnitScriptData uScriptPlayer, AI aiEnemy) throws Exception {
         //AI ai1 = defaultScript.clone();
         AI ai2 = aiEnemy.clone();
-
-        GameState gs2 = gs.clone();
-        //ai1.reset();
         ai2.reset();
+        GameState gs2 = gs.clone();
+        //actions default
+        //gs2.issue(uScriptPlayer.getAction(player, gs2));
+        //gs2.issue(ai2.getAction(1 - player, gs2));
+        gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                //gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
         return evaluation.evaluate(player, 1 - player, gs2);
     }
+    
+    private void getCache() throws Exception {
+        for (AI script : scripts) {
+            cache.put(script.toString(), script.getAction(playerForThisComputation, gs_to_start_from));
+        }
+    }
 
+    private PlayerAction getActionsUScript(int player, UnitScriptData uScriptPlayer, GameState gs2) {
+        PlayerAction temp = new PlayerAction();
+        for (Unit u : gs2.getUnits()) {
+            if (u.getPlayer() == player) {
+                String sAI = uScriptPlayer.getAIUnit(u).toString();
+
+                UnitAction uAt = getUnitAction(u, cache.get(sAI));
+                if(uAt != null){
+                    temp.addUnitAction(u, uAt);
+                }
+            }
+        }
+
+        return temp;
+    }
+    
+    private UnitAction getUnitAction(Unit u, PlayerAction get) {
+        for (Pair<Unit, UnitAction> tmp : get.getActions()) {
+            if (tmp.m_a.getID() == u.getID()) {
+                return tmp.m_b;
+            }
+        }
+        return null;
+    }
+    
     @Override
     public AI clone() {
-        return new PGSmRTS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new PGSIterationRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -284,6 +325,7 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         nplayouts = 0;
         _startTime = gs.getTime();
         start_time = System.currentTimeMillis();
+        this.cache = new HashMap<>();
     }
 
     @Override
@@ -307,14 +349,14 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
         //controle pelo número de iterações
-        //for (int i = 0; i < I; i++) {
-        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))){
+        for (int i = 0; i < I; i++) {
+        //while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))){
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                    return currentScriptData;
-                }
+                //if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
+                //    return currentScriptData;
+                //}
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
@@ -324,9 +366,9 @@ public class PGSmRTS extends AIWithComputationBudget implements InterruptibleAI 
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
-                        return bestScriptData.clone();
-                    }
+                    //if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
+                    //    return bestScriptData.clone();
+                    //}
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();
