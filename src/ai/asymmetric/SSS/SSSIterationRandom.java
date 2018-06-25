@@ -62,7 +62,7 @@ public class SSSIterationRandom extends AIWithComputationBudget implements Inter
     HashMap<String, PlayerAction> cache;
 
     public SSSIterationRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 2,
+        this(100, -1, 200, 1, 10,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -88,12 +88,12 @@ public class SSSIterationRandom extends AIWithComputationBudget implements Inter
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new NOKDPS(utt));
         this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new Cluster(utt));
         
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
@@ -418,10 +418,10 @@ public class SSSIterationRandom extends AIWithComputationBudget implements Inter
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
                 
-                //if( System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0)) ){
-                //    timePlayout =  (double)(System.currentTimeMillis() - start_time) /(numberEvals);
-                //    return hasFinishedIteration;
-                //}
+                if( System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0)) ){
+                    timePlayout =  (double)(System.currentTimeMillis() - start_time) /(numberEvals);
+                    return hasFinishedIteration;
+                }
                 
             }
             

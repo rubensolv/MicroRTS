@@ -64,7 +64,7 @@ public class NSSSLimitRandom extends AIWithComputationBudget implements Interrup
     HashMap<String, PlayerAction> cache;
 
     public NSSSLimitRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 2,
+        this(100, -1, 200, 1, 10,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -90,12 +90,12 @@ public class NSSSLimitRandom extends AIWithComputationBudget implements Interrup
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new NOKDPS(utt));
         this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
@@ -138,8 +138,10 @@ public class NSSSLimitRandom extends AIWithComputationBudget implements Interrup
     public PlayerAction getBestActionSoFar() throws Exception {
         getCache();
         //pego o melhor script do portfolio para ser a semente
-        AI seedPlayer = getSeedPlayer(playerForThisComputation);
-        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+        //AI seedPlayer = getSeedPlayer(playerForThisComputation);
+        //AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+        AI seedPlayer = scripts.get(0);
+        AI seedEnemy = scripts.get(0);
 
         defaultScript = seedPlayer;
         // set up the root script data
@@ -416,10 +418,10 @@ public class NSSSLimitRandom extends AIWithComputationBudget implements Interrup
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                //    return hasFinishedIteration;
-                //}
+                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                    return hasFinishedIteration;
+                }
 
             }
 
@@ -451,8 +453,8 @@ public class NSSSLimitRandom extends AIWithComputationBudget implements Interrup
 
         int counterIterations = 0;
         //controle pelo número de iterações
-        //for (int i = 0; i < I; i++) {
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 2))) {
+        for (int i = 0; i < I; i++) {
+        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 2))) {
             boolean hasImproved = false;
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {

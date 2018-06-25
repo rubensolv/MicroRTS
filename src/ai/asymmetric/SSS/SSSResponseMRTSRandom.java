@@ -57,12 +57,12 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
 
     private Integer numberTypes;
     private Double timePlayout;
-    
+
     AI randAI = null;
     HashMap<String, PlayerAction> cache;
 
     public SSSResponseMRTSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 2,
+        this(100, -1, 200, 1, 10,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -88,12 +88,12 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new NOKDPS(utt));
         this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
@@ -143,10 +143,10 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
         // set up the root script data
         UnitScriptData currentScriptData = new UnitScriptData(playerForThisComputation);
         UnitScriptData enemyScriptData = new UnitScriptData(1 - playerForThisComputation);
-        
+
         currentScriptData.setSeedUnits(seedPlayer);
         enemyScriptData.setSeedUnits(seedEnemy);
-        
+
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
         setAllScripts(1 - playerForThisComputation, enemyScriptData, seedEnemy);
 
@@ -154,9 +154,14 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
         numberTypes = 0;
         timePlayout = 0.0;
         //while (System.currentTimeMillis() < (start_time + TIME_BUDGET)) {
+        if (doStratifiedSearch(playerForThisComputation, currentScriptData, enemyScriptData)) {
+            AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
+        } else {
+            AdaptableStratType.decrease(numberTypes);
+        }
         for (int i = 0; i < R; i++) {
             //enemy
-            if (doStratifiedSearch(1-playerForThisComputation, enemyScriptData, currentScriptData)) {
+            if (doStratifiedSearch(1 - playerForThisComputation, enemyScriptData, currentScriptData)) {
                 AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
             } else {
                 AdaptableStratType.decrease(numberTypes);
@@ -249,7 +254,6 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
         return evaluation.evaluate(player, 1 - player, gs2);
     }
 
-    
     private void getCache() throws Exception {
         for (AI script : scripts) {
             cache.put(script.toString(), script.getAction(playerForThisComputation, gs_to_start_from));
@@ -263,7 +267,7 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
                 String sAI = uScriptPlayer.getAIUnit(u).toString();
 
                 UnitAction uAt = getUnitAction(u, cache.get(sAI));
-                if(uAt != null){
+                if (uAt != null) {
                     temp.addUnitAction(u, uAt);
                 }
             }
@@ -271,7 +275,7 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
 
         return temp;
     }
-    
+
     private UnitAction getUnitAction(Unit u, PlayerAction get) {
         for (Pair<Unit, UnitAction> tmp : get.getActions()) {
             if (tmp.m_a.getID() == u.getID()) {
@@ -280,7 +284,7 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
         }
         return null;
     }
-    
+
     @Override
     public AI clone() {
         return new SSSResponseMRTSRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
@@ -394,7 +398,7 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
 
         boolean hasFinishedIteration = false;
         for (int i = 0; i < I; i++) {
-        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+            //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
@@ -421,10 +425,10 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                //    return hasFinishedIteration;
-                //}
+                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                    return hasFinishedIteration;
+                }
 
             }
 

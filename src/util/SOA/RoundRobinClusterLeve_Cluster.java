@@ -40,6 +40,7 @@ import ai.minimax.ABCD.ABCD;
 import ai.montecarlo.MonteCarlo;
 import ai.montecarlo.lsi.LSI;
 import ai.puppet.PuppetSearchMCTS;
+import ai.scv.SCV;
 import gui.PhysicalGameStatePanel;
 import java.io.File;
 import java.io.FileWriter;
@@ -150,7 +151,8 @@ public class RoundRobinClusterLeve_Cluster {
                 new NaiveMCTS(utt),
                 new BS3_NaiveMCTS(utt),
                 new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt), //9
+                new StrategyTactics(utt), 
+                new SCV(utt),//10
                 //NSS
                 new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator"),
                 //behavior
@@ -159,7 +161,7 @@ public class RoundRobinClusterLeve_Cluster {
                 //new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 2, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 4, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 6, 2),
-                //new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 2, 2),
+                new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 2, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 4, 2),
                 //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 6, 2),
                 //new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 2, 2),

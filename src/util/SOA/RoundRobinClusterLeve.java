@@ -44,6 +44,7 @@ import ai.configurablescript.ScriptsCreator;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
 import ai.mcts.naivemcts.NaiveMCTS;
 import ai.puppet.PuppetSearchMCTS;
+import ai.scv.SCV;
 import gui.PhysicalGameStatePanel;
 import java.io.File;
 import java.io.FileWriter;
@@ -95,11 +96,11 @@ public class RoundRobinClusterLeve {
                 //"maps/12x12/OneBaseWorker12x12.xml",
                 //"maps/12x12/TwoBasesWorkers12x12.xml",
                 //4
-                "maps/16x16/basesWorkers16x16A.xml"
+                "maps/16x16/basesWorkers16x16A.xml",
                 //"maps/16x16/BasesTwoBarracksWithWalls16x16.xml",
                 //"maps/16x16/NoWhereWithBlocks16x16.xml",
                 //"maps/16x16/TwoBasesBarracks16x16.xml"
-                //"maps/24x24/basesWorkers24x24A.xml",                
+                "maps/24x24/basesWorkers24x24A.xml"                
                 //"maps/32x32/basesWorkers32x32A.xml",
                 //"maps/BWDistantResources32x32.xml"
         ));
@@ -136,31 +137,31 @@ public class RoundRobinClusterLeve {
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               /*
+               
                new AHTNAI(utt),
                new NaiveMCTS(utt),
-               new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
                new StrategyTactics(utt),
                new POLightRush(utt),
                new POHeavyRush(utt),
                new PORangedRush(utt),
                new POWorkerRush(utt),
-               
+               new SCV(utt),          //+9
+               /*
                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
                new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
                */
-               //new PGSIterationRandom(utt),
-               //new PGSResponseMRTSRandom(utt),
-               //new NGSRandom(utt),
+               new PGSIterationRandom(utt),
+               new PGSResponseMRTSRandom(utt),
+               new NGSRandom(utt),
                //new NGSLimitRandom(utt)
-                new SSSIterationRandom(utt),
-                new SSSResponseMRTSRandom(utt),
-                new NSSSRandom(utt),
-                new NSSSLimitRandom(utt)
+               new SSSIterationRandom(utt),
+               new SSSResponseMRTSRandom(utt),
+               new NSSSRandom(utt)                                              //+6
+               //new NSSSLimitRandom(utt)
                
         ));
 

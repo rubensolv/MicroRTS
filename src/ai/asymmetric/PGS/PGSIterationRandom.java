@@ -62,7 +62,7 @@ public class PGSIterationRandom extends AIWithComputationBudget implements Inter
     
 
     public PGSIterationRandom(UnitTypeTable utt) {
-        this(200, -1, 200, 4, 2,
+        this(3000, -1, 200, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -87,12 +87,12 @@ public class PGSIterationRandom extends AIWithComputationBudget implements Inter
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new NOKDPS(utt));
         this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new Cluster(utt));
         
         //this.scripts.add(new EconomyMilitaryRush(utt));
         
@@ -354,9 +354,9 @@ public class PGSIterationRandom extends AIWithComputationBudget implements Inter
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                //if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                //    return currentScriptData;
-                //}
+                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
+                    return currentScriptData;
+                }
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
@@ -366,9 +366,9 @@ public class PGSIterationRandom extends AIWithComputationBudget implements Inter
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    //if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
-                    //    return bestScriptData.clone();
-                    //}
+                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
+                        return bestScriptData.clone();
+                    }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();

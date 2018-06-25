@@ -61,7 +61,7 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
     HashMap<String, PlayerAction> cache;
 
     public NGSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 2,
+        this(100, -1, 200, 1, 10,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -86,12 +86,12 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new NOKDPS(utt));
         this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new EconomyMilitaryRush(utt));
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
@@ -119,8 +119,10 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
     public PlayerAction getBestActionSoFar() throws Exception {
         getCache();
         //pego o melhor script do portfolio para ser a semente
-        AI seedPlayer = getSeedPlayer(playerForThisComputation);
-        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+        //AI seedPlayer = getSeedPlayer(playerForThisComputation);
+        //AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+        AI seedPlayer = scripts.get(0);
+        AI seedEnemy = scripts.get(0);
 
         defaultScript = seedPlayer;
 
@@ -348,9 +350,9 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                //if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
-                //    return currentScriptData;
-                //}
+                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
+                    return currentScriptData;
+                }
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
@@ -360,9 +362,9 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
-                    //    return bestScriptData.clone();
-                    //}
+                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
+                        return bestScriptData.clone();
+                    }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();
@@ -391,9 +393,9 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
-                    //    return bestScore;
-                    //}
+                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
+                        return bestScore;
+                    }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();

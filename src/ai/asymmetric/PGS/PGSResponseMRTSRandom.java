@@ -61,7 +61,7 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
     HashMap<String, PlayerAction> cache;
 
     public PGSResponseMRTSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 2,
+        this(100, -1, 200, 1, 10,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -86,12 +86,12 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new NOKDPS(utt));
         this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new EconomyMilitaryRush(utt));
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
@@ -134,6 +134,7 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
 
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
         setAllScripts(1 - playerForThisComputation, enemyScriptData, seedEnemy);
+        currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, enemyScriptData);
         // iterate as many times as required
         for (int i = 0; i < R; i++) {
            // if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
@@ -353,9 +354,9 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                //if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
-                //    return currentScriptData;
-                //}
+                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
+                    return currentScriptData;
+                }
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
@@ -365,9 +366,9 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 5)) {
-                    //    return bestScriptData.clone();
-                    //}
+                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 5)) {
+                        return bestScriptData.clone();
+                    }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();

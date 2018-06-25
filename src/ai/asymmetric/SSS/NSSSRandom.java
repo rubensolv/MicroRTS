@@ -62,7 +62,7 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
     HashMap<String, PlayerAction> cache;
 
     public NSSSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 4, 2,
+        this(100, -1, 200, 1, 10,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -88,12 +88,12 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         this.scripts.add(new NOKDPS(utt));
         this.scripts.add(new KitterDPS(utt));
-        this.scripts.add(new Cluster(utt));
+        //this.scripts.add(new Cluster(utt));
 
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));
@@ -136,8 +136,10 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
     public PlayerAction getBestActionSoFar() throws Exception {
         getCache();
         //pego o melhor script do portfolio para ser a semente
-        AI seedPlayer = getSeedPlayer(playerForThisComputation);
-        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+        //AI seedPlayer = getSeedPlayer(playerForThisComputation);
+        //AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
+        AI seedPlayer = scripts.get(0);
+        AI seedEnemy = scripts.get(0);
 
         defaultScript = seedPlayer;
         // set up the root script data
@@ -413,10 +415,10 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
                 //System.out.println("Analisando....");
                 //currentScriptData.print();
 
-                //if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
-                //    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
-                //    return hasFinishedIteration;
-                //}
+                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                    timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
+                    return hasFinishedIteration;
+                }
 
             }
 
@@ -459,9 +461,9 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    //if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
-                    //    return bestScore;
-                   // }
+                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 1)) {
+                        return bestScore;
+                   }
                 }
                 //seto o melhor vetor para ser usado em futuras simulações
                 currentScriptData = bestScriptData.clone();
