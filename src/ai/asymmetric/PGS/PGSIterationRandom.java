@@ -62,7 +62,7 @@ public class PGSIterationRandom extends AIWithComputationBudget implements Inter
     
 
     public PGSIterationRandom(UnitTypeTable utt) {
-        this(3000, -1, 200, 1, 1,
+        this(100, -1, 60, 2, 10,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),

@@ -62,7 +62,7 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
     HashMap<String, PlayerAction> cache;
 
     public NSSSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 10,
+        this(100, -1, 100, 1, 10,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),

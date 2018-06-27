@@ -62,7 +62,7 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
     HashMap<String, PlayerAction> cache;
 
     public SSSResponseMRTSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 10,
+        this(100, -1, 100, 1, 10,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),

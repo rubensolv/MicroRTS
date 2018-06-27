@@ -64,7 +64,7 @@ public class NSSSLimitRandom extends AIWithComputationBudget implements Interrup
     HashMap<String, PlayerAction> cache;
 
     public NSSSLimitRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 10,
+        this(100, -1, 200, 1, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),

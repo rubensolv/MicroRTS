@@ -61,7 +61,7 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
     HashMap<String, PlayerAction> cache;
 
     public NGSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 10,
+        this(100, -1, 60, 2, 10,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),

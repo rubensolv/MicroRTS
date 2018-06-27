@@ -62,7 +62,7 @@ public class NGSLimitRandom extends AIWithComputationBudget implements Interrupt
     HashMap<String, PlayerAction> cache;
 
     public NGSLimitRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 10,
+        this(100, -1, 100, 1, 10,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),

@@ -140,13 +140,13 @@ public class RoundRobinClusterLeve {
                
                new AHTNAI(utt),
                new NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
+               //new PuppetSearchMCTS(utt),
                new StrategyTactics(utt),
-               new POLightRush(utt),
-               new POHeavyRush(utt),
-               new PORangedRush(utt),
+               //new POLightRush(utt),
+               //new POHeavyRush(utt),
+               //new PORangedRush(utt),
                new POWorkerRush(utt),
-               new SCV(utt),          //+9
+               //new SCV(utt),          //+9
                /*
                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),

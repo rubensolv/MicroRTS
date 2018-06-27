@@ -61,7 +61,7 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
     HashMap<String, PlayerAction> cache;
 
     public PGSResponseMRTSRandom(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 10,
+        this(100, -1, 60, 2, 10,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
