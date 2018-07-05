@@ -138,14 +138,14 @@ public class RoundRobinClusterLeve {
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
-               new AHTNAI(utt),
-               new NaiveMCTS(utt),
+               //new AHTNAI(utt),
+               //new NaiveMCTS(utt),
                //new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
+               //new StrategyTactics(utt),
                //new POLightRush(utt),
                //new POHeavyRush(utt),
                //new PORangedRush(utt),
-               new POWorkerRush(utt),
+               //new POWorkerRush(utt),
                //new SCV(utt),          //+9
                /*
                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
@@ -156,11 +156,11 @@ public class RoundRobinClusterLeve {
                */
                new PGSIterationRandom(utt),
                new PGSResponseMRTSRandom(utt),
-               new NGSRandom(utt),
+               new NGSRandom(utt)
                //new NGSLimitRandom(utt)
-               new SSSIterationRandom(utt),
-               new SSSResponseMRTSRandom(utt),
-               new NSSSRandom(utt)                                              //+6
+               //new SSSIterationRandom(utt),
+               //new SSSResponseMRTSRandom(utt),
+               //new NSSSRandom(utt)                                              //+6
                //new NSSSLimitRandom(utt)
                
         ));

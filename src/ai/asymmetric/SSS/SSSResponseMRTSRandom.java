@@ -62,7 +62,7 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
     HashMap<String, PlayerAction> cache;
 
     public SSSResponseMRTSRandom(UnitTypeTable utt) {
-        this(100, -1, 100, 1, 10,
+        this(100, -1, 100, 1, 100,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -160,20 +160,22 @@ public class SSSResponseMRTSRandom extends AIWithComputationBudget implements In
             AdaptableStratType.decrease(numberTypes);
         }
         for (int i = 0; i < R; i++) {
-            //enemy
-            if (doStratifiedSearch(1 - playerForThisComputation, enemyScriptData, currentScriptData)) {
-                AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
-            } else {
-                AdaptableStratType.decrease(numberTypes);
-            }
-            //ally
-            if (doStratifiedSearch(playerForThisComputation, currentScriptData, enemyScriptData)) {
-                AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
-            } else {
-                AdaptableStratType.decrease(numberTypes);
+            if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
+                //enemy
+                if (doStratifiedSearch(1 - playerForThisComputation, enemyScriptData, currentScriptData)) {
+                    AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
+                } else {
+                    AdaptableStratType.decrease(numberTypes);
+                }
+                //ally
+                if (doStratifiedSearch(playerForThisComputation, currentScriptData, enemyScriptData)) {
+                    AdaptableStratType.increase(timePlayout, TIME_BUDGET, scripts.size());
+                } else {
+                    AdaptableStratType.decrease(numberTypes);
+                }
             }
         }
-
+        //}
         //System.out.println("Result final");
         //currentScriptData.print();
         return getFinalAction(currentScriptData);

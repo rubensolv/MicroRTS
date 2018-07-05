@@ -6,6 +6,7 @@ package util.SOA;
 
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
@@ -68,8 +69,8 @@ public class RoundRobinTOMatch {
             iScriptsAi2.add(Integer.decode(element));
         }
 
-        AI ai1 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi1), tupleAi1);
-        AI ai2 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi2), tupleAi2);
+        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSRSym", 4, 200);
+        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSRSym", 4, 200);
 
         /*
             Variáveis para coleta de tempo

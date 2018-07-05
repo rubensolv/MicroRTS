@@ -62,7 +62,7 @@ public class SSSIterationRandom extends AIWithComputationBudget implements Inter
     HashMap<String, PlayerAction> cache;
 
     public SSSIterationRandom(UnitTypeTable utt) {
-        this(100, -1, 100, 1, 10,
+        this(100, -1, 100, 10000, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),

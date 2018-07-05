@@ -16,14 +16,17 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTO {
+public class SOARoundRobinTOScale {
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
         //String pathSOA = "/home/rubens/cluster/ExecAIGASOA/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/ExecAIGASOA/logs/";
-
+        File SOA = new File(pathSOA);
+        if(!SOA.exists()){
+            SOA.mkdir();
+        }
         System.out.println(pathSOA);
         System.out.println(pathLog);
 
@@ -72,7 +75,7 @@ public class SOARoundRobinTO {
                     Integer.decode(itens[2]),
                     Integer.decode(itens[3]), pathLog);
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOARoundRobinTOScale.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

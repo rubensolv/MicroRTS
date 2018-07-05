@@ -6,6 +6,7 @@
 package ai.asymmetric.SSS;
 
 import ai.RandomBiasedAI;
+import ai.abstraction.WorkerRush;
 import ai.abstraction.combat.Cluster;
 import ai.abstraction.combat.KitterDPS;
 import ai.abstraction.combat.NOKDPS;
@@ -62,7 +63,7 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
     HashMap<String, PlayerAction> cache;
 
     public NSSSRandom(UnitTypeTable utt) {
-        this(100, -1, 100, 1, 10,
+        this(100, -1, 100, 1000, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -83,7 +84,8 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
-        randAI = new RandomBiasedAI(a_utt);
+        //randAI = new RandomBiasedAI(a_utt);
+        randAI = new POWorkerRush(a_utt);
     }
 
     protected void buildPortfolio() {
@@ -385,10 +387,10 @@ public class NSSSRandom extends AIWithComputationBudget implements Interruptible
         }
         //number of types to be returned through parameter numberTypes
         numberTypes = typeUnits.size();
-
+        
         boolean hasFinishedIteration = false;
-        for (int i = 0; i < I; i++) {
-        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        //for (int i = 0; i < I; i++) {
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 5))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];

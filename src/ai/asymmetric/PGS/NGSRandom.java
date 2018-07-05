@@ -61,7 +61,7 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
     HashMap<String, PlayerAction> cache;
 
     public NGSRandom(UnitTypeTable utt) {
-        this(100, -1, 60, 2, 10,
+        this(100000, -1, 100, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -345,8 +345,8 @@ public class NGSRandom extends AIWithComputationBudget implements InterruptibleA
         double bestScore = 999999; //eval(player, gs_to_start_from, bestScriptData, UnEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
         //controle pelo número de iterações
-        for (int i = 0; i < I; i++) {
-        //while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 2))) {
+        //for (int i = 0; i < I; i++) {
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 2))) {
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo

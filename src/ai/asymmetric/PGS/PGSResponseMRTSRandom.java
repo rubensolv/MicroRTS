@@ -61,7 +61,7 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
     HashMap<String, PlayerAction> cache;
 
     public PGSResponseMRTSRandom(UnitTypeTable utt) {
-        this(100, -1, 60, 2, 10,
+        this(100000, -1, 100, 1, 1,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -137,12 +137,12 @@ public class PGSResponseMRTSRandom extends AIWithComputationBudget implements In
         currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, enemyScriptData);
         // iterate as many times as required
         for (int i = 0; i < R; i++) {
-           // if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
+            if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
                 // do the portfolio search to improve the enemy's scripts
                 enemyScriptData = doPortfolioSearch(1 - playerForThisComputation, enemyScriptData, currentScriptData);
                 // then do portfolio search again for us to improve vs. enemy's update
                 currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, enemyScriptData);
-           // }
+            }
         }
         return getFinalAction(currentScriptData);
     }

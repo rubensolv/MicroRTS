@@ -49,6 +49,7 @@ import ai.portfolio.PortfolioAI;
 import ai.portfolio.portfoliogreedysearch.PGSAI;
 import ai.puppet.BasicConfigurableScript;
 import ai.puppet.PuppetSearchMCTS;
+import ai.scv.SCV;
 import gui.PhysicalGameStatePanel;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -307,22 +308,20 @@ public class ClusterTesteLeve {
                 new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
          */            
         
-        //best response GA PGS
+        //best GA PGS with PGSSCriptChoice
         String GA_PGS = "23;73;208;208;193;"; 
-        String ST_PGS = "26;1;225;"; 
-        String ST_PGS2 = "265;265;225;172;"; 
-        String ST_PGS3 = "290;225;290;200;"; 
-        String ST_PGS4 = "201;189;26;180;172;"; 
-        String ST_PGS5 = "290;200;225;"; 
-        //best response GA SSS
+        //best GA SSS with SSSmRTSScriptChoice
         String GA_SSS = "46;141;273;195;"; 
-        
+        //best GA PGS with PGSRandomFour  265 280 93 216
+        String GA_PGSR = "265;280;93;216;";
+        //best GA PGS with PGSRandomFour  and no pop limit and 27 generation
+        String GA_PGSR_lim = "281;287;265;17;";
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
                new AHTNAI(utt),
                new NaiveMCTS(utt),
-               new BS3_NaiveMCTS(utt),
+               //new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
                new StrategyTactics(utt),
                new PGSmRTS(utt),
@@ -331,18 +330,12 @@ public class ClusterTesteLeve {
                new POHeavyRush(utt),
                new PORangedRush(utt),
                new POWorkerRush(utt),
+               new SCV(utt),
                
                new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
-               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC1"),
-               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS2), "SetC2"),
-               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS3), "SetC3"),
-               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS4), "SetC4"),
-               //new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS5), "SetC5"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS"),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,100),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",4,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGSRSym",4,100),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGSRSym",4,200)
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGSR), "GA_PGSRSym",4,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGSR_lim), "GA_PGSRLim",4,200)
                 
         ));
 
