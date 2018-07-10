@@ -8,6 +8,7 @@ import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import gui.PhysicalGameStatePanel;
@@ -18,6 +19,7 @@ import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -30,12 +32,12 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOMatch {
+public class RoundRobinTOScaleTIAMAT {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
 
-    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog) throws Exception {
+    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -44,15 +46,36 @@ public class RoundRobinTOMatch {
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
 
-        String map = "maps/24x24/basesWorkers24x24A.xml";
+        List<String> maps = new ArrayList<>(Arrays.asList(
+                "maps/24x24/basesWorkers24x24A.xml"
+        ));
 
         UnitTypeTable utt = new UnitTypeTable();
-        PhysicalGameState pgs = PhysicalGameState.load(map, utt);
+        PhysicalGameState pgs = PhysicalGameState.load(maps.get(iMap), utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 6000;
+        int MAXCYCLES = 20000;
         int PERIOD = 20;
         boolean gameover = false;
+        
+        if (pgs.getHeight() == 8) {
+            MAXCYCLES = 4000;
+        }
+        if (pgs.getHeight() == 9) {
+            MAXCYCLES = 4000;
+        }
+        if (pgs.getHeight() == 16) {
+            MAXCYCLES = 5000;
+        }
+        if (pgs.getHeight() == 24) {
+            MAXCYCLES = 6000;
+        }
+        if (pgs.getHeight() == 32) {
+            MAXCYCLES = 7000;
+        }
+        if (pgs.getHeight() == 64) {
+            MAXCYCLES = 12000;
+        }
 
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
@@ -69,8 +92,12 @@ public class RoundRobinTOMatch {
             iScriptsAi2.add(Integer.decode(element));
         }
 
-        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSRSym", 4, 200);
-        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSRSym", 4, 200);
+        //pgs 
+        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 4, 200);
+        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 4, 200);
+        
+        //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 4, 200);
+        //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 4, 200);
 
         /*
             Variáveis para coleta de tempo
@@ -85,7 +112,7 @@ public class RoundRobinTOMatch {
         log.add("AI 2 = " + ai2.toString() + "\n");
 
         log.add("---------Mapa---------");
-        log.add("Mapa= " + map + "\n");
+        log.add("Mapa= " + maps.get(iMap) + "\n");
 
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
@@ -159,8 +186,8 @@ public class RoundRobinTOMatch {
         if(gs.winner() == -1){
             System.out.println("Empate!"+ai1.toString()+" vs "+ai2.toString()+" Max Cycles ="+MAXCYCLES+" Time:"+duracao.toMinutes());
         }
-
-        gravarLog(log, tupleAi1, tupleAi2, IDMatch, Generation, pathLog);
+        String stMatch = Integer.toString(IDMatch)+""+Integer.toString(iMap);
+        gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         //System.exit(0);
         return true;
     }
@@ -178,7 +205,7 @@ public class RoundRobinTOMatch {
         return scriptsAI;
     }
 
-    private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog) throws IOException {
+    private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, String pathLog) throws IOException {
         if(!pathLog.endsWith("/")){
             pathLog +="/";
         }

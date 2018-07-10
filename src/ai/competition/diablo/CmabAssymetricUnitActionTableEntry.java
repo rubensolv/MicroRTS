@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.CMAB;
+package ai.competition.diablo;
 
+import ai.CMAB.*;
 import ai.mcts.naivemcts.*;
 import java.util.List;
 import rts.UnitAction;

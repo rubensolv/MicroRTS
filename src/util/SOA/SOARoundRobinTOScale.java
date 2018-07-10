@@ -21,10 +21,11 @@ public class SOARoundRobinTOScale {
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
-        //String pathSOA = "/home/rubens/cluster/ExecAIGASOA/configSOA/SOA1/";
-        //String pathLog = "/home/rubens/cluster/ExecAIGASOA/logs/";
+        int qtdMapas = 1;
+        //String pathSOA = "/home/rubens/cluster/Tiamat_size8_Cedar/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/Tiamat_size8_Cedar/logs/";
         File SOA = new File(pathSOA);
-        if(!SOA.exists()){
+        if (!SOA.exists()) {
             SOA.mkdir();
         }
         System.out.println(pathSOA);
@@ -36,11 +37,14 @@ public class SOARoundRobinTOScale {
             for (String arquivo : mathSOA) {
                 System.out.println("Processando arquivo " + arquivo);
                 try {
-                    if (processarMatch(pathLog, arquivo)) {
-                        //remove o arquivo da pasta 
-                        File remove = new File(arquivo);
-                        remove.delete();
+                    for (int map = 0; map < qtdMapas; map++) {
+                        if (processarMatch(pathLog, arquivo, map)) {
+                        }
+                        System.gc();
                     }
+                    //remove o arquivo da pasta 
+                    File remove = new File(arquivo);
+                    remove.delete();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -63,17 +67,17 @@ public class SOARoundRobinTOScale {
      * @param arquivo String com o nome do arquivo que contém a configuração
      * @return True se processado corretamente
      */
-    private static boolean processarMatch(String pathLog, String arquivo) {
+    private static boolean processarMatch(String pathLog, String arquivo, int map) {
         //ler o arquivo e pegar a linha com dados
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinTOMatch control = new RoundRobinTOMatch();
+        RoundRobinTOScaleTIAMAT control = new RoundRobinTOScaleTIAMAT();
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog);
+                    Integer.decode(itens[3]), pathLog, map);
         } catch (Exception ex) {
             Logger.getLogger(SOARoundRobinTOScale.class.getName()).log(Level.SEVERE, null, ex);
         }

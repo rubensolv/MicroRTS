@@ -13,6 +13,7 @@ import Standard.CombinedEvaluation;
 import Standard.StrategyTactics;
 import ai.core.AI;
 import ai.*;
+import ai.CMAB.CMABBuilder;
 import ai.CMAB.CmabNaiveMCTS;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
@@ -54,6 +55,8 @@ import ai.cluster.CIA_PlayoutCluster;
 import ai.cluster.CIA_PlayoutPower;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
+import ai.competition.diablo.Diablo;
+import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.EvaluationFunctionForwarding;
@@ -65,6 +68,7 @@ import ai.mcts.naivemcts.NaiveMCTS;
 import ai.minimax.ABCD.IDABCD;
 import ai.portfolio.PortfolioAI;
 import ai.puppet.PuppetSearchMCTS;
+import ai.scv.SCVPlus;
 import gui.PhysicalGameStatePanel;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -99,41 +103,18 @@ public class GameVisualSimulationTest {
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
       //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
+       PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
-        //testes GAB
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);  
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);  
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
-       //combate tests 
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/melee14x12Mixed18.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/melee2x2Mixed_map8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/melee4x4light2.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/ClusterTestMap_map8x8.xml", utt);
-       //combat tests CIA
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/4x4Mixed_map8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/four_goups_Battle_8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/lineBattle8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml", utt);
-       //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/melee16x16Mixed8.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/1x1.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps/8x8/mapTeste.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/16x16/ComplexBattleWithWalls16x16.xml",utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/battleMaps10Times/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",utt);
+        //testes 
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
@@ -178,7 +159,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new CmabNaiveMCTS(utt);
         //AI ai1 = new PGSmRTS_Paralel_JulianTest(utt);
         //AI ai1 = new PGSmRTSRandom(utt, 4, 200);
-        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;"), "PGSRSym",2,100);
+        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "23;73;208;208;193;"), "PGSRSym",4,200);
         //AI ai1 = new PGSResponseMRTS(utt);
         //AI ai1 = new NGSRandom(utt);
         //AI ai1 = new NSSSRandom(utt);
@@ -186,10 +167,14 @@ public class GameVisualSimulationTest {
         //AI ai1 = new NGSLimit(utt);
         //AI ai1 = new NSSS(utt);
         //AI ai1 = new NSSSLimit(utt);
-        AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "281;287;265;17;"), "GA_PGSRLim",4,200);
+        //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
         
+        AI ai1 = new Tiamat(utt);
+        AI ai2 = new Diablo(utt);
+        //AI ai2 = new SCVPlus(utt, pgs.getHeight(), pgs.getWidth());
+        //AI ai2 = new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 1);
         //AI ai1 = new StrategyTactics(utt);
-        AI ai2 = new SSSmRTS(utt);
+        //AI ai2 = new SSSmRTS(utt);
         //AI ai2 = new PGSIterationRandom(utt); 
         //AI ai2 = new SSSIterationRandom(utt); 
         //AI ai1 = new SSSResponseMRTS(utt);
@@ -240,8 +225,8 @@ public class GameVisualSimulationTest {
         System.out.println("AI 2 = "+ai2.toString()+"\n");        
         
         //método para fazer a troca dos players
-        JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 640, 640, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
-//        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
+        JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
+        //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_WHITE); 
         long startTime = System.currentTimeMillis();
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;
         do {
