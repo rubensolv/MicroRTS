@@ -186,6 +186,9 @@ public class SSSmRTSScriptChoice extends AIWithComputationBudget implements Inte
                 bestEval = tEval;
                 seed = script;
             }
+            if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET-5)) {
+                return seed;
+            }
         }
 
         return seed;
@@ -361,7 +364,7 @@ public class SSSmRTSScriptChoice extends AIWithComputationBudget implements Inte
 
         boolean hasFinishedIteration = false;
 
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 4))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
