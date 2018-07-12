@@ -161,6 +161,9 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
                 bestEval = tEval;
                 seed = script;
             }
+            if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET-5)) {
+                return seed;
+            }
         }
 
         return seed;
@@ -323,11 +326,11 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         //controle pelo número de iterações
         //for (int i = 0; i < I; i++) {
         //controla por tempo
-        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))){
+        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 8))){
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 10))) {
+                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
                     return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
