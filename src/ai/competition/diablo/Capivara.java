@@ -127,17 +127,17 @@ public class Capivara extends AIWithComputationBudget implements InterruptibleAI
             this.baseAI = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 2, decodeScripts(utt, "93;45;211;"));
+                                            "ManagerClosestEnemy", 1, decodeScripts(utt, "93;45;211;"));
         }else if( (pgs.getHeight() > 24 && pgs.getHeight() <= 32) && (pgs.getWidth() > 24 && pgs.getWidth() <= 32) ){
             this.baseAI = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 2, decodeScripts(utt, "1;285;244;"));
+                                            "ManagerClosestEnemy", 1, decodeScripts(utt, "1;285;244;"));
         }else{
             this.baseAI = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 2, decodeScripts(utt, "297;158;256;")); //
+                                            "ManagerClosestEnemy", 1, decodeScripts(utt, "297;158;256;")); //
         }
     }
     
