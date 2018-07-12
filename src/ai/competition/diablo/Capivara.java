@@ -27,7 +27,7 @@ import rts.units.UnitTypeTable;
  *
  * @author Rubens, Julian and Levi
  */
-public class Diablo extends AIWithComputationBudget implements InterruptibleAI {
+public class Capivara extends AIWithComputationBudget implements InterruptibleAI {
     
     GameState gs_to_start_from = null;
     int playerForThisComputation;
@@ -38,14 +38,14 @@ public class Diablo extends AIWithComputationBudget implements InterruptibleAI {
     ScriptsCreator sc;
     ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet;
 
-    public Diablo(UnitTypeTable utt){
+    public Capivara(UnitTypeTable utt){
         super(100, 200);
         this.utt = utt;
         sc = new ScriptsCreator(utt,300);
         scriptsCompleteSet = sc.getScriptsMixReducedSet();
     }
     
-    public Diablo(int time, int max_playouts) {
+    public Capivara(int time, int max_playouts) {
         super(time, max_playouts);
         started = false;
     }
@@ -71,7 +71,7 @@ public class Diablo extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new Diablo(utt);
+        return new Capivara(utt);
     }
 
     @Override
@@ -127,17 +127,17 @@ public class Diablo extends AIWithComputationBudget implements InterruptibleAI {
             this.baseAI = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1, decodeScripts(utt, "93;45;211;"));
+                                            "ManagerClosestEnemy", 2, decodeScripts(utt, "93;45;211;"));
         }else if( (pgs.getHeight() > 24 && pgs.getHeight() <= 32) && (pgs.getWidth() > 24 && pgs.getWidth() <= 32) ){
             this.baseAI = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1, decodeScripts(utt, "1;285;244;"));
+                                            "ManagerClosestEnemy", 2, decodeScripts(utt, "1;285;244;"));
         }else{
             this.baseAI = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1, decodeScripts(utt, "297;158;256;"));
+                                            "ManagerClosestEnemy", 2, decodeScripts(utt, "297;158;256;")); //
         }
     }
     

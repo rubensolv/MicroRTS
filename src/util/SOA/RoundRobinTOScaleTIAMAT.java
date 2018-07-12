@@ -47,7 +47,8 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/32x32/basesWorkers32x32A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -93,11 +94,11 @@ public class RoundRobinTOScaleTIAMAT {
         }
 
         //pgs 
-        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 4, 200);
-        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 4, 200);
+        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 4, 200);
+        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 4, 200);
         
-        //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 4, 200);
-        //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 4, 200);
+        AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 4, 200);
+        AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 4, 200);
 
         /*
             Variáveis para coleta de tempo

@@ -33,12 +33,14 @@ import ai.asymmetric.SSS.SSSResponseMRTS;
 import ai.asymmetric.SSS.SSSResponseMRTSRandom;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
 import ai.cluster.CABA;
 import ai.cluster.CABA_Enemy;
 import ai.cluster.CABA_TDLearning;
 import ai.cluster.CIA_Enemy;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
+import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
@@ -85,24 +87,7 @@ public class RoundRobinClusterLeve {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //4
-                "maps/8x8/basesWorkers8x8A.xml",
-                //"maps/8x8/basesWorkers8x8Obstacle.xml",
-                //"maps/8x8/basesWorkersBarracks8x8.xml",
-                //"maps/8x8/TwoBasesWorkers8x8.xml",
-                //4
-                "maps/12x12/basesWorkers12x12.xml",
-                //"maps/12x12/complexBasesWorkers12x12.xml",
-                //"maps/12x12/OneBaseWorker12x12.xml",
-                //"maps/12x12/TwoBasesWorkers12x12.xml",
-                //4
-                "maps/16x16/basesWorkers16x16A.xml",
-                //"maps/16x16/BasesTwoBarracksWithWalls16x16.xml",
-                //"maps/16x16/NoWhereWithBlocks16x16.xml",
-                //"maps/16x16/TwoBasesBarracks16x16.xml"
-                "maps/24x24/basesWorkers24x24A.xml"                
-                //"maps/32x32/basesWorkers32x32A.xml",
-                //"maps/BWDistantResources32x32.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -129,40 +114,27 @@ public class RoundRobinClusterLeve {
             MAXCYCLES = 12000;
         }
 
-        //best response GA PGS
-        String GA_PGS = "32;285;107;267;225;"; 
-        String ST_PGS = "225;290;101;";
-        //best response GA SSS
-        String GA_SSS = "233;97;93;246;117;"; 
-        
+        //best GA PGS with PGSRandomFour  
+        String GA_PGSR = "145;81;2;244;5;134;41;74;266;267";
+        //best GA SSS with SSSRandomFour  
+        String GA_SSSR = "33;193;18;242;179;25;202;284;46;239;";
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
-               //new AHTNAI(utt),
-               //new NaiveMCTS(utt),
-               //new PuppetSearchMCTS(utt),
-               //new StrategyTactics(utt),
-               //new POLightRush(utt),
-               //new POHeavyRush(utt),
-               //new PORangedRush(utt),
-               //new POWorkerRush(utt),
-               //new SCV(utt),          //+9
-               /*
+               new AHTNAI(utt),
+               new NaiveMCTS(utt),
+               new PuppetSearchMCTS(utt),
+               new StrategyTactics(utt),
+               new POLightRush(utt),
+               new POHeavyRush(utt),
+               new PORangedRush(utt),
+               new POWorkerRush(utt),
+               new SCV(utt),        
                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
-               new PGSSCriptChoice(utt, decodeScripts(utt, ST_PGS), "SetC"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS")
-               */
-               new PGSIterationRandom(utt),
-               new PGSResponseMRTSRandom(utt),
-               new NGSRandom(utt)
-               //new NGSLimitRandom(utt)
-               //new SSSIterationRandom(utt),
-               //new SSSResponseMRTSRandom(utt),
-               //new NSSSRandom(utt)                                              //+6
-               //new NSSSLimitRandom(utt)
-               
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGSR), "GA_PGS",4,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_PGSR), "GA_SSS",4,200),
+               new Tiamat(utt)
         ));
 
         AI ai1 = ais.get(iAi1);

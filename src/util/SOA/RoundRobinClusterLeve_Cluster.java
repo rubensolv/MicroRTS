@@ -27,7 +27,7 @@ import ai.cluster.CABA_TDLearning;
 import ai.cluster.CIA_Enemy;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
-import ai.competition.diablo.Diablo;
+import ai.competition.diablo.Capivara;
 import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
@@ -147,8 +147,7 @@ public class RoundRobinClusterLeve_Cluster {
             MAXCYCLES = 15000;
         }
 
-        List<AI> ais = new ArrayList<>(Arrays.asList(
-                new POLightRush(utt),
+        List<AI> ais = new ArrayList<>(Arrays.asList(new POLightRush(utt),
                 new POWorkerRush(utt),
                 //new PORangedRush(utt),
                 //new POHeavyRush(utt),
@@ -160,7 +159,7 @@ public class RoundRobinClusterLeve_Cluster {
                 new SCV(utt),//10
                 new SCVPlus(utt, pgs.getHeight(), pgs.getWidth()),
                 new Tiamat(utt),
-                new Diablo(utt)
+                new Capivara(utt)
                 //NSS
                 //new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator"),
                 //behavior
