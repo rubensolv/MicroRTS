@@ -55,7 +55,7 @@ import ai.cluster.CIA_PlayoutCluster;
 import ai.cluster.CIA_PlayoutPower;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
-import ai.competition.diablo.Capivara;
+import ai.competition.capivara.Capivara;
 import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;

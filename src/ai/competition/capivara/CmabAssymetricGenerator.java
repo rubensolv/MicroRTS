@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.competition.diablo;
+package ai.competition.capivara;
 
 import ai.CMAB.ActionGenerator.*;
 import ai.abstraction.pathfinding.AStarPathFinding;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.competition.diablo;
+package ai.competition.capivara;
 
 import ai.mcts.MCTSNode;
 import java.math.BigInteger;
