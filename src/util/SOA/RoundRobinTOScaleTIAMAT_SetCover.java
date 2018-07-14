@@ -201,22 +201,24 @@ public class RoundRobinTOScaleTIAMAT_SetCover {
 
 
         //take the setCover
-        //[0, 189, 290, 188, 200, 151, 26, 201, 172, 180, 225, 1, 100]
+        //[0, 189, 290, 188, 103, 232, 26, 157, 172, 225, 1, 116, 265, 164, 16]
         
-        AI[] AIs = new AI[13];
+        AI[] AIs = new AI[15];
         AIs[0] = scriptsCompleteSet.get(0);
         AIs[1] = scriptsCompleteSet.get(189);
         AIs[2] = scriptsCompleteSet.get(290);
         AIs[3] = scriptsCompleteSet.get(188);
-        AIs[4] = scriptsCompleteSet.get(200);
-        AIs[5] = scriptsCompleteSet.get(151);
+        AIs[4] = scriptsCompleteSet.get(103);
+        AIs[5] = scriptsCompleteSet.get(232);
         AIs[6] = scriptsCompleteSet.get(26);
-        AIs[7] = scriptsCompleteSet.get(201);
+        AIs[7] = scriptsCompleteSet.get(157);
         AIs[8] = scriptsCompleteSet.get(172);
-        AIs[9] = scriptsCompleteSet.get(180);
-        AIs[10] = scriptsCompleteSet.get(225);
-        AIs[11] = scriptsCompleteSet.get(1);
-        AIs[12] = scriptsCompleteSet.get(100);
+        AIs[9] = scriptsCompleteSet.get(225);
+        AIs[10] = scriptsCompleteSet.get(1);
+        AIs[11] = scriptsCompleteSet.get(116);
+        AIs[12] = scriptsCompleteSet.get(265);
+        AIs[13] = scriptsCompleteSet.get(164);
+        AIs[14] = scriptsCompleteSet.get(16);
         
         for (Integer idSc : iScripts) {
             scriptsAI.add(AIs[idSc]);
