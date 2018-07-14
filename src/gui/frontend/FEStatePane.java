@@ -11,15 +11,20 @@ import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.ContinuingAI;
 import ai.core.PseudoContinuingAI;
-import ai.BranchingFactorCalculatorDouble;
-import ai.BranchingFactorCalculatorLong;
 import ai.PassiveAI;
 import ai.RandomAI;
 import ai.RandomBiasedAI;
+import ai.abstraction.HeavyDefense;
 import ai.abstraction.HeavyRush;
+import ai.abstraction.LightDefense;
 import ai.abstraction.LightRush;
+import ai.abstraction.RangedDefense;
 import ai.abstraction.RangedRush;
+import ai.abstraction.WorkerDefense;
 import ai.abstraction.WorkerRush;
+import ai.abstraction.WorkerRushPlusPlus;
+import ai.abstraction.cRush.CRush_V1;
+import ai.abstraction.cRush.CRush_V2;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -99,6 +104,8 @@ import util.XMLWriter;
 import ai.core.InterruptibleAI;
 import ai.evaluation.SimpleOptEvaluationFunction;
 import ai.mcts.believestatemcts.BS3_NaiveMCTS;
+import ai.mcts.uct.DownsamplingUCT;
+import ai.scv.SCV;
 
 /**
  *
@@ -126,10 +133,17 @@ public class FEStatePane extends JPanel {
                    LightRush.class,
                    HeavyRush.class,
                    RangedRush.class,
+                   WorkerDefense.class,
+                   LightDefense.class,
+                   HeavyDefense.class,
+                   RangedDefense.class,
                    POWorkerRush.class,
                    POLightRush.class,
                    POHeavyRush.class,
                    PORangedRush.class,
+                   WorkerRushPlusPlus.class,
+                   CRush_V1.class,
+                   CRush_V2.class,
                    PortfolioAI.class,
                    PGSAI.class,
                    IDRTMinimax.class,
@@ -140,12 +154,14 @@ public class FEStatePane extends JPanel {
                    UCT.class,
                    UCTUnitActions.class,
                    UCTFirstPlayUrgency.class,
+                   DownsamplingUCT.class, 
                    NaiveMCTS.class,
                    BS3_NaiveMCTS.class,
                    MLPSMCTS.class,
                    AHTNAI.class,
                    InformedNaiveMCTS.class,
-                   PuppetSearchMCTS.class
+                   PuppetSearchMCTS.class,
+                   SCV.class
                   };
 
     
@@ -628,8 +644,8 @@ public class FEStatePane extends JPanel {
 //                                                System.out.println("- (for trace) ---------------------------------------");
 //                                                System.out.println(gs);
                                                 TraceEntry te = new TraceEntry(gs.getPhysicalGameState().clone(),gs.getTime());
-                                                te.addPlayerAction(pa1);
-                                                te.addPlayerAction(pa2);
+                                                te.addPlayerAction(pa1.clone());
+                                                te.addPlayerAction(pa2.clone());
                                                 trace.addEntry(te);
                                             }
                                             synchronized(gs) {

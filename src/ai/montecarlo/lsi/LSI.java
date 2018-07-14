@@ -41,7 +41,7 @@ import rts.units.UnitTypeTable;
 public class LSI extends AIWithComputationBudget {
     public static final int DEBUG = 0;
 
-    private static final double NORMALIZATION_EPSILON = 0.25;
+    private static final double NORMALIZATION_EPSILON = 0.01;
 
     private Random rnd = new Random();
     private int lookAhead;

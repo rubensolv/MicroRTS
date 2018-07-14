@@ -6,16 +6,10 @@
 
 package ai.portfolio;
 
-import PVAI.EconomyRush;
-import PVAI.SimpleEconomyRush;
-import PVAI.WorkerDefense;
 import ai.RandomBiasedAI;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
 import ai.abstraction.WorkerRush;
-import ai.abstraction.partialobservability.POLightRush;
-import ai.abstraction.partialobservability.PORangedRush;
-import ai.abstraction.partialobservability.POWorkerRush;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.ParameterSpecification;
@@ -49,11 +43,11 @@ public class PortfolioAI extends AIWithComputationBudget implements Interruptibl
     
     
     public PortfolioAI(UnitTypeTable utt) {
-        this(new AI[]{new POWorkerRush(utt),
-                      new POLightRush(utt),
-                      new PORangedRush(utt),
+        this(new AI[]{new WorkerRush(utt),
+                      new LightRush(utt),
+                      new RangedRush(utt),
                       new RandomBiasedAI()},
-             new boolean[]{true, true, true, false},
+             new boolean[]{true,true,true,false},
              100, -1, 100,
              new SimpleSqrtEvaluationFunction3());
     }
@@ -76,7 +70,7 @@ public class PortfolioAI extends AIWithComputationBudget implements Interruptibl
     public final PlayerAction getAction(int player, GameState gs) throws Exception
     {
         if (gs.canExecuteAnyAction(player)) {
-            startNewComputation(player,gs);
+            startNewComputation(player,gs.clone());
             computeDuringOneGameFrame();
             return getBestActionSoFar();
         } else {
@@ -147,7 +141,7 @@ public class PortfolioAI extends AIWithComputationBudget implements Interruptibl
     
     public PlayerAction getBestActionSoFar() throws Exception {
         int n = strategies.length;
-        /*if (DEBUG>=1) {
+        if (DEBUG>=1) {
             System.out.println("PortfolioAI, game cycle: " + gs_to_start_from.getTime());
             System.out.println("  counts:");
             for(int i = 0;i<n;i++) {
@@ -165,7 +159,7 @@ public class PortfolioAI extends AIWithComputationBudget implements Interruptibl
                 }
                 System.out.println("");
             }
-        }*/
+        }
         
         // minimax:
         double bestMaxScore = 0;
@@ -191,8 +185,8 @@ public class PortfolioAI extends AIWithComputationBudget implements Interruptibl
         }
         
         // use the AI that obtained best results:
-        AI ai = strategies[bestMax];
-        //ai.reset();
+        AI ai = strategies[bestMax].clone();
+        ai.reset();
         return ai.getAction(playerForThisComputation, gs_to_start_from);
     }
 

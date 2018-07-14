@@ -1,18 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package rts;
-
-import java.io.Serializable;
 
 import rts.units.Unit;
 
 /**
- *
+ * Stores the action assigned to a unit in a given time
  * @author santi
  */
-public class UnitActionAssignment implements Serializable {
+public class UnitActionAssignment {
     public Unit unit;
     public UnitAction action;
     public int time;

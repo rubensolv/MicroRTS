@@ -1,12 +1,12 @@
-/** ******************************************************************************
- * Organization		: Drexel University
- * Institute		: Computer Science Department
- * Authors			: Santiago Ontanon
- * Class			: Sampler
- * Function		: This class contains methods to sample
- * from a given distribution. Including support
- * for exploration vs exploitation.
- ******************************************************************************** */
+/********************************************************************************
+Organization		: Drexel University
+Institute		: Computer Science Department
+Authors			: Santiago Ontanon
+Class			: Sampler
+Function		: This class contains methods to sample
+                          from a given distribution. Including support
+                          for exploration vs exploitation.
+ *********************************************************************************/
 package util;
 
 import java.util.LinkedList;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 
 public class Sampler {
-
     static Random generator = new Random();
 
     /*
@@ -24,6 +23,15 @@ public class Sampler {
         return generator.nextInt(distribution.length);
     }
 
+    
+    /*
+     * Returns a random element in the distribution
+     */
+    public static int random(List<Double> distribution) {
+        return generator.nextInt(distribution.size());
+    }
+
+    
     /*
      * Returns the element with maximum probability (ties are resolved randomly)
      */
@@ -51,6 +59,35 @@ public class Sampler {
         throw new Exception("Input distribution empty in Sampler.max!");
     }
 
+    
+    /*
+     * Returns the element with maximum probability (ties are resolved randomly)
+     */
+    public static int max(List<Double> distribution) throws Exception {
+        List<Integer> best = new LinkedList<Integer>();
+        double max = distribution.get(0);
+
+        for (int i = 0; i < distribution.size(); i++) {
+            double f = distribution.get(i);
+            if (f == max) {
+                best.add(new Integer(i));
+            } else {
+                if (f > max) {
+                    best.clear();
+                    best.add(new Integer(i));
+                    max = f;
+                }
+            }
+        }
+
+        if (best.size() > 0) {
+            return best.get(generator.nextInt(best.size()));
+        }
+
+        throw new Exception("Input distribution empty in Sampler.max!");
+    }
+    
+    
     /*
      * Returns the score with maximum probability (ties are resolved randomly)
      */
@@ -84,10 +121,8 @@ public class Sampler {
         for (double f : distribution) {
             total += f;
         }
-
-        if (total == 0) {
-            return random(distribution);
-        }
+        
+        if (total==0) return random(distribution);
 
         tmp = generator.nextDouble() * total;
         for (int i = 0; i < distribution.length; i++) {
@@ -99,7 +134,8 @@ public class Sampler {
 
         throw new Exception("Input distribution empty in Sampler.weighted!");
     }
-
+    
+    
     /*
      * Returns an element in the distribution, using the weights as their relative probabilities
      */
@@ -109,10 +145,8 @@ public class Sampler {
         for (double f : distribution) {
             total += f;
         }
-
-        if (total == 0) {
-            return outputs.get(generator.nextInt(outputs.size()));
-        }
+        
+        if (total==0) return outputs.get(generator.nextInt(outputs.size()));
 
         tmp = generator.nextDouble() * total;
         for (int i = 0; i < distribution.size(); i++) {
@@ -123,7 +157,7 @@ public class Sampler {
         }
 
         throw new Exception("Input distribution empty in Sampler.weighted!");
-    }
+    }    
 
     /*
      * Returns an element in the distribution following the probabilities, but using 'e' as the exploration factor.
@@ -146,14 +180,25 @@ public class Sampler {
         }
         double[] exponentiated = new double[distribution.length];
 
-        for (int i = 0; i < distribution.length; i++) {
-            exponentiated[i] = Math.pow(distribution[i], exponent);
+        for (int i = 0;i<distribution.length;i++) {
+            exponentiated[i]=Math.pow(distribution[i], exponent);
         }
 
         return weighted(exponentiated);
     }
+    
+    
+    public static int eGreedy(List<Double> distribution, double e) throws Exception {
+        if (generator.nextDouble()<e) {
+            // explore:
+            return random(distribution);
+        } else {
+           // exploit:
+            return max(distribution);
+        }
+    }
 
-    /*
+/*
     // Example:
     public static void main(String args[]) {
         int histo[] = {0, 0, 0, 0, 0};
@@ -195,5 +240,5 @@ public class Sampler {
             e.printStackTrace();
         }
     }
-     */
+ */
 }

@@ -6,13 +6,12 @@
 package ai.competition.diablo;
 
 import ai.RandomBiasedAI;
+import ai.abstraction.AbstractionLayerAI;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.core.AI;
-import ai.core.AIWithComputationBudget;
-import ai.core.InterruptibleAI;
 import ai.core.ParameterSpecification;
 import ai.evaluation.EvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
@@ -27,7 +26,7 @@ import rts.units.UnitTypeTable;
  *
  * @author Rubens, Julian and Levi
  */
-public class Capivara extends AIWithComputationBudget implements InterruptibleAI {
+public class Capivara extends AbstractionLayerAI {
     
     GameState gs_to_start_from = null;
     int playerForThisComputation;
@@ -39,14 +38,14 @@ public class Capivara extends AIWithComputationBudget implements InterruptibleAI
     ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet;
 
     public Capivara(UnitTypeTable utt){
-        super(100, 200);
+        super(new AStarPathFinding(),100, 200);
         this.utt = utt;
         sc = new ScriptsCreator(utt,300);
         scriptsCompleteSet = sc.getScriptsMixReducedSet();
     }
     
     public Capivara(int time, int max_playouts) {
-        super(time, max_playouts);
+        super(new AStarPathFinding(),time, max_playouts);
         started = false;
     }
 
@@ -87,19 +86,16 @@ public class Capivara extends AIWithComputationBudget implements InterruptibleAI
         return parameters;
     }
 
-    @Override
     public void startNewComputation(int player, GameState gs) throws Exception {
         playerForThisComputation = player;
         gs_to_start_from = gs;
         start_time = System.currentTimeMillis();
     }
 
-    @Override
     public void computeDuringOneGameFrame() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
-    @Override
     public PlayerAction getBestActionSoFar() throws Exception {
         return baseAI.getAction(playerForThisComputation, gs_to_start_from);
     }
