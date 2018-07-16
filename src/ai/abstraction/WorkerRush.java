@@ -93,11 +93,8 @@ public class WorkerRush extends AbstractionLayerAI {
             }        
         }
         workersBehavior(workers,p,gs);
-        /*
-        PlayerAction ret =         translateActions(player,gs);
-        System.out.println("Ação worker = "+ ret.toString());
-        return ret;
-        */
+        
+                
         return translateActions(player,gs);
     }
     

@@ -5,7 +5,6 @@
 package ai.mcts.naivemcts;
 
 import ai.*;
-import ai.abstraction.partialobservability.POLightRush;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.ParameterSpecification;

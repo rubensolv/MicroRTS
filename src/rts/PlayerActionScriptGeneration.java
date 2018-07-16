@@ -22,25 +22,24 @@ public class PlayerActionScriptGeneration extends PlayerActionGenerator {
     ArrayList<AI> scripts = new ArrayList<>();
 
     public PlayerActionScriptGeneration(GameState a_gs, int pID, ArrayList<AI> baseScripts) throws Exception {
-        super();
+        super(a_gs, pID);
         scripts = baseScripts;
         // Generate the reserved resources:
         base_ru = new ResourceUsage();
-        gs = a_gs;
-        pgs = gs.getPhysicalGameState();
+        physicalGameState = gameState.getPhysicalGameState();
 
-        for (Unit u : pgs.getUnits()) {
-            UnitActionAssignment uaa = gs.unitActions.get(u);
+        for (Unit u : physicalGameState.getUnits()) {
+            UnitActionAssignment uaa = gameState.unitActions.get(u);
             if (uaa != null) {
-                ResourceUsage ru = uaa.action.resourceUsage(u, pgs);
+                ResourceUsage ru = uaa.action.resourceUsage(u, physicalGameState);
                 base_ru.merge(ru);
             }
         }
 
         choices = new ArrayList<>();
-        for (Unit u : pgs.getUnits()) {
+        for (Unit u : physicalGameState.getUnits()) {
             if (u.getPlayer() == pID) {
-                if (gs.unitActions.get(u) == null) {
+                if (gameState.unitActions.get(u) == null) {
                     //List<UnitAction> l = u.getUnitActions(gs);
                     List<UnitAction> l = takeUnitScriptMove(u,  pID);
                     choices.add(new Pair<>(u, l));
@@ -79,9 +78,9 @@ public class PlayerActionScriptGeneration extends PlayerActionGenerator {
         for (AI ai : this.scripts) {
         	AI newAi=ai.clone();
         	newAi.reset();
-            PlayerAction acScript = newAi.getAction(player, gs);
+            PlayerAction acScript = newAi.getAction(player, gameState);
             //System.out.println("Action= "+acScript.toString());
-            UnitAction uAcTemp = acScript.getAction(gs.getUnit(u.getID()));
+            UnitAction uAcTemp = acScript.getAction(gameState.getUnit(u.getID()));
             if (uAcTemp != null) {
             	boolean exist=false;
                 for (UnitAction element : actionUnit) {
