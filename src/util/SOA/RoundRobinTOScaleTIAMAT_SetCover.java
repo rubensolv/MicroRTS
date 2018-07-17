@@ -94,11 +94,11 @@ public class RoundRobinTOScaleTIAMAT_SetCover {
         }
 
         //pgs 
-        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
-        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
+        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
         
-        AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);
-        AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
+        //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);
+        //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
 
         /*
             Variáveis para coleta de tempo
@@ -171,7 +171,7 @@ public class RoundRobinTOScaleTIAMAT_SetCover {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 25));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -201,24 +201,25 @@ public class RoundRobinTOScaleTIAMAT_SetCover {
 
 
         //take the setCover
-        //[0, 189, 290, 188, 103, 232, 26, 157, 172, 225, 1, 116, 265, 164, 16]
+        //24 = [0, 189, 290, 188, 103, 232, 26, 157, 172, 225, 1, 116, 265, 164, 16]
+        //32 = [[0, 189, 188, 290, 151, 232, 2, 172, 25, 180, 225, 124, 203, 157, 224]]
         
         AI[] AIs = new AI[15];
         AIs[0] = scriptsCompleteSet.get(0);
         AIs[1] = scriptsCompleteSet.get(189);
-        AIs[2] = scriptsCompleteSet.get(290);
-        AIs[3] = scriptsCompleteSet.get(188);
-        AIs[4] = scriptsCompleteSet.get(103);
+        AIs[2] = scriptsCompleteSet.get(188);
+        AIs[3] = scriptsCompleteSet.get(290);
+        AIs[4] = scriptsCompleteSet.get(151);
         AIs[5] = scriptsCompleteSet.get(232);
-        AIs[6] = scriptsCompleteSet.get(26);
-        AIs[7] = scriptsCompleteSet.get(157);
-        AIs[8] = scriptsCompleteSet.get(172);
-        AIs[9] = scriptsCompleteSet.get(225);
-        AIs[10] = scriptsCompleteSet.get(1);
-        AIs[11] = scriptsCompleteSet.get(116);
-        AIs[12] = scriptsCompleteSet.get(265);
-        AIs[13] = scriptsCompleteSet.get(164);
-        AIs[14] = scriptsCompleteSet.get(16);
+        AIs[6] = scriptsCompleteSet.get(2);
+        AIs[7] = scriptsCompleteSet.get(172);
+        AIs[8] = scriptsCompleteSet.get(25);
+        AIs[9] = scriptsCompleteSet.get(180);
+        AIs[10] = scriptsCompleteSet.get(225);
+        AIs[11] = scriptsCompleteSet.get(124);
+        AIs[12] = scriptsCompleteSet.get(203);
+        AIs[13] = scriptsCompleteSet.get(157);
+        AIs[14] = scriptsCompleteSet.get(224);
         
         for (Integer idSc : iScripts) {
             scriptsAI.add(AIs[idSc]);
