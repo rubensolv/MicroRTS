@@ -69,7 +69,7 @@ public class PlayerActionGenerator_Asymmetric {
         getUnitScriptDataActions(gs, pID);
 
         for (Unit u : pgs.getUnits()) {
-            UnitActionAssignment uaa = gs.unitActions.get(u);
+            UnitActionAssignment uaa = gs.getActionAssignment(u);
             if (uaa != null) {
                 ResourceUsage ru = uaa.action.resourceUsage(u, pgs);
                 base_ru.merge(ru);
@@ -79,7 +79,7 @@ public class PlayerActionGenerator_Asymmetric {
         choices = new ArrayList<>();
         for (Unit u : pgs.getUnits()) {
             if (u.getPlayer() == pID) {
-                if (gs.unitActions.get(u) == null) {
+                if (gs.getActionAssignment(u) == null) {
                     List<UnitAction> l = Collections.EMPTY_LIST;
                     //insero o controle da geração de ações para unidades controladas
                     if (unitIsControlled(u)) {

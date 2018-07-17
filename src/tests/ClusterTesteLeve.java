@@ -26,6 +26,7 @@ import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
+import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
@@ -50,6 +51,7 @@ import ai.portfolio.portfoliogreedysearch.PGSAI;
 import ai.puppet.BasicConfigurableScript;
 import ai.puppet.PuppetSearchMCTS;
 import ai.scv.SCV;
+import ai.scv.SCVPlus;
 import gui.PhysicalGameStatePanel;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -308,14 +310,12 @@ public class ClusterTesteLeve {
                 new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
          */            
         
-        //best GA PGS with PGSSCriptChoice
-        String GA_PGS = "23;73;208;208;193;"; 
-        //best GA SSS with SSSmRTSScriptChoice
-        String GA_SSS = "46;141;273;195;"; 
-        //best GA PGS with PGSRandomFour  265 280 93 216
-        String GA_PGSR = "265;280;93;216;";
-        //best GA PGS with PGSRandomFour  and no pop limit and 27 generation
-        String GA_PGSR_lim = "281;287;265;17;";
+        
+        String GA_PGS = "297;69;154;275;"; 
+        String GA_SSS = "281;41;277;243;143;"; 
+        String GA_SSS2 = "25;286;70;"; 
+        String Set_GA_PGS = "265;157;172;26;225;232;103;290;";
+        String Set_GA_SSS = "265;26;225;";
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
@@ -324,18 +324,25 @@ public class ClusterTesteLeve {
                //new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
                new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new SSSmRTS(utt),
-               new POLightRush(utt),
-               new POHeavyRush(utt),
-               new PORangedRush(utt),
-               new POWorkerRush(utt),
-               new SCV(utt),
-               
-               new PGSSCriptChoice(utt, decodeScripts(utt, GA_PGS), "GA_PGS"), //PGS com o melhor GA
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, GA_SSS), "GA_SSS"),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGSR), "GA_PGSRSym",4,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGSR_lim), "GA_PGSRLim",4,200)
+               //new PGSmRTS(utt),
+               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+               //new SSSmRTS(utt),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
+               //new POLightRush(utt),
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
+               //new POHeavyRush(utt),
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
+               //new PORangedRush(utt),
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
+               //new POWorkerRush(utt),
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
+               new SCVPlus(utt),
+
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, Set_GA_PGS), "GA_PGSR_Set",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS2), "GA_SSS2",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS), "GA_SSS_Set",2,200)
                 
         ));
 

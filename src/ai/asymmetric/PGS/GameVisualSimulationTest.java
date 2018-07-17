@@ -170,7 +170,8 @@ public class GameVisualSimulationTest {
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
         
         //AI ai1 = new Tiamat(utt);
-        AI ai2 = new Capivara(utt);
+        //AI ai2 = new Capivara(utt);
+        AI ai2 = new SCVPlus(utt);
         //AI ai2 = new SCVPlus(utt, pgs.getHeight(), pgs.getWidth());
         //AI ai2 = new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 1);
         //AI ai1 = new StrategyTactics(utt);
