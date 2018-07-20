@@ -208,9 +208,9 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/DoubleGame24x24.xml"
-                //"maps/32x32/basesWorkers32x32A.xml"
+                "maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
                 
@@ -311,11 +311,11 @@ public class ClusterTesteLeve {
          */            
         
         
-        String GA_PGS = "297;69;154;275;"; 
-        String GA_SSS = "281;41;277;243;143;"; 
-        String GA_SSS2 = "25;286;70;"; 
-        String Set_GA_PGS = "265;157;172;26;225;232;103;290;";
-        String Set_GA_SSS = "265;26;225;";
+        String GA_PGS = "65;276;"; 
+        String GA_SSS = "25;191;131;292;27;186;287;234;109;";         
+        String Set_GA_PGS = "25;189;172;";
+        String Set_GA_SSS = "25;189;2;0;157;172;180;";
+        String Set_GA_SSS2 = "25;189;2;180;157;124;172;";
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
@@ -341,8 +341,8 @@ public class ClusterTesteLeve {
                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, Set_GA_PGS), "GA_PGSR_Set",2,200),
                new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS2), "GA_SSS2",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS), "GA_SSS_Set",2,200)
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS), "GA_SSS_Set",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS2), "GA_SSS2_Set",2,200)
                 
         ));
 

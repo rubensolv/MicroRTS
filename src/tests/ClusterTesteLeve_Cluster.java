@@ -47,6 +47,8 @@ import ai.cluster.CIA_PlayoutCluster;
 import ai.cluster.CIA_PlayoutPower;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
+import ai.competition.capivara.Capivara;
+import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -59,6 +61,9 @@ import ai.portfolio.PortfolioAI;
 import ai.portfolio.portfoliogreedysearch.PGSAI;
 import ai.puppet.BasicConfigurableScript;
 import ai.puppet.PuppetSearchMCTS;
+import ai.scv.SCV;
+import ai.scv.SCVPlus;
+import ai.utalca.UTalcaBot;
 import gui.PhysicalGameStatePanel;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -90,33 +95,22 @@ public class ClusterTesteLeve_Cluster {
         int iAi1 = Integer.parseInt(args[0]);
         int iAi2 = Integer.parseInt(args[1]);
         int map = Integer.parseInt(args[2]);
-        
-        
+
         Instant timeInicial = Instant.now();
         Duration duracao;
-        
+
         List<String> maps = new ArrayList<>(Arrays.asList(
-               /* "maps/battleMaps/8x8/4x4Mixed_combatRangedProtection_map8x8.xml",
-                "maps/battleMaps/8x8/4x4Mixed_crazyPosition_map8x8.xml",
-                "maps/battleMaps/8x8/4x4Mixed_map8x8.xml",
-                "maps/battleMaps/8x8/four_goups_Battle_8x8.xml",
-                "maps/battleMaps/8x8/lineBattle8x8.xml",
-                "maps/battleMaps/8x8/melee2x2Mixed_map8x8.xml",
-                "maps/battleMaps/16x16/ComplexBattleWithWalls16x16.xml",
-                "maps/battleMaps/16x16/fourGroupsWithBlocks16x16.xml",
-                "maps/battleMaps/16x16/melee7x7Mixed16.xml",
-                "maps/battleMaps/16x16/melee16x16Mixed8.xml",
-                "maps/battleMaps/16x16/melee16x16Mixed12.xml",
-                "maps/battleMaps/16x16/melee18x18Mixed4groups.xml",
-                "maps/battleMaps/24x24/ConfinedFourGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/ConfinedTwoGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsLightHeavy24x24.xml",
-                "maps/battleMaps/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/MiddleBlockTwoGroupsMixed24x24.xml",
-                "maps/battleMaps/24x24/SimpleBatlle14x14Mixed24x24.xml"*/
-                "maps/battleMaps10Times/24x24/DoubleMapaWithBlockFourGroupsMixed24x24.xml"
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/8x8/FourBasesWorkers8x8.xml",
+                "maps/NoWhereToRun9x8.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
+                "maps/16x16/TwoBasesBarracks16x16.xml",
+                "maps/24x24/basesWorkers24x24A.xml",
+                "maps/DoubleGame24x24.xml",
+                "maps/BWDistantResources32x32.xml", //8 maps
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
-        
+
         UnitTypeTable utt = new UnitTYpeTableBattle();
         //UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
@@ -125,7 +119,7 @@ public class ClusterTesteLeve_Cluster {
         int MAXCYCLES = 20000;
         int PERIOD = 20;
         boolean gameover = false;
-        
+
         if (pgs.getHeight() == 8) {
             MAXCYCLES = 4000;
         }
@@ -141,32 +135,23 @@ public class ClusterTesteLeve_Cluster {
         if (pgs.getHeight() == 64) {
             MAXCYCLES = 12000;
         }
-        
+
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               //new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               //new BS3_NaiveMCTS(utt),
-               //new PuppetSearchMCTS(utt),
-               //new StrategyTactics(utt),
-               //new PGSmRTS(utt),
-               //new SSSmRTS(utt),
-               //new POLightRush(utt),
-               //new POWorkerRush(utt),
-               //new CIA(utt),
-               new CIA_Enemy(utt),
-               //new CIA_EnemyWithTime(utt),
-               //new CIA_EnemyEuclidieanInfluence(utt),
-               new AlphaBetaSearch(utt),
-               //new CIA_PlayoutCluster(utt),
-               //new CIA_PlayoutPower(utt)
-               new CIA_PlayoutTemporal(utt, 2, 2),
-               new CIA_PlayoutTemporal(utt, 2, 4),
-               new CIA_TDLearning(utt, 2, 2),               
-               new CIA_TDLearning(utt, 2, 4)
+                new RandomBiasedAI(utt),
+                new POWorkerRush(utt),
+                new POLightRush(utt),
+                new NaiveMCTS(utt),
+                new SCVPlus(utt),
+                new Tiamat(utt),
+                new Capivara(utt),
+                new UTalcaBot(utt)
         ));
 
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);
+
+        ai1.preGameAnalysis(gs, 100);
+        ai2.preGameAnalysis(gs, 100);
 
         /*
             Variáveis para coleta de tempo
@@ -248,10 +233,10 @@ public class ClusterTesteLeve_Cluster {
                 } 
             }
              */
-            
+
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
-            
+
         } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
@@ -269,9 +254,9 @@ public class ClusterTesteLeve_Cluster {
         System.out.println("Winner " + Integer.toString(gs.winner()));
         System.out.println("Game Over");
     }
-    
+
     public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
-        
+
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
         String[] itens = sScripts.split(";");
@@ -279,10 +264,10 @@ public class ClusterTesteLeve_Cluster {
         for (String element : itens) {
             iScriptsAi1.add(Integer.decode(element));
         }
-        
+
         List<AI> scriptsAI = new ArrayList<>();
 
-        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
 
         iScriptsAi1.forEach((idSc) -> {
