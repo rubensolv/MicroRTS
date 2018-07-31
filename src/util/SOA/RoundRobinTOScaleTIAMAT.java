@@ -94,11 +94,11 @@ public class RoundRobinTOScaleTIAMAT {
         }
 
         //pgs 
-        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 4, 200);
-        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 4, 200);
+        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
+        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
         
-        //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 4, 200);
-        //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 4, 200);
+        AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);
+        AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
 
         /*
             Variáveis para coleta de tempo

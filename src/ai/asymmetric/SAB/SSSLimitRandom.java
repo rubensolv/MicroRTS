@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.SAB;
 
+import ai.RandomBiasedAI;
 import ai.asymmetric.SSS.*;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
@@ -34,7 +35,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI {
+public class SSSLimitRandom extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -58,8 +59,10 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
     private Double timePlayout;
 
     double _bestScore;
+    AI randAI = null;
+    int qtdSumPlayout = 2;
 
-    public SSSLimit(UnitTypeTable utt) {
+    public SSSLimitRandom(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
@@ -69,7 +72,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
                 new AStarPathFinding());
     }
 
-    public SSSLimit(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SSSLimitRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -81,6 +84,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        randAI = new RandomBiasedAI(a_utt);
     }
 
     protected void buildPortfolio() {
@@ -249,19 +253,19 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
     public double eval(int player, GameState gs, UnitScriptData uScriptPlayer, AI aiEnemy) throws Exception {
         //AI ai1 = defaultScript.clone();
         AI ai2 = aiEnemy.clone();
-
-        GameState gs2 = gs.clone();
-        //ai1.reset();
         ai2.reset();
+        GameState gs2 = gs.clone();
+        //actions default
+        gs2.issue(uScriptPlayer.getAction(player, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
@@ -270,7 +274,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
 
     @Override
     public AI clone() {
-        return new SSSLimit(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new SSSLimitRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -407,7 +411,12 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
                         currentScriptData.setUnitScript(un, ai);
                     }
 
-                    double score = eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    double sum = 0.0;
+                    for (int i = 0; i < qtdSumPlayout; i++) {
+                        sum += eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    }
+                    double score = sum / qtdSumPlayout;
+                    
                     numberEvals++;
                     if ((sIndex == 0) || (score > bestScoreVec[typeIndex])) {
                         bestScriptVec[typeIndex] = scripts.get(sIndex);

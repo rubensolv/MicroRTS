@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.GAB.SandBox;
 
+import ai.RandomBiasedAI;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
@@ -31,7 +32,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class PGSLimit_SandBox extends AIWithComputationBudget implements InterruptibleAI{
+public class PGSLimitRandom extends AIWithComputationBudget implements InterruptibleAI{
     
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -51,8 +52,11 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
     GameState gs_to_start_from = null;
     int playerForThisComputation;
     double _bestScore;
+    
+    AI randAI = null;
+    int qtdSumPlayout = 2;
 
-    public PGSLimit_SandBox(UnitTypeTable utt) {
+    public PGSLimitRandom(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1, 
              new SimpleSqrtEvaluationFunction3(),
              //new SimpleSqrtEvaluationFunction2(),
@@ -61,7 +65,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
              new AStarPathFinding());
     }
     
-    public PGSLimit_SandBox(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public PGSLimitRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
         
         LOOKAHEAD = la;
@@ -73,6 +77,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio(); 
+        randAI = new RandomBiasedAI(utt);
     }
     
     protected void buildPortfolio(){
@@ -221,24 +226,21 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
      * @throws Exception 
      */
     public double eval(int player, GameState gs, UnitScriptData uScriptPlayer, AI aiEnemy) throws Exception{
-        //AI ai1 = defaultScript.clone();
         AI ai2 = aiEnemy.clone();
-        
-        GameState gs2 = gs.clone();
-        //ai1.reset();
         ai2.reset();
+        GameState gs2 = gs.clone();
+        gs2.issue(uScriptPlayer.getAction(player, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while(!gameover && gs2.getTime()<timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                //gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(ai2.getAction(1-player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
-        } 
+        }
         
         
         return evaluation.evaluate(player, 1-player, gs2);
@@ -246,7 +248,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
     
     @Override
     public AI clone() {
-        return new PGSLimit_SandBox(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new PGSLimitRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -364,7 +366,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
         
         int counterIterations = 0;
         //controle pelo número de iterações
-        for (int i = 0; i < I; i++) {
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 8))) {
             boolean hasImproved = false;
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
@@ -375,7 +377,11 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
                 //iterar sobre cada script do portfolio
                 for(AI ai : scripts){
                     currentScriptData.setUnitScript(unit, ai);
-                    double scoreTemp = eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    double sum = 0.0;
+                    for (int j = 0; j < qtdSumPlayout; j++) {
+                        sum += eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    }
+                    double scoreTemp = sum / qtdSumPlayout;
                     
                     if(scoreTemp > bestScore){
                         bestScriptData = currentScriptData.clone();

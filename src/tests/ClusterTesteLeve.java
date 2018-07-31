@@ -208,9 +208,9 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
                 //"maps/DoubleGame24x24.xml"
-                "maps/32x32/basesWorkers32x32A.xml"
+                //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
                 
@@ -311,39 +311,40 @@ public class ClusterTesteLeve {
          */            
         
         
-        String GA_PGS = "65;276;"; 
-        String GA_SSS = "25;191;131;292;27;186;287;234;109;";         
-        String Set_GA_PGS = "25;189;172;";
-        String Set_GA_SSS = "25;189;2;0;157;172;180;";
-        String Set_GA_SSS2 = "25;189;2;180;157;124;172;";
+        String GA_PGS_B1_R2 = "273;95;84;152;67;205;115;212;162;12;272;"; 
+        String GA_SSS_B1_R2 = "249;294;265;299;147;108;58;295;60;274;19;";       
+        String Set_GA_PGS_B1_R2 = "25;200;0;188;290;189;";
+        String Set_GA_SSS_B1_R2 = "25;200;225;290;189;135;188;";
+        
+        String GA_PGS_B2_R2 = "73;66;279;118;87;"; 
+        String GA_SSS_B2_R2 = "73;266;158;218;213;191;";       
+        String Set_GA_PGS_B2_R2 = "1;26;201;290;";
+        String Set_GA_SSS_B2_R2 = "201;290;";
+        
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
                new AHTNAI(utt),
                new NaiveMCTS(utt),
-               //new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
                new StrategyTactics(utt),
-               //new PGSmRTS(utt),
                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-               //new SSSmRTS(utt),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-               //new POLightRush(utt),
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
-               //new POHeavyRush(utt),
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
-               //new PORangedRush(utt),
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
-               //new POWorkerRush(utt),
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
                new SCVPlus(utt),
-
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, Set_GA_PGS), "GA_PGSR_Set",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS), "GA_SSS_Set",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS2), "GA_SSS2_Set",2,200)
-                
+               //bg1
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_B1_R2), "GA_PGS_B1R2",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS_B1_R2), "GA_SSS_B1R2",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, Set_GA_PGS_B1_R2), "Set_GA_PGS_B1R2",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS_B1_R2), "Set_GA_SSS_B1R2",2,200),
+               //bg2 
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_B2_R2), "GA_PGS_B2R2",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS_B2_R2), "GA_SSS_B2R2",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, Set_GA_PGS_B2_R2), "Set_GA_PGS_B2R2",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS_B2_R2), "Set_GA_SSS_B2R2",2,200)
         ));
 
         AI ai1 = ais.get(iAi1);

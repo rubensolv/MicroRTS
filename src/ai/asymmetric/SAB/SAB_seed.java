@@ -46,7 +46,7 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    SSSLimit _sss = null;
+    SSSLimitRandom _sss = null;
     AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
@@ -80,7 +80,7 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _sss = new SSSLimit(utt);
+        _sss = new SSSLimitRandom(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -96,7 +96,7 @@ public class SAB_seed extends AIWithComputationBudget implements InterruptibleAI
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _sss = new SSSLimit(utt);
+        _sss = new SSSLimitRandom(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;

@@ -31,6 +31,7 @@ import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
 import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.GAB;
+import ai.asymmetric.GAB.SandBox.GABRandom;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
@@ -266,9 +267,11 @@ public class ClusterTesteLeve_GAB_SAB {
         AI ai1;
         AI ai2;
         if(iAi1 == 0){
+            //ai1 = new PGSmRTS(utt);
             ai1 = new SSSmRTS(utt);
             ai2 = getIA(utt,iAi2);
         }else{
+            //ai2 = new PGSmRTS(utt);
             ai2 = new SSSmRTS(utt);
             ai1 = getIA(utt,iAi2);
         }
@@ -417,6 +420,7 @@ public class ClusterTesteLeve_GAB_SAB {
 
     private static AI getIA(UnitTypeTable utt, int iAi2) {
         ArrayList<Integer>  choices = mapElements.get(iAi2);
+        //return new GABRandom(utt, choices.get(0), choices.get(1));
         return new SAB_seed(utt, choices.get(0), choices.get(1));
     }
 

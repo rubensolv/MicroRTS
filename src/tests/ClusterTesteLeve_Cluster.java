@@ -26,6 +26,7 @@ import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
+import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
@@ -36,6 +37,7 @@ import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SAB_oldVersion;
 import ai.cluster.CABA;
 import ai.cluster.CABA_Enemy;
@@ -83,6 +85,7 @@ import rts.PlayerAction;
 import rts.units.Unit;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
+import static tests.ClusterTesteLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -107,8 +110,8 @@ public class ClusterTesteLeve_Cluster {
                 "maps/16x16/TwoBasesBarracks16x16.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
                 "maps/DoubleGame24x24.xml",
-                "maps/BWDistantResources32x32.xml", //8 maps
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/BWDistantResources32x32.xml"//, //8 maps
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -137,21 +140,75 @@ public class ClusterTesteLeve_Cluster {
         }
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                new RandomBiasedAI(utt),
-                new POWorkerRush(utt),
-                new POLightRush(utt),
+                new AHTNAI(utt),
                 new NaiveMCTS(utt),
+                new PuppetSearchMCTS(utt),
+                new StrategyTactics(utt),
+                new PGSmRTS(utt),
+                new SSSmRTS(utt),
+                new POLightRush(utt), //lr
+                new POHeavyRush(utt), //HR
+                new PORangedRush(utt), //RR
+                new POWorkerRush(utt), //WR
                 new SCVPlus(utt),
                 new Tiamat(utt),
                 new Capivara(utt),
                 new UTalcaBot(utt)
+                //new GAB(utt),
+                //new SAB(utt)
         ));
+        //add GAB e SAB by map settings
+        switch(maps.get(map)){
+            case "maps/8x8/basesWorkers8x8A.xml" :
+                ais.add(14, new GAB(utt, 8, 2));
+                ais.add(15, new SAB(utt, 8, 2));
+                break;
+            case     "maps/8x8/FourBasesWorkers8x8.xml" :                
+                ais.add(14, new GAB(utt, 8, 2));
+                ais.add(15, new SAB(utt, 8, 2));
+                break;
+            case     "maps/NoWhereToRun9x8.xml" :
+                ais.add(14, new GAB(utt, 8, 2));
+                ais.add(15, new SAB(utt, 3, 2));
+                break;
+            case     "maps/16x16/basesWorkers16x16A.xml" :
+                ais.add(14, new GAB(utt, 7, 3));
+                ais.add(15, new SAB(utt, 0, 3));
+                break;
+            case     "maps/16x16/TwoBasesBarracks16x16.xml" :
+                ais.add(14, new GAB(utt, 7, 3));
+                ais.add(15, new SAB(utt, 0, 3));
+                break;
+            case     "maps/24x24/basesWorkers24x24A.xml" :
+                ais.add(14, new GAB(utt, 4, 2));
+                ais.add(15, new SAB(utt, 0, 7));
+                break;
+            case     "maps/DoubleGame24x24.xml" :
+                ais.add(14, new GAB(utt, 4, 3));
+                ais.add(15, new SAB(utt, 6, 7));
+                break;
+            case     "maps/BWDistantResources32x32.xml" :
+                ais.add(14, new GAB(utt, 7, 2));
+                ais.add(15, new SAB(utt, 8, 7));
+                break;
+            case     "maps/BroodWar/(4)BloodBath.scmB.xml" :
+                ais.add(14, new GAB(utt, 7, 2));
+                ais.add(15, new SAB(utt, 8, 7));
+                break;
+            default:
+                ais.add(14, new GAB(utt, 7, 3));
+                ais.add(15, new SAB(utt, 0, 2));
+                break;
+        }
+        
 
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);
 
         ai1.preGameAnalysis(gs, 100);
         ai2.preGameAnalysis(gs, 100);
+        
+        
 
         /*
             Variáveis para coleta de tempo

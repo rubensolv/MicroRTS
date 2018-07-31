@@ -40,12 +40,12 @@ import util.Pair;
  *
  * @author rubens
  */
-public class SAB extends AIWithComputationBudget implements InterruptibleAI {
+public class SABRandom extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    SSSLimit _sss = null;
+    SSSLimitRandom _sss = null;
     AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
@@ -61,7 +61,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     UnitScriptData currentScriptData;
     RandomAI rAI ;
 
-    public SAB(UnitTypeTable utt) {
+    public SABRandom(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -69,17 +69,17 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
                 new AStarPathFinding());
     }
 
-    public SAB(UnitTypeTable utt, int numUnits, int numManager) {
+    public SABRandom(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
 
-    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SABRandom(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _sss = new SSSLimit(utt);
+        _sss = new SSSLimitRandom(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -89,13 +89,13 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         rAI = new RandomAI(utt);
     }
 
-    public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+    public SABRandom(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
 
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _sss = new SSSLimit(utt);
+        _sss = new SSSLimitRandom(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -165,7 +165,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new SAB(_time, _max_playouts, evaluation, utt, pf);
+        return new SABRandom(_time, _max_playouts, evaluation, utt, pf);
     }
 
     @Override

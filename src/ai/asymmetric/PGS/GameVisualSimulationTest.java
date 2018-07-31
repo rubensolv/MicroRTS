@@ -140,12 +140,11 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RandomBiasedAI(utt);
         //AI ai1 = new PuppetSearchMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
-        //AI ai1 = new GAB(utt);
-        AI ai1 = new POLightRush(utt);
+        //AI ai1 = new POLightRush(utt);
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new PGSmRTS_SandBox(utt);
         //AI ai1 = new PGSmRTS(utt); 
-        //AI ai1 = new GAB(utt);
+        AI ai1 = new GAB(utt);
         //AI ai1 = new SAB(utt);
         //AI ai1 = new IDABCD(utt);
         //AI ai1 = new StrategyTactics(utt);
