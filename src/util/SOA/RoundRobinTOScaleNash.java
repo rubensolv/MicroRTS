@@ -32,12 +32,13 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOScaleTIAMAT {
+public class RoundRobinTOScaleNash {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
 
-    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
+    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap,
+                       String idAi1, String idAi2) throws Exception {
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -47,8 +48,9 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
+                "maps/8x8/basesWorkers8x8A.xml" 
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -110,7 +112,9 @@ public class RoundRobinTOScaleTIAMAT {
 
         log.add("---------AIs---------");
         log.add("AI 1 = " + ai1.toString());
-        log.add("AI 2 = " + ai2.toString() + "\n");
+        log.add("ID A1 = " + idAi1);
+        log.add("AI 2 = " + ai2.toString() );
+        log.add("ID A2 = " + idAi2 + "\n");
 
         log.add("---------Mapa---------");
         log.add("Mapa= " + maps.get(iMap) + "\n");
@@ -188,7 +192,7 @@ public class RoundRobinTOScaleTIAMAT {
             System.out.println("Empate!"+ai1.toString()+" vs "+ai2.toString()+" Max Cycles ="+MAXCYCLES+" Time:"+duracao.toMinutes());
         }
         String stMatch = Integer.toString(IDMatch)+""+Integer.toString(iMap);
-        gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
+        gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog, idAi1, idAi2);
         //System.exit(0);
         return true;
     }
@@ -206,11 +210,13 @@ public class RoundRobinTOScaleTIAMAT {
         return scriptsAI;
     }
 
-    private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, String pathLog) throws IOException {
+    private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, 
+                           String pathLog, String idAi1, String idAi2) throws IOException {
         if(!pathLog.endsWith("/")){
             pathLog +="/";
         }
-        String nameArquivo = pathLog + "Eval_" + tupleAi1 + "_" + tupleAi2 + "_" + IDMatch + "_" + Generation + ".txt";
+        String nameArquivo = pathLog + "Eval_" + tupleAi1 + "_" + tupleAi2 + "_" + IDMatch + "_" + 
+                             Generation + "_" + idAi1 +"_" + idAi2 + ".txt";
         File arqLog = new File(nameArquivo);
         if (!arqLog.exists()) {
             arqLog.createNewFile();

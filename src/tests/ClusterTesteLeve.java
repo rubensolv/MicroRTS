@@ -311,15 +311,13 @@ public class ClusterTesteLeve {
          */            
         
         
-        String GA_PGS_B1_R2 = "273;95;84;152;67;205;115;212;162;12;272;"; 
-        String GA_SSS_B1_R2 = "249;294;265;299;147;108;58;295;60;274;19;";       
-        String Set_GA_PGS_B1_R2 = "25;200;0;188;290;189;";
-        String Set_GA_SSS_B1_R2 = "25;200;225;290;189;135;188;";
+        String GA_PGS_10p5g = "289;133;22;117;214;"; 
+        String GA_PGS_10p30g = "265;33;94;169;284;18;144;15;12;166;";       
+        String GA_PGS_30p5g = "74;273;122;89;";    
+        String GA_PGS_30p30g_1 = "81;242;234;269;174;134;"; 
+        String GA_PGS_30p30g_2 = "81;242;174;71;245;73;134;";       
+        String GA_PGS_30p30g_3 = "81;242;179;73;205;134;";  
         
-        String GA_PGS_B2_R2 = "73;66;279;118;87;"; 
-        String GA_SSS_B2_R2 = "73;266;158;218;213;191;";       
-        String Set_GA_PGS_B2_R2 = "1;26;201;290;";
-        String Set_GA_SSS_B2_R2 = "201;290;";
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
@@ -336,15 +334,12 @@ public class ClusterTesteLeve {
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
                new SCVPlus(utt),
                //bg1
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_B1_R2), "GA_PGS_B1R2",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS_B1_R2), "GA_SSS_B1R2",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, Set_GA_PGS_B1_R2), "Set_GA_PGS_B1R2",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS_B1_R2), "Set_GA_SSS_B1R2",2,200),
-               //bg2 
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_B2_R2), "GA_PGS_B2R2",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS_B2_R2), "GA_SSS_B2R2",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, Set_GA_PGS_B2_R2), "Set_GA_PGS_B2R2",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, Set_GA_SSS_B2_R2), "Set_GA_SSS_B2R2",2,200)
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_10p5g), "GA_PGS_10p5g",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_10p30g), "GA_PGS_10p30g",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p5g), "GA_PGS_30p5g",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p30g_1), "GA_PGS_30p30g_1",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p30g_2), "GA_PGS_30p30g_2",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p30g_3), "GA_PGS_30p30g_3",2,200)
         ));
 
         AI ai1 = ais.get(iAi1);

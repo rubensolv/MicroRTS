@@ -114,8 +114,8 @@ public class ClusterTesteLeve_Cluster {
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
-        UnitTypeTable utt = new UnitTYpeTableBattle();
-        //UnitTypeTable utt = new UnitTypeTable();
+        //UnitTypeTable utt = new UnitTYpeTableBattle();
+        UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);

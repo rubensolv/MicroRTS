@@ -16,14 +16,14 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTOScale {
+public class SOARoundRobinTOScaleNash {
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
         int qtdMapas = 1;
-        //String pathSOA = "/home/rubens/cluster/Tiamat_size8_Cedar/configSOA/SOA1/";
-        //String pathLog = "/home/rubens/cluster/Tiamat_size8_Cedar/logs/";
+        //String pathSOA = "/home/rubens/cluster/GA_PGS_map8/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/GA_PGS_map8/logs/";
         File SOA = new File(pathSOA);
         if (!SOA.exists()) {
             SOA.mkdir();
@@ -72,14 +72,15 @@ public class SOARoundRobinTOScale {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinTOScaleTIAMAT control = new RoundRobinTOScaleTIAMAT();
+        RoundRobinTOScaleNash control = new RoundRobinTOScaleNash();
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog, map);
+                    Integer.decode(itens[3]), pathLog, map,
+                    itens[4], itens[5]);
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTOScale.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOARoundRobinTOScaleNash.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
