@@ -208,7 +208,7 @@ public class RoundRobinTOScaleNash {
         //take the setCover
 
         
-        AI[] AIs = new AI[15];
+        AI[] AIs = new AI[20];
         AIs[0] = scriptsCompleteSet.get(0);
         AIs[1] = scriptsCompleteSet.get(1);
         AIs[2] = scriptsCompleteSet.get(2);
