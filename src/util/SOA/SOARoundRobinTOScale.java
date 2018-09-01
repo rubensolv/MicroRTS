@@ -22,8 +22,8 @@ public class SOARoundRobinTOScale {
         String pathSOA = args[0];
         String pathLog = args[1];
         int qtdMapas = 1;
-        //String pathSOA = "/home/rubens/cluster/Tiamat_size8_Cedar/configSOA/SOA1/";
-        //String pathLog = "/home/rubens/cluster/Tiamat_size8_Cedar/logs/";
+        //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/USP/Test_map8_10script_USP/logs/";
         File SOA = new File(pathSOA);
         if (!SOA.exists()) {
             SOA.mkdir();

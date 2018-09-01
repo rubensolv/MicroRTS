@@ -15,6 +15,7 @@ import PVAI.LightDefense;
 import PVAI.WorkerRushPlusPlus;
 import PVAI.WorkerDefense;
 import PVAI.RangedDefense;
+import PVAI.util.Permutation;
 import Standard.StrategyTactics;
 import ai.core.AI;
 import ai.*;
@@ -80,6 +81,7 @@ import util.XMLWriter;
 public class ClusterTesteLeve {
 
     public static void main(String args[]) throws Exception {
+        //Permutation.getPermutation(9864099);
         int iAi1 = Integer.parseInt(args[0]);
         int iAi2 = Integer.parseInt(args[1]);
         int map = Integer.parseInt(args[2]);
@@ -208,11 +210,11 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/DoubleGame24x24.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
                 
                 
         ));
@@ -311,13 +313,8 @@ public class ClusterTesteLeve {
          */            
         
         
-        String GA_PGS_10p5g = "289;133;22;117;214;"; 
-        String GA_PGS_10p30g = "265;33;94;169;284;18;144;15;12;166;";       
-        String GA_PGS_30p5g = "74;273;122;89;";    
-        String GA_PGS_30p30g_1 = "81;242;234;269;174;134;"; 
-        String GA_PGS_30p30g_2 = "81;242;174;71;245;73;134;";       
-        String GA_PGS_30p30g_3 = "81;242;179;73;205;134;";  
-        
+        String GA_PGS = "49;0;4;151;189;226;186;"; 
+        String GA_SSS = "289;194;86;242;";                   
         
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
@@ -334,12 +331,8 @@ public class ClusterTesteLeve {
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
                new SCVPlus(utt),
                //bg1
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_10p5g), "GA_PGS_10p5g",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_10p30g), "GA_PGS_10p30g",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p5g), "GA_PGS_30p5g",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p30g_1), "GA_PGS_30p30g_1",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p30g_2), "GA_PGS_30p30g_2",2,200),
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS_30p30g_3), "GA_PGS_30p30g_3",2,200)
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200)
         ));
 
         AI ai1 = ais.get(iAi1);
