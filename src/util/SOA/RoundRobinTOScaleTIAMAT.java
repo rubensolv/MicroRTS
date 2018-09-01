@@ -4,6 +4,7 @@
  */
 package util.SOA;
 
+import PVAI.util.Permutation;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
@@ -20,6 +21,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -47,8 +49,9 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -58,7 +61,7 @@ public class RoundRobinTOScaleTIAMAT {
         int MAXCYCLES = 20000;
         int PERIOD = 20;
         boolean gameover = false;
-        
+
         if (pgs.getHeight() == 8) {
             MAXCYCLES = 4000;
         }
@@ -96,9 +99,23 @@ public class RoundRobinTOScaleTIAMAT {
         //pgs 
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+        AI ai1;
+        if(iScriptsAi1.get(0) == 0 && iScriptsAi1.size() == 1){
+            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
+        }else{
+            iScriptsAi1 = Permutation.getPermutation(iScriptsAi1.get(0));
+            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
+        }
         
-        AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);
-        AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
+        AI ai2;
+        if(iScriptsAi2.get(0) == 0 && iScriptsAi2.size() == 1){
+            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
+        }else{
+            iScriptsAi2 = Permutation.getPermutation(iScriptsAi2.get(0));
+            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
+        }
+        
+        
 
         /*
             Variáveis para coleta de tempo
@@ -183,11 +200,11 @@ public class RoundRobinTOScaleTIAMAT {
 
         log.add("Winner " + Integer.toString(gs.winner()));
         log.add("Game Over");
-        
-        if(gs.winner() == -1){
-            System.out.println("Empate!"+ai1.toString()+" vs "+ai2.toString()+" Max Cycles ="+MAXCYCLES+" Time:"+duracao.toMinutes());
+
+        if (gs.winner() == -1) {
+            System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
-        String stMatch = Integer.toString(IDMatch)+""+Integer.toString(iMap);
+        String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         //System.exit(0);
         return true;
@@ -196,19 +213,31 @@ public class RoundRobinTOScaleTIAMAT {
     public static List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
         List<AI> scriptsAI = new ArrayList<>();
 
-        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
-
+        
+        BasicExpandedConfigurableScript[] AIs = new BasicExpandedConfigurableScript[10];
+        AIs[0] = scriptsCompleteSet.get(0);
+        AIs[1] = scriptsCompleteSet.get(1);
+        AIs[2] = scriptsCompleteSet.get(2);
+        AIs[3] = scriptsCompleteSet.get(3);
+        AIs[4] = scriptsCompleteSet.get(4);
+        AIs[5] = scriptsCompleteSet.get(7);
+        AIs[6] = scriptsCompleteSet.get(8);
+        AIs[7] = scriptsCompleteSet.get(100);
+        AIs[8] = scriptsCompleteSet.get(101);
+        AIs[9] = scriptsCompleteSet.get(102);
+        
         for (Integer idSc : iScripts) {
-            scriptsAI.add(scriptsCompleteSet.get(idSc));
+            scriptsAI.add(AIs[idSc]);
         }
 
         return scriptsAI;
     }
 
     private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, String pathLog) throws IOException {
-        if(!pathLog.endsWith("/")){
-            pathLog +="/";
+        if (!pathLog.endsWith("/")) {
+            pathLog += "/";
         }
         String nameArquivo = pathLog + "Eval_" + tupleAi1 + "_" + tupleAi2 + "_" + IDMatch + "_" + Generation + ".txt";
         File arqLog = new File(nameArquivo);
