@@ -203,8 +203,35 @@ public class RoundRobinTOScaleNash {
         ScriptsCreator sc = new ScriptsCreator(utt,300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
 
+
+
+        //take the setCover
+
+        
+        AI[] AIs = new AI[20];
+        AIs[0] = scriptsCompleteSet.get(0);
+        AIs[1] = scriptsCompleteSet.get(1);
+        AIs[2] = scriptsCompleteSet.get(2);
+        AIs[3] = scriptsCompleteSet.get(3);
+        AIs[4] = scriptsCompleteSet.get(4);
+        AIs[5] = scriptsCompleteSet.get(7);
+        AIs[6] = scriptsCompleteSet.get(8);
+        AIs[7] = scriptsCompleteSet.get(100);
+        AIs[8] = scriptsCompleteSet.get(101);
+        AIs[9] = scriptsCompleteSet.get(102);
+        AIs[10] = scriptsCompleteSet.get(103);
+        AIs[11] = scriptsCompleteSet.get(107);
+        AIs[12] = scriptsCompleteSet.get(108);
+        AIs[13] = scriptsCompleteSet.get(201);
+        AIs[14] = scriptsCompleteSet.get(202);
+        AIs[15] = scriptsCompleteSet.get(203);
+        AIs[16] = scriptsCompleteSet.get(204);
+        AIs[17] = scriptsCompleteSet.get(207);
+        AIs[18] = scriptsCompleteSet.get(208);
+        AIs[19] = scriptsCompleteSet.get(209);
+        
         for (Integer idSc : iScripts) {
-            scriptsAI.add(scriptsCompleteSet.get(idSc));
+            scriptsAI.add(AIs[idSc]);
         }
 
         return scriptsAI;

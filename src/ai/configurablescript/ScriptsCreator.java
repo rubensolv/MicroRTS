@@ -261,9 +261,18 @@ public class ScriptsCreator {
 										
 										if(scriptsMixReducedSet.size()<(tamMixSet))
 										{
-											scriptsMixReducedSet.add(new BasicExpandedConfigurableScript(utt, getPathFinding(),
+											if(scriptsMixReducedSet.size()<tamMixSet-1)
+											{
+												scriptsMixReducedSet.add(new BasicExpandedConfigurableScript(utt, getPathFinding(),
 												strategyItem,nBasesExpandItem,nBarracksExpandItem,nUnitsAttackItem,formationRadiusItem,
 												defenseRadiusItem,reactiveRadiusItem,nUnitsHarvestItem,unitTypeItem));
+											}
+											else
+											{
+												scriptsMixReducedSet.add(new BasicExpandedConfigurableScript(utt, getPathFinding(),
+												strategyItem,2,2,1,4,
+												-1,4,4,unitTypeItem));
+											}
 										}
 										
 										sizeEconomyitems++;
