@@ -48,9 +48,9 @@ public class RoundRobinTOScaleNash {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                "maps/8x8/basesWorkers8x8A.xml" 
+                //"maps/8x8/basesWorkers8x8A.xml" 
         ));
 
         UnitTypeTable utt = new UnitTypeTable();

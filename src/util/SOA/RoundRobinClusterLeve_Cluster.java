@@ -13,14 +13,17 @@ import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
+import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.PGS.NGS;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
+import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
+import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
 import ai.cluster.CABA;
 import ai.cluster.CABA_Enemy;
 import ai.cluster.CABA_TDLearning;
@@ -61,6 +64,7 @@ import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
+import static tests.ClusterTesteLeve.decodeScripts;
 
 /**
  *
@@ -83,42 +87,11 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/NoWhereToRun9x8.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                "maps/24x24/basesWorkers24x24A.xml",
-                "maps/DoubleGame24x24.xml",
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml",  //8 maps
-                "maps/BroodWar/(4)BloodBath.scmB.xml", //10 maps
-                //3 16
-                "maps/16x16/BasesWithWalls16x16.xml",
-                "maps/16x16/BasesTwoBarracksWithWalls16x16.xml",
-                //"maps/16x16/NoWhereWithBlocks16x16.xml",
-                // 3 24
-                "maps/24x24/DoubleMapaWithBlockTwoBarracks24x24.xml",
-                "maps/24x24/DoubleMapaWithBlock24x24.xml",
-                //"maps/24x24/DoubleMapaWithBlockTwoBases24x24.xml",
-                //3 32 
-                "maps/32x32/centerResources32x32.xml",
-                "maps/32x32/ComplexPathToFight32x32.xml"
-                //"maps/32x32/RuntoGoldWithBlocksBarracks32x32.xml",
-                //3 64
-                //"maps/BroodWar/(4)BloodBath.scmB.xml",
-                //"maps/64x64/SimplePathToFight64x64.xml",
-                //"maps/64x64/ComplexPathToFight64x64.xml"
-                //new maps Starcraft
-                //"maps/BroodWar/(4)BloodBath.scmA.xml",
-                //"maps/BroodWar/(4)BloodBath.scmB.xml",
-                //"maps/BroodWar/(4)BloodBath.scmC.xml",
-                //"maps/BroodWar/(4)BloodBath.scmD.xml",
-                //"maps/BroodWar/(2)Destination.scxA.xml",
-                //"maps/BroodWar/(4)Andromeda.scxE.xml",
-                //"maps/BroodWar/(4)CircuitBreaker.scxF.xml",
-                //"maps/BroodWar/(4)Fortress.scxA.xml",
-                //"maps/BroodWar/(4)Python.scxB.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
+                //"maps/DoubleGame24x24.xml"
+                //"maps/32x32/basesWorkers32x32A.xml"
+                //"maps/BWDistantResources32x32.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
                 
         ));
 
@@ -132,50 +105,44 @@ public class RoundRobinClusterLeve_Cluster {
         boolean gameover = false;
 
         if (pgs.getHeight() == 8) {
-            MAXCYCLES = 6000;
+            MAXCYCLES = 4000;
         }
         if (pgs.getHeight() == 16) {
-            MAXCYCLES = 9000;
+            MAXCYCLES = 5000;
         }
         if (pgs.getHeight() == 24) {
-            MAXCYCLES = 10000;
+            MAXCYCLES = 6000;
         }
         if (pgs.getHeight() == 32) {
-            MAXCYCLES = 11000;
+            MAXCYCLES = 7000;
         }
         if (pgs.getHeight() == 64) {
-            MAXCYCLES = 15000;
+            MAXCYCLES = 12000;
         }
 
-        List<AI> ais = new ArrayList<>(Arrays.asList(new POLightRush(utt),
-                new POWorkerRush(utt),
-                //new PORangedRush(utt),
-                //new POHeavyRush(utt),
-                //new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                //new BS3_NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt), 
-                new SCV(utt),//10
-                new SCVPlus(utt, pgs.getHeight(), pgs.getWidth()),
-                new Tiamat(utt),
-                new Capivara(utt)
-                //NSS
-                //new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator"),
-                //behavior
-                //new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 2),
-                //asymmetric cluster
-                //new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 2, 2),
-                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 4, 2),
-                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterEuDistGenerator", 6, 2),
-                //new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 2, 2),
-                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 4, 2),
-                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterPlayoutGenerator", 6, 2),
-                //new CMABBuilder(100, -1, 100, 2, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 2, 2),
-                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 4, 2),
-                //new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabClusterGammaGenerator", 6, 2)
-                //NSAA
-                //new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabAsyReduzedGenerator")
+        String GA_PGS = "49;0;4;151;189;226;186;"; 
+        String GA_SSS = "289;194;86;242;";                   
+        
+        
+        List<AI> ais = new ArrayList<>(Arrays.asList(
+               
+               new AHTNAI(utt),
+               new NaiveMCTS(utt),
+               new PuppetSearchMCTS(utt),
+               new StrategyTactics(utt),
+               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
+               new SCVPlus(utt),
+               //bg1
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
+               //plus
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "PGS+",2,200),
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SSS+",2,200)
         ));
 
         AI ai1 = ais.get(iAi1);
