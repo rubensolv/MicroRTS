@@ -7,6 +7,9 @@ package util.SOA;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,48 +19,41 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTOScale {
+public class SOARoundRobinTOOneFile {
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
+        
         int qtdMapas = 1;
-        //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/configSOA/SOA1/";
+        //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/batchsSOA/SOA1.txt";
         //String pathLog = "/home/rubens/cluster/USP/Test_map8_10script_USP/logs/";
+        String SOANumber = pathSOA.substring(pathSOA.lastIndexOf("/")+1, pathSOA.lastIndexOf("."));
         File SOA = new File(pathSOA);
-        if (!SOA.exists()) {
-            SOA.mkdir();
-        }
+
         System.out.println(pathSOA);
         System.out.println(pathLog);
 
-        while (!finalizarSOA(pathSOA)) {
-            //procuro a existencia dos arquivos a serem processados.
-            ArrayList<String> mathSOA = buscarAquivos(pathSOA);
-            for (String arquivo : mathSOA) {
-                System.out.println("Processando arquivo " + arquivo);
-                try {
-                    for (int map = 0; map < qtdMapas; map++) {
-                        if (processarMatch(pathLog, arquivo, map)) {
-                        }
-                        System.gc();
-                    }
-                    //remove o arquivo da pasta 
-                    File remove = new File(arquivo);
-                    remove.delete();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        //ler todas as linhas.
+        ArrayList<String> matchs = processFile(SOA);
 
+        //processar todas as linhas.
+        for (String arquivo : matchs) {
+            System.out.println("Processando arquivo " + arquivo);
             try {
-                System.out.println("Waiting...");
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
+                for (int map = 0; map < qtdMapas; map++) {
+                    if (processarMatch(pathLog, arquivo, map, SOANumber)) {
+                    }
+                    System.gc();
+                }
+                //salva o match processado
+                recordMatch(pathSOA, arquivo, SOANumber);
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
+        
     }
 
     /**
@@ -67,9 +63,9 @@ public class SOARoundRobinTOScale {
      * @param arquivo String com o nome do arquivo que contém a configuração
      * @return True se processado corretamente
      */
-    private static boolean processarMatch(String pathLog, String arquivo, int map) {
+    private static boolean processarMatch(String pathLog, String arquivo, int map, String SOANumber) {
         //ler o arquivo e pegar a linha com dados
-        String config = getLinha(arquivo);
+        String config = arquivo;
         String[] itens = config.split("#");
 
         RoundRobinTOScaleTIAMAT control = new RoundRobinTOScaleTIAMAT();
@@ -77,9 +73,9 @@ public class SOARoundRobinTOScale {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog, map);
+                    Integer.decode(itens[3]), pathLog, map, SOANumber);
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTOScale.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOARoundRobinTOOneFile.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
@@ -176,6 +172,45 @@ public class SOARoundRobinTOScale {
             System.out.println(e.toString());
         }
         return linha;
+    }
+
+    private static ArrayList<String> processFile(File SOA) {
+        ArrayList<String> temp = new ArrayList<>();
+        String linha = "";
+        try {
+            FileReader arq = new FileReader(SOA);
+            BufferedReader learArq = new BufferedReader(arq);
+            linha = learArq.readLine();
+            while (linha != null) {
+                temp.add(linha);
+                linha = learArq.readLine();
+            }
+            arq.close();
+
+        } catch (Exception e) {
+            System.err.printf("Fail during read process %s.\n", e.getMessage());
+            System.out.println(e.toString());
+        }
+
+        return temp;
+    }
+
+    private static void recordMatch(String pathSOA, String arquivo, String SOANumber) {
+        String pathbackup = pathSOA.replace(".txt", "");
+        pathbackup += SOANumber+"_backup.txt";
+        try {
+            FileWriter arq = new FileWriter(pathbackup, true);
+            PrintWriter gravarArq = new PrintWriter(arq);
+
+            gravarArq.println(arquivo);
+
+            gravarArq.flush();
+            gravarArq.close();
+            arq.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

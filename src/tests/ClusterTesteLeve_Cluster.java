@@ -104,14 +104,12 @@ public class ClusterTesteLeve_Cluster {
 
         List<String> maps = new ArrayList<>(Arrays.asList(
                 "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/NoWhereToRun9x8.xml",
                 "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
+                "maps/BWDistantResources32x32.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
-                "maps/DoubleGame24x24.xml",
-                "maps/BWDistantResources32x32.xml"//, //8 maps
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -141,63 +139,60 @@ public class ClusterTesteLeve_Cluster {
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
                 new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new PGSmRTS(utt),
-                new SSSmRTS(utt),
-                new POLightRush(utt), //lr
-                new POHeavyRush(utt), //HR
-                new PORangedRush(utt), //RR
-                new POWorkerRush(utt), //WR
-                new SCVPlus(utt),
-                new Tiamat(utt),
-                new Capivara(utt),
-                new UTalcaBot(utt)
+               new NaiveMCTS(utt),
+               new PuppetSearchMCTS(utt),
+               new StrategyTactics(utt),
+               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
+               new SCVPlus(utt)
                 //new GAB(utt),
                 //new SAB(utt)
         ));
         //add GAB e SAB by map settings
         switch(maps.get(map)){
             case "maps/8x8/basesWorkers8x8A.xml" :
-                ais.add(14, new GAB(utt, 8, 2));
-                ais.add(15, new SAB(utt, 8, 2));
+                ais.add(11, new GAB(utt, 6, 8)); //8 ManagerMoreDPS
+                ais.add(12, new SAB(utt, 5, 8)); //8 ManagerMoreDPS
                 break;
             case     "maps/8x8/FourBasesWorkers8x8.xml" :                
-                ais.add(14, new GAB(utt, 8, 2));
-                ais.add(15, new SAB(utt, 8, 2));
+                ais.add(11, new GAB(utt, 8, 2));
+                ais.add(12, new SAB(utt, 8, 2));
                 break;
             case     "maps/NoWhereToRun9x8.xml" :
-                ais.add(14, new GAB(utt, 8, 2));
-                ais.add(15, new SAB(utt, 3, 2));
+                ais.add(11, new GAB(utt, 8, 2));
+                ais.add(12, new SAB(utt, 3, 2));
                 break;
             case     "maps/16x16/basesWorkers16x16A.xml" :
-                ais.add(14, new GAB(utt, 7, 3));
-                ais.add(15, new SAB(utt, 0, 3));
+                ais.add(11, new GAB(utt, 10, 2));  //2  ManagerClosestEnemy
+                ais.add(12, new SAB(utt, 4, 4)); //4 ManagerFartherEnemy
                 break;
             case     "maps/16x16/TwoBasesBarracks16x16.xml" :
-                ais.add(14, new GAB(utt, 7, 3));
-                ais.add(15, new SAB(utt, 0, 3));
+                ais.add(11, new GAB(utt, 7, 3));
+                ais.add(12, new SAB(utt, 0, 3));
                 break;
             case     "maps/24x24/basesWorkers24x24A.xml" :
-                ais.add(14, new GAB(utt, 4, 2));
-                ais.add(15, new SAB(utt, 0, 7));
+                ais.add(11, new GAB(utt, 9, 5)); // 5 ManagerLessLife
+                ais.add(12, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
                 break;
-            case     "maps/DoubleGame24x24.xml" :
-                ais.add(14, new GAB(utt, 4, 3));
-                ais.add(15, new SAB(utt, 6, 7));
+            case     "maps/32x32/basesWorkers32x32A.xml" :
+                ais.add(11, new GAB(utt, 1, 2)); //2  ManagerClosestEnemy
+                ais.add(12, new SAB(utt, 2, 5)); // 5 ManagerLessLife
                 break;
             case     "maps/BWDistantResources32x32.xml" :
-                ais.add(14, new GAB(utt, 7, 2));
-                ais.add(15, new SAB(utt, 8, 7));
+                ais.add(11, new GAB(utt, 2, 7)); // 7 ManagerLessDPS
+                ais.add(12, new SAB(utt, 3, 0)); //0 - ManagerRandom
                 break;
             case     "maps/BroodWar/(4)BloodBath.scmB.xml" :
-                ais.add(14, new GAB(utt, 7, 2));
-                ais.add(15, new SAB(utt, 8, 7));
+                ais.add(11, new GAB(utt, 1, 7)); // 7 ManagerLessDPS
+                ais.add(12, new SAB(utt, 1, 5)); // 5 ManagerLessLife
                 break;
-            default:
-                ais.add(14, new GAB(utt, 7, 3));
-                ais.add(15, new SAB(utt, 0, 2));
+            default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                ais.add(11, new GAB(utt, 2, 2));
+                ais.add(12, new SAB(utt, 2, 2)); //2  ManagerClosestEnemy
                 break;
         }
         

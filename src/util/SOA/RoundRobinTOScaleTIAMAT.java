@@ -39,7 +39,8 @@ public class RoundRobinTOScaleTIAMAT {
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
 
-    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
+    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, 
+            int iMap, String SOANumber) throws Exception {
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -99,20 +100,20 @@ public class RoundRobinTOScaleTIAMAT {
         //pgs 
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-        AI ai1;
+        AI ai2;
         if(iScriptsAi1.get(0) == 0 && iScriptsAi1.size() == 1){
-            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
+            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
         }else{
             iScriptsAi1 = Permutation.getPermutation(iScriptsAi1.get(0));
-            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
+            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
         }
         
-        AI ai2;
+        AI ai1;
         if(iScriptsAi2.get(0) == 0 && iScriptsAi2.size() == 1){
-            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
+            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
         }else{
             iScriptsAi2 = Permutation.getPermutation(iScriptsAi2.get(0));
-            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
+            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
         }
         
         
@@ -200,12 +201,13 @@ public class RoundRobinTOScaleTIAMAT {
 
         log.add("Winner " + Integer.toString(gs.winner()));
         log.add("Game Over");
+        log.add("-----------------------------------------------------------------------------------------");
 
         if (gs.winner() == -1) {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
-        gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
+        gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog, SOANumber);
         //System.exit(0);
         return true;
     }
@@ -235,18 +237,19 @@ public class RoundRobinTOScaleTIAMAT {
         return scriptsAI;
     }
 
-    private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, String pathLog) throws IOException {
+    private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, 
+                            Integer Generation, String pathLog, String SOANumber) throws IOException {
         if (!pathLog.endsWith("/")) {
             pathLog += "/";
         }
-        String nameArquivo = pathLog + "Eval_" + tupleAi1 + "_" + tupleAi2 + "_" + IDMatch + "_" + Generation + ".txt";
+        String nameArquivo = pathLog + SOANumber + ".txt";
         File arqLog = new File(nameArquivo);
         if (!arqLog.exists()) {
             arqLog.createNewFile();
         }
         //abre o arquivo e grava o log
         try {
-            FileWriter arq = new FileWriter(arqLog, false);
+            FileWriter arq = new FileWriter(arqLog, true);
             PrintWriter gravarArq = new PrintWriter(arq);
             for (String l : log) {
                 gravarArq.println(l);

@@ -70,6 +70,7 @@ import rts.Player;
 import rts.PlayerAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import static tests.ClusterTesteLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -164,8 +165,9 @@ public class ClusterTesteLeve_GAB_SAB {
                 "maps/16x16/basesWorkers16x16A.xml",
                 "maps/BWDistantResources32x32.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
-                "maps/NoWhereToRun9x8.xml",
-                "maps/DoubleGame24x24.xml"
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
         ));
         
         UnitTypeTable utt = new UnitTypeTable();
@@ -268,11 +270,11 @@ public class ClusterTesteLeve_GAB_SAB {
         AI ai2;
         if(iAi1 == 0){
             //ai1 = new PGSmRTS(utt);
-            ai1 = new SSSmRTS(utt);
+            ai1 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
             ai2 = getIA(utt,iAi2);
         }else{
             //ai2 = new PGSmRTS(utt);
-            ai2 = new SSSmRTS(utt);
+            ai2 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
             ai1 = getIA(utt,iAi2);
         }
         
@@ -421,7 +423,7 @@ public class ClusterTesteLeve_GAB_SAB {
     private static AI getIA(UnitTypeTable utt, int iAi2) {
         ArrayList<Integer>  choices = mapElements.get(iAi2);
         //return new GABRandom(utt, choices.get(0), choices.get(1));
-        return new SAB_seed(utt, choices.get(0), choices.get(1));
+        return new SAB(utt, choices.get(0), choices.get(1));
     }
 
 }

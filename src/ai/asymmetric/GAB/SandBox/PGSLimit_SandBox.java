@@ -12,6 +12,8 @@ import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.asymmetric.common.UnitScriptData;
+import ai.configurablescript.BasicExpandedConfigurableScript;
+import ai.configurablescript.ScriptsCreator;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.InterruptibleAI;
@@ -76,10 +78,19 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
     }
     
     protected void buildPortfolio(){
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
-        this.scripts.add(new POWorkerRush(utt));
+        
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+        
+        this.scripts.add(0, scriptsCompleteSet.get(0));
+        this.scripts.add(1, scriptsCompleteSet.get(1));
+        this.scripts.add(2, scriptsCompleteSet.get(2));
+        this.scripts.add(3, scriptsCompleteSet.get(3));
+        
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
+        //this.scripts.add(new POWorkerRush(utt));
         
         //this.scripts.add(new POHeavyRush(utt, new FloodFillPathFinding()));
         //this.scripts.add(new POLightRush(utt, new FloodFillPathFinding()));

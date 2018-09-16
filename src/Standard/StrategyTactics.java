@@ -46,7 +46,25 @@ public class StrategyTactics extends AIWithComputationBudget implements Interrup
                                             new POWorkerRush(utt, new FloodFillPathFinding()),
                                             new POLightRush(utt, new FloodFillPathFinding()),
                                             new PORangedRush(utt, new FloodFillPathFinding()),
-                                            new POHeavyRush(utt, new FloodFillPathFinding()),}),
+                                            new POHeavyRush(utt, new FloodFillPathFinding()),
+                                        }),
+                                new CombinedEvaluation())
+                ),
+                 new NaiveMCTS(100, -1, 100, 10,
+                        0.3f, 0.0f, 0.4f,
+                        new RandomBiasedAI(),
+                        new CombinedEvaluation(), true));
+    }
+    
+    public StrategyTactics(UnitTypeTable utt, AI[] choices) throws Exception {
+        this(100, -1, 20, 80,
+                new PuppetNoPlan(
+                        new PuppetSearchAB(
+                                100, -1,
+                                -1, -1,
+                                100,
+                                new SingleChoiceConfigurableScript(new FloodFillPathFinding(),
+                                        choices),
                                 new CombinedEvaluation())
                 ),
                  new NaiveMCTS(100, -1, 100, 10,

@@ -38,6 +38,7 @@ import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SAB_oldVersion;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
@@ -210,13 +211,11 @@ public class ClusterTesteLeve {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
-                //"maps/DoubleGame24x24.xml"
-                //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/BWDistantResources32x32.xml"
+                "maps/24x24/basesWorkers24x24A.xml",
+                "maps/DoubleGame24x24.xml",
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/BWDistantResources32x32.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml"
-                
-                
         ));
         
         UnitTypeTable utt = new UnitTypeTable();
@@ -312,11 +311,6 @@ public class ClusterTesteLeve {
                 new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
          */            
         
-        
-        String GA_PGS = "49;0;4;151;189;226;186;"; 
-        String GA_SSS = "289;194;86;242;";                   
-        
-        
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
                new AHTNAI(utt),
@@ -330,9 +324,8 @@ public class ClusterTesteLeve {
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
                new SCVPlus(utt),
-               //bg1
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200)
+               new GAB(utt),
+               new SAB(utt)
         ));
 
         AI ai1 = ais.get(iAi1);

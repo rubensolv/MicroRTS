@@ -77,7 +77,7 @@ public class SOARoundRobinTOScale {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog, map);
+                    Integer.decode(itens[3]), pathLog, map,"");
         } catch (Exception ex) {
             Logger.getLogger(SOARoundRobinTOScale.class.getName()).log(Level.SEVERE, null, ex);
         }

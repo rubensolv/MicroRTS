@@ -84,7 +84,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
-        _numUnits = 0;
+        _numUnits = 2;
         _numManager = 2;
         rAI = new RandomAI(utt);
     }
