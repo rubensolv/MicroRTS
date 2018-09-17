@@ -391,6 +391,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + MAXSIMULATIONTIME + "," + MAX_TREE_DEPTH + "," + epsilon_l + ", " + discount_l + ", " + epsilon_g + ", " + discount_g + ", " + epsilon_0 + ", " + discount_0 + ", " + playoutPolicy + ", " + ef + ")";
+        //return getClass().getSimpleName() +"_"+tuplaInScripts;
     }
     
     @Override

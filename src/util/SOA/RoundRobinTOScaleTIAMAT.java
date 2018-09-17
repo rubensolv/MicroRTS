@@ -53,9 +53,10 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -184,7 +185,7 @@ public class RoundRobinTOScaleTIAMAT {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -212,20 +213,8 @@ public class RoundRobinTOScaleTIAMAT {
         ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
         
-        BasicExpandedConfigurableScript[] AIs = new BasicExpandedConfigurableScript[10];
-        AIs[0] = scriptsCompleteSet.get(0);
-        AIs[1] = scriptsCompleteSet.get(1);
-        AIs[2] = scriptsCompleteSet.get(2);
-        AIs[3] = scriptsCompleteSet.get(3);
-        AIs[4] = scriptsCompleteSet.get(4);
-        AIs[5] = scriptsCompleteSet.get(7);
-        AIs[6] = scriptsCompleteSet.get(8);
-        AIs[7] = scriptsCompleteSet.get(100);
-        AIs[8] = scriptsCompleteSet.get(101);
-        AIs[9] = scriptsCompleteSet.get(102);
-        
         for (Integer idSc : iScripts) {
-            scriptsAI.add(AIs[idSc]);
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
         }
 
         return scriptsAI;
