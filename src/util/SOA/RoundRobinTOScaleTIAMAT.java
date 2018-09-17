@@ -5,13 +5,17 @@
 package util.SOA;
 
 import PVAI.util.Permutation;
+import ai.RandomBiasedAI;
+import static ai.asymmetric.PGS.GameVisualSimulationTest.decodeScripts;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
+import ai.competition.capivara.CmabAssymetricMCTS;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
+import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import gui.PhysicalGameStatePanel;
 import java.io.File;
 import java.io.FileWriter;
@@ -49,9 +53,9 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                "maps/8x8/basesWorkers8x8A.xml"
+                //"maps/8x8/basesWorkers8x8A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -99,23 +103,15 @@ public class RoundRobinTOScaleTIAMAT {
         //pgs 
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-        AI ai1;
-        if(iScriptsAi1.get(0) == 0 && iScriptsAi1.size() == 1){
-            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
-        }else{
-            iScriptsAi1 = Permutation.getPermutation(iScriptsAi1.get(0));
-            ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
-        }
         
-        AI ai2;
-        if(iScriptsAi2.get(0) == 0 && iScriptsAi2.size() == 1){
-            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
-        }else{
-            iScriptsAi2 = Permutation.getPermutation(iScriptsAi2.get(0));
-            ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
-        }
-        
-        
+        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
+        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
 
         /*
             Variáveis para coleta de tempo
