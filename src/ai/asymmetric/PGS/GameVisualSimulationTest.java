@@ -56,6 +56,7 @@ import ai.cluster.CIA_PlayoutPower;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
 import ai.competition.capivara.Capivara;
+import ai.competition.capivara.CmabAssymetricMCTS;
 import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
@@ -169,7 +170,10 @@ public class GameVisualSimulationTest {
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
         AI ai1 = new StrategyTactics(utt);
         
-        AI ai2 = new SAB(utt);
+        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 1,decodeScripts(utt, "48;0;"));
         //AI ai2 = new GAB(utt);
         //AI ai1 = new Tiamat(utt);
         //AI ai2 = new Capivara(utt);

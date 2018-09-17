@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTOScale {
+public class SOAWRDominance {
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
@@ -72,14 +72,14 @@ public class SOARoundRobinTOScale {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinTOScaleTIAMAT control = new RoundRobinTOScaleTIAMAT();
+        RoundRobinTOWRDominance control = new RoundRobinTOWRDominance();
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
                     Integer.decode(itens[3]), pathLog, map,"");
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTOScale.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOAWRDominance.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

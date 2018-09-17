@@ -34,7 +34,7 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOScaleTIAMAT {
+public class RoundRobinTOWRDominance {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;

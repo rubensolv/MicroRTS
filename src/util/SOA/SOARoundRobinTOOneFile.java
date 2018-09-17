@@ -68,7 +68,7 @@ public class SOARoundRobinTOOneFile {
         String config = arquivo;
         String[] itens = config.split("#");
 
-        RoundRobinTOScaleTIAMAT control = new RoundRobinTOScaleTIAMAT();
+        RoundRobinTOWRDominance control = new RoundRobinTOWRDominance();
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),

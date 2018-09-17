@@ -39,18 +39,18 @@ public class CMABBuilder extends AIWithComputationBudget implements Interruptibl
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabPlayerActionGenerator");
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabCombinatorialGenerator");
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(),"CmabHillClimbingGenerator");
-        this(100, -1, 100, 2, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabAsyReduzedGenerator");
+        //this(100, -1, 100, 2, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<AI>(), "CmabAsyReduzedGenerator");
 
         //assymetric
-        //this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new CombinedEvaluation(), 0, utt, 
-        //        new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 2);
+        this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new CombinedEvaluation(), 0, utt, 
+                new ArrayList<AI>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 2);
         
         //assymetric Cluster  
         //CmabClusterEuDistGenerator
         //CmabClusterPlayoutGenerator
         //CmabClusterGammaGenerator
         
-        //Asymmetric behavior
+        //Asymmetric cluster
         //this(100, -1, 100, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, 
         //        new ArrayList<AI>(), "CmabClusterEuDistGenerator", 2, 2);
     }
