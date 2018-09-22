@@ -304,7 +304,7 @@ public class PlayerActionGenerator_Asymmetric {
                 actions.put(_item.toString(), _item.getAction(pID, a_gs));
             } catch (Exception ex) {
                 //Logger.getLogger(PlayerActionGenerator_Asymmetric.class.getName()).log(Level.SEVERE, null, ex);
-                //System.err.println("Error getUnitScriptDataActions");
+                System.err.println("Error getUnitScriptDataActions");
             }
         });
     }

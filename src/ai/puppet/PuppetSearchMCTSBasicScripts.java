@@ -1,6 +1,10 @@
 package ai.puppet;
 
 import ai.RandomBiasedAI;
+import ai.abstraction.partialobservability.POHeavyRush;
+import ai.abstraction.partialobservability.POLightRush;
+import ai.abstraction.partialobservability.PORangedRush;
+import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.FloodFillPathFinding;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +20,7 @@ import rts.PlayerAction;
 import rts.units.UnitTypeTable;
 import util.Pair;
 
-public class PuppetSearchMCTS extends PuppetBase {
+public class PuppetSearchMCTSBasicScripts extends PuppetBase {
 	class Plan{
 		PuppetMCTSNode node;
 		Plan(){
@@ -58,17 +62,23 @@ public class PuppetSearchMCTS extends PuppetBase {
 	float C;//UCT exploration constant
         
         
-        public PuppetSearchMCTS(UnitTypeTable utt) {
+        public PuppetSearchMCTSBasicScripts(UnitTypeTable utt) {
             this(100, -1,
                  5000, -1,
                  100, 100,
                  new RandomBiasedAI(),
-                 new BasicConfigurableScript(utt, new FloodFillPathFinding()),
+                 new SingleChoiceConfigurableScript(new FloodFillPathFinding(),
+                                        new AI[]{
+                                            new POWorkerRush(utt, new FloodFillPathFinding()),
+                                            new POLightRush(utt, new FloodFillPathFinding()),
+                                            new PORangedRush(utt, new FloodFillPathFinding()),
+                                            new POHeavyRush(utt, new FloodFillPathFinding()),
+                                        }),
                  new SimpleSqrtEvaluationFunction3());
         }
         
         
-	public PuppetSearchMCTS(int max_time_per_frame, int max_playouts_per_frame, 
+	public PuppetSearchMCTSBasicScripts(int max_time_per_frame, int max_playouts_per_frame, 
 			int max_plan_time, int max_plan_playouts,
 			int step_playout_time, int eval_playout_time, 
 			AI policy, ConfigurableScript<?> script, EvaluationFunction evaluation) {
@@ -111,7 +121,7 @@ public class PuppetSearchMCTS extends PuppetBase {
 	//todo:this clone method is broken
 	@Override
 	public AI clone() {
-		PuppetSearchMCTS clone = new PuppetSearchMCTS(TIME_BUDGET,ITERATIONS_BUDGET,
+		PuppetSearchMCTSBasicScripts clone = new PuppetSearchMCTSBasicScripts(TIME_BUDGET,ITERATIONS_BUDGET,
 				PLAN_TIME, PLAN_PLAYOUTS, STEP_PLAYOUT_TIME, EVAL_PLAYOUT_TIME,
 				policy1.clone(),script.clone(), eval);
 		clone.currentPlan = currentPlan;

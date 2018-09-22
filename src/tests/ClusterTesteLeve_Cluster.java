@@ -63,6 +63,7 @@ import ai.portfolio.PortfolioAI;
 import ai.portfolio.portfoliogreedysearch.PGSAI;
 import ai.puppet.BasicConfigurableScript;
 import ai.puppet.PuppetSearchMCTS;
+import ai.puppet.PuppetSearchMCTSBasicScripts;
 import ai.scv.SCV;
 import ai.scv.SCVPlus;
 import ai.utalca.UTalcaBot;
@@ -141,6 +142,7 @@ public class ClusterTesteLeve_Cluster {
                 new AHTNAI(utt),
                new NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
+               new PuppetSearchMCTSBasicScripts(utt),
                new StrategyTactics(utt),
                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),

@@ -8,6 +8,8 @@ import ai.core.AI;
 import ai.*;
 import ai.abstraction.WorkerRush;
 import ai.abstraction.pathfinding.BFSPathFinding;
+import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SSS.SSSmRTS;
 import ai.mcts.naivemcts.NaiveMCTS;
 import ai.scv.SCV;
 import gui.PhysicalGameStatePanel;
@@ -34,8 +36,8 @@ public class GameVisualSimulationTest {
         int PERIOD = 20;
         boolean gameover = false;
         
-        AI ai1 = new WorkerRush(utt, new BFSPathFinding());        
-        AI ai2 = new RandomBiasedAI();
+        AI ai1 = new PGSmRTS(utt);
+        AI ai2 = new SSSmRTS(utt);
 
         JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_BLACK);
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);

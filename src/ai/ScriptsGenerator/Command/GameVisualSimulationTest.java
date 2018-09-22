@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.asymmetric.PGS;
+package ai.ScriptsGenerator.Command;
 
+import ai.asymmetric.PGS.*;
 import tests.*;
 import PVAI.EconomyRush;
 import PVAI.EconomyRushBurster;
@@ -15,6 +16,9 @@ import ai.core.AI;
 import ai.*;
 import ai.CMAB.CMABBuilder;
 import ai.CMAB.CmabNaiveMCTS;
+import ai.ScriptsGenerator.Chromosome;
+import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
+import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -104,10 +108,10 @@ public class GameVisualSimulationTest {
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
@@ -122,6 +126,7 @@ public class GameVisualSimulationTest {
         int PERIOD = 20;
         boolean gameover = false;
 
+        Chromosome chrom = new Chromosome(utt);
         
         
         //AI ai1 = new RangedRush(utt);
@@ -129,7 +134,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
         //AI ai1 = new PassiveAI();
-        //AI ai1 = new POLightRush(utt);
+        AI ai1 = new POLightRush(utt);
         //AI ai1 = new EconomyRush(utt);        
         //AI ai1 = new RangedDefense(utt);
         //AI ai1 = new EconomyRushBurster(utt);        
@@ -168,13 +173,13 @@ public class GameVisualSimulationTest {
         //AI ai1 = new NSSS(utt);
         //AI ai1 = new NSSSLimit(utt);
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
-        AI ai1 = new StrategyTactics(utt);
+        //AI ai1 = new StrategyTactics(utt);
         
-        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1,decodeScripts(utt, "48;0;"));
-        //AI ai2 = new GAB(utt);
+        //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+        //                                     new SimpleSqrtEvaluationFunction3(), true, utt, 
+        //                                    "ManagerClosestEnemy", 1,decodeScripts(utt, "48;0;")); //A3N
+        AI ai2 = new GAB(utt);
         //AI ai1 = new Tiamat(utt);
         //AI ai2 = new Capivara(utt);
         //AI ai2 = new SCVPlus(utt);
@@ -239,7 +244,8 @@ public class GameVisualSimulationTest {
         do {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
-                PlayerAction pa1 = ai1.getAction(0, gs);  
+                
+                PlayerAction pa1 = chrom.getAction(0, gs);  
                 if( (System.currentTimeMillis() - startTime) >0){
                 System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
                 }
