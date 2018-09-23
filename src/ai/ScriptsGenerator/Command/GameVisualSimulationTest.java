@@ -107,8 +107,8 @@ public class GameVisualSimulationTest {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
@@ -175,11 +175,12 @@ public class GameVisualSimulationTest {
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
         //AI ai1 = new StrategyTactics(utt);
         
+        AI ai2 = new WorkerRush(utt);
         //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
         //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
         //                                     new SimpleSqrtEvaluationFunction3(), true, utt, 
         //                                    "ManagerClosestEnemy", 1,decodeScripts(utt, "48;0;")); //A3N
-        AI ai2 = new GAB(utt);
+        //AI ai2 = new GAB(utt);
         //AI ai1 = new Tiamat(utt);
         //AI ai2 = new Capivara(utt);
         //AI ai2 = new SCVPlus(utt);
@@ -245,14 +246,15 @@ public class GameVisualSimulationTest {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
                 
-                PlayerAction pa1 = chrom.getAction(0, gs);  
+                PlayerAction pa1 = ai2.getAction(0, gs);  
                 if( (System.currentTimeMillis() - startTime) >0){
                 System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
                 }
                 //System.out.println("Action A1 ="+ pa1.toString());
                 
                 startTime = System.currentTimeMillis();
-                PlayerAction pa2 = ai2.getAction(1, gs);
+                PlayerAction pa2 = chrom.getAction(1, gs);
+                
                 if( (System.currentTimeMillis() - startTime) >0){
                    System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
                 }

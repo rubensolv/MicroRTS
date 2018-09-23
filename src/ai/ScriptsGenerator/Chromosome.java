@@ -6,9 +6,11 @@
 package ai.ScriptsGenerator;
 
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
-import ai.ScriptsGenerator.Command.BasicAction.BuildBasic;
+import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
+import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
@@ -28,6 +30,24 @@ public class Chromosome {
 
     public Chromosome(UnitTypeTable utt) {
         this.utt = utt;
+        
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(10)); //add qtd unit
+        commands.add(train);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
+        //attack action
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new ClosestEnemy()); //add behavior
+        commands.add(attack);
+        
     }
     
     public PlayerAction getAction(int player, GameState gs) {
@@ -35,24 +55,10 @@ public class Chromosome {
         PathFinding pf  = new AStarPathFinding();
         //simulate one WR
         
-        //build action
-        BuildBasic build = new BuildBasic();
-        build.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-        build.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-        build.addParameter(null); //add qtd unit
-        currentActions = build.getAction(gs, player, currentActions, pf, utt );
+        for (ICommand command : commands) {
+            currentActions = command.getAction(gs, player, currentActions, pf, utt);
+        }
         
-        //harverst action
-        HarvestBasic harverst = new HarvestBasic();
-        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-        harverst.addParameter(null); //add qtd unit
-        //currentActions = harverst.getAction(gs, player, currentActions, pf, utt);
-        
-        //attack action
-        AttackBasic attack = new AttackBasic();
-        attack.addParameter(null); //add unit type
-        attack.addParameter(null); //add behavior
-        currentActions = attack.getAction(gs, player, currentActions, pf, utt);
         
         return currentActions;
     }

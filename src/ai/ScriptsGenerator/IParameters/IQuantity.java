@@ -5,13 +5,11 @@
  */
 package ai.ScriptsGenerator.IParameters;
 
-import rts.GameState;
-import rts.units.Unit;
-
 /**
  *
  * @author rubens
  */
-public interface IBehavior extends IParameters{
-    public Unit getEnemytByBehavior(GameState game, int player, Unit unitAlly);
+public interface IQuantity extends IParameters{
+    public int getQuantity();
+    public void setQuantity(int value);
 }

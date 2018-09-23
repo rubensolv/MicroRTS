@@ -31,13 +31,14 @@ public class AttackBasic extends AbstractBasicAction {
             //pick one ally unit to set the action 
             Unit unAlly = getUnitAlly(game, currentPlayerAction, player);
             //pick one enemy unit to set the action
-            Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, player);
-            if (game.getActionAssignment(unAlly) == null) {
+            Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, player, unAlly);  
+            
+            if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
                 AbstractAction action = new Attack(unAlly, targetEnemy, pf);
 
                 UnitAction uAct = action.execute(game);
 
-                if (uAct.getType() == 5 || uAct.getType() == 1) {
+                if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
                     currentPlayerAction.addUnitAction(unAlly, uAct);
                 }
             }

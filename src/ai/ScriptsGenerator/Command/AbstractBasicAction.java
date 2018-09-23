@@ -7,6 +7,7 @@ package ai.ScriptsGenerator.Command;
 
 import ai.ScriptsGenerator.IParameters.IBehavior;
 import ai.ScriptsGenerator.IParameters.IParameters;
+import ai.ScriptsGenerator.IParameters.IQuantity;
 import ai.ScriptsGenerator.ParametersConcrete.ConstructionTypeParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import java.util.ArrayList;
@@ -44,7 +45,8 @@ public abstract class AbstractBasicAction extends AbstractCommand{
     protected Unit getUnitAlly(GameState game, PlayerAction currentPlayerAction, int player) {
         ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player){
+            if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
+                    && game.getActionAssignment(u) == null){
                 unitAllys.add(u);
             }
         }
@@ -57,17 +59,11 @@ public abstract class AbstractBasicAction extends AbstractCommand{
         return null;
     }
 
-    protected Unit getTargetEnemyUnit(GameState game, PlayerAction currentPlayerAction, int player) {
-        IBehavior behavior = null;
+    protected Unit getTargetEnemyUnit(GameState game, PlayerAction currentPlayerAction, int player, Unit allyUnit) {
+        IBehavior behavior = getBehavior();
         //verify if there are behavior param
-        for (IParameters param : getParameters()) {
-            if(param instanceof IBehavior){
-                behavior = (IBehavior) param;
-            }
-        }
-        
         if(behavior != null){
-            return getEnemyRandomic(game, player);
+            return getEnemybyBehavior(game, player, behavior, allyUnit);
         }else{
            return getEnemyRandomic(game, player);
         }
@@ -110,5 +106,29 @@ public abstract class AbstractBasicAction extends AbstractCommand{
         return types;
     }
     
+    protected IQuantity getQuantityFromParam() {
+        for(IParameters param : getParameters()){
+            if(param instanceof IQuantity){
+                return (IQuantity) param;
+            }
+        }
+        return null;
+    }
+
+    private IBehavior getBehavior() {
+        IBehavior beh = null;
+        for (IParameters parameter : parameters) {
+            if(parameter instanceof IBehavior){
+                beh = (IBehavior) parameter;
+            }
+        }
+        
+        return beh;
+    }
+
+    private Unit getEnemybyBehavior(GameState game, int player, IBehavior behavior, Unit allyUnit) {
+        
+        return behavior.getEnemytByBehavior(game, player, allyUnit);
+    }
     
 }

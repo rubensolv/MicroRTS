@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.ScriptsGenerator.IParameters;
+package ai.ScriptsGenerator.ParametersConcrete;
 
-import rts.GameState;
-import rts.units.Unit;
+import ai.ScriptsGenerator.IParameters.IBehavior;
 
 /**
  *
  * @author rubens
  */
-public interface IBehavior extends IParameters{
-    public Unit getEnemytByBehavior(GameState game, int player, Unit unitAlly);
+public abstract class BehaviorAbstract implements IBehavior{
+    
 }
