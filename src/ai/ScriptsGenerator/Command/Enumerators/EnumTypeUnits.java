@@ -47,7 +47,7 @@ public enum EnumTypeUnits {
         }else if (name.equals("Ranged")) {
             return EnumTypeUnits.Ranged;
         }
-        throw new IllegalArgumentException("invalid code!");
+        throw new IllegalArgumentException("invalid name!");
     }
 
 }
