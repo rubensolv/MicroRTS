@@ -33,9 +33,8 @@ public class AttackBasic extends AbstractBasicAction {
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
-        while (hasUnitsStopped(game, player, currentPlayerAction)) {
-            //pick one ally unit to set the action 
-            Unit unAlly = getUnitAlly(game, currentPlayerAction, player);
+       for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
+            
             //pick one enemy unit to set the action
             Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, player, unAlly);  
             
@@ -64,6 +63,17 @@ public class AttackBasic extends AbstractBasicAction {
         }
         
         return false;
+    }
+
+    private Iterable<Unit> getPotentialUnits(GameState game, PlayerAction currentPlayerAction, int player) {
+        ArrayList<Unit> unitAllys = new ArrayList<>();
+        for (Unit u : game.getUnits()) {
+            if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
+                    && game.getActionAssignment(u) == null && u.getResources() == 0){
+                unitAllys.add(u);
+            }
+        }
+        return unitAllys;
     }
 
 }
