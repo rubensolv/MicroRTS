@@ -14,7 +14,9 @@ import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
 import java.util.Random;
 import rts.GameState;
+import rts.PhysicalGameState;
 import rts.PlayerAction;
+import rts.ResourceUsage;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
@@ -27,6 +29,10 @@ public class AttackBasic extends AbstractBasicAction {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+        ResourceUsage resources = new ResourceUsage();
+        PhysicalGameState pgs = game.getPhysicalGameState();
+        //update variable resources
+        resources = getResourcesUsed(currentPlayerAction, pgs);
         while (hasUnitsStopped(game, player, currentPlayerAction)) {
             //pick one ally unit to set the action 
             Unit unAlly = getUnitAlly(game, currentPlayerAction, player);
@@ -36,10 +42,11 @@ public class AttackBasic extends AbstractBasicAction {
             if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
                 AbstractAction action = new Attack(unAlly, targetEnemy, pf);
 
-                UnitAction uAct = action.execute(game);
+                UnitAction uAct = action.execute(game, resources);
 
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
                     currentPlayerAction.addUnitAction(unAlly, uAct);
+                    resources.merge(uAct.resourceUsage(unAlly, pgs));
                 }
             }
         }
@@ -48,7 +55,7 @@ public class AttackBasic extends AbstractBasicAction {
 
     private boolean hasUnitsStopped(GameState game, int player, PlayerAction currentPlayerAction) {
         for(Unit un : game.getUnits()){
-            if(un.getPlayer() == player){
+            if(un.getPlayer() == player && un.getResources() == 0){
                 if(currentPlayerAction.getAction(un) == null && 
                         game.getActionAssignment(un) == null){
                     return true;

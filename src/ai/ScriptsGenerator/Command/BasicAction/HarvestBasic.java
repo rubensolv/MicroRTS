@@ -13,10 +13,13 @@ import ai.abstraction.Train;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.HashSet;
 import rts.GameState;
+import rts.PhysicalGameState;
 import rts.PlayerAction;
+import rts.ResourceUsage;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
@@ -28,8 +31,14 @@ public class HarvestBasic extends AbstractBasicAction {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+        ResourceUsage resources = new ResourceUsage();
+        PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst
-
+        if(!hasResources(game)){
+            return currentPlayerAction;
+        }
+        //update variable resources
+        resources = getResourcesUsed(currentPlayerAction, pgs);
         //get ID qtd units to be used in harvest process
         getUnitsToHarvest(game, player, currentPlayerAction);
         //send the unit to harverst
@@ -46,9 +55,10 @@ public class HarvestBasic extends AbstractBasicAction {
                         && closestBase != null && closestResource != null) {
                     
                     AbstractAction action = new Harvest(unit, closestResource, closestBase, pf);
-                    UnitAction uAct = action.execute(game);
+                    UnitAction uAct = action.execute(game, resources);
                     if (uAct != null) {
                         currentPlayerAction.addUnitAction(unit, uAct);
+                        resources.merge(uAct.resourceUsage(unit, pgs));
                     }
                 }
             }
@@ -119,5 +129,18 @@ public class HarvestBasic extends AbstractBasicAction {
         return closestBase;
 
     }
+
+    private boolean hasResources(GameState game) {
+        
+        for (Unit unit : game.getUnits()) {
+            if(unit.getType().isResource){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    
 
 }

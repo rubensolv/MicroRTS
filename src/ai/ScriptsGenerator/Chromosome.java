@@ -25,12 +25,13 @@ import rts.units.UnitTypeTable;
  * @author rubens
  */
 public class Chromosome {
+
     List<ICommand> commands = new ArrayList<>();
     UnitTypeTable utt;
 
     public Chromosome(UnitTypeTable utt) {
         this.utt = utt;
-        
+
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
@@ -40,26 +41,25 @@ public class Chromosome {
         //harverst action
         HarvestBasic harverst = new HarvestBasic();
         harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        harverst.addParameter(new QuantityParam(2)); //add qtd unit
         commands.add(harverst);
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
         attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
-        
+
     }
-    
+
     public PlayerAction getAction(int player, GameState gs) {
         PlayerAction currentActions = new PlayerAction();
-        PathFinding pf  = new AStarPathFinding();
+        PathFinding pf = new AStarPathFinding();
+
         //simulate one WR
-        
         for (ICommand command : commands) {
             currentActions = command.getAction(gs, player, currentActions, pf, utt);
         }
-        
-        
+
         return currentActions;
     }
 }

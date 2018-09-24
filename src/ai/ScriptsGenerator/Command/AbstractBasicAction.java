@@ -14,9 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import rts.GameState;
+import rts.PhysicalGameState;
 import rts.PlayerAction;
+import rts.ResourceUsage;
+import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitType;
+import util.Pair;
 
 
 /**
@@ -46,7 +50,7 @@ public abstract class AbstractBasicAction extends AbstractCommand{
         ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {
             if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
-                    && game.getActionAssignment(u) == null){
+                    && game.getActionAssignment(u) == null && u.getResources() == 0){
                 unitAllys.add(u);
             }
         }
@@ -129,6 +133,14 @@ public abstract class AbstractBasicAction extends AbstractCommand{
     private Unit getEnemybyBehavior(GameState game, int player, IBehavior behavior, Unit allyUnit) {
         
         return behavior.getEnemytByBehavior(game, player, allyUnit);
+    }
+    
+    protected ResourceUsage getResourcesUsed(PlayerAction currentPlayerAction, PhysicalGameState pgs) {
+        ResourceUsage res = new ResourceUsage();
+        for (Pair<Unit, UnitAction> action : currentPlayerAction.getActions()) {
+            res.merge(action.m_b.resourceUsage(action.m_a, pgs));
+        }
+        return res;
     }
     
 }
