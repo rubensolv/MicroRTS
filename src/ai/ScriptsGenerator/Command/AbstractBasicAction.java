@@ -138,7 +138,9 @@ public abstract class AbstractBasicAction extends AbstractCommand{
     protected ResourceUsage getResourcesUsed(PlayerAction currentPlayerAction, PhysicalGameState pgs) {
         ResourceUsage res = new ResourceUsage();
         for (Pair<Unit, UnitAction> action : currentPlayerAction.getActions()) {
-            res.merge(action.m_b.resourceUsage(action.m_a, pgs));
+            if(action.m_a != null && action.m_b != null){
+                res.merge(action.m_b.resourceUsage(action.m_a, pgs));
+            }
         }
         return res;
     }

@@ -54,7 +54,6 @@ public class Chromosome {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        //attack.addParameter(TypeConcrete.getTypeLight()); //add unit type
         attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
 

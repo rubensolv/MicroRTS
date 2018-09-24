@@ -6,12 +6,15 @@
 package ai.ScriptsGenerator.Command.BasicAction;
 
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
+import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.IParameters.IBehavior;
 import ai.ScriptsGenerator.IParameters.IParameters;
+import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import ai.abstraction.AbstractAction;
 import ai.abstraction.Attack;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import rts.GameState;
 import rts.PhysicalGameState;
@@ -69,11 +72,24 @@ public class AttackBasic extends AbstractBasicAction {
         ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {
             if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
-                    && game.getActionAssignment(u) == null && u.getResources() == 0){
+                    && game.getActionAssignment(u) == null && u.getResources() == 0
+                    && isUnitControlledByParam(u)){
                 unitAllys.add(u);
             }
         }
         return unitAllys;
+    }
+
+    private boolean isUnitControlledByParam(Unit u) {
+        List<UnitTypeParam> unType = getTypeUnitFromParam();
+        for (UnitTypeParam unitTypeParam : unType) {
+            for (EnumTypeUnits paramType : unitTypeParam.getParamTypes()) {
+                if(u.getType().ID == paramType.code()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
