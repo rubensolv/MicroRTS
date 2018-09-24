@@ -8,8 +8,10 @@ package ai.ScriptsGenerator;
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
+import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
+import ai.ScriptsGenerator.ParametersConcrete.PriorityPositionParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.abstraction.pathfinding.AStarPathFinding;
@@ -36,16 +38,23 @@ public class Chromosome {
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
         train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-        train.addParameter(new QuantityParam(10)); //add qtd unit
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
         commands.add(train);
         //harverst action
         HarvestBasic harverst = new HarvestBasic();
         harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-        harverst.addParameter(new QuantityParam(2)); //add qtd unit
+        harverst.addParameter(new QuantityParam(3)); //add qtd unit
         commands.add(harverst);
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        //attack.addParameter(TypeConcrete.getTypeLight()); //add unit type
         attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
 

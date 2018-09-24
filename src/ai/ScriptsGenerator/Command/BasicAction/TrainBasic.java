@@ -6,10 +6,13 @@
 package ai.ScriptsGenerator.Command.BasicAction;
 
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
+import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.IParameters.IParameters;
+import ai.ScriptsGenerator.IParameters.IPriorityPosition;
 import ai.ScriptsGenerator.IParameters.IQuantity;
 import ai.ScriptsGenerator.ParametersConcrete.ConstructionTypeParam;
+import ai.ScriptsGenerator.ParametersConcrete.PriorityPositionParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
@@ -22,6 +25,10 @@ import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.UnitAction;
+import static rts.UnitAction.DIRECTION_DOWN;
+import static rts.UnitAction.DIRECTION_LEFT;
+import static rts.UnitAction.DIRECTION_RIGHT;
+import static rts.UnitAction.DIRECTION_UP;
 import rts.units.Unit;
 import rts.units.UnitType;
 import rts.units.UnitTypeTable;
@@ -82,8 +89,14 @@ public class TrainBasic extends AbstractBasicAction {
 
         for (UnitTypeParam type : types) {
             for (EnumTypeUnits en : type.getParamTypes()) {
-                AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
-                UnitAction uAct = action.execute(game);
+                UnitAction uAct = null;
+                //train based in PriorityPosition
+                uAct = trainUnitBasedInPriorityPosition(game, unit, a_utt.getUnitType(en.code()));
+                if(uAct == null){
+                    AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
+                    uAct = action.execute(game);
+                }
+                
                 if (uAct != null && uAct.getType() == 4) {
                     return uAct;
                 }
@@ -138,6 +151,44 @@ public class TrainBasic extends AbstractBasicAction {
         
         
         return qtt;
+    }
+
+    private UnitAction trainUnitBasedInPriorityPosition(GameState game, Unit unit, UnitType unitType) {
+        PriorityPositionParam order = getPriorityParam();
+        UnitAction ua = null;
+        for (EnumPositionType enumPositionType : order.getSelectedPosition()) {
+            ua = new UnitAction(UnitAction.TYPE_PRODUCE,enumPositionType.code(), unitType);
+            if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) return ua;
+        }
+        
+        return null;
+    }
+
+    private PriorityPositionParam getPriorityParam() {
+        for(IParameters param : getParameters()){
+            if(param instanceof IPriorityPosition){
+                return (PriorityPositionParam) param;
+            }
+        }
+        return null;
+    }
+
+    private boolean isPositionFree(GameState game, UnitAction ua, Unit trainUnit) {
+        int x, y;
+        x = trainUnit.getX();
+        y = trainUnit.getY();
+        //define direction
+        switch(ua.getDirection()) {
+                    case DIRECTION_UP:      y--; break;
+                    case DIRECTION_RIGHT:   x++; break;
+                    case DIRECTION_DOWN:    y++; break;
+                    case DIRECTION_LEFT:    x--; break;
+                }
+        if(game.free(x, y)){
+            return true;
+        }
+        
+        return false;
     }
     
     

@@ -10,7 +10,7 @@ package ai.ScriptsGenerator.Command.Enumerators;
  * @author rubens
  */
 public enum EnumPositionType {
-    Left(0), Right(1), Up(2), Down(3);
+    Left(3), Right(1), Up(0), Down(2);
     
     private final int code;
     
