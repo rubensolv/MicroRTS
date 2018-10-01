@@ -7,7 +7,7 @@ package ai.ScriptsGenerator.IParameters;
 
 /**
  *
- * @author rubens
+ * @author rubens Julian
  */
 public interface IPlayerTarget extends IParameters{
     public int getPlayerTarget();

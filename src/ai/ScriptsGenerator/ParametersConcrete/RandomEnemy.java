@@ -13,7 +13,7 @@ import rts.units.Unit;
 
 /**
  *
- * @author rubens
+ * @author rubens Julian
  */
 public class RandomEnemy extends BehaviorAbstract{
 
@@ -21,7 +21,6 @@ public class RandomEnemy extends BehaviorAbstract{
     public Unit getEnemytByBehavior(GameState game, int player, Unit unitAlly) {
         PhysicalGameState pgs = game.getPhysicalGameState();
         Unit randomEnemy = null;
-        int closestDistance = 0;
         Random r=new Random();
         int quantityUnits=0;
         
@@ -34,8 +33,9 @@ public class RandomEnemy extends BehaviorAbstract{
         int idUnit=r.nextInt(quantityUnits);
         int counterUnits=0;
         for (Unit u2 : pgs.getUnits()) {
-            if (u2.getPlayer() >= 0 && u2.getPlayer() == player && quantityUnits==idUnit) {
-                
+            if (u2.getPlayer() >= 0 && u2.getPlayer() == player && counterUnits==idUnit) {
+            	counterUnits++;
+            	randomEnemy=u2;
             }
         }
         return randomEnemy;

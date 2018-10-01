@@ -14,24 +14,21 @@ import ai.ScriptsGenerator.IParameters.IQuantity;
  */
 public class IPlayerTargetParam implements IPlayerTarget{
 
-    private int value;
+    private int playerTarget;
 
-    public IPlayerTargetParam() {
-        this.value = 0;
-    }
 
     public IPlayerTargetParam(int value) {
-        this.value = value;
+        this.playerTarget = value;
     }
     
     @Override
     public int getPlayerTarget() {
-        return value;
+        return playerTarget;
     }
 
     @Override
     public void setPlayerTarget(int value) {
-        this.value = value;
+        this.playerTarget = value;
     }
     
 }

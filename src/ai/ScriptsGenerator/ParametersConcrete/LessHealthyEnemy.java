@@ -11,25 +11,25 @@ import rts.units.Unit;
 
 /**
  *
- * @author rubens
+ * @author rubens Julian
  */
 public class LessHealthyEnemy extends BehaviorAbstract{
 
     @Override
     public Unit getEnemytByBehavior(GameState game, int player, Unit unitAlly) {
         PhysicalGameState pgs = game.getPhysicalGameState();
-        Unit mostHealthyEnemy = null;
-        int maximumHP = 0;
+        Unit lessHealthyEnemy = null;
+        int minimumHP = 0;
         for (Unit u2 : pgs.getUnits()) {
             if (u2.getPlayer() >= 0 && u2.getPlayer() == player) {
                 int hp = u2.getMaxHitPoints();
-                if (mostHealthyEnemy == null || hp < maximumHP) {
-                	mostHealthyEnemy = u2;
-                	maximumHP = hp;
+                if (lessHealthyEnemy == null || hp < minimumHP) {
+                	lessHealthyEnemy = u2;
+                	minimumHP = hp;
                 }
             }
         }
-        return mostHealthyEnemy;
+        return lessHealthyEnemy;
     }
     
 }
