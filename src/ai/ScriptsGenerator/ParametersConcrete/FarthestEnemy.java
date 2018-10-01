@@ -11,7 +11,7 @@ import rts.units.Unit;
 
 /**
  *
- * @author rubens
+ * @author rubens Julian
  */
 public class FarthestEnemy extends BehaviorAbstract{
 

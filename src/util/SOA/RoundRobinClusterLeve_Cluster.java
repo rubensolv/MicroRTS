@@ -31,6 +31,7 @@ import ai.cluster.CIA_Enemy;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
 import ai.competition.capivara.Capivara;
+import ai.competition.capivara.CmabAssymetricMCTS;
 import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
@@ -122,7 +123,7 @@ public class RoundRobinClusterLeve_Cluster {
 
         String GA_PGS = "49;0;4;151;189;226;186;"; 
         String GA_SSS = "289;194;86;242;";                   
-        
+        String GA_A3N = "284;233";
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
@@ -142,7 +143,9 @@ public class RoundRobinClusterLeve_Cluster {
                new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
                //plus
                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "PGS+",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SSS+",2,200)
+               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SSS+",2,200),
+               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts(utt, GA_A3N))
+               
         ));
 
         AI ai1 = ais.get(iAi1);
