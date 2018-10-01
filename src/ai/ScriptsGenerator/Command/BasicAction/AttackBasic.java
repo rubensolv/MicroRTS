@@ -36,10 +36,11 @@ public class AttackBasic extends AbstractBasicAction {
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
+       int playerTarget=getPlayerTargetFromParam().getPlayerTarget();
        for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
             
             //pick one enemy unit to set the action
-            Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, player, unAlly);  
+            Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);  
             
             if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
                 AbstractAction action = new Attack(unAlly, targetEnemy, pf);

@@ -5,6 +5,8 @@
  */
 package ai.ScriptsGenerator.ParametersConcrete;
 
+import java.util.Random;
+
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.units.Unit;
@@ -13,23 +15,30 @@ import rts.units.Unit;
  *
  * @author rubens
  */
-public class ClosestEnemy extends BehaviorAbstract{
+public class RandomEnemy extends BehaviorAbstract{
 
     @Override
     public Unit getEnemytByBehavior(GameState game, int player, Unit unitAlly) {
         PhysicalGameState pgs = game.getPhysicalGameState();
-        Unit closestEnemy = null;
+        Unit randomEnemy = null;
         int closestDistance = 0;
+        Random r=new Random();
+        int quantityUnits=0;
+        
         for (Unit u2 : pgs.getUnits()) {
             if (u2.getPlayer() >= 0 && u2.getPlayer() == player) {
-                int d = Math.abs(u2.getX() - unitAlly.getX()) + Math.abs(u2.getY() - unitAlly.getY());
-                if (closestEnemy == null || d < closestDistance) {
-                    closestEnemy = u2;
-                    closestDistance = d;
-                }
+            	quantityUnits++;
             }
         }
-        return closestEnemy;
+        
+        int idUnit=r.nextInt(quantityUnits);
+        int counterUnits=0;
+        for (Unit u2 : pgs.getUnits()) {
+            if (u2.getPlayer() >= 0 && u2.getPlayer() == player && quantityUnits==idUnit) {
+                
+            }
+        }
+        return randomEnemy;
     }
     
 }

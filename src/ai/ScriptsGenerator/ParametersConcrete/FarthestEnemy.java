@@ -13,23 +13,23 @@ import rts.units.Unit;
  *
  * @author rubens
  */
-public class ClosestEnemy extends BehaviorAbstract{
+public class FarthestEnemy extends BehaviorAbstract{
 
     @Override
     public Unit getEnemytByBehavior(GameState game, int player, Unit unitAlly) {
         PhysicalGameState pgs = game.getPhysicalGameState();
-        Unit closestEnemy = null;
-        int closestDistance = 0;
+        Unit farthestEnemy = null;
+        int farthesttDistance = 0;
         for (Unit u2 : pgs.getUnits()) {
             if (u2.getPlayer() >= 0 && u2.getPlayer() == player) {
                 int d = Math.abs(u2.getX() - unitAlly.getX()) + Math.abs(u2.getY() - unitAlly.getY());
-                if (closestEnemy == null || d < closestDistance) {
-                    closestEnemy = u2;
-                    closestDistance = d;
+                if (farthestEnemy == null || d > farthesttDistance) {
+                	farthestEnemy = u2;
+                	farthesttDistance = d;
                 }
             }
         }
-        return closestEnemy;
+        return farthestEnemy;
     }
     
 }

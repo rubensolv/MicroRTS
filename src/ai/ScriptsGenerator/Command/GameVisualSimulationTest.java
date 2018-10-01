@@ -175,7 +175,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
         //AI ai1 = new StrategyTactics(utt);
         
-        AI ai2 = new WorkerRush(utt);
+        //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
         //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
         //                                     new SimpleSqrtEvaluationFunction3(), true, utt, 
@@ -232,6 +232,8 @@ public class GameVisualSimulationTest {
         //AI ai2 = new PVAIML_EDP(utt);
         //AI ai2 = new PVAIML_SLFWMS(utt);
         //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
+        
+        AI ai2 = new PassiveAI(utt);
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());
