@@ -8,12 +8,21 @@ package ai.ScriptsGenerator;
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
+import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
+import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
+import ai.ScriptsGenerator.ParametersConcrete.CoordinatesParam;
+import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
+import ai.ScriptsGenerator.ParametersConcrete.LessHealthyEnemy;
+import ai.ScriptsGenerator.ParametersConcrete.MostHealthyEnemy;
+import ai.ScriptsGenerator.ParametersConcrete.IPlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.PriorityPositionParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
+import ai.ScriptsGenerator.ParametersConcrete.StrongestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
+import ai.ScriptsGenerator.ParametersConcrete.WeakestEnemy;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
@@ -47,15 +56,27 @@ public class Chromosome {
         train.addParameter(pos);
         commands.add(train);
         //harverst action
-        HarvestBasic harverst = new HarvestBasic();
-        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-        harverst.addParameter(new QuantityParam(3)); //add qtd unit
-        commands.add(harverst);
+//        HarvestBasic harverst = new HarvestBasic();
+//        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+//        harverst.addParameter(new QuantityParam(3)); //add qtd unit
+//        commands.add(harverst);
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new ClosestEnemy()); //add behavior
+        attack.addParameter(new IPlayerTargetParam(1));
+        attack.addParameter(new StrongestEnemy()); //add behavior
         commands.add(attack);
+        //Move action
+//        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+//        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+//        moveToUnit.addParameter(new ClosestEnemy()); //add behavior
+//        commands.add(moveToUnit);
+        	//Move To coordinates
+//        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+//        moveToCoordinates.addParameter(new CoordinatesParam(6,6)); //add unit type
+//        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+//        commands.add(moveToCoordinates);
+
 
     }
 

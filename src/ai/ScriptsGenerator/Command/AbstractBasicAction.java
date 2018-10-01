@@ -6,7 +6,9 @@
 package ai.ScriptsGenerator.Command;
 
 import ai.ScriptsGenerator.IParameters.IBehavior;
+import ai.ScriptsGenerator.IParameters.ICoordinates;
 import ai.ScriptsGenerator.IParameters.IParameters;
+import ai.ScriptsGenerator.IParameters.IPlayerTarget;
 import ai.ScriptsGenerator.IParameters.IQuantity;
 import ai.ScriptsGenerator.ParametersConcrete.ConstructionTypeParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
@@ -114,6 +116,24 @@ public abstract class AbstractBasicAction extends AbstractCommand{
         for(IParameters param : getParameters()){
             if(param instanceof IQuantity){
                 return (IQuantity) param;
+            }
+        }
+        return null;
+    }
+    
+    protected ICoordinates getCoordinatesFromParam() {
+        for(IParameters param : getParameters()){
+            if(param instanceof ICoordinates){
+                return (ICoordinates) param;
+            }
+        }
+        return null;
+    }
+    
+    protected IPlayerTarget getPlayerTargetFromParam() {
+        for(IParameters param : getParameters()){
+            if(param instanceof IPlayerTarget){
+                return (IPlayerTarget) param;
             }
         }
         return null;
