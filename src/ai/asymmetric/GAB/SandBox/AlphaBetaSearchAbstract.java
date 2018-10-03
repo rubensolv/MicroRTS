@@ -5,11 +5,11 @@
  */
 package ai.asymmetric.GAB.SandBox;
 
+import PVAI.EconomyRush;
 import ai.abstraction.combat.KitterDPS;
 import ai.abstraction.combat.NOKDPS;
 import ai.aiSelection.AlphaBetaSearch.*;
 import ai.abstraction.partialobservability.POLightRush;
-import ai.abstraction.partialobservability.POWorkerRush;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.MoveOrderMethod;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.PlayerToMove;
 import ai.aiSelection.AlphaBetaSearch.Enumerators.Players;
@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.PlayerActionGenerator_Asymmetric;
@@ -66,6 +68,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
 
     //class to control a relation between unit ID and Unit Index (limited to 100).
     LookUpUnits lKp = new LookUpUnits();
+    public boolean scriptedMove;
 
     public AlphaBetaSearchAbstract(UnitTypeTable utt) {
         this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
@@ -80,21 +83,21 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
 
         ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
-        
+
         _params.setOrderedMoveScripts(new ArrayList<AI>() {
             {
-                // add(0, new POLightRush(utt));
+                //add(0, new EconomyRush(utt));
                 // add(1, new POWorkerRush(utt));
-                //add(0, scriptsCompleteSet.get(0));
+                //add(1, scriptsCompleteSet.get(0));
                 add(0, scriptsCompleteSet.get(1));
                 //add(1, scriptsCompleteSet.get(2));
                 //add(3, scriptsCompleteSet.get(3));
                 add(1, new NOKDPS(utt));
                 add(2, new KitterDPS(utt));
-                
+
             }
         });
-        
+
         StartAlphaBetaSearch(_params, _TT);
         evaluation = new SimpleSqrtEvaluationFunction3();
     }
@@ -171,7 +174,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         _results.setNodesExpanded(_results.getNodesExpanded() + 1);
         if (searchTimeOut()) {
             //System.out.println("Estou dando searchTimeOut");
-            throw new Exception();
+            throw new Exception("Timeout during the search! " + depth);
         }
         if (terminalState(state, depth)) {
             //System.out.println("Estado é terminal!");
@@ -230,9 +233,9 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             try {
                 child = state.clone();
             } catch (Exception e) {
-                throw new Exception();
-            } catch (Error e2) {
-                throw new Exception();
+                throw new Exception("clone line 233");
+            } catch (Error e2) {                
+                throw new Exception("clone line 236");
             }
 
             boolean firstMove = true;
@@ -304,6 +307,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
 
     private AlphaBetaValue IDAlphaBeta(GameState initialState, short maxDepth) throws Exception {
         AlphaBetaValue val = new AlphaBetaValue();
+        scriptedMove = false;
         _results.setNodesExpanded(0);
         _results.setMaxDepthReached(0);
         for (int d = 1; d < maxDepth; d++) {
@@ -322,12 +326,13 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             catch (Exception e) {
                 // if we didn't finish the first depth, set the move to the best script move
                 if (d == 1) {
-                    //System.out.println("Selecting best scripted move for AB");
+                    //System.out.println("Selecting best scripted move for AB " + e.toString());
+                    scriptedMove = true;
                     _results.setBestMoves(_params.getSimScripts()[playerToGame].getAction(playerToGame, initialState));
 
                 }
-                //System.out.println("Erro during process " + e.toString());
-                //System.err.println(e.getStackTrace());
+                //System.out.println("Erro during process " + e.toString() + " " + e.getStackTrace().toString());
+                //System.err.println(e.getMessage());
                 break;
             }
 
@@ -510,7 +515,13 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
 
         lKp.refreshLookup(state);
         stopSearch();
-        PlayerActionGenerator_Asymmetric AllMoves = new PlayerActionGenerator_Asymmetric(state, playerToMove.codigo(), this.currentScriptData, _unitsAbsAB);
+        PlayerActionGenerator_Asymmetric AllMoves = null;
+        try {
+            AllMoves = new PlayerActionGenerator_Asymmetric(state, playerToMove.codigo(), this.currentScriptData, _unitsAbsAB);
+        } catch (Exception ex) {
+            Logger.getLogger(AlphaBetaSearchAbstract.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Problem line 523 AlphaBetaSearchAbstract!");
+        }
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
         for (Pair<Unit, List<UnitAction>> choice : choices) {
             Integer idIndex = lKp.getUnitIndex(choice.m_a.getID());
@@ -595,9 +606,11 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         } // otherwise return the next move vector starting from the beginning
         else {
             if (moves.hasMoreMoves()) {
+
                 for (Action a : moves.getNextValidMoveVec(stateTemp, playerToMove.codigo(), lKp, _searchTimer)) {
                     moveVec.add(a);
                 }
+
                 return true;
             } else {
                 return false;
@@ -622,7 +635,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         return qtdMoves;
     }
 
-    private ArrayList getActions(PlayerAction pTemp, MoveArrayAbstract moves, Players playerToMove, GameState state) throws Exception {
+    private ArrayList getActions(PlayerAction pTemp, MoveArrayAbstract moves, Players playerToMove, GameState state) {
         HashMap<String, PlayerAction> actions = new HashMap<>();
         ArrayList<Action> acts = new ArrayList<>();
         for (Pair<Unit, UnitAction> choice : pTemp.getActions()) {
@@ -633,20 +646,25 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
                 idIndex = lKp.InsertUnitIndex(choice.m_a.getID());
             }
             Action act;
-            if(!_unitsAbsAB.contains(choice.m_a)){
-                 act = new Action(idIndex, playerToMove.codigo(), choice.m_b.getType(), choice.m_b);
-            }else{
-                 //take unit script action
-                 PlayerAction pAIUnit;
-                 AI ai = currentScriptData.getAIUnit(choice.m_a);
-                 if(actions.containsKey(ai.toString())){
+            if (!_unitsAbsAB.contains(choice.m_a)) {
+                act = new Action(idIndex, playerToMove.codigo(), choice.m_b.getType(), choice.m_b);
+            } else {
+                //take unit script action
+                PlayerAction pAIUnit = null;
+                AI ai = currentScriptData.getAIUnit(choice.m_a);
+                if (actions.containsKey(ai.toString())) {
                     pAIUnit = actions.get(ai.toString());
-                 }else{
-                     pAIUnit = ai.getAction(playerToMove.codigo(), state);
-                     actions.put(ai.toString(), pAIUnit);
-                 }
-                 UnitAction actAbst = pAIUnit.getAction(choice.m_a);
-                 act = new Action(idIndex, playerToMove.codigo(), actAbst.getType(), actAbst);
+                } else {
+                    try {
+                        pAIUnit = ai.getAction(playerToMove.codigo(), state);
+                    } catch (Exception ex) {
+                        System.out.println("Problem line 653 AlphaBetaSearchAbstract!");
+                        Logger.getLogger(AlphaBetaSearchAbstract.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    actions.put(ai.toString(), pAIUnit);
+                }
+                UnitAction actAbst = pAIUnit.getAction(choice.m_a);
+                act = new Action(idIndex, playerToMove.codigo(), actAbst.getType(), actAbst);
             }
             //moves.add(idIndex, act);
             acts.add(act);
@@ -661,16 +679,16 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         for (Action action : movesToAplly) {
             if (lKp.getOrigIDUnit(action.getUnit()) != null) {
                 Unit unt = child.getUnit(lKp.getOrigIDUnit(action.getUnit()));
-                if(unt != null){        
+                if (unt != null) {
                     act.addUnitAction(unt, action.getUnitAction());
                 }
-            } 
+            }
         }
         try {
-            child.issue(act);
+        child.issue(act);
         } catch (Exception e) {
-            System.out.println("Erro applyActionState " + e.toString());
-        }
+            System.out.println("Erro applyActionState line 674 " + e.toString());
+         }
 
     }
 
@@ -681,14 +699,16 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
             if (lKp.getOrigIDUnit(action.getUnit()) != null) {
                 act.addUnitAction(state.getUnit(lKp.getOrigIDUnit(action.getUnit())), action.getUnitAction());
             } else {
-                System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.makePlayerAction() Erro ao encontrar unidade");
+                System.out.println("ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch.makePlayerAction() Erro ao encontrar unidade line 694!");
             }
         }
         return act;
     }
 
     // Transposition Table save 
-    private void TTSave(GameState state, StateEvalScore value, StateEvalScore alpha, StateEvalScore beta, int depth, Players firstPlayer, AlphaBetaMove bestFirstMove, AlphaBetaMove bestSecondMove) {
+    private void TTSave(GameState state, StateEvalScore value, StateEvalScore alpha, StateEvalScore beta, int depth,
+            Players firstPlayer, AlphaBetaMove bestFirstMove, AlphaBetaMove bestSecondMove) {
+
         // IF THE DEPTH OF THE ENTRY IS BIGGER THAN CURRENT DEPTH, DO NOTHING
         TTEntry entry = _TT.lookupScan(calculateHash(0, state), calculateHash(1, state));
         boolean valid = entry != null && entry.isValid();
@@ -781,7 +801,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
     protected void stopSearch() throws Exception {
         if (Duration.between(_searchTimer, Instant.now()).toMillis() >= (_params.getTimeLimit() - 1)) {
             //System.out.println("Stop the search!");
-            throw new Exception();
+            throw new Exception("Time limit reached!");
         }
     }
 
@@ -833,10 +853,9 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         computeDuringOneGameFrame();
         return getBestActionSoFar();
     }
-    
-    public void setPlayerModel(int player, AI ai){
+
+    public void setPlayerModel(int player, AI ai) {
         _params.setPlayerModel(player, ai);
     }
-            
 
 }

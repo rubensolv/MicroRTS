@@ -6,6 +6,7 @@
 package ai.asymmetric.GAB.SandBox;
 
 import ai.RandomAI;
+import ai.RandomBiasedAI;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.asymmetric.ManagerUnits.IManagerAbstraction;
@@ -58,7 +59,8 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
     //tste
     UnitScriptData currentScriptData;
-    RandomAI rAI ;
+    RandomAI rAI;
+    AI randAI;
 
     public GAB(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
@@ -85,8 +87,9 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         _unitsAbsAB = new HashSet<>();
         _numUnits = 2;
         _numManager = 2;
-        
+
         rAI = new RandomAI(utt);
+        randAI = new RandomBiasedAI(utt);
     }
 
     public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
@@ -102,8 +105,9 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         _unitsAbsAB = new HashSet<>();
         _numUnits = numUnits;
         _numManager = numManager;
-        
+
         rAI = new RandomAI(utt);
+        randAI = new RandomBiasedAI(utt);
     }
 
     @Override
@@ -118,7 +122,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             startNewComputation(player, gs);
             return getBestActionSoFar();
         } else {
-            if ((gs.getNextChangeTime()-1) ==  gs.getTime()) {
+            if ((gs.getNextChangeTime() - 1) == gs.getTime()) {
                 //System.out.println("Next action " + gs.getNextChangeTime() + " actual time=" + gs.getTime());
                 startNewComputation(player, gs);
                 _pgs.setTimeBudget(100);
@@ -204,7 +208,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             updateCurrentScriptData();
         }
         PlayerAction paPGS = _pgs.getFinalAction(currentScriptData);
-        if(_numUnits == 0){
+        if (_numUnits == 0) {
             return paPGS;
         }
 
@@ -212,11 +216,11 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
             //aplico o AB
             manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
-            
+
             _ab.setPlayoutAI(_pgs.getDefaultScript());
             _ab.setPlayoutAIEnemy(_pgs.getEnemyScript());
-            _ab.setPlayerModel((1-playerForThisComputation), _pgs.getEnemyScript().clone());
-            
+            _ab.setPlayerModel((1 - playerForThisComputation), _pgs.getEnemyScript().clone());
+
             int timeUsed = (int) (System.currentTimeMillis() - start);
             if (timeUsed < 80) {
                 _ab.setTimeBudget(100 - timeUsed);
@@ -232,7 +236,22 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
             //System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
+            //return paAB;
+            //}
+            
+            if(runRandomEval(playerForThisComputation, gs_to_start_from, paAB, _pgs.getEnemyScript()) >
+                    runRandomEval(playerForThisComputation, gs_to_start_from, paPGS, _pgs.getEnemyScript())){
                 return paAB;
+            }else{
+                return paPGS;
+            }
+                
+
+            //new test 
+            //if(_ab.scriptedMove){
+            //    return paPGS;
+            //}else{
+            //    return paAB;
             //}
         }
 
@@ -240,6 +259,39 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         //currentScriptData = new UnitScriptData(playerForThisComputation);
         return paPGS;
 
+    }
+
+    public double runRandomEval(int player, GameState gs, PlayerAction playerAct, AI aiEnemy) throws Exception {
+        double sum = 0.0;
+        for (int i = 0; i < 2; i++) {
+            sum += RandomEval(player, gs, playerAct, aiEnemy);
+        }
+        double scoreTemp = sum / 2;
+        return scoreTemp;
+    }
+
+    public double RandomEval(int player, GameState gs, PlayerAction playerAct, AI aiEnemy) throws Exception {
+        //AI ai1 = defaultScript.clone();
+        AI ai2 = aiEnemy.clone();
+        ai2.reset();
+        GameState gs2 = gs.clone();
+
+        
+        gs2.issue(changePlayer(player, playerAct, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
+
+        int timeLimit = gs2.getTime() + 200;
+        boolean gameover = false;
+        while (!gameover && gs2.getTime() < timeLimit) {
+            if (gs2.isComplete()) {
+                gameover = gs2.cycle();
+            } else {
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
+            }
+        }
+
+        return evaluation.evaluate(player, 1 - player, gs2);
     }
 
     /**
@@ -253,7 +305,6 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
         //AI ai1 = _pgs.getDefaultScript();
         //AI ai2 = _pgs.getEnemyScript();
-        
         AI ai1 = rAI;
         AI ai2 = rAI;
 

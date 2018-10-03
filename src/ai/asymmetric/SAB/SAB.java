@@ -6,6 +6,7 @@
 package ai.asymmetric.SAB;
 
 import ai.RandomAI;
+import ai.RandomBiasedAI;
 import ai.asymmetric.GAB.SandBox.*;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
@@ -60,6 +61,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
     //tste
     UnitScriptData currentScriptData;
     RandomAI rAI ;
+    AI randAI ;
 
     public SAB(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
@@ -87,6 +89,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         _numUnits = 2;
         _numManager = 2;
         rAI = new RandomAI(utt);
+        randAI = new RandomBiasedAI(utt);
     }
 
     public SAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
@@ -103,6 +106,7 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         _numUnits = numUnits;
         _numManager = numManager;
         rAI = new RandomAI(utt);
+        randAI = new RandomBiasedAI(utt);
     }
 
     @Override
@@ -230,7 +234,21 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
             //System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
+                //return paAB;
+            //}
+            
+            if(runRandomEval(playerForThisComputation, gs_to_start_from, paAB, _sss.getEnemyScript()) >
+                    runRandomEval(playerForThisComputation, gs_to_start_from, paSSS, _sss.getEnemyScript())){
                 return paAB;
+            }else{
+                return paSSS;
+            }
+            
+             //new test 
+            //if(_ab.scriptedMove){
+            //    return paSSS;
+            //}else{
+            //    return paAB;
             //}
         }
 
@@ -238,6 +256,38 @@ public class SAB extends AIWithComputationBudget implements InterruptibleAI {
         //currentScriptData = new UnitScriptData(playerForThisComputation);
         return paSSS;
 
+    }
+    
+    public double runRandomEval(int player, GameState gs, PlayerAction playerAct, AI aiEnemy) throws Exception {
+        double sum = 0.0;
+        for (int i = 0; i < 2; i++) {
+            sum += RandomEval(player, gs, playerAct, aiEnemy);
+        }
+        double scoreTemp = sum / 2;
+        return scoreTemp;
+    }
+    
+    public double RandomEval(int player, GameState gs, PlayerAction playerAct, AI aiEnemy) throws Exception {
+        //AI ai1 = defaultScript.clone();
+        AI ai2 = aiEnemy.clone();
+        ai2.reset();
+        GameState gs2 = gs.clone();
+        
+        gs2.issue(changePlayer(player, playerAct, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
+        
+        int timeLimit = gs2.getTime() + 200;
+        boolean gameover = false;
+        while (!gameover && gs2.getTime() < timeLimit) {
+            if (gs2.isComplete()) {
+                gameover = gs2.cycle();
+            } else {
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
+            }
+        }
+
+        return evaluation.evaluate(player, 1 - player, gs2);
     }
 
     /**

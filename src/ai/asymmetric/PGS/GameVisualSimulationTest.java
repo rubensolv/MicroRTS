@@ -9,6 +9,7 @@ import PVAI.EconomyRush;
 import PVAI.EconomyRushBurster;
 import PVAI.WorkerDefense;
 import PVAI.RangedDefense;
+import PVAI.util.Permutation;
 import Standard.CombinedEvaluation;
 import Standard.StrategyTactics;
 import ai.core.AI;
@@ -88,6 +89,7 @@ import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import static tests.ClusterTesteLeve.decodeScripts;
 import static util.SOA.RoundRobinClusterLeve.decodeScripts;
+import static util.SOA.RoundRobinTOWRDominance.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -103,11 +105,11 @@ public class GameVisualSimulationTest {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
@@ -116,16 +118,13 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //testes 
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
-        
+
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
         int PERIOD = 20;
         boolean gameover = false;
 
-        
-        
         //AI ai1 = new RangedRush(utt);
-        //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
         //AI ai1 = new PassiveAI();
@@ -168,13 +167,15 @@ public class GameVisualSimulationTest {
         //AI ai1 = new NSSS(utt);
         //AI ai1 = new NSSSLimit(utt);
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
-        AI ai1 = new StrategyTactics(utt);
-        
-        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1,decodeScripts(utt, "48;0;"));
+        //AI ai1 = new StrategyTactics(utt);
+        AI ai1 = new WorkerRush(utt);
+
+        //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+        //                                     new SimpleSqrtEvaluationFunction3(), true, utt, 
+        //                                    "ManagerClosestEnemy", 1,decodeScripts(utt, "48;0;")); //A3N
         //AI ai2 = new GAB(utt);
+        AI ai2 = new SAB(utt);
         //AI ai1 = new Tiamat(utt);
         //AI ai2 = new Capivara(utt);
         //AI ai2 = new SCVPlus(utt);
@@ -211,7 +212,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
-        
+
         //AI ai2 = new RangedDefense(utt);
         //AI ai2 = new PVAI(utt);
         //AI ai2 = new PVAIML_onlyEnemy(utt);
@@ -226,11 +227,10 @@ public class GameVisualSimulationTest {
         //AI ai2 = new PVAIML_EDP(utt);
         //AI ai2 = new PVAIML_SLFWMS(utt);
         //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
-        
         System.out.println("---------AI's---------");
-        System.out.println("AI 1 = "+ai1.toString());
-        System.out.println("AI 2 = "+ai2.toString()+"\n");        
-        
+        System.out.println("AI 1 = " + ai1.toString());
+        System.out.println("AI 2 = " + ai2.toString() + "\n");
+
         //método para fazer a troca dos players
         JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_WHITE); 
@@ -239,22 +239,22 @@ public class GameVisualSimulationTest {
         do {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
-                PlayerAction pa1 = ai1.getAction(0, gs);  
-                if( (System.currentTimeMillis() - startTime) >0){
-                System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
+                PlayerAction pa1 = ai1.getAction(0, gs);
+                if ((System.currentTimeMillis() - startTime) > 0) {
+                    System.out.println("Tempo de execução P1=" + (startTime = System.currentTimeMillis() - startTime));
                 }
                 //System.out.println("Action A1 ="+ pa1.toString());
-                
+
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
-                if( (System.currentTimeMillis() - startTime) >0){
-                   System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
+                if ((System.currentTimeMillis() - startTime) > 0) {
+                    System.out.println("Tempo de execução P2=" + (startTime = System.currentTimeMillis() - startTime));
                 }
                 //System.out.println("Action A2 ="+ pa2.toString());
-                
+
                 gs.issueSafe(pa1);
                 gs.issueSafe(pa2);
-                
+
                 // simulate:
                 gameover = gs.cycle();
                 w.repaint();
@@ -266,7 +266,7 @@ public class GameVisualSimulationTest {
                     e.printStackTrace();
                 }
             }
-           /* PhysicalGameState physical = gs.getPhysicalGameState();
+            /* PhysicalGameState physical = gs.getPhysicalGameState();
             System.out.println("---------TIME---------");
             System.out.println(gs.getTime());
             for (Unit u : physical.getUnits()) {
@@ -277,14 +277,14 @@ public class GameVisualSimulationTest {
                      System.out.println("Player 0: Unity - " + u.toString());
                 } 
             }
-            */
+             */
         } while (!gameover && gs.getTime() < MAXCYCLES);
         System.out.println("Winner " + Integer.toString(gs.winner()));
         System.out.println("Game Over");
     }
-    
-    public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
-        
+
+    public static List<AI> decodeScripts2(UnitTypeTable utt, String sScripts) {
+
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
         String[] itens = sScripts.split(";");
@@ -292,10 +292,10 @@ public class GameVisualSimulationTest {
         for (String element : itens) {
             iScriptsAi1.add(Integer.decode(element));
         }
-        
+
         List<AI> scriptsAI = new ArrayList<>();
 
-        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
 
         iScriptsAi1.forEach((idSc) -> {
@@ -305,5 +305,29 @@ public class GameVisualSimulationTest {
         return scriptsAI;
     }
 
+    public static List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+        List<AI> scriptsAI = new ArrayList<>();
+
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
+        BasicExpandedConfigurableScript[] AIs = new BasicExpandedConfigurableScript[10];
+        AIs[0] = scriptsCompleteSet.get(0);
+        AIs[1] = scriptsCompleteSet.get(1);
+        AIs[2] = scriptsCompleteSet.get(2);
+        AIs[3] = scriptsCompleteSet.get(3);
+        AIs[4] = scriptsCompleteSet.get(4);
+        AIs[5] = scriptsCompleteSet.get(7);
+        AIs[6] = scriptsCompleteSet.get(8);
+        AIs[7] = scriptsCompleteSet.get(100);
+        AIs[8] = scriptsCompleteSet.get(101);
+        AIs[9] = scriptsCompleteSet.get(102);
+
+        for (Integer idSc : iScripts) {
+            scriptsAI.add(AIs[idSc]);
+        }
+
+        return scriptsAI;
+    }
 
 }
