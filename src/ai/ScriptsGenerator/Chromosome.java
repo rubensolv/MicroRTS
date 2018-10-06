@@ -7,6 +7,7 @@ package ai.ScriptsGenerator;
 
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
+import ai.ScriptsGenerator.Command.BasicBoolean.EnemyRange;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
@@ -55,27 +56,40 @@ public class Chromosome {
         //pos.addPosition(EnumPositionType.Down);
         train.addParameter(pos);
         commands.add(train);
+        
         //harverst action
 //        HarvestBasic harverst = new HarvestBasic();
 //        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-//        harverst.addParameter(new QuantityParam(3)); //add qtd unit
+//        harverst.addParameter(new QuantityParam(2)); //add qtd unit
 //        commands.add(harverst);
+        
         //attack action
-        AttackBasic attack = new AttackBasic();
-        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new IPlayerTargetParam(1));
-        attack.addParameter(new StrongestEnemy()); //add behavior
-        commands.add(attack);
+//        AttackBasic attack = new AttackBasic();
+//        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+//        attack.addParameter(new IPlayerTargetParam(0)); //add player target
+//        attack.addParameter(new ClosestEnemy()); //add behavior
+//        commands.add(attack);    
+        
         //Move action
-//        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-//        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-//        moveToUnit.addParameter(new ClosestEnemy()); //add behavior
-//        commands.add(moveToUnit);
-        	//Move To coordinates
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new IPlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commands.add(moveToUnit);
+//        	
+//        //Move To coordinates
 //        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
 //        moveToCoordinates.addParameter(new CoordinatesParam(6,6)); //add unit type
 //        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
 //        commands.add(moveToCoordinates);
+        
+        //enemy attack range (BOOLEAN)
+        
+        EnemyRange enemyRangeBoolean = new EnemyRange();
+        enemyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(enemyRangeBoolean);    
+        
+
 
 
     }

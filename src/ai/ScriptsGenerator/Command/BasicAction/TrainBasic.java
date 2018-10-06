@@ -51,7 +51,8 @@ public class TrainBasic extends AbstractBasicAction {
             for (Unit unit : unitToBuild) {
                 if (game.getActionAssignment(unit) == null) {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit);
-                    currentPlayerAction.addUnitAction(unit, unTemp);
+                    if(unTemp != null)
+                    	currentPlayerAction.addUnitAction(unit, unTemp);
                 }
             }
         }
