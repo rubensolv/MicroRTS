@@ -46,7 +46,7 @@ public class LookUpUnits {
     
     public Long getOrigIDUnit(Integer unitIndex){
         for(Long l : lookupId.keySet()){
-            if(lookupId.get(l) == unitIndex){
+            if(lookupId.get(l).equals(unitIndex) ){
                 return l;
             }
         }

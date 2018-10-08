@@ -10,15 +10,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.ResourceUsage;
 import rts.UnitAction;
-import static rts.UnitAction.DIRECTION_DOWN;
-import static rts.UnitAction.DIRECTION_LEFT;
-import static rts.UnitAction.DIRECTION_RIGHT;
-import static rts.UnitAction.DIRECTION_UP;
 import rts.UnitActionAssignment;
 import rts.units.Unit;
 
@@ -144,7 +139,7 @@ public class MoveArray2 {
                 }
             }else{
                 //System.out.println("Stop the valid Move Vec!");
-                throw new Exception();
+                throw new Exception("Time limit MoveArray2 line 142 ");
             }
         }
 

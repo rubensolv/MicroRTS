@@ -125,7 +125,8 @@ public class MoveArrayAbstract {
      * @param codPlayer int with the player id
      * @return ArrayList with valid actions.
      */
-    public ArrayList<Action> getNextValidMoveVec(GameState state, int codPlayer, LookUpUnits lkp, Instant initialTime) throws Exception {
+    public ArrayList<Action> getNextValidMoveVec(GameState state, int codPlayer, LookUpUnits lkp, Instant initialTime) throws Exception 
+    {
         ArrayList<Action> tempActions;
         tempActions = getNextMoveVec();
 
@@ -140,7 +141,7 @@ public class MoveArrayAbstract {
                 }
             }else{
                 //System.out.println("Stop the valid Move Vec!");
-                throw new Exception();
+                throw new Exception("Time limit reached!");
             }
         }
 
