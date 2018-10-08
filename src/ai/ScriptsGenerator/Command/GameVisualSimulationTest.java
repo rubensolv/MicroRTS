@@ -216,7 +216,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new GAB(utt);
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
-        //AI ai2 = new POLightRush(utt);
+        AI ai2 = new POLightRush(utt);
         
         //AI ai2 = new RangedDefense(utt);
         //AI ai2 = new PVAI(utt);
@@ -233,7 +233,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new PVAIML_SLFWMS(utt);
         //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
         
-        AI ai2 = new PassiveAI(utt);
+        //AI ai2 = new PassiveAI(utt);
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());

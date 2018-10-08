@@ -36,11 +36,11 @@ public class AttackBasic extends AbstractBasicAction {
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
-       int playerTarget=getPlayerTargetFromParam().getPlayerTarget();
-       for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
-            
-            //pick one enemy unit to set the action
-            Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);  
+        int playerTarget=getPlayerTargetFromParam().getPlayerTarget();
+        for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
+             
+             //pick one enemy unit to set the action
+             Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);  
             
             if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
                 AbstractAction action = new Attack(unAlly, targetEnemy, pf);
@@ -56,41 +56,5 @@ public class AttackBasic extends AbstractBasicAction {
         return currentPlayerAction;
     }
 
-    private boolean hasUnitsStopped(GameState game, int player, PlayerAction currentPlayerAction) {
-        for(Unit un : game.getUnits()){
-            if(un.getPlayer() == player && un.getResources() == 0){
-                if(currentPlayerAction.getAction(un) == null && 
-                        game.getActionAssignment(un) == null){
-                    return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-
-    private Iterable<Unit> getPotentialUnits(GameState game, PlayerAction currentPlayerAction, int player) {
-        ArrayList<Unit> unitAllys = new ArrayList<>();
-        for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
-                    && game.getActionAssignment(u) == null && u.getResources() == 0
-                    && isUnitControlledByParam(u)){
-                unitAllys.add(u);
-            }
-        }
-        return unitAllys;
-    }
-
-    private boolean isUnitControlledByParam(Unit u) {
-        List<UnitTypeParam> unType = getTypeUnitFromParam();
-        for (UnitTypeParam unitTypeParam : unType) {
-            for (EnumTypeUnits paramType : unitTypeParam.getParamTypes()) {
-                if(u.getType().ID == paramType.code()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
 }
