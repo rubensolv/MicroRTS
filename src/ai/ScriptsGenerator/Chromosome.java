@@ -7,6 +7,8 @@ package ai.ScriptsGenerator;
 
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
+import ai.ScriptsGenerator.Command.BasicBoolean.AllyRange;
+import ai.ScriptsGenerator.Command.BasicBoolean.DistanceFromEnemy;
 import ai.ScriptsGenerator.Command.BasicBoolean.EnemyRange;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
@@ -15,6 +17,7 @@ import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.CoordinatesParam;
+import ai.ScriptsGenerator.ParametersConcrete.DistanceParam;
 import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.LessHealthyEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.MostHealthyEnemy;
@@ -39,11 +42,14 @@ import rts.units.UnitTypeTable;
 public class Chromosome {
 
     List<ICommand> commands = new ArrayList<>();
+    List<ICommand> commandsforBoolean;
     UnitTypeTable utt;
 
     public Chromosome(UnitTypeTable utt) {
         this.utt = utt;
 
+      //BASIC ACTIONS**********************************************************************
+        
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
@@ -58,10 +64,10 @@ public class Chromosome {
         commands.add(train);
         
         //harverst action
-//        HarvestBasic harverst = new HarvestBasic();
-//        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-//        harverst.addParameter(new QuantityParam(2)); //add qtd unit
-//        commands.add(harverst);
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
         
         //attack action
 //        AttackBasic attack = new AttackBasic();
@@ -71,23 +77,41 @@ public class Chromosome {
 //        commands.add(attack);    
         
         //Move action
-        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new IPlayerTargetParam(0)); //add player target
-        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-        commands.add(moveToUnit);
+//        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+//        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+//        moveToUnit.addParameter(new IPlayerTargetParam(0)); //add player target
+//        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+//        commands.add(moveToUnit);
 //        	
 //        //Move To coordinates
-//        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-//        moveToCoordinates.addParameter(new CoordinatesParam(6,6)); //add unit type
-//        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-//        commands.add(moveToCoordinates);
+        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
         
-        //enemy attack range (BOOLEAN)
+        //BOOLEAN  enemyRangeBoolean **********************************************************************
+          	AttackBasic attack = new AttackBasic();
+          	attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+          	attack.addParameter(new IPlayerTargetParam(0)); //add player target
+          	attack.addParameter(new ClosestEnemy()); //add behavior   
+          	commandsforBoolean = new ArrayList<>();
+          	commandsforBoolean.add(attack);
+          	
+        	EnemyRange enemyRangeBoolean = new EnemyRange(commandsforBoolean);
+        	enemyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        	commands.add(enemyRangeBoolean);
         
-        EnemyRange enemyRangeBoolean = new EnemyRange();
-        enemyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
-        commands.add(enemyRangeBoolean);    
+//        
+//        AllyRange allyRangeBoolean = new AllyRange();
+//        allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+//        commands.add(allyRangeBoolean);   
+        
+//        DistanceFrom distanceFromBoolean = new DistanceFrom();
+//        distanceFromBoolean.addParameter(TypeConcrete.getTypeUnits());
+//        distanceFromBoolean.addParameter(new DistanceParam(28));
+//        commands.add(distanceFromBoolean);  
+        
+
         
 
 
@@ -102,7 +126,7 @@ public class Chromosome {
         for (ICommand command : commands) {
             currentActions = command.getAction(gs, player, currentActions, pf, utt);
         }
-
+        System.out.println("currentActions "+currentActions.toString());
         return currentActions;
     }
 }

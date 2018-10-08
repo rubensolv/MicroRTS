@@ -49,7 +49,7 @@ public class MoveToCoordinatesBasic extends AbstractBasicAction {
             if (game.getActionAssignment(unAlly) == null && unAlly != null) {
                 
             	UnitAction uAct = null;
-            	UnitAction move = pf.findPathToPositionInRange(unAlly, pX+pY*pgs.getWidth(), unAlly.getAttackRange(), game, resources);            	
+            	UnitAction move = pf.findPath(unAlly, pX+pY*pgs.getWidth(), game, resources);            	
             	if (move!=null && game.isUnitActionAllowed(unAlly, move));
                 	uAct = move;
 
