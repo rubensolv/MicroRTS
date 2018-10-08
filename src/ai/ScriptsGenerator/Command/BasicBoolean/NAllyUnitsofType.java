@@ -33,12 +33,12 @@ import rts.units.UnitTypeTable;
 /**
  *
  * @author rubens Julian
- * This condition evaluates if some unitAlly is in the attack range of an enemy
+ * This condition evaluates if there are X ally units of type t in the map
  */
-public class EnemyRange extends AbstractBooleanAction {
+public class NAllyUnitsofType extends AbstractBooleanAction {
 
 
-	public EnemyRange(List<ICommand> commandsBoolean) {
+	public NAllyUnitsofType(List<ICommand> commandsBoolean) {
 		this.commandsBoolean=commandsBoolean;
 	}
 
@@ -51,40 +51,12 @@ public class EnemyRange extends AbstractBooleanAction {
 		//update variable resources
 		resources = getResourcesUsed(currentPlayerAction, pgs);
 
-		//now whe iterate for all ally units in order to discover wich one satisfy the condition
+		//here we validate if there are x ally units of type t in the map
+		
+		if(getUnitsOfType(game, currentPlayerAction, player).size()>=getQuantityFromParam().getQuantity())
+			currentPlayerAction=appendCommands(player, game, currentPlayerAction);
+		
 
-		for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
-			boolean applyWait=true;
-			if(currentPlayerAction.getAction(unAlly) == null)
-			{
-
-				for (Unit u2 : pgs.getUnits()) {
-
-					if (u2.getPlayer() >= 0 && u2.getPlayer() != player ) {
-
-						int dx = u2.getX()-unAlly.getX();
-						int dy = u2.getY()-unAlly.getY();
-						double d = Math.sqrt(dx*dx+dy*dy);
-
-						//If satisfies, an action is applied to that unit. Units that not satisfies will be set with
-						// an action wait.
-						if ((d<=u2.getAttackRange())) {
-
-							applyWait=false;
-						}
-					}     
-
-				}
-				if(applyWait)
-					unitstoApplyWait.add(unAlly);
-			}
-		}
-		//here we set with wait the units that dont satisfy the condition
-		temporalWaitActions(game, player, unitstoApplyWait, currentPlayerAction);
-		//here we apply the action just over the units that satisfy the condition
-		currentPlayerAction=appendCommands(player, game, currentPlayerAction);
-		//here we remove the wait action f the other units and the flow continues
-		restoreOriginalActions(game, player, unitstoApplyWait, currentPlayerAction);
 		return currentPlayerAction;
 	}
 

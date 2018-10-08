@@ -33,66 +33,62 @@ import rts.units.UnitTypeTable;
 /**
  *
  * @author rubens Julian
- * This condition evaluates if some unitAlly is in the attack range of an enemy
+ * This condition evaluates if some unitAlly is in a distance x of an enemy
  */
 public class DistanceFromEnemy extends AbstractBooleanAction {
 
-	
-    @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-        ResourceUsage resources = new ResourceUsage();
-        PhysicalGameState pgs = game.getPhysicalGameState();
-        
-        //ActionsInstantation
-        //ActionsInstantation();
 
-        
-        //update variable resources
-        resources = getResourcesUsed(currentPlayerAction, pgs);
-       for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
-           for (Unit u2 : pgs.getUnits()) {
-        	   
-               if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
-            	   
-                   int dx = u2.getX()-unAlly.getX();
-                   int dy = u2.getY()-unAlly.getY();
-                   double d = Math.sqrt(dx*dx+dy*dy);
-                   
-                   if (d<=getDistanceFromParam().getDistance()) {              	   
-                	   //appendCommands(player, game, currentPlayerAction);
-                   }
-               }            
-           }
-        }
-        return currentPlayerAction;
-    }
+	public DistanceFromEnemy(List<ICommand> commandsBoolean) {
+		this.commandsBoolean=commandsBoolean;
+	}
 
 
-    private Iterable<Unit> getPotentialUnits(GameState game, PlayerAction currentPlayerAction, int player) {
-        ArrayList<Unit> unitAllys = new ArrayList<>();
-        for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
-                    && game.getActionAssignment(u) == null && u.getResources() == 0
-                    && isUnitControlledByParam(u)){
-                unitAllys.add(u);
-            }
-        }
-        return unitAllys;
-    }
+	@Override
+	public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+		ResourceUsage resources = new ResourceUsage();
+		PhysicalGameState pgs = game.getPhysicalGameState();
+		ArrayList<Unit> unitstoApplyWait = new ArrayList<>();
+		//update variable resources
+		resources = getResourcesUsed(currentPlayerAction, pgs);
 
-    private boolean isUnitControlledByParam(Unit u) {
-        List<UnitTypeParam> unType = getTypeUnitFromParam();
-        for (UnitTypeParam unitTypeParam : unType) {
-        	
-            for (EnumTypeUnits paramType : unitTypeParam.getParamTypes()) {
-                if(u.getType().ID == paramType.code()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    
+		//now whe iterate for all ally units in order to discover wich one satisfy the condition
+
+		for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
+			boolean applyWait=true;
+			if(currentPlayerAction.getAction(unAlly) == null)
+			{
+
+				for (Unit u2 : pgs.getUnits()) {
+
+					if (u2.getPlayer() >= 0 && u2.getPlayer() != player ) {
+
+						int dx = u2.getX()-unAlly.getX();
+						int dy = u2.getY()-unAlly.getY();
+						double d = Math.sqrt(dx*dx+dy*dy);
+
+						//If satisfies, an action is applied to that unit. Units that not satisfies will be set with
+						// an action wait.
+						if (d<=getDistanceFromParam().getDistance()) {
+
+							applyWait=false;
+						}
+					}     
+
+				}
+				if(applyWait)
+					unitstoApplyWait.add(unAlly);
+			}
+		}
+		//here we set with wait the units that dont satisfy the condition
+		temporalWaitActions(game, player, unitstoApplyWait, currentPlayerAction);
+		//here we apply the action just over the units that satisfy the condition
+		currentPlayerAction=appendCommands(player, game, currentPlayerAction);
+		//here we remove the wait action f the other units and the flow continues
+		restoreOriginalActions(game, player, unitstoApplyWait, currentPlayerAction);
+		return currentPlayerAction;
+	}
+
+
+
 
 }

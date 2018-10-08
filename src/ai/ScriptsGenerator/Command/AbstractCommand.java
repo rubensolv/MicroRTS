@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.IParameters.IBehavior;
 import ai.ScriptsGenerator.IParameters.ICoordinates;
@@ -113,7 +114,104 @@ public abstract class AbstractCommand implements ICommand{
         }
         return types;
     }
+
+    private Unit getEnemybyBehavior(GameState game, int player, IBehavior behavior, Unit allyUnit) {
+        
+        return behavior.getEnemytByBehavior(game, player, allyUnit);
+    }
     
+    protected ResourceUsage getResourcesUsed(PlayerAction currentPlayerAction, PhysicalGameState pgs) {
+        ResourceUsage res = new ResourceUsage();
+        for (Pair<Unit, UnitAction> action : currentPlayerAction.getActions()) {
+            if(action.m_a != null && action.m_b != null){
+                res.merge(action.m_b.resourceUsage(action.m_a, pgs));
+            }
+        }
+        return res;
+    }
+    
+    protected Iterable<Unit> getPotentialUnits(GameState game, PlayerAction currentPlayerAction, int player) {
+        ArrayList<Unit> unitAllys = new ArrayList<>();
+        for (Unit u : game.getUnits()) {
+            if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
+                    && game.getActionAssignment(u) == null && u.getResources() == 0
+                    && isUnitControlledByParam(u)){
+                unitAllys.add(u);
+            }
+        }
+        return unitAllys;
+    }
+    
+    protected ArrayList<Unit> getUnitsOfType(GameState game, PlayerAction currentPlayerAction, int player) {
+        ArrayList<Unit> unitAllys = new ArrayList<>();
+        for (Unit u : game.getUnits()) {
+            if(u.getPlayer() == player && isUnitControlledByParam(u)){
+                unitAllys.add(u);
+            }
+        }
+        return unitAllys;
+    }
+    
+    protected ArrayList<Unit> getEnemyUnitsOfType(GameState game, PlayerAction currentPlayerAction, int player) {
+        ArrayList<Unit> unitsEnemy = new ArrayList<>();
+        for (Unit u : game.getUnits()) {
+            if(u.getPlayer() == 1-player && isUnitControlledByParam(u)){
+            	unitsEnemy.add(u);
+            }
+        }
+        return unitsEnemy;
+    }
+    
+    protected ArrayList<Unit> getAllyUnitsAttacking(GameState game, PlayerAction currentPlayerAction, int player) {
+        ArrayList<Unit> unitAllys = new ArrayList<>();
+        for (Unit u : game.getUnits()) {
+            if(u.getPlayer() == player && isUnitControlledByParam(u) && currentPlayerAction.getAction(u)!=null){
+            	if(currentPlayerAction.getAction(u).getType()==5)
+            		unitAllys.add(u);
+            }
+        }
+        return unitAllys;
+    }
+    
+    protected ArrayList<Unit> getAllyUnitsHarvesting(GameState game, PlayerAction currentPlayerAction, int player) {
+        ArrayList<Unit> unitAllys = new ArrayList<>();
+        for (Unit u : game.getUnits()) {
+            if(u.getPlayer() == player && currentPlayerAction.getAction(u)!=null){
+            	if(currentPlayerAction.getAction(u).getType()==2 || currentPlayerAction.getAction(u).getType()==3 )
+            		unitAllys.add(u);
+            }
+        }
+        return unitAllys;
+    }
+
+    protected boolean isUnitControlledByParam(Unit u) {
+        List<UnitTypeParam> unType = getTypeUnitFromParam();
+        for (UnitTypeParam unitTypeParam : unType) {
+        	
+            for (EnumTypeUnits paramType : unitTypeParam.getParamTypes()) {
+                if(u.getType().ID == paramType.code()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private boolean hasUnitsStopped(GameState game, int player, PlayerAction currentPlayerAction) {
+        for(Unit un : game.getUnits()){
+            if(un.getPlayer() == player && un.getResources() == 0){
+                if(currentPlayerAction.getAction(un) == null && 
+                        game.getActionAssignment(un) == null){
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    
+ 
     protected IQuantity getQuantityFromParam() {
         for(IParameters param : getParameters()){
             if(param instanceof IQuantity){
@@ -160,20 +258,4 @@ public abstract class AbstractCommand implements ICommand{
         
         return beh;
     }
-
-    private Unit getEnemybyBehavior(GameState game, int player, IBehavior behavior, Unit allyUnit) {
-        
-        return behavior.getEnemytByBehavior(game, player, allyUnit);
-    }
-    
-    protected ResourceUsage getResourcesUsed(PlayerAction currentPlayerAction, PhysicalGameState pgs) {
-        ResourceUsage res = new ResourceUsage();
-        for (Pair<Unit, UnitAction> action : currentPlayerAction.getActions()) {
-            if(action.m_a != null && action.m_b != null){
-                res.merge(action.m_b.resourceUsage(action.m_a, pgs));
-            }
-        }
-        return res;
-    }
-    
 }

@@ -56,41 +56,5 @@ public class AttackBasic extends AbstractBasicAction {
         return currentPlayerAction;
     }
 
-    private boolean hasUnitsStopped(GameState game, int player, PlayerAction currentPlayerAction) {
-        for(Unit un : game.getUnits()){
-            if(un.getPlayer() == player && un.getResources() == 0){
-                if(currentPlayerAction.getAction(un) == null && 
-                        game.getActionAssignment(un) == null){
-                    return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-
-    private Iterable<Unit> getPotentialUnits(GameState game, PlayerAction currentPlayerAction, int player) {
-        ArrayList<Unit> unitAllys = new ArrayList<>();
-        for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player && currentPlayerAction.getAction(u) == null 
-                    && game.getActionAssignment(u) == null && u.getResources() == 0
-                    && isUnitControlledByParam(u)){
-                unitAllys.add(u);
-            }
-        }
-        return unitAllys;
-    }
-
-    private boolean isUnitControlledByParam(Unit u) {
-        List<UnitTypeParam> unType = getTypeUnitFromParam();
-        for (UnitTypeParam unitTypeParam : unType) {
-            for (EnumTypeUnits paramType : unitTypeParam.getParamTypes()) {
-                if(u.getType().ID == paramType.code()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
 }
