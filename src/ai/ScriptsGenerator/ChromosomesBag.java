@@ -46,481 +46,442 @@ import rts.units.UnitTypeTable;
  */
 public class ChromosomesBag {
 
-	List<ICommand> commands = new ArrayList<>();
-	List<ICommand> commandsforBoolean;
-	UnitTypeTable utt;
+    List<ICommand> commands2 = new ArrayList<>();
+    List<ICommand> commandsforBoolean;
+    UnitTypeTable utt;
 
-	public ChromosomesBag(UnitTypeTable utt) {
-	}
-	
-	//Done
-	public void ChromosomesBag1(UnitTypeTable utt) {
-		this.utt = utt;
+    public ChromosomesBag(UnitTypeTable utt) {
+    }
 
-		//BASIC ACTIONS**********************************************************************
-		
+    //Done
+    public List<ICommand> ChromosomesBag1(UnitTypeTable utt) {
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
+
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(100)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(100)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+        NEnemyUnitsofType nAllyOfTypeBoolean = new NEnemyUnitsofType(commandsforBoolean);
+        nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyOfTypeBoolean);
 
-		NEnemyUnitsofType nAllyOfTypeBoolean = new NEnemyUnitsofType(commandsforBoolean);
-		nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyOfTypeBoolean); 
+        return commands;
+    }
 
-	}
-	
-	//Done
-	public void ChromosomesBag2(UnitTypeTable utt) {
-		
-		this.utt = utt;
+    //Done
+    public List<ICommand> ChromosomesBag2(UnitTypeTable utt) {
 
-		//BASIC ACTIONS**********************************************************************
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        //pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		//pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+        //attack action
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior
+        commands.add(attack);
 
-		//attack action
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior
-		commands.add(attack);    
+        return commands;
+    }
 
+    //Done
+    public List<ICommand> ChromosomesBag3(UnitTypeTable utt) {
 
-		
-	}
-	
-	//Done
-	public void ChromosomesBag3(UnitTypeTable utt) {
-		
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		//pos.addPosition(EnumPositionType.Up);
-		//pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        //pos.addPosition(EnumPositionType.Up);
+        //pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
+        //BOOLEAN  If there is an enemy in allyRange 
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
+        AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
+        allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(allyRangeBoolean);
 
-		//BOOLEAN  If there is an enemy in allyRange 
+        return commands;
+    }
 
-		MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
+    //Done
+    public List<ICommand> ChromosomesBag4(UnitTypeTable utt) {
 
-		AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
-		allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(allyRangeBoolean);   
-
-
-
-	}
-	
-	//Done
-	public void ChromosomesBag4(UnitTypeTable utt) {
-		
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		//pos.addPosition(EnumPositionType.Left);
-		pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        //pos.addPosition(EnumPositionType.Left);
+        pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
-		
-		//Move To coordinates
-		MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		//BOOLEAN  If there are X ally units of type T 
+        //Move To coordinates
+        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
 
-		moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates); 
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToCoordinates);
+        //BOOLEAN  If there are X ally units of type T 
+        moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToCoordinates);
 
+        return commands;
+    }
 
-	}
-	
-	//Done
-	public void ChromosomesBag5(UnitTypeTable utt) {
-		
-		this.utt = utt;
+    //Done
+    public List<ICommand> ChromosomesBag5(UnitTypeTable utt) {
 
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(3)); //add qtd unit
         commands.add(build);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(100)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		//pos.addPosition(EnumPositionType.Up);
-		//pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(100)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        //pos.addPosition(EnumPositionType.Up);
+        //pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(10)); //add qtd unit
-		commands.add(harverst);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(10)); //add qtd unit
+        commands.add(harverst);
 
-		
-		
-		//BOOLEANS *********************************************************************************************************************************
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If ally Is In Distance X From Enemy 
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
- 
-		//BOOLEAN  If ally Is In Distance X From Enemy 
+        DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
+        distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
+        distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
+        commands.add(distanceFromEnemyBoolean);
 
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+        return commands;
+    }
 
-		DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
-		distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
-		distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
-		commands.add(distanceFromEnemyBoolean); 
-		
+    //Done
+    public List<ICommand> ChromosomesBag6(UnitTypeTable utt) {
 
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-	}
-	
-	//Done
-	public void ChromosomesBag6(UnitTypeTable utt) {
-		
-		this.utt = utt;
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		//BASIC ACTIONS**********************************************************************
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If there is an ally in enemyRange 
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        EnemyRange enemyRangeBoolean = new EnemyRange(commandsforBoolean);
+        enemyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(enemyRangeBoolean);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+        //BOOLEAN  If there is an enemy in allyRange 
+        attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
-		
-		
-		//BOOLEANS *********************************************************************************************************************************
+        AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
+        allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(allyRangeBoolean);
 
-		//BOOLEAN  If there is an ally in enemyRange 
-		
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+        return commands;
+    }
 
-		EnemyRange enemyRangeBoolean = new EnemyRange(commandsforBoolean);
-		enemyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(enemyRangeBoolean);
+    //Done
+    public List<ICommand> ChromosomesBag7(UnitTypeTable utt) {
 
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//BOOLEAN  If there is an enemy in allyRange 
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If ally Is In Distance X From Enemy 
+        harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit 
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(harverst);
 
-		AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
-		allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(allyRangeBoolean);   
+        DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
+        distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
+        distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
+        commands.add(distanceFromEnemyBoolean);
 
- 
-	}
-	
-	//Done
-	public void ChromosomesBag7(UnitTypeTable utt) {
-		
-		this.utt = utt;
+        //BOOLEAN  If there are X ally units of type T 
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
-		//BASIC ACTIONS**********************************************************************
+        NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
+        nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyOfTypeBoolean);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        return commands;
+    }
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+    //Done
+    public List<ICommand> ChromosomesBag8(UnitTypeTable utt) {
 
-
-		
-		//BOOLEANS *********************************************************************************************************************************
-
-
-
-		//BOOLEAN  If ally Is In Distance X From Enemy 
-
-		harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit 
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(harverst);
-
-		DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
-		distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
-		distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
-		commands.add(distanceFromEnemyBoolean); 
-		
-
-		//BOOLEAN  If there are X ally units of type T 
-
-		MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
-
-		NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
-		nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyOfTypeBoolean); 
-		
-		
-	}
-	
-	//Done
-	public void ChromosomesBag8(UnitTypeTable utt) {
-		
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(2)); //add qtd unit
         commands.add(build);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
-		
-		
-		//BOOLEANS *********************************************************************************************************************************
-		
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		//BOOLEAN  If there are X ally units of type T 
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If there are X ally units of type T 
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
-		MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
+        NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
+        nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyOfTypeBoolean);
 
-		NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
-		nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyOfTypeBoolean); 
-		
-		
+        //BOOLEAN  If there are X ally units of type T attacking
+        moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
-		//BOOLEAN  If there are X ally units of type T attacking
+        NAllyUnitsAttacking nAllyAttackingBoolean = new NAllyUnitsAttacking(commandsforBoolean);
+        nAllyAttackingBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyAttackingBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyAttackingBoolean);
 
-		moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
+        //attack action
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior
+        commands.add(attack);
 
-		NAllyUnitsAttacking nAllyAttackingBoolean = new NAllyUnitsAttacking(commandsforBoolean);
-		nAllyAttackingBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyAttackingBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyAttackingBoolean); 
-		
-		
-		//attack action
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior
-		commands.add(attack);    
+        //Move to unit action
+        moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commands.add(moveToUnit);
 
-		//Move to unit action
-		moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commands.add(moveToUnit);
+        //Move To coordinates
+        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
 
-		//Move To coordinates
-		MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates);
-	}
-	
-	//done
-	public void ChromosomesBag9(UnitTypeTable utt) {
-		
-		this.utt = utt;
+        return commands;
+    }
 
-		//Move To coordinates
-		MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates);
-		
+    //done
+    public List<ICommand> ChromosomesBag9(UnitTypeTable utt) {
 
-	}
-	
-	public void ChromosomesBag10(UnitTypeTable utt) {
-		
-		this.utt = utt;
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //Move To coordinates
+        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
+
+        return commands;
+    }
+
+    public List<ICommand> ChromosomesBag10(UnitTypeTable utt) {
+
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
-        
+
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -550,26 +511,24 @@ public class ChromosomesBag {
 //        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
 //        moveToUnit.addParameter(new ClosestEnemy()); //add behavior
 //        commands.add(moveToUnit);
-        	//Move To coordinates
+        //Move To coordinates
 //        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
 //        moveToCoordinates.addParameter(new CoordinatesParam(6,6)); //add unit type
 //        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
 //        commands.add(moveToCoordinates);
-	}
-	
+        return commands;
+    }
 
-	
-	public void ChromosomesBag11(UnitTypeTable utt) {
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-		
+    public List<ICommand> ChromosomesBag11(UnitTypeTable utt) {
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
-        
+
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -584,47 +543,46 @@ public class ChromosomesBag {
         train.addParameter(pos);
         commands.add(train);
 
-		//train action
-		train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(100)); //add qtd unit
-		pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(100)); //add qtd unit
+        pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+        NEnemyUnitsofType nAllyOfTypeBoolean = new NEnemyUnitsofType(commandsforBoolean);
+        nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyOfTypeBoolean);
 
-		NEnemyUnitsofType nAllyOfTypeBoolean = new NEnemyUnitsofType(commandsforBoolean);
-		nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyOfTypeBoolean); 
+        return commands;
+    }
 
-	}
-	
-	//Done
-	public void ChromosomesBag12(UnitTypeTable utt) {
-		
-		this.utt = utt;
+    //Done
+    public List<ICommand> ChromosomesBag12(UnitTypeTable utt) {
 
-		//BASIC ACTIONS**********************************************************************
-
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -639,36 +597,34 @@ public class ChromosomesBag {
         train.addParameter(pos);
         commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		//attack action
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior
-		commands.add(attack);    
+        //attack action
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior
+        commands.add(attack);
 
+        return commands;
+    }
 
-		
-	}
-	
-	//Done
-	public void ChromosomesBag13(UnitTypeTable utt) {
-		
-		this.utt = utt;
+    //Done
+    public List<ICommand> ChromosomesBag13(UnitTypeTable utt) {
 
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
-        
+
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -683,52 +639,47 @@ public class ChromosomesBag {
         train.addParameter(pos);
         commands.add(train);
 
-		//train action
-		train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		pos = new PriorityPositionParam();
-		//pos.addPosition(EnumPositionType.Up);
-		//pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        pos = new PriorityPositionParam();
+        //pos.addPosition(EnumPositionType.Up);
+        //pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
+        //BOOLEAN  If there is an enemy in allyRange 
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
+        AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
+        allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(allyRangeBoolean);
 
-		//BOOLEAN  If there is an enemy in allyRange 
+        return commands;
+    }
 
-		MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
+    //Done
+    public List<ICommand> ChromosomesBag14(UnitTypeTable utt) {
 
-		AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
-		allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(allyRangeBoolean);   
-
-
-
-	}
-	
-	//Done
-	public void ChromosomesBag14(UnitTypeTable utt) {
-		
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
 
-		//train action
+        //train action
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -743,56 +694,54 @@ public class ChromosomesBag {
         train.addParameter(pos);
         commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
-		
-		//Move To coordinates
-		MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		//BOOLEAN  If there are X ally units of type T 
+        //Move To coordinates
+        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
 
-		moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates); 
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToCoordinates);
+        //BOOLEAN  If there are X ally units of type T 
+        moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToCoordinates);
 
+        return commands;
+    }
 
-	}
-	
-	//Done
-	public void ChromosomesBag15(UnitTypeTable utt) {
-		
-		this.utt = utt;
+    //Done
+    public List<ICommand> ChromosomesBag15(UnitTypeTable utt) {
 
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(3)); //add qtd unit
         commands.add(build);
 
-		//train action
-		TrainBasic train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(100)); //add qtd unit
-		PriorityPositionParam pos = new PriorityPositionParam();
-		//pos.addPosition(EnumPositionType.Up);
-		//pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
-		
+        //train action
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(100)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        //pos.addPosition(EnumPositionType.Up);
+        //pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
+
         //train action
         train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -807,42 +756,35 @@ public class ChromosomesBag {
         train.addParameter(pos);
         commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(10)); //add qtd unit
-		commands.add(harverst);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(10)); //add qtd unit
+        commands.add(harverst);
 
-		
-		
-		//BOOLEANS *********************************************************************************************************************************
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If ally Is In Distance X From Enemy 
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
- 
-		//BOOLEAN  If ally Is In Distance X From Enemy 
+        DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
+        distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
+        distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
+        commands.add(distanceFromEnemyBoolean);
 
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+        return commands;
+    }
 
-		DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
-		distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
-		distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
-		commands.add(distanceFromEnemyBoolean); 
-		
+    //Done
+    public List<ICommand> ChromosomesBag16(UnitTypeTable utt) {
 
-
-	}
-	
-	//Done
-	public void ChromosomesBag16(UnitTypeTable utt) {
-		
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -857,53 +799,46 @@ public class ChromosomesBag {
         train.addParameter(pos);
         commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		
-		
-		//BOOLEANS *********************************************************************************************************************************
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If there is an ally in enemyRange 
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
-		//BOOLEAN  If there is an ally in enemyRange 
-		
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+        EnemyRange enemyRangeBoolean = new EnemyRange(commandsforBoolean);
+        enemyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(enemyRangeBoolean);
 
-		EnemyRange enemyRangeBoolean = new EnemyRange(commandsforBoolean);
-		enemyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(enemyRangeBoolean);
+        //BOOLEAN  If there is an enemy in allyRange 
+        attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior   
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(attack);
 
+        AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
+        allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(allyRangeBoolean);
 
-		//BOOLEAN  If there is an enemy in allyRange 
+        return commands;
+    }
 
-		attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior   
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(attack);
+    //Done
+    public List<ICommand> ChromosomesBag17(UnitTypeTable utt) {
 
-		AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
-		allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(allyRangeBoolean);   
-
- 
-	}
-	
-	//Done
-	public void ChromosomesBag17(UnitTypeTable utt) {
-		
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -917,82 +852,73 @@ public class ChromosomesBag {
         //pos.addPosition(EnumPositionType.Down);
         train.addParameter(pos);
         commands.add(train);
-		
+
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(3)); //add qtd unit
         commands.add(build);
 
-		//train action
-		train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If ally Is In Distance X From Enemy 
+        harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit 
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(harverst);
 
-		
-		//BOOLEANS *********************************************************************************************************************************
+        DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
+        distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
+        distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
+        commands.add(distanceFromEnemyBoolean);
 
+        //BOOLEAN  If there are X ally units of type T 
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
+        NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
+        nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyOfTypeBoolean);
 
-		//BOOLEAN  If ally Is In Distance X From Enemy 
+        return commands;
+    }
 
-		harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit 
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(harverst);
+    //Done
+    public List<ICommand> ChromosomesBag18(UnitTypeTable utt) {
 
-		DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
-		distanceFromEnemyBoolean.addParameter(TypeConcrete.getTypeUnits());
-		distanceFromEnemyBoolean.addParameter(new DistanceParam(6));
-		commands.add(distanceFromEnemyBoolean); 
-		
-
-		//BOOLEAN  If there are X ally units of type T 
-
-		MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
-
-		NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
-		nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyOfTypeBoolean); 
-		
-		
-	}
-	
-	//Done
-	public void ChromosomesBag18(UnitTypeTable utt) {
-		
-		this.utt = utt;
-
-		//BASIC ACTIONS**********************************************************************
-		
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(2)); //add qtd unit
         commands.add(build);
-        
+
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -1007,92 +933,86 @@ public class ChromosomesBag {
         train.addParameter(pos);
         commands.add(train);
 
-		//train action
-		train = new TrainBasic();
-		train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-		train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-		train.addParameter(new QuantityParam(20)); //add qtd unit
-		pos = new PriorityPositionParam();
-		pos.addPosition(EnumPositionType.Up);
-		pos.addPosition(EnumPositionType.Left);
-		//pos.addPosition(EnumPositionType.Right);
-		//pos.addPosition(EnumPositionType.Down);
-		train.addParameter(pos);
-		commands.add(train);
+        //train action
+        train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        //pos.addPosition(EnumPositionType.Right);
+        //pos.addPosition(EnumPositionType.Down);
+        train.addParameter(pos);
+        commands.add(train);
 
-		//harverst action
-		HarvestBasic harverst = new HarvestBasic();
-		harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-		harverst.addParameter(new QuantityParam(1)); //add qtd unit
-		commands.add(harverst);
-		
-		
-		//BOOLEANS *********************************************************************************************************************************
-		
+        //harverst action
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
 
-		//BOOLEAN  If there are X ally units of type T 
+        //BOOLEANS *********************************************************************************************************************************
+        //BOOLEAN  If there are X ally units of type T 
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
-		MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
+        NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
+        nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyOfTypeBoolean);
 
-		NAllyUnitsofType nAllyOfTypeBoolean = new NAllyUnitsofType(commandsforBoolean);
-		nAllyOfTypeBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyOfTypeBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyOfTypeBoolean); 
-		
-		
+        //BOOLEAN  If there are X ally units of type T attacking
+        moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
 
-		//BOOLEAN  If there are X ally units of type T attacking
+        NAllyUnitsAttacking nAllyAttackingBoolean = new NAllyUnitsAttacking(commandsforBoolean);
+        nAllyAttackingBoolean.addParameter(TypeConcrete.getTypeUnits());
+        nAllyAttackingBoolean.addParameter(new QuantityParam(3));
+        commands.add(nAllyAttackingBoolean);
 
-		moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commandsforBoolean = new ArrayList<>();
-		commandsforBoolean.add(moveToUnit);
+        //attack action
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        attack.addParameter(new ClosestEnemy()); //add behavior
+        commands.add(attack);
 
-		NAllyUnitsAttacking nAllyAttackingBoolean = new NAllyUnitsAttacking(commandsforBoolean);
-		nAllyAttackingBoolean.addParameter(TypeConcrete.getTypeUnits());
-		nAllyAttackingBoolean.addParameter(new QuantityParam(3));
-		commands.add(nAllyAttackingBoolean); 
-		
-		
-		//attack action
-		AttackBasic attack = new AttackBasic();
-		attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		attack.addParameter(new PlayerTargetParam(0)); //add player target
-		attack.addParameter(new ClosestEnemy()); //add behavior
-		commands.add(attack);    
+        //Move to unit action
+        moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commands.add(moveToUnit);
 
-		//Move to unit action
-		moveToUnit = new MoveToUnitBasic();
-		moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-		moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
-		moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
-		commands.add(moveToUnit);
+        //Move To coordinates
+        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
 
-		//Move To coordinates
-		MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates);
-	}
-	
-	//done
-	public void ChromosomesBag19(UnitTypeTable utt) {
-		
-		this.utt = utt;
-        
-		//build action
+        return commands;
+    }
+
+    //done
+    public List<ICommand> ChromosomesBag19(UnitTypeTable utt) {
+
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(3)); //add qtd unit
         commands.add(build);
-        
+
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -1105,29 +1025,28 @@ public class ChromosomesBag {
         //pos.addPosition(EnumPositionType.Right);
         //pos.addPosition(EnumPositionType.Down);
         train.addParameter(pos);
-        commands.add(train);       
-		
-		
+        commands.add(train);
 
-		//Move To coordinates
-		MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-		moveToCoordinates.addParameter(new CoordinatesParam(14,5)); //add unit type
-		moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-		commands.add(moveToCoordinates);
-		
+        //Move To coordinates
+        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
+        moveToCoordinates.addParameter(new CoordinatesParam(14, 5)); //add unit type
+        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(moveToCoordinates);
 
-	}
-	
-	public void ChromosomesBag20(UnitTypeTable utt) {
-		
-		this.utt = utt;
-		
+        return commands;
+
+    }
+
+    public List<ICommand> ChromosomesBag20(UnitTypeTable utt) {
+
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
         //build action
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         commands.add(build);
-        
+
         //train action
         TrainBasic train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -1141,7 +1060,7 @@ public class ChromosomesBag {
         //pos.addPosition(EnumPositionType.Down);
         train.addParameter(pos);
         commands.add(train);
-        
+
         //train action
         train = new TrainBasic();
         train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
@@ -1155,8 +1074,7 @@ public class ChromosomesBag {
         //pos.addPosition(EnumPositionType.Down);
         train.addParameter(pos);
         commands.add(train);
-        
-        
+
         //harverst action
         HarvestBasic harverst = new HarvestBasic();
         harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
@@ -1173,24 +1091,24 @@ public class ChromosomesBag {
 //        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
 //        moveToUnit.addParameter(new ClosestEnemy()); //add behavior
 //        commands.add(moveToUnit);
-        	//Move To coordinates
+        //Move To coordinates
 //        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
 //        moveToCoordinates.addParameter(new CoordinatesParam(6,6)); //add unit type
 //        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
 //        commands.add(moveToCoordinates);
-	}
-	
-	
 
-	public PlayerAction getAction(int player, GameState gs) {
-		PlayerAction currentActions = new PlayerAction();
-		PathFinding pf = new AStarPathFinding();
+        return commands;
+    }
 
-		//simulate one WR
-		for (ICommand command : commands) {
-			currentActions = command.getAction(gs, player, currentActions, pf, utt);
-		}
-		System.out.println("currentActions "+currentActions.toString());
-		return currentActions;
-	}
+    public PlayerAction getAction(int player, GameState gs) {
+        PlayerAction currentActions = new PlayerAction();
+        PathFinding pf = new AStarPathFinding();
+
+        //simulate one WR
+        for (ICommand command : commands2) {
+            currentActions = command.getAction(gs, player, currentActions, pf, utt);
+        }
+        System.out.println("currentActions " + currentActions.toString());
+        return currentActions;
+    }
 }

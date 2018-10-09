@@ -19,6 +19,8 @@ import Standard.StrategyTactics;
 import ai.core.AI;
 import ai.*;
 import ai.CMAB.CmabAssymetricMCTS;
+import ai.ScriptsGenerator.ChromosomeAI;
+import ai.ScriptsGenerator.ChromosomesBag;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -94,7 +96,7 @@ import util.XMLWriter;
  *
  * @author Rubens
  */
-public class ClusterTesteLeve_Cluster {
+public class ClusterTesteLeve_ScCreator {
 
     public static void main(String args[]) throws Exception {
         int iAi1 = Integer.parseInt(args[0]);
@@ -105,13 +107,7 @@ public class ClusterTesteLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/BWDistantResources32x32.xml",
-                "maps/24x24/basesWorkers24x24A.xml",
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -138,71 +134,30 @@ public class ClusterTesteLeve_Cluster {
         if (pgs.getHeight() == 64) {
             MAXCYCLES = 12000;
         }
-
-        List<AI> ais = new ArrayList<>(Arrays.asList(
-                new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new PuppetSearchMCTSBasicScripts(utt),
-               new StrategyTactics(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
-               new SCVPlus(utt)
-                //new GAB(utt),
-                //new SAB(utt)
-        ));
-        //add GAB e SAB by map settings
-        switch(maps.get(map)){
-            case "maps/8x8/basesWorkers8x8A.xml" :
-                ais.add(12, new GAB(utt, 6, 8)); //8 ManagerMoreDPS
-                ais.add(13, new SAB(utt, 5, 8)); //8 ManagerMoreDPS
-                break;
-            case     "maps/8x8/FourBasesWorkers8x8.xml" :                
-                ais.add(12, new GAB(utt, 8, 2));
-                ais.add(13, new SAB(utt, 8, 2));
-                break;
-            case     "maps/NoWhereToRun9x8.xml" :
-                ais.add(12, new GAB(utt, 8, 2));
-                ais.add(13, new SAB(utt, 3, 2));
-                break;
-            case     "maps/16x16/basesWorkers16x16A.xml" :
-                ais.add(12, new GAB(utt, 10, 2));  //2  ManagerClosestEnemy
-                ais.add(13, new SAB(utt, 4, 4)); //4 ManagerFartherEnemy
-                break;
-            case     "maps/16x16/TwoBasesBarracks16x16.xml" :
-                ais.add(12, new GAB(utt, 7, 3));
-                ais.add(13, new SAB(utt, 0, 3));
-                break;
-            case     "maps/24x24/basesWorkers24x24A.xml" :
-                ais.add(12, new GAB(utt, 9, 5)); // 5 ManagerLessLife
-                ais.add(13, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
-                break;
-            case     "maps/32x32/basesWorkers32x32A.xml" :
-                ais.add(12, new GAB(utt, 1, 2)); //2  ManagerClosestEnemy
-                ais.add(13, new SAB(utt, 2, 5)); // 5 ManagerLessLife
-                break;
-            case     "maps/BWDistantResources32x32.xml" :
-                ais.add(12, new GAB(utt, 2, 7)); // 7 ManagerLessDPS
-                ais.add(13, new SAB(utt, 3, 0)); //0 - ManagerRandom
-                break;
-            case     "maps/BroodWar/(4)BloodBath.scmB.xml" :
-                ais.add(12, new GAB(utt, 1, 7)); // 7 ManagerLessDPS
-                ais.add(13, new SAB(utt, 1, 5)); // 5 ManagerLessLife
-                break;
-            default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
-                ais.add(12, new GAB(utt, 2, 2));
-                ais.add(13, new SAB(utt, 2, 2)); //2  ManagerClosestEnemy
-                break;
-        }
+        ChromosomesBag bag = new ChromosomesBag(utt);
         
-        ais.add(14, new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1));
+        List<AI> ais = new ArrayList<>(Arrays.asList(
+                new ChromosomeAI(utt, bag.ChromosomesBag1(utt), "C1"),
+                new ChromosomeAI(utt, bag.ChromosomesBag2(utt), "C2"),
+                new ChromosomeAI(utt, bag.ChromosomesBag3(utt), "C3"),
+                new ChromosomeAI(utt, bag.ChromosomesBag4(utt), "C4"),
+                new ChromosomeAI(utt, bag.ChromosomesBag5(utt), "C5"),
+                new ChromosomeAI(utt, bag.ChromosomesBag6(utt), "C6"),
+                new ChromosomeAI(utt, bag.ChromosomesBag7(utt), "C7"),
+                new ChromosomeAI(utt, bag.ChromosomesBag8(utt), "C8"),
+                new ChromosomeAI(utt, bag.ChromosomesBag9(utt), "C9"),
+                new ChromosomeAI(utt, bag.ChromosomesBag10(utt), "C10"),
+                new ChromosomeAI(utt, bag.ChromosomesBag11(utt), "C11"),
+                new ChromosomeAI(utt, bag.ChromosomesBag12(utt), "C12"),
+                new ChromosomeAI(utt, bag.ChromosomesBag13(utt), "C13"),
+                new ChromosomeAI(utt, bag.ChromosomesBag14(utt), "C14"),
+                new ChromosomeAI(utt, bag.ChromosomesBag15(utt), "C15"),
+                new ChromosomeAI(utt, bag.ChromosomesBag16(utt), "C16"),
+                new ChromosomeAI(utt, bag.ChromosomesBag17(utt), "C17"),
+                new ChromosomeAI(utt, bag.ChromosomesBag18(utt), "C18"),
+                new ChromosomeAI(utt, bag.ChromosomesBag19(utt), "C19"),
+                new ChromosomeAI(utt, bag.ChromosomesBag20(utt), "C20")
+        ));
         
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);

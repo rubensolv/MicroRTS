@@ -26,6 +26,8 @@ import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.ScriptsGenerator.ParametersConcrete.WeakestEnemy;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
+import ai.core.AI;
+import ai.core.ParameterSpecification;
 import java.util.ArrayList;
 import java.util.List;
 import rts.GameState;
@@ -36,57 +38,21 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class Chromosome {
+public class ChromosomeAI extends AI{
 
     List<ICommand> commands = new ArrayList<>();
     UnitTypeTable utt;
+    String name;
 
-    public Chromosome(UnitTypeTable utt) {
+    public ChromosomeAI(UnitTypeTable utt) {
         this.utt = utt;
 
-        
-        //build action
-        BuildBasic build = new BuildBasic();
-        build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
-        build.addParameter(new QuantityParam(1)); //add qtd unit
-        commands.add(build);
-        
-        //train action
-        TrainBasic train = new TrainBasic();
-        train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
-        train.addParameter(TypeConcrete.getTypeLight()); //add unit Type
-        //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-        train.addParameter(new QuantityParam(20)); //add qtd unit
-        PriorityPositionParam pos = new PriorityPositionParam();
-        pos.addPosition(EnumPositionType.Up);
-        pos.addPosition(EnumPositionType.Left);
-        //pos.addPosition(EnumPositionType.Right);
-        //pos.addPosition(EnumPositionType.Down);
-        train.addParameter(pos);
-        commands.add(train);
-        //harverst action
-        HarvestBasic harverst = new HarvestBasic();
-        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-        harverst.addParameter(new QuantityParam(2)); //add qtd unit
-        commands.add(harverst);
-        //attack action
-        AttackBasic attack = new AttackBasic();
-        attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new IPlayerTargetParam(0));
-        attack.addParameter(new StrongestEnemy()); //add behavior
-        commands.add(attack);
-        //Move action
-//        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-//        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-//        moveToUnit.addParameter(new ClosestEnemy()); //add behavior
-//        commands.add(moveToUnit);
-        	//Move To coordinates
-//        MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-//        moveToCoordinates.addParameter(new CoordinatesParam(6,6)); //add unit type
-//        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
-//        commands.add(moveToCoordinates);
-
-
+    }
+    
+    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name) {
+        this.utt = utt;
+        this.commands = commands;
+        this.name = name;
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -99,5 +65,21 @@ public class Chromosome {
         }
 
         return currentActions;
+    }
+
+    @Override
+    public void reset() {
+        
+    }
+
+    @Override
+    public AI clone() {
+        return this;
+    }
+
+    @Override
+    public List<ParameterSpecification> getParameters() {
+        List<ParameterSpecification> list = new ArrayList<>();
+        return list;
     }
 }
