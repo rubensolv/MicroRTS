@@ -6,9 +6,11 @@
 package ai.ScriptsGenerator.Command.BasicAction;
 
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
+import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
 import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.IParameters.IBehavior;
 import ai.ScriptsGenerator.IParameters.IParameters;
+import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import ai.abstraction.AbstractAction;
 import ai.abstraction.Attack;
@@ -37,7 +39,14 @@ public class MoveToUnitBasic extends AbstractBasicAction {
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
-        int playerTarget=getPlayerTargetFromParam().getPlayerTarget();
+        PlayerTargetParam p = new PlayerTargetParam();
+        EnumPlayerTarget enumPlayer=p.getSelectedPlayerTarget().get(0);
+        String pt=enumPlayer.name();
+        int playerTarget=-1;
+        if(pt=="Ally")
+        	playerTarget=player;
+        if(pt=="Enemy")
+        	playerTarget=1-player;
        for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
             
             //pick one enemy unit to set the action

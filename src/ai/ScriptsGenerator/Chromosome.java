@@ -12,13 +12,14 @@ import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
+import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.CoordinatesParam;
 import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.LessHealthyEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.MostHealthyEnemy;
-import ai.ScriptsGenerator.ParametersConcrete.IPlayerTargetParam;
+import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.PriorityPositionParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.StrongestEnemy;
@@ -72,8 +73,10 @@ public class Chromosome {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new IPlayerTargetParam(0));
-        attack.addParameter(new StrongestEnemy()); //add behavior
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Ally);
+        attack.addParameter(pt);
+        attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
         //Move action
 //        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();

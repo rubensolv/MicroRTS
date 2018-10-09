@@ -18,6 +18,7 @@ import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.IParameters.IPlayerTarget;
 import ai.ScriptsGenerator.IParameters.IQuantity;
 import ai.ScriptsGenerator.ParametersConcrete.ConstructionTypeParam;
+import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import rts.GameState;
 import rts.PhysicalGameState;
@@ -239,10 +240,10 @@ public abstract class AbstractCommand implements ICommand{
         return null;
     }
     
-    protected IPlayerTarget getPlayerTargetFromParam() {
+    protected PlayerTargetParam getPlayerTargetFromParam() {
         for(IParameters param : getParameters()){
             if(param instanceof IPlayerTarget){
-                return (IPlayerTarget) param;
+                return (PlayerTargetParam) param;
             }
         }
         return null;

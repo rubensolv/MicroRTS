@@ -5,11 +5,14 @@
  */
 package ai.ScriptsGenerator.IParameters;
 
+import java.util.List;
+
+import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
+
 /**
  *
  * @author rubens Julian
  */
 public interface IPlayerTarget extends IParameters{
-    public int getPlayerTarget();
-    public void setPlayerTarget(int value);
+
 }

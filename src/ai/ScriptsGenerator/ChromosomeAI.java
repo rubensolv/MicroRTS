@@ -18,7 +18,7 @@ import ai.ScriptsGenerator.ParametersConcrete.CoordinatesParam;
 import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.LessHealthyEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.MostHealthyEnemy;
-import ai.ScriptsGenerator.ParametersConcrete.IPlayerTargetParam;
+import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.PriorityPositionParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.StrongestEnemy;
