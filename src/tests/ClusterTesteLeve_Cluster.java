@@ -18,6 +18,7 @@ import PVAI.RangedDefense;
 import Standard.StrategyTactics;
 import ai.core.AI;
 import ai.*;
+import ai.CMAB.CmabAssymetricMCTS;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -157,48 +158,52 @@ public class ClusterTesteLeve_Cluster {
         //add GAB e SAB by map settings
         switch(maps.get(map)){
             case "maps/8x8/basesWorkers8x8A.xml" :
-                ais.add(11, new GAB(utt, 6, 8)); //8 ManagerMoreDPS
-                ais.add(12, new SAB(utt, 5, 8)); //8 ManagerMoreDPS
+                ais.add(12, new GAB(utt, 6, 8)); //8 ManagerMoreDPS
+                ais.add(13, new SAB(utt, 5, 8)); //8 ManagerMoreDPS
                 break;
             case     "maps/8x8/FourBasesWorkers8x8.xml" :                
-                ais.add(11, new GAB(utt, 8, 2));
-                ais.add(12, new SAB(utt, 8, 2));
+                ais.add(12, new GAB(utt, 8, 2));
+                ais.add(13, new SAB(utt, 8, 2));
                 break;
             case     "maps/NoWhereToRun9x8.xml" :
-                ais.add(11, new GAB(utt, 8, 2));
-                ais.add(12, new SAB(utt, 3, 2));
+                ais.add(12, new GAB(utt, 8, 2));
+                ais.add(13, new SAB(utt, 3, 2));
                 break;
             case     "maps/16x16/basesWorkers16x16A.xml" :
-                ais.add(11, new GAB(utt, 10, 2));  //2  ManagerClosestEnemy
-                ais.add(12, new SAB(utt, 4, 4)); //4 ManagerFartherEnemy
+                ais.add(12, new GAB(utt, 10, 2));  //2  ManagerClosestEnemy
+                ais.add(13, new SAB(utt, 4, 4)); //4 ManagerFartherEnemy
                 break;
             case     "maps/16x16/TwoBasesBarracks16x16.xml" :
-                ais.add(11, new GAB(utt, 7, 3));
-                ais.add(12, new SAB(utt, 0, 3));
+                ais.add(12, new GAB(utt, 7, 3));
+                ais.add(13, new SAB(utt, 0, 3));
                 break;
             case     "maps/24x24/basesWorkers24x24A.xml" :
-                ais.add(11, new GAB(utt, 9, 5)); // 5 ManagerLessLife
-                ais.add(12, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
+                ais.add(12, new GAB(utt, 9, 5)); // 5 ManagerLessLife
+                ais.add(13, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
                 break;
             case     "maps/32x32/basesWorkers32x32A.xml" :
-                ais.add(11, new GAB(utt, 1, 2)); //2  ManagerClosestEnemy
-                ais.add(12, new SAB(utt, 2, 5)); // 5 ManagerLessLife
+                ais.add(12, new GAB(utt, 1, 2)); //2  ManagerClosestEnemy
+                ais.add(13, new SAB(utt, 2, 5)); // 5 ManagerLessLife
                 break;
             case     "maps/BWDistantResources32x32.xml" :
-                ais.add(11, new GAB(utt, 2, 7)); // 7 ManagerLessDPS
-                ais.add(12, new SAB(utt, 3, 0)); //0 - ManagerRandom
+                ais.add(12, new GAB(utt, 2, 7)); // 7 ManagerLessDPS
+                ais.add(13, new SAB(utt, 3, 0)); //0 - ManagerRandom
                 break;
             case     "maps/BroodWar/(4)BloodBath.scmB.xml" :
-                ais.add(11, new GAB(utt, 1, 7)); // 7 ManagerLessDPS
-                ais.add(12, new SAB(utt, 1, 5)); // 5 ManagerLessLife
+                ais.add(12, new GAB(utt, 1, 7)); // 7 ManagerLessDPS
+                ais.add(13, new SAB(utt, 1, 5)); // 5 ManagerLessLife
                 break;
             default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
-                ais.add(11, new GAB(utt, 2, 2));
-                ais.add(12, new SAB(utt, 2, 2)); //2  ManagerClosestEnemy
+                ais.add(12, new GAB(utt, 2, 2));
+                ais.add(13, new SAB(utt, 2, 2)); //2  ManagerClosestEnemy
                 break;
         }
         
-
+        ais.add(14, new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 1));
+        
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);
 

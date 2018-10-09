@@ -236,15 +236,15 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
             //System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
-            //return paAB;
+            return paAB;
             //}
             
-            if(runRandomEval(playerForThisComputation, gs_to_start_from, paAB, _pgs.getEnemyScript()) >
-                    runRandomEval(playerForThisComputation, gs_to_start_from, paPGS, _pgs.getEnemyScript())){
-                return paAB;
-            }else{
-                return paPGS;
-            }
+            //if(runRandomEval(playerForThisComputation, gs_to_start_from, paAB, _pgs.getEnemyScript()) >
+            //        runRandomEval(playerForThisComputation, gs_to_start_from, paPGS, _pgs.getEnemyScript())){
+            //    return paAB;
+            //}else{
+            //    return paPGS;
+            //}
                 
 
             //new test 
