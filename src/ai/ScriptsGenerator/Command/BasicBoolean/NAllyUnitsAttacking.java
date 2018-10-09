@@ -13,7 +13,7 @@ import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.IParameters.IBehavior;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
-import ai.ScriptsGenerator.ParametersConcrete.IPlayerTargetParam;
+import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import ai.abstraction.AbstractAction;

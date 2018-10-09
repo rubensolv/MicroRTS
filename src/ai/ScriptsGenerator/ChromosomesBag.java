@@ -18,6 +18,7 @@ import ai.ScriptsGenerator.Command.BasicBoolean.NEnemyUnitsofType;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
+import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
@@ -86,7 +87,9 @@ public class ChromosomesBag {
 
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -127,7 +130,9 @@ public class ChromosomesBag {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
 
@@ -162,7 +167,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there is an enemy in allyRange 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -257,7 +264,9 @@ public class ChromosomesBag {
         //BOOLEAN  If ally Is In Distance X From Enemy 
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -299,7 +308,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there is an ally in enemyRange 
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -311,7 +322,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there is an enemy in allyRange 
         attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -364,7 +377,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there are X ally units of type T 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -412,7 +427,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there are X ally units of type T 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -425,7 +442,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there are X ally units of type T attacking
         moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -438,14 +457,18 @@ public class ChromosomesBag {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
 
         //Move to unit action
         moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commands.add(moveToUnit);
 
@@ -503,7 +526,9 @@ public class ChromosomesBag {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0));
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new StrongestEnemy()); //add behavior
         commands.add(attack);
         //Move action
@@ -564,7 +589,9 @@ public class ChromosomesBag {
 
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -606,7 +633,9 @@ public class ChromosomesBag {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
 
@@ -655,7 +684,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there is an enemy in allyRange 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -766,7 +797,9 @@ public class ChromosomesBag {
         //BOOLEAN  If ally Is In Distance X From Enemy 
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -809,7 +842,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there is an ally in enemyRange 
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -821,7 +856,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there is an enemy in allyRange 
         attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior   
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(attack);
@@ -894,7 +931,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there are X ally units of type T 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -956,7 +995,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there are X ally units of type T 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -969,7 +1010,9 @@ public class ChromosomesBag {
         //BOOLEAN  If there are X ally units of type T attacking
         moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commandsforBoolean = new ArrayList<>();
         commandsforBoolean.add(moveToUnit);
@@ -982,14 +1025,18 @@ public class ChromosomesBag {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new ClosestEnemy()); //add behavior
         commands.add(attack);
 
         //Move to unit action
         moveToUnit = new MoveToUnitBasic();
         moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        moveToUnit.addParameter(new PlayerTargetParam(0)); //add player target
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
         moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
         commands.add(moveToUnit);
 
@@ -1083,7 +1130,9 @@ public class ChromosomesBag {
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new PlayerTargetParam(0));
+        PlayerTargetParam pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
         attack.addParameter(new StrongestEnemy()); //add behavior
         commands.add(attack);
         //Move action
