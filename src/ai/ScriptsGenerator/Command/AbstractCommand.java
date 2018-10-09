@@ -258,4 +258,15 @@ public abstract class AbstractCommand implements ICommand{
         
         return beh;
     }
+    
+    protected int getResourcesInCurrentAction(PlayerAction currentPlayerAction) {
+        int resources = 0;
+        for (Pair<Unit, UnitAction> action : currentPlayerAction.getActions()) {
+            if (action.m_b.getUnitType() != null) {
+                resources += action.m_b.getUnitType().cost;
+            }
+        }
+
+        return resources;
+    }
 }

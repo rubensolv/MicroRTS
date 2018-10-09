@@ -53,9 +53,10 @@ public class Chromosome {
         
         //train action
         TrainBasic train = new TrainBasic();
-        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
-        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
-        train.addParameter(new QuantityParam(1)); //add qtd unit
+        train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeLight()); //add unit Type
+        //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
         PriorityPositionParam pos = new PriorityPositionParam();
         pos.addPosition(EnumPositionType.Up);
         pos.addPosition(EnumPositionType.Left);
@@ -64,14 +65,14 @@ public class Chromosome {
         train.addParameter(pos);
         commands.add(train);
         //harverst action
-//        HarvestBasic harverst = new HarvestBasic();
-//        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
-//        harverst.addParameter(new QuantityParam(3)); //add qtd unit
-//        commands.add(harverst);
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(2)); //add qtd unit
+        commands.add(harverst);
         //attack action
         AttackBasic attack = new AttackBasic();
         attack.addParameter(TypeConcrete.getTypeUnits()); //add unit type
-        attack.addParameter(new IPlayerTargetParam(1));
+        attack.addParameter(new IPlayerTargetParam(0));
         attack.addParameter(new StrongestEnemy()); //add behavior
         commands.add(attack);
         //Move action

@@ -42,7 +42,8 @@ public class TrainBasic extends AbstractBasicAction {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-        if (game.getPlayer(player).getResources()>0
+        int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
+        if ((game.getPlayer(player).getResources() - resourcesUsed) > 0
                 && limitReached(game, player, currentPlayerAction)) {
             //get units basead in type to produce
             List<Unit> unitToBuild = getUnitsToBuild(game, player);
@@ -51,8 +52,9 @@ public class TrainBasic extends AbstractBasicAction {
             for (Unit unit : unitToBuild) {
                 if (game.getActionAssignment(unit) == null) {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit);
-                    if(unTemp != null)
-                    	currentPlayerAction.addUnitAction(unit, unTemp);
+                    if (unTemp != null) {
+                        currentPlayerAction.addUnitAction(unit, unTemp);
+                    }
                 }
             }
         }
@@ -93,11 +95,11 @@ public class TrainBasic extends AbstractBasicAction {
                 UnitAction uAct = null;
                 //train based in PriorityPosition
                 uAct = trainUnitBasedInPriorityPosition(game, unit, a_utt.getUnitType(en.code()));
-                if(uAct == null){
+                if (uAct == null) {
                     AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
                     uAct = action.execute(game);
                 }
-                
+
                 if (uAct != null && uAct.getType() == 4) {
                     return uAct;
                 }
@@ -109,9 +111,9 @@ public class TrainBasic extends AbstractBasicAction {
 
     private boolean limitReached(GameState game, int player, PlayerAction currentPlayerAction) {
         IQuantity qtt = getQuantityFromParam();
-        
+
         //verify if the quantity of units associated with the specific type were reached.
-        if(qtt.getQuantity() <= getQuantityUnitsBuilded(game, player, currentPlayerAction)){
+        if (qtt.getQuantity() <= getQuantityUnitsBuilded(game, player, currentPlayerAction)) {
             return false;
         }
         return true;
@@ -121,8 +123,8 @@ public class TrainBasic extends AbstractBasicAction {
         int ret = 0;
         HashSet<EnumTypeUnits> types = new HashSet<>();
         //get types in EnumTypeUnits
-        for(IParameters param : getParameters()){
-            if(param instanceof UnitTypeParam){
+        for (IParameters param : getParameters()) {
+            if (param instanceof UnitTypeParam) {
                 types.addAll(((UnitTypeParam) param).getParamTypes());
             }
         }
@@ -130,27 +132,28 @@ public class TrainBasic extends AbstractBasicAction {
         for (EnumTypeUnits type : types) {
             ret += countUnitsByType(game, player, currentPlayerAction, type);
         }
-        
+
         return ret;
     }
 
     private int countUnitsByType(GameState game, int player, PlayerAction currentPlayerAction, EnumTypeUnits type) {
         int qtt = 0;
-        
+
         //count units in state
         for (Unit unit : game.getUnits()) {
-            if(unit.getPlayer() == player && unit.getType().ID == type.code() ){
+            if (unit.getPlayer() == player && unit.getType().ID == type.code()) {
                 qtt++;
             }
         }
         // count units in currentPlayerAction 
         for (Pair<Unit, UnitAction> action : currentPlayerAction.getActions()) {
-            if(action.m_b.getUnitType().ID == type.code()){
-                qtt++;
+            if ((action.m_b.getUnitType() != null)) {
+                if (action.m_b.getUnitType().ID == type.code()) {
+                    qtt++;
+                }
             }
         }
-        
-        
+
         return qtt;
     }
 
@@ -158,16 +161,18 @@ public class TrainBasic extends AbstractBasicAction {
         PriorityPositionParam order = getPriorityParam();
         UnitAction ua = null;
         for (EnumPositionType enumPositionType : order.getSelectedPosition()) {
-            ua = new UnitAction(UnitAction.TYPE_PRODUCE,enumPositionType.code(), unitType);
-            if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) return ua;
+            ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumPositionType.code(), unitType);
+            if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) {
+                return ua;
+            }
         }
-        
+
         return null;
     }
 
     private PriorityPositionParam getPriorityParam() {
-        for(IParameters param : getParameters()){
-            if(param instanceof IPriorityPosition){
+        for (IParameters param : getParameters()) {
+            if (param instanceof IPriorityPosition) {
                 return (PriorityPositionParam) param;
             }
         }
@@ -179,19 +184,27 @@ public class TrainBasic extends AbstractBasicAction {
         x = trainUnit.getX();
         y = trainUnit.getY();
         //define direction
-        switch(ua.getDirection()) {
-                    case DIRECTION_UP:      y--; break;
-                    case DIRECTION_RIGHT:   x++; break;
-                    case DIRECTION_DOWN:    y++; break;
-                    case DIRECTION_LEFT:    x--; break;
-                }
-        if(game.free(x, y)){
+        switch (ua.getDirection()) {
+            case DIRECTION_UP:
+                y--;
+                break;
+            case DIRECTION_RIGHT:
+                x++;
+                break;
+            case DIRECTION_DOWN:
+                y++;
+                break;
+            case DIRECTION_LEFT:
+                x--;
+                break;
+        }
+        if (game.free(x, y)) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     
 
 }

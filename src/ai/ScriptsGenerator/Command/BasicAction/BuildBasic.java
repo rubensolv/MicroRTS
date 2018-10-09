@@ -17,13 +17,18 @@ import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import ai.abstraction.AbstractAction;
+import ai.abstraction.Build;
 import ai.abstraction.Train;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import rts.GameState;
+import rts.PhysicalGameState;
+import rts.Player;
 import rts.PlayerAction;
+import rts.ResourceUsage;
 import rts.UnitAction;
 import static rts.UnitAction.DIRECTION_DOWN;
 import static rts.UnitAction.DIRECTION_LEFT;
@@ -46,68 +51,52 @@ public class BuildBasic extends AbstractBasicAction {
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
             //check if we have resources
-            if (game.getPlayer(player).getResources() > 0
+            if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)
                     && limitReached(game, player, currentPlayerAction)) {
-                //get units basead in type to produce
-                List<Unit> unitToBuild = getUnitsToBuild(game, player);
-
-                //produce the type of unit in param
-                for (Unit unit : unitToBuild) {
-                    if (game.getActionAssignment(unit) == null) {
-                        UnitAction unTemp = translateUnitAction(game, a_utt, unit);
-                        currentPlayerAction.addUnitAction(unit, unTemp);
+                //pick one work to build
+                Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt);
+                if (workToBuild != null) {
+                    //execute the build action
+                    UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
+                    if (unAcTemp != null) {
+                        currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
                     }
+
                 }
             }
         }
         return currentPlayerAction;
     }
 
-    private List<Unit> getUnitsToBuild(GameState game, int player) {
-        List<Unit> units = new ArrayList<>();
-        //pick the units basead in the types
-        List<ConstructionTypeParam> types = getTypeBuildFromParam();
-
-        for (Unit un : game.getUnits()) {
-            if (un.getPlayer() == player) {
-                if (unitIsType(un, types)) {
-                    units.add(un);
-                }
+    private Unit getWorkToBuild(int player, GameState game, PlayerAction currentPlayerAction, UnitTypeTable a_utt) {
+        for (Unit unit : game.getUnits()) {
+            //verify if the unit is free
+            if (unit.getPlayer() == player && unit.getType() == a_utt.getUnitType("Worker")
+                    && game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null) {
+                return unit;
             }
         }
 
-        return units;
+        return null;
     }
 
-    private boolean unitIsType(Unit un, List<ConstructionTypeParam> types) {
-        for (ConstructionTypeParam type : types) {
-            if (type.getParamTypes().contains(EnumTypeUnits.byName(un.getType().name))) {
-                return true;
-            }
+    private UnitAction translateUnitAction(GameState game, UnitTypeTable a_utt, Unit unit, PlayerAction currentPlayerAction, int player, PathFinding pf) {
+        List<Integer> reservedPositions = new LinkedList<>();
+        reservedPositions.addAll(game.getResourceUsage().getPositionsUsed());
+        reservedPositions.addAll(currentPlayerAction.getResourceUsage().getPositionsUsed());
+        PhysicalGameState pgs = game.getPhysicalGameState();
+        
+        int pos = findBuildingPosition(reservedPositions, unit.getX(), unit.getY(), game.getPlayer(player), pgs);
+        //pick the type to be builded
+        UnitType unType = getUnitTyppe(a_utt);
+        
+        AbstractAction buildAct = new Build(unit, unType, pos % pgs.getWidth(), pos / pgs.getWidth(), pf);
+        ResourceUsage res = game.getResourceUsage();
+        res.merge(currentPlayerAction.getResourceUsage());
+        UnitAction unAct = buildAct.execute(game, res);
+        if(unAct != null){
+            return unAct;
         }
-
-        return false;
-    }
-
-    private UnitAction translateUnitAction(GameState game, UnitTypeTable a_utt, Unit unit) {
-        List<UnitTypeParam> types = getTypeUnitFromParam();
-
-        for (UnitTypeParam type : types) {
-            for (EnumTypeUnits en : type.getParamTypes()) {
-                UnitAction uAct = null;
-                //train based in PriorityPosition
-                uAct = trainUnitBasedInPriorityPosition(game, unit, a_utt.getUnitType(en.code()));
-                if (uAct == null) {
-                    AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
-                    uAct = action.execute(game);
-                }
-
-                if (uAct != null && uAct.getType() == 4) {
-                    return uAct;
-                }
-            }
-        }
-
         return null;
     }
 
@@ -214,4 +203,110 @@ public class BuildBasic extends AbstractBasicAction {
         return null;
     }
 
+    private int getResourceCost(ConstructionTypeParam unitToBeBuilded, UnitTypeTable a_utt) {
+        if (unitToBeBuilded.getParamTypes().get(0) == EnumTypeUnits.Base) {
+            return a_utt.getUnitType("Base").cost;
+        } else {
+            int c = a_utt.getUnitType("Barracks").cost;
+            return a_utt.getUnitType("Barracks").cost;
+        }
+    }
+
+    
+    public int findBuildingPosition(List<Integer> reserved, int desiredX, int desiredY, Player p, PhysicalGameState pgs) {
+
+        boolean[][] free = pgs.getAllFree();
+        int x, y;
+
+        /*
+        System.out.println("-" + desiredX + "," + desiredY + "-------------------");
+        for(int i = 0;i<free[0].length;i++) {
+            for(int j = 0;j<free.length;j++) {
+                System.out.print(free[j][i] + "\t");
+            }
+            System.out.println("");
+        }
+        */
+        
+        for (int l = 1; l < Math.max(pgs.getHeight(), pgs.getWidth()); l++) {
+            for (int side = 0; side < 4; side++) {
+                switch (side) {
+                    case 0://up
+                        y = desiredY - l;
+                        if (y < 0) {
+                            continue;
+                        }
+                        for (int dx = -l; dx <= l; dx++) {
+                            x = desiredX + dx;
+                            if (x < 0 || x >= pgs.getWidth()) {
+                                continue;
+                            }
+                            int pos = x + y * pgs.getWidth();
+                            if (!reserved.contains(pos) && free[x][y]) {
+                                return pos;
+                            }
+                        }
+                        break;
+                    case 1://right
+                        x = desiredX + l;
+                        if (x >= pgs.getWidth()) {
+                            continue;
+                        }
+                        for (int dy = -l; dy <= l; dy++) {
+                            y = desiredY + dy;
+                            if (y < 0 || y >= pgs.getHeight()) {
+                                continue;
+                            }
+                            int pos = x + y * pgs.getWidth();
+                            if (!reserved.contains(pos) && free[x][y]) {
+                                return pos;
+                            }
+                        }
+                        break;
+                    case 2://down
+                        y = desiredY + l;
+                        if (y >= pgs.getHeight()) {
+                            continue;
+                        }
+                        for (int dx = -l; dx <= l; dx++) {
+                            x = desiredX + dx;
+                            if (x < 0 || x >= pgs.getWidth()) {
+                                continue;
+                            }
+                            int pos = x + y * pgs.getWidth();
+                            if (!reserved.contains(pos) && free[x][y]) {
+                                return pos;
+                            }
+                        }
+                        break;
+                    case 3://left
+                        x = desiredX - l;
+                        if (x < 0) {
+                            continue;
+                        }
+                        for (int dy = -l; dy <= l; dy++) {
+                            y = desiredY + dy;
+                            if (y < 0 || y >= pgs.getHeight()) {
+                                continue;
+                            }
+                            int pos = x + y * pgs.getWidth();
+                            if (!reserved.contains(pos) && free[x][y]) {
+                                return pos;
+                            }
+                        }
+                        break;
+                }
+            }
+        }
+        return -1;
+    }
+
+    private UnitType getUnitTyppe(UnitTypeTable a_utt) {
+        ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
+         if (unitToBeBuilded.getParamTypes().get(0) == EnumTypeUnits.Base) {
+            return a_utt.getUnitType("Base");
+        } else {
+            return a_utt.getUnitType("Barracks");
+        }
+    }
 }
