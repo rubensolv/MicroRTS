@@ -39,7 +39,7 @@ public class MoveToUnitBasic extends AbstractBasicAction {
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
-        PlayerTargetParam p = new PlayerTargetParam();
+        PlayerTargetParam p = getPlayerTargetFromParam();
         EnumPlayerTarget enumPlayer=p.getSelectedPlayerTarget().get(0);
         String pt=enumPlayer.name();
         int playerTarget=-1;
