@@ -17,6 +17,8 @@ import ai.*;
 import ai.CMAB.CMABBuilder;
 import ai.CMAB.CmabNaiveMCTS;
 import ai.ScriptsGenerator.Chromosome;
+import ai.ScriptsGenerator.ChromosomeAI;
+import ai.ScriptsGenerator.ChromosomesBag;
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.abstraction.HeavyRush;
@@ -134,7 +136,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
         //AI ai1 = new PassiveAI();
-        AI ai1 = new POLightRush(utt);
+        //AI ai1 = new POLightRush(utt);
         //AI ai1 = new EconomyRush(utt);        
         //AI ai1 = new RangedDefense(utt);
         //AI ai1 = new EconomyRushBurster(utt);        
@@ -216,8 +218,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new GAB(utt);
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
-        AI ai2 = new POLightRush(utt);
-        
+        //AI ai2 = new POLightRush(utt);
         //AI ai2 = new RangedDefense(utt);
         //AI ai2 = new PVAI(utt);
         //AI ai2 = new PVAIML_onlyEnemy(utt);
@@ -234,6 +235,9 @@ public class GameVisualSimulationTest {
         //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
         
         //AI ai2 = new PassiveAI(utt);
+        ChromosomesBag bag = new ChromosomesBag(utt);
+       AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag10(utt), "P1");
+       AI ai2 = new PassiveAI(utt);
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());
@@ -248,14 +252,14 @@ public class GameVisualSimulationTest {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
                 
-                PlayerAction pa1 = ai2.getAction(0, gs);  
+                PlayerAction pa1 = ai1.getAction(0, gs);  
                 if( (System.currentTimeMillis() - startTime) >0){
                 System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
                 }
                 //System.out.println("Action A1 ="+ pa1.toString());
                 
                 startTime = System.currentTimeMillis();
-                PlayerAction pa2 = chrom.getAction(1, gs);
+                PlayerAction pa2 = ai2.getAction(1, gs);
                 
                 if( (System.currentTimeMillis() - startTime) >0){
                    System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));

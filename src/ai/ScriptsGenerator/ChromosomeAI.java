@@ -82,4 +82,11 @@ public class ChromosomeAI extends AI{
         List<ParameterSpecification> list = new ArrayList<>();
         return list;
     }
+
+    @Override
+    public String toString() {
+        return "ChromosomeAI_"+ name;
+    }
+    
+    
 }

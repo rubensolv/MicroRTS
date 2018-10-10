@@ -66,6 +66,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     String classGeneratorMove;
     String behavior;
     int qtdUnits;
+    String name="";
     
     private List<AI> scripts = new ArrayList<>();
     
@@ -186,6 +187,29 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         this.qtdUnits = qtdUnits;
         this.scripts = abstraction;
     }     
+    
+    public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, 
+                              float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa, 
+                              UnitTypeTable utt, String behavior, int qtdUnits, List<AI> abstraction, String name) {
+        super(available_time, max_playouts);
+        MAXSIMULATIONTIME = lookahead;
+        playoutPolicy = policy;
+        MAX_TREE_DEPTH = max_depth;
+        initial_epsilon_l = epsilon_l = e_l;
+        initial_epsilon_g = epsilon_g = e_g;
+        initial_epsilon_0 = epsilon_0 = e_0;
+        discount_l = 1.0f;
+        discount_g = 1.0f;
+        discount_0 = 1.0f;
+        global_strategy = a_global_strategy;
+        ef = a_ef;
+        forceExplorationOfNonSampledActions = fensa;        
+        this.utt = utt;
+        this.behavior = behavior;
+        this.qtdUnits = qtdUnits;
+        this.scripts = abstraction;
+        this.name = name;
+    }   
     
     
     @Override
@@ -390,8 +414,8 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + MAXSIMULATIONTIME + "," + MAX_TREE_DEPTH + "," + epsilon_l + ", " + discount_l + ", " + epsilon_g + ", " + discount_g + ", " + epsilon_0 + ", " + discount_0 + ", " + playoutPolicy + ", " + ef + ")";
-        //return getClass().getSimpleName() +"_"+tuplaInScripts;
+        //return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + MAXSIMULATIONTIME + "," + MAX_TREE_DEPTH + "," + epsilon_l + ", " + discount_l + ", " + epsilon_g + ", " + discount_g + ", " + epsilon_0 + ", " + discount_0 + ", " + playoutPolicy + ", " + ef + ")";
+        return this.name;
     }
     
     @Override

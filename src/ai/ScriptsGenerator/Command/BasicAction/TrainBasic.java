@@ -198,13 +198,15 @@ public class TrainBasic extends AbstractBasicAction {
                 x--;
                 break;
         }
-        if (game.free(x, y)) {
-            return true;
+        try {
+            if (game.free(x, y)) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
         }
 
         return false;
     }
-
-    
 
 }
