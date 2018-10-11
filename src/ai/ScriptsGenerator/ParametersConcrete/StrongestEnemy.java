@@ -31,5 +31,13 @@ public class StrongestEnemy extends BehaviorAbstract{
         }
         return strongestEnemy;
     }
+
+    @Override
+    public String toString() {
+        return "StrongestEnemy{-}";
+    }
+    
+    
+    
     
 }

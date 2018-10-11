@@ -1106,6 +1106,7 @@ public class ChromosomesBag {
         //pos.addPosition(EnumPositionType.Right);
         //pos.addPosition(EnumPositionType.Down);
         train.addParameter(pos);
+        System.out.println(train.toString());
         commands.add(train);
 
         //train action

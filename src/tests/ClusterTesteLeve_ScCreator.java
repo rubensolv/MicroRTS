@@ -107,6 +107,8 @@ public class ClusterTesteLeve_ScCreator {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
                 "maps/24x24/basesWorkers24x24A.xml"
         ));
 
@@ -156,7 +158,27 @@ public class ClusterTesteLeve_ScCreator {
                 new ChromosomeAI(utt, bag.ChromosomesBag17(utt), "C17"),
                 new ChromosomeAI(utt, bag.ChromosomesBag18(utt), "C18"),
                 new ChromosomeAI(utt, bag.ChromosomesBag19(utt), "C19"),
-                new ChromosomeAI(utt, bag.ChromosomesBag20(utt), "C20")
+                new ChromosomeAI(utt, bag.ChromosomesBag20(utt), "C20"),
+                new ChromosomeAI(utt, bag.ChromosomesBag21(utt), "C21"),
+                new ChromosomeAI(utt, bag.ChromosomesBag22(utt), "C22"),
+                new ChromosomeAI(utt, bag.ChromosomesBag23(utt), "C23"),
+                new ChromosomeAI(utt, bag.ChromosomesBag24(utt), "C24"),
+                new ChromosomeAI(utt, bag.ChromosomesBag25(utt), "C25"),
+                new ChromosomeAI(utt, bag.ChromosomesBag26(utt), "C26"),
+                new ChromosomeAI(utt, bag.ChromosomesBag27(utt), "C27"),
+                new ChromosomeAI(utt, bag.ChromosomesBag28(utt), "C28"),
+                new ChromosomeAI(utt, bag.ChromosomesBag29(utt), "C29"),
+                new ChromosomeAI(utt, bag.ChromosomesBag30(utt), "C30"),
+                new ChromosomeAI(utt, bag.ChromosomesBag31(utt), "C31"),
+                new ChromosomeAI(utt, bag.ChromosomesBag32(utt), "C32"),
+                new ChromosomeAI(utt, bag.ChromosomesBag33(utt), "C33"),
+                new ChromosomeAI(utt, bag.ChromosomesBag34(utt), "C34"),
+                new ChromosomeAI(utt, bag.ChromosomesBag35(utt), "C35"),
+                new ChromosomeAI(utt, bag.ChromosomesBag36(utt), "C36"),
+                new ChromosomeAI(utt, bag.ChromosomesBag37(utt), "C37"),
+                new ChromosomeAI(utt, bag.ChromosomesBag38(utt), "C38"),
+                new ChromosomeAI(utt, bag.ChromosomesBag39(utt), "C39"),
+                new ChromosomeAI(utt, bag.ChromosomesBag40(utt), "C40")
         ));
         
         AI ai1 = ais.get(iAi1);

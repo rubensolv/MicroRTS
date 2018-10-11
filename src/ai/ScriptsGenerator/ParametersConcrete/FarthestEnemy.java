@@ -31,5 +31,12 @@ public class FarthestEnemy extends BehaviorAbstract{
         }
         return farthestEnemy;
     }
+
+    @Override
+    public String toString() {
+        return "FarthestEnemy:{-}";
+    }
+    
+    
     
 }

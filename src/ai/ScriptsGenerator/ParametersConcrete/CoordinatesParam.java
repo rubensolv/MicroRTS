@@ -31,4 +31,11 @@ public class CoordinatesParam implements ICoordinates {
 		this.y=y;
 	}
 
+    @Override
+    public String toString() {
+        return "CoordinatesParam:{" + "x=" + x + ", y=" + y + '}';
+    }
+
+        
+        
 }

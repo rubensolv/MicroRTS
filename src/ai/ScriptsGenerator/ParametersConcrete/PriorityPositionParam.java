@@ -34,6 +34,11 @@ public class PriorityPositionParam implements IPriorityPosition{
             this.selectedPosition.add(position);
         }
     }
+
+    @Override
+    public String toString() {
+        return "PriorityPositionParam:{" + "selectedPosition=" + selectedPosition + '}';
+    }
     
     
     

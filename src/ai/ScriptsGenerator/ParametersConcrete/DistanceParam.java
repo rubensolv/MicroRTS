@@ -33,5 +33,12 @@ public class DistanceParam implements IDistance{
     public void setDistance(int value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "DistanceParam:{" + "value=" + value + '}';
+    }
+    
+    
     
 }

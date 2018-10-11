@@ -40,5 +40,11 @@ public class RandomEnemy extends BehaviorAbstract{
         }
         return randomEnemy;
     }
+
+    @Override
+    public String toString() {
+        return "RandomEnemy:{-}";
+    }
+    
     
 }

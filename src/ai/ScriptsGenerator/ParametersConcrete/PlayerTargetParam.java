@@ -40,4 +40,10 @@ public class PlayerTargetParam implements IPlayerTarget {
         }
     }
 
+    @Override
+    public String toString() {
+        return "PlayerTargetParam:{" + "selectedPlayerTarget=" + selectedPlayerTarget + '}';
+    }
+
+    
 }

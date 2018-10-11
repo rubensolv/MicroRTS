@@ -32,5 +32,11 @@ public class QuantityParam implements IQuantity{
     public void setQuantity(int value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "QuantityParam:{" + "value=" + value + '}';
+    }
+    
     
 }

@@ -29,4 +29,11 @@ public class ConstructionTypeParam extends TypeConcrete {
         return selectedTypes;
     }
 
+    @Override
+    public String toString() {
+        return "ConstructionTypeParam:{selectedTypes="+selectedTypes+ '}';
+    }
+    
+    
+
 }

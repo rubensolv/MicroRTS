@@ -31,4 +31,11 @@ public class UnitTypeParam extends TypeConcrete {
         return selectedTypes;
     }
 
+    @Override
+    public String toString() {
+        return "UnitTypeParam:{selectedTypes="+selectedTypes+ '}';
+    }
+
+    
+    
 }

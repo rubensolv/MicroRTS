@@ -236,7 +236,7 @@ public class GameVisualSimulationTest {
         
         //AI ai2 = new PassiveAI(utt);
         ChromosomesBag bag = new ChromosomesBag(utt);
-       AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag10(utt), "P1");
+       AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag20(utt), "P1");
        AI ai2 = new PassiveAI(utt);
         
         System.out.println("---------AI's---------");

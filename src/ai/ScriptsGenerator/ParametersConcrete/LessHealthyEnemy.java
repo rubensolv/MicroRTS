@@ -31,5 +31,12 @@ public class LessHealthyEnemy extends BehaviorAbstract{
         }
         return lessHealthyEnemy;
     }
+
+    @Override
+    public String toString() {
+        return "LessHealthyEnemy:{-}";
+    }
+
+    
     
 }

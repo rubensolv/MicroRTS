@@ -31,5 +31,11 @@ public class MostHealthyEnemy extends BehaviorAbstract{
         }
         return mostHealthyEnemy;
     }
+
+    @Override
+    public String toString() {
+        return "MostHealthyEnemy:{-}";
+    }
+    
     
 }
