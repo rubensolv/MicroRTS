@@ -19,11 +19,15 @@ import rts.units.UnitTypeTable;
  */
 public class TableCommandsGenerator {
     
-    public static ICommand getCommandByID(int ID, UnitTypeTable utt){
+    public ICommand getCommandByID(int ID, UnitTypeTable utt){
         BuildBasic build = new BuildBasic();
         build.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
         build.addParameter(new QuantityParam(1)); //add qtd unit
         return build;
+    }
+    
+    public int getNumberOfCommands(){
+        return 1;
     }
     
 }
