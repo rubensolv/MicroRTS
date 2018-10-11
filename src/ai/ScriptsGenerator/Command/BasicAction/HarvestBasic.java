@@ -6,6 +6,7 @@
 package ai.ScriptsGenerator.Command.BasicAction;
 
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
+import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.abstraction.AbstractAction;
 import ai.abstraction.Harvest;
@@ -141,6 +142,17 @@ public class HarvestBasic extends AbstractBasicAction {
         return false;
     }
 
-    
+    @Override
+    public String toString() {
+        String listParam = "Params:{";
+        for (IParameters parameter : getParameters()) {
+            listParam += parameter.toString()+",";
+        }
+        //remove the last comma.
+        listParam = listParam.substring(0, listParam.lastIndexOf(","));
+        listParam += "}";
+        
+        return "{HarvestBasic:{" + listParam+"}}";
+    }   
 
 }

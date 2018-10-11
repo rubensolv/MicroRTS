@@ -87,5 +87,22 @@ public class EnemyRange extends AbstractBooleanAction {
 		restoreOriginalActions(game, player, unitstoApplyWait, currentPlayerAction);
 		return currentPlayerAction;
 	}
+	
+    public String toString() {
+        String listParam = "Params:{";
+        for (IParameters parameter : getParameters()) {
+            listParam += parameter.toString()+",";
+        }
+        listParam += "Actions:{";
+        
+        for (ICommand command : commandsBoolean) {
+        	listParam +=  command.toString();
+        }
+        //remove the last comma.
+        listParam = listParam.substring(0, listParam.lastIndexOf(","));
+        listParam += "}";
+        
+        return "{EnemyRange:{" + listParam+"}}";
+    }
 
 }

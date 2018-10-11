@@ -67,5 +67,17 @@ public class AttackBasic extends AbstractBasicAction {
         return currentPlayerAction;
     }
 
+    @Override
+    public String toString() {
+        String listParam = "Params:{";
+        for (IParameters parameter : getParameters()) {
+            listParam += parameter.toString()+",";
+        }
+        //remove the last comma.
+        listParam = listParam.substring(0, listParam.lastIndexOf(","));
+        listParam += "}";
+        
+        return "{AttackBasic:{" + listParam+"}}";
+    }
 
 }
