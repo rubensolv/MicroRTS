@@ -8,6 +8,7 @@ package ai.ScriptsGenerator;
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.Command.BasicAction.BuildBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
+import ai.ScriptsGenerator.Command.BasicBoolean.AllyRange;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
@@ -40,6 +41,7 @@ import rts.units.UnitTypeTable;
 public class Chromosome {
 
     List<ICommand> commands = new ArrayList<>();
+    List<ICommand> commandsforBoolean = new ArrayList<>();
     UnitTypeTable utt;
 
     public Chromosome(UnitTypeTable utt) {
@@ -88,8 +90,23 @@ public class Chromosome {
 //        moveToCoordinates.addParameter(new CoordinatesParam(6,6)); //add unit type
 //        moveToCoordinates.addParameter(TypeConcrete.getTypeUnits());
 //        commands.add(moveToCoordinates);
+        
+        //BOOLEAN  If there is an enemy in allyRange 
+        MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
+        moveToUnit.addParameter(TypeConcrete.getTypeUnits()); //add unit type
+        pt=new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        moveToUnit.addParameter(pt);
+        moveToUnit.addParameter(new LessHealthyEnemy()); //add behavior
+        commandsforBoolean = new ArrayList<>();
+        commandsforBoolean.add(moveToUnit);
+
+        AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
+        allyRangeBoolean.addParameter(TypeConcrete.getTypeUnits());
+        commands.add(allyRangeBoolean);
 
 
+        System.out.println("t "+allyRangeBoolean.toString());
     }
 
     public PlayerAction getAction(int player, GameState gs) {
