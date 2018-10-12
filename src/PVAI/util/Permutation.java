@@ -82,18 +82,18 @@ public class Permutation {
         for (int i = 0; i < p.length; i++) {
             if (Character.toString(p[i]).equals("&")) {
                 temp.add(10);
-            }else if(Character.toString(p[i]).equals("$")){
+            } else if (Character.toString(p[i]).equals("$")) {
                 temp.add(11);
-            }else if(Character.toString(p[i]).equals("*")){
+            } else if (Character.toString(p[i]).equals("*")) {
                 temp.add(12);
-            }else if(Character.toString(p[i]).equals("#")){
+            } else if (Character.toString(p[i]).equals("#")) {
                 temp.add(13);
-            }else if(Character.toString(p[i]).equals("@")){
+            } else if (Character.toString(p[i]).equals("@")) {
                 temp.add(14);
-            }else{
+            } else {
                 temp.add(Integer.decode(Character.toString(p[i])));
             }
-            
+
         }
 
         itens.add(temp);
@@ -102,12 +102,16 @@ public class Permutation {
     /**
      * imprime a permutacao corrente
      */
-    private static void imprime() {
-
+    public static void imprime() {
+        /*
         System.out.println();
         System.out.print("(" + cont + ") : ");
         for (int i = 0; i < p.length; i++) {
             System.out.print(p[i] + " ");
+        }
+         */
+        for (ArrayList<Integer> t : itens) {
+            System.out.println(t);
         }
 
     } //--imprime
@@ -120,6 +124,7 @@ public class Permutation {
      * @return
      */
     public static ArrayList<Integer> getPermutation(int nArgChoose) {
+        /*
         if(!itens.isEmpty()){
           return itens.get(nArgChoose);  
         }
@@ -145,6 +150,7 @@ public class Permutation {
         //System.out.println("Total de elementos 9= " + itens.size());
         Permutation.permutar(v, 10);
         //System.out.println("Total de elementos 10= " + itens.size());
+         */
 
         //System.out.println("Total de elementos= " + itens.size());
         //System.out.println("Elemento desejado= " + itens.get(nArgChoose));
@@ -155,5 +161,24 @@ public class Permutation {
 			}
          */
         return itens.get(nArgChoose);
+    }
+
+    public static void clear() {
+        itens.clear();
+    }
+
+    public static void createPermutation(char[] vet, int qtdElements) {
+
+        if (itens.isEmpty()) {
+            //build all 
+            for (int i = 1; i <= qtdElements; i++) {
+                Permutation.permutar(vet, i);
+            }
+        }
+
+    }
+
+    public static int totalItens() {
+        return itens.size();
     }
 }
