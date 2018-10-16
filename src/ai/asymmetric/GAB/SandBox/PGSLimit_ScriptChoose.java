@@ -33,7 +33,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class PGSLimit_SandBox extends AIWithComputationBudget implements InterruptibleAI{
+public class PGSLimit_ScriptChoose extends AIWithComputationBudget implements InterruptibleAI{
     
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -54,7 +54,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
     int playerForThisComputation;
     double _bestScore;
 
-    public PGSLimit_SandBox(UnitTypeTable utt) {
+    public PGSLimit_ScriptChoose(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1, 
              new SimpleSqrtEvaluationFunction3(),
              //new SimpleSqrtEvaluationFunction2(),
@@ -63,7 +63,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
              new AStarPathFinding());
     }
     
-    public PGSLimit_SandBox(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public PGSLimit_ScriptChoose(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
         
         LOOKAHEAD = la;
@@ -75,6 +75,10 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio(); 
+    }
+    
+    public void setNewPortfolio(List<AI> scripts){
+        this.scripts = scripts;
     }
     
     protected void buildPortfolio(){
@@ -257,7 +261,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
     
     @Override
     public AI clone() {
-        return new PGSLimit_SandBox(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new PGSLimit_ScriptChoose(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override

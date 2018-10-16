@@ -46,7 +46,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements InterruptibleAI {
+public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget implements InterruptibleAI {
 
     private AlphaBetaSearchParameters _params;
     private AlphaBetaSearchResults _results;
@@ -70,11 +70,11 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
     LookUpUnits lKp = new LookUpUnits();
     public boolean scriptedMove;
 
-    public AlphaBetaSearchAbstract(UnitTypeTable utt) {
+    public AlphaBetaSearchAbstractScriptChoose(UnitTypeTable utt) {
         this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
     }
 
-    public AlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
+    public AlphaBetaSearchAbstractScriptChoose(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
         _params.setPlayerModel(Players.Player_One.codigo(), new POLightRush(utt));
@@ -101,8 +101,12 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         StartAlphaBetaSearch(_params, _TT);
         evaluation = new SimpleSqrtEvaluationFunction3();
     }
+    
+    public void setOrderedMoveScript(ArrayList<AI> IAs){
+        _params.setOrderedMoveScripts(IAs);
+    }
 
-    public AlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT) {
+    public AlphaBetaSearchAbstractScriptChoose(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT) {
         super(time, max_playouts);
         this._params = _params;
         this._TT = _TT;
@@ -519,7 +523,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
         try {
             AllMoves = new PlayerActionGenerator_Asymmetric(state, playerToMove.codigo(), this.currentScriptData, _unitsAbsAB);
         } catch (Exception ex) {
-            Logger.getLogger(AlphaBetaSearchAbstract.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AlphaBetaSearchAbstractScriptChoose.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Problem line 523 AlphaBetaSearchAbstract!");
         }
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
@@ -659,7 +663,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
                         pAIUnit = ai.getAction(playerToMove.codigo(), state);
                     } catch (Exception ex) {
                         System.out.println("Problem line 653 AlphaBetaSearchAbstract!");
-                        Logger.getLogger(AlphaBetaSearchAbstract.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(AlphaBetaSearchAbstractScriptChoose.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     actions.put(ai.toString(), pAIUnit);
                 }
@@ -754,7 +758,7 @@ public class AlphaBetaSearchAbstract extends AIWithComputationBudget implements 
 
     @Override
     public AI clone() {
-        return new AlphaBetaSearchAbstract(TIME_BUDGET, ITERATIONS_BUDGET, _params, _TT);
+        return new AlphaBetaSearchAbstractScriptChoose(TIME_BUDGET, ITERATIONS_BUDGET, _params, _TT);
     }
 
     @Override

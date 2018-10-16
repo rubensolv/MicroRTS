@@ -34,7 +34,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI {
+public class SSSLimitScriptChoose extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -59,7 +59,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
 
     double _bestScore;
 
-    public SSSLimit(UnitTypeTable utt) {
+    public SSSLimitScriptChoose(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
@@ -69,7 +69,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
                 new AStarPathFinding());
     }
 
-    public SSSLimit(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public SSSLimitScriptChoose(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -81,6 +81,10 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+    }
+    
+    public void setNewPortfolio(List<AI> scripts){
+        this.scripts = scripts;
     }
 
     protected void buildPortfolio() {
@@ -279,7 +283,7 @@ public class SSSLimit extends AIWithComputationBudget implements InterruptibleAI
 
     @Override
     public AI clone() {
-        return new SSSLimit(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new SSSLimitScriptChoose(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override

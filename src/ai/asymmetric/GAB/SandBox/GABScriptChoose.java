@@ -40,13 +40,13 @@ import util.Pair;
  *
  * @author rubens
  */
-public class GAB extends AIWithComputationBudget implements InterruptibleAI {
+public class GABScriptChoose extends AIWithComputationBudget implements InterruptibleAI {
 
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    PGSLimit_SandBox _pgs = null;
-    AlphaBetaSearchAbstract _ab = null;
+    PGSLimit_ScriptChoose _pgs = null;
+    AlphaBetaSearchAbstractScriptChoose _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
     int _time;
@@ -61,8 +61,9 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
     UnitScriptData currentScriptData;
     RandomAI rAI;
     AI randAI;
+    String name;
 
-    public GAB(UnitTypeTable utt) {
+    public GABScriptChoose(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -70,18 +71,25 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
                 new AStarPathFinding());
     }
 
-    public GAB(UnitTypeTable utt, int numUnits, int numManager) {
+    public GABScriptChoose(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
     }
+    
+    public GABScriptChoose(UnitTypeTable utt, int numUnits, int numManager, List<AI> IAsPort, List<AI> IAsABCD,String name) {
+        this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+        this.name = name;
+        this._pgs.setNewPortfolio(IAsPort);
+        this._ab.setOrderedMoveScript(new ArrayList<>(IAsABCD));
+    }
 
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public GABScriptChoose(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
-        _ab = new AlphaBetaSearchAbstract(utt);
+        _pgs = new PGSLimit_ScriptChoose(utt);
+        _ab = new AlphaBetaSearchAbstractScriptChoose(utt);
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
@@ -92,14 +100,14 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         randAI = new RandomBiasedAI(utt);
     }
 
-    public GAB(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
+    public GABScriptChoose(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, int numUnits, int numManager) {
         super(time, max_playouts);
 
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
-        _ab = new AlphaBetaSearchAbstract(utt);
+        _pgs = new PGSLimit_ScriptChoose(utt);
+        _ab = new AlphaBetaSearchAbstractScriptChoose(utt);
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
@@ -170,7 +178,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
 
     @Override
     public AI clone() {
-        return new GAB(_time, _max_playouts, evaluation, utt, pf);
+        return new GABScriptChoose(_time, _max_playouts, evaluation, utt, pf);
     }
 
     @Override
@@ -399,7 +407,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "GAB_SandBox_" + _numUnits + "_" + _numManager;
+        return "GABScriptChoose" + _numUnits + "_" + _numManager+"_"+name;
     }
 
 }
