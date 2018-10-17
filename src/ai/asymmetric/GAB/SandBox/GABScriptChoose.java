@@ -61,7 +61,7 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
     UnitScriptData currentScriptData;
     RandomAI rAI;
     AI randAI;
-    String name;
+    String name = "";
 
     public GABScriptChoose(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
@@ -73,6 +73,12 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
 
     public GABScriptChoose(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+    }
+    
+    public GABScriptChoose(UnitTypeTable utt, int numUnits, int numManager, List<AI> IAsPort, String name) {
+        this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+        this.name = name;
+        this._pgs.setNewPortfolio(IAsPort);
     }
     
     public GABScriptChoose(UnitTypeTable utt, int numUnits, int numManager, List<AI> IAsPort, List<AI> IAsABCD,String name) {
