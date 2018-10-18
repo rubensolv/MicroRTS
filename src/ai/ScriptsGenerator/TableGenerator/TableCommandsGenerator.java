@@ -12,12 +12,20 @@ import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
+import ai.ScriptsGenerator.Command.BasicBoolean.AllyRange;
+import ai.ScriptsGenerator.Command.BasicBoolean.DistanceFromEnemy;
+import ai.ScriptsGenerator.Command.BasicBoolean.EnemyRange;
+import ai.ScriptsGenerator.Command.BasicBoolean.NAllyUnitsAttacking;
+import ai.ScriptsGenerator.Command.BasicBoolean.NAllyUnitsHarvesting;
+import ai.ScriptsGenerator.Command.BasicBoolean.NAllyUnitsofType;
+import ai.ScriptsGenerator.Command.BasicBoolean.NEnemyUnitsofType;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.CoordinatesParam;
+import ai.ScriptsGenerator.ParametersConcrete.DistanceParam;
 import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.LessHealthyEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.MostHealthyEnemy;
@@ -49,6 +57,7 @@ public class TableCommandsGenerator {
     private static final int MAX_QTD_UNITS_TO_BUILD = 3;
     private static final int MAX_QTD_UNITS_TO_TRAIN = 20;
     private static final int MAP_SIZE = 24;
+    private static final int MAX_QTD_NAllyUnitsAttacking = 10;
 
     public TableCommandsGenerator(UnitTypeTable utt) {
         this.utt = utt;
@@ -74,13 +83,13 @@ public class TableCommandsGenerator {
         }
         return "TableCommandsGenerator " + text;
          */
-        
+
         String text = "";
-        
+
         for (Integer key : dicCommand.keySet()) {
-            text += key+"-"+ dicCommand.get(key).toString()+ "\n";
+            text += key + "-" + dicCommand.get(key).toString() + "\n";
         }
-        
+
         return "TableCommandsGenerator " + text;
     }
 
@@ -98,8 +107,22 @@ public class TableCommandsGenerator {
         commands.addAll(getMoveToUnit());
         //MoveToCoordenates
         commands.addAll(getMoveToCoordenates());
-
         //------------- booleans
+        ArrayList<ICommand> commandsBasic = new ArrayList<>(commands);
+        //AllyRange
+        commands.addAll(getAllyRangeCommands(commandsBasic));
+        //DistanceFromEnemy
+        commands.addAll(getDistanceFromEnemyCommands(commandsBasic));
+        //EnemyRange
+        commands.addAll(getEnemyRangeCommands(commandsBasic));
+        //NAllyUnitsAttacking
+        commands.addAll(getNAllyUnitsAttackingCommands(commandsBasic));
+        //NAllyUnitsHarvesting
+        commands.addAll(getNAllyUnitsHarvestingCommands(commandsBasic));
+        //NAllyUnitsofType
+        commands.addAll(getNAllyUnitsofTypeCommands(commandsBasic));
+        //NEnemyUnitsofType
+        commands.addAll(getNEnemyUnitsofTypeCommands(commandsBasic));
     }
 
     private Collection<? extends ICommand> getHarvestCommands() {
@@ -325,4 +348,141 @@ public class TableCommandsGenerator {
         commands.clear();
     }
 
+    private Collection<? extends ICommand> getAllyRangeCommands(ArrayList<ICommand> commandsBasic) {
+        ArrayList<ICommand> tCommandAllyRange = new ArrayList<>();
+
+        for (ICommand iCommand : commandsBasic) {
+            for (int u = 0; u < 5; u++) { //type units
+                ArrayList<ICommand> commandsforBoolean = new ArrayList<>();
+                commandsforBoolean.add(iCommand);
+                AllyRange allyRangeBoolean = new AllyRange(commandsforBoolean);
+                allyRangeBoolean.addParameter(getTypeUnitByNumber(u));
+
+                tCommandAllyRange.add(allyRangeBoolean);
+            }
+
+        }
+        return tCommandAllyRange;
+    }
+
+    private Collection<? extends ICommand> getDistanceFromEnemyCommands(ArrayList<ICommand> commandsBasic) {
+        ArrayList<ICommand> tCommandDistance = new ArrayList<>();
+        for (ICommand iCommand : commandsBasic) {
+            for (int u = 0; u < 5; u++) { //type units
+                for (int x = 0; x < MAP_SIZE; x++) {
+                    ArrayList<ICommand> commandsforBoolean = new ArrayList<>();
+                    commandsforBoolean.add(iCommand);
+                    DistanceFromEnemy distanceFromEnemyBoolean = new DistanceFromEnemy(commandsforBoolean);
+                    distanceFromEnemyBoolean.addParameter(getTypeUnitByNumber(u));
+                    distanceFromEnemyBoolean.addParameter(new DistanceParam(x));
+
+                    tCommandDistance.add(distanceFromEnemyBoolean);
+                }
+            }
+
+        }
+
+        return tCommandDistance;
+    }
+
+    private Collection<? extends ICommand> getEnemyRangeCommands(ArrayList<ICommand> commandsBasic) {
+        ArrayList<ICommand> tCommandEnRange = new ArrayList<>();
+        for (ICommand iCommand : commandsBasic) {
+            for (int u = 0; u < 5; u++) { //type units
+                ArrayList<ICommand> commandsforBoolean = new ArrayList<>();
+                commandsforBoolean.add(iCommand);
+                EnemyRange enemyRangeBoolean = new EnemyRange(commandsforBoolean);
+                enemyRangeBoolean.addParameter(getTypeUnitByNumber(u));
+
+                tCommandEnRange.add(enemyRangeBoolean);
+            }
+
+        }
+
+        return tCommandEnRange;
+    }
+
+    private Collection<? extends ICommand> getNAllyUnitsAttackingCommands(ArrayList<ICommand> commandsBasic) {
+        ArrayList<ICommand> tCommandNaAlly = new ArrayList<>();
+        for (ICommand iCommand : commandsBasic) {
+            for (int u = 0; u < 5; u++) { //type units
+                for (int q = 0; q < MAX_QTD_NAllyUnitsAttacking; q++) { //type units
+
+                    ArrayList<ICommand> commandsforBoolean = new ArrayList<>();
+                    commandsforBoolean.add(iCommand);
+
+                    NAllyUnitsAttacking nAllyAttackingBoolean = new NAllyUnitsAttacking(commandsforBoolean);
+                    nAllyAttackingBoolean.addParameter(getTypeUnitByNumber(u));
+                    nAllyAttackingBoolean.addParameter(new QuantityParam(q));
+
+                    tCommandNaAlly.add(nAllyAttackingBoolean);
+                }
+            }
+
+        }
+
+        return tCommandNaAlly;
+    }
+
+    private Collection<? extends ICommand> getNAllyUnitsHarvestingCommands(ArrayList<ICommand> commandsBasic) {
+        //NAllyUnitsHarvesting
+        ArrayList<ICommand> tCommandNaHarvest = new ArrayList<>();
+        for (ICommand iCommand : commandsBasic) {
+            for (int q = 0; q < MAX_QTD_WORKERS_HARVERST; q++) { //type units
+                ArrayList<ICommand> commandsforBoolean = new ArrayList<>();
+                commandsforBoolean.add(iCommand);
+
+                NAllyUnitsHarvesting nAllyUnitsHarvesting = new NAllyUnitsHarvesting(commandsforBoolean);
+                nAllyUnitsHarvesting.addParameter(new QuantityParam(q));
+
+                tCommandNaHarvest.add(nAllyUnitsHarvesting);
+            }
+        }
+
+        return tCommandNaHarvest;
+    }
+
+    private Collection<? extends ICommand> getNAllyUnitsofTypeCommands(ArrayList<ICommand> commandsBasic) {
+        ArrayList<ICommand> tCommandNAllyUnitsofType = new ArrayList<>();
+        for (ICommand iCommand : commandsBasic) {
+            for (int u = 0; u < 5; u++) { //type units
+                for (int q = 0; q < MAX_QTD_NAllyUnitsAttacking; q++) { //type units
+
+                    ArrayList<ICommand> commandsforBoolean = new ArrayList<>();
+                    commandsforBoolean.add(iCommand);
+
+                    NAllyUnitsofType nAllyUnitsofType = new NAllyUnitsofType(commandsforBoolean);
+                    nAllyUnitsofType.addParameter(getTypeUnitByNumber(u));
+                    nAllyUnitsofType.addParameter(new QuantityParam(q));
+
+                    tCommandNAllyUnitsofType.add(nAllyUnitsofType);
+                }
+            }
+
+        }
+
+        return tCommandNAllyUnitsofType;
+    }
+
+    private Collection<? extends ICommand> getNEnemyUnitsofTypeCommands(ArrayList<ICommand> commandsBasic) {
+        ArrayList<ICommand> tCommandNEnemyUnitsofType = new ArrayList<>();
+        for (ICommand iCommand : commandsBasic) {
+            for (int u = 0; u < 5; u++) { //type units
+                for (int q = 0; q < MAX_QTD_NAllyUnitsAttacking; q++) { //type units
+
+                    ArrayList<ICommand> commandsforBoolean = new ArrayList<>();
+                    commandsforBoolean.add(iCommand);
+
+                    NEnemyUnitsofType nEnemyUnitsofType = new NEnemyUnitsofType(commandsforBoolean);
+                    nEnemyUnitsofType.addParameter(getTypeUnitByNumber(u));
+                    nEnemyUnitsofType.addParameter(new QuantityParam(q));
+
+                    tCommandNEnemyUnitsofType.add(nEnemyUnitsofType);
+                }
+            }
+
+        }
+
+        return tCommandNEnemyUnitsofType;
+    }
 }
