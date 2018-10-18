@@ -21,6 +21,7 @@ import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.ChromosomesBag;
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -235,9 +236,40 @@ public class GameVisualSimulationTest {
         //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
         
         //AI ai2 = new PassiveAI(utt);
-        ChromosomesBag bag = new ChromosomesBag(utt);
-       AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag20(utt), "P1");
-       AI ai2 = new PassiveAI(utt);
+//        ChromosomesBag bag = new ChromosomesBag(utt);
+//       AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag41(utt), "");
+//       AI ai2 = new PassiveAI(utt);
+        
+        
+        List<ICommand> commandsAI1=new ArrayList<>(); 
+        TableCommandsGenerator tcg=new TableCommandsGenerator(utt);
+        commandsAI1.add(tcg.getCommandByID(2818));;
+        commandsAI1.add(tcg.getCommandByID(5147));;
+        commandsAI1.add(tcg.getCommandByID(2101));;
+        commandsAI1.add(tcg.getCommandByID(1364));;
+        commandsAI1.add(tcg.getCommandByID(1267));;
+        commandsAI1.add(tcg.getCommandByID(3591));;
+        commandsAI1.add(tcg.getCommandByID(7840));;
+        commandsAI1.add(tcg.getCommandByID(4778));;
+        commandsAI1.add(tcg.getCommandByID(1050));;
+        commandsAI1.add(tcg.getCommandByID(171));;
+        commandsAI1.add(tcg.getCommandByID(1361));;
+        commandsAI1.add(tcg.getCommandByID(7989));;
+        commandsAI1.add(tcg.getCommandByID(5442));;
+        commandsAI1.add(tcg.getCommandByID(4073));;
+        commandsAI1.add(tcg.getCommandByID(2905));;
+        AI ai1 = new ChromosomeAI(utt, commandsAI1, "");
+        
+        List<ICommand> commandsAI2=new ArrayList<>(); 
+        tcg=new TableCommandsGenerator(utt);
+        commandsAI2.add(tcg.getCommandByID(2818));;
+        commandsAI2.add(tcg.getCommandByID(5147));;
+        commandsAI2.add(tcg.getCommandByID(2101));;
+        commandsAI2.add(tcg.getCommandByID(2924));;
+        commandsAI2.add(tcg.getCommandByID(4915));;
+        commandsAI2.add(tcg.getCommandByID(3748));;
+        AI ai2 = new ChromosomeAI(utt, commandsAI2, "");
+      //AI ai2 = new PassiveAI(utt);        
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());
