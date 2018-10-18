@@ -29,6 +29,7 @@ import ai.abstraction.pathfinding.PathFinding;
 import ai.core.AI;
 import ai.core.ParameterSpecification;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -85,7 +86,13 @@ public class ChromosomeAI extends AI{
 
     @Override
     public String toString() {
-        return "ChromosomeAI_"+ name;
+    	String nameCommand="";
+    	for (Iterator iterator = commands.iterator(); iterator.hasNext();) {
+			ICommand iCommand = (ICommand) iterator.next();
+			nameCommand+=iCommand.toString();
+			
+		}
+        return "ChromosomeAI_"+ name+" "+nameCommand;
     }
     
     

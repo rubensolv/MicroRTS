@@ -2258,6 +2258,41 @@ public class ChromosomesBag {
 
         return commands;
     }
+    
+    public List<ICommand> ChromosomesBag41(UnitTypeTable utt) {
+
+        this.utt = utt;
+        List<ICommand> commands = new ArrayList<>();
+        //BASIC ACTIONS**********************************************************************
+        
+        HarvestBasic harverst = new HarvestBasic();
+        harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        harverst.addParameter(new QuantityParam(1)); //add qtd unit
+        commands.add(harverst);
+        
+        TrainBasic train = new TrainBasic();
+        train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
+        train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
+        train.addParameter(new QuantityParam(20)); //add qtd unit
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.Up);
+        pos.addPosition(EnumPositionType.Left);
+        pos.addPosition(EnumPositionType.Right);
+        pos.addPosition(EnumPositionType.Down);  
+        train.addParameter(pos);
+        commands.add(train);
+        
+        AttackBasic attack = new AttackBasic();
+        attack.addParameter(TypeConcrete.getTypeWorker()); //add unit type
+        PlayerTargetParam pt = new PlayerTargetParam();
+        pt.addPlayer(EnumPlayerTarget.Enemy);
+        attack.addParameter(pt);
+        attack.addParameter(new ClosestEnemy()); //add behavior
+        commands.add(attack);
+
+        return commands;
+    }
 
     public PlayerAction getAction(int player, GameState gs) {
         PlayerAction currentActions = new PlayerAction();
