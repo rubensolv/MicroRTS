@@ -21,7 +21,7 @@ public class SOARoundRobinTOScale_GAscripts {
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
-        String pathTableScripts = args[2];
+        String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
         int qtdMapas = 1;
         //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/USP/Test_map8_10script_USP/logs/";
