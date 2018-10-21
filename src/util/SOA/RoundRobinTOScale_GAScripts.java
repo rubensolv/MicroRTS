@@ -295,11 +295,12 @@ public class RoundRobinTOScale_GAScripts {
     
     public HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable(){
     	
-    	 ArrayList<Integer> idsRulesList=new ArrayList<>();
+    	scriptsTable=new HashMap<BigDecimal, ArrayList<Integer>>();
+    	ArrayList<Integer> idsRulesList=new ArrayList<>();
     	try (BufferedReader br = new BufferedReader(new FileReader("ScriptsTable.txt"))) {
     	    String line;
     	    while ((line = br.readLine()) != null) {
-    	    	String[] strArray = line.split(",");
+    	    	String[] strArray = line.split(" ");
     	    	int[] intArray = new int[strArray.length];
     	    	for(int i = 0; i < strArray.length; i++) {
     	    	    intArray[i] = Integer.parseInt(strArray[i]);
