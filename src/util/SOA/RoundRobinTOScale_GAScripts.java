@@ -56,11 +56,13 @@ public class RoundRobinTOScale_GAScripts {
     private HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
     String pathTableScripts;
     
-    public RoundRobinTOScale_GAScripts() {
+    public RoundRobinTOScale_GAScripts(String pathTableScripts) {
+    	this.pathTableScripts=pathTableScripts;
     	buildScriptsTable();
+    	
     }
 
-    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap, String pathTableScripts) throws Exception {
+    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
     	this.pathTableScripts=pathTableScripts;
     	ArrayList<String> log = new ArrayList<>();
         //controle de tempo
@@ -235,7 +237,7 @@ public class RoundRobinTOScale_GAScripts {
     public void updateTableIfnecessary() {
     	int currentSizeTable=0;
     	
-    	try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts+"/SizeTable.txt"))) {
+    	try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts+"SizeTable.txt"))) {
     	    String line;
     	    
     	    while ((line = br.readLine()) != null) {
