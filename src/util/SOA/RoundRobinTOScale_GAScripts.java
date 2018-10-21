@@ -54,14 +54,15 @@ public class RoundRobinTOScale_GAScripts {
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
     private HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
-    String fileNameScriptTable="tableScripts.txt";
+    String pathTableScripts;
     
     public RoundRobinTOScale_GAScripts() {
     	buildScriptsTable();
     }
 
-    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
-        ArrayList<String> log = new ArrayList<>();
+    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap, String pathTableScripts) throws Exception {
+    	this.pathTableScripts=pathTableScripts;
+    	ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
         Duration duracao;
@@ -123,8 +124,8 @@ public class RoundRobinTOScale_GAScripts {
         updateTableIfnecessary();
 
         //pgs 
-        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
-        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
+        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
         
 //        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
@@ -135,8 +136,8 @@ public class RoundRobinTOScale_GAScripts {
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
 //                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
         
-        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
+//        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
+//        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
 
         /*
             Variáveis para coleta de tempo
@@ -234,7 +235,7 @@ public class RoundRobinTOScale_GAScripts {
     public void updateTableIfnecessary() {
     	int currentSizeTable=0;
     	
-    	try (BufferedReader br = new BufferedReader(new FileReader("SizeTable.txt"))) {
+    	try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts+"/SizeTable.txt"))) {
     	    String line;
     	    
     	    while ((line = br.readLine()) != null) {
@@ -297,7 +298,7 @@ public class RoundRobinTOScale_GAScripts {
     	
     	scriptsTable=new HashMap<BigDecimal, ArrayList<Integer>>();
     	ArrayList<Integer> idsRulesList=new ArrayList<>();
-    	try (BufferedReader br = new BufferedReader(new FileReader("ScriptsTable.txt"))) {
+    	try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts+"/ScriptsTable.txt"))) {
     	    String line;
     	    while ((line = br.readLine()) != null) {
     	    	String[] strArray = line.split(" ");
