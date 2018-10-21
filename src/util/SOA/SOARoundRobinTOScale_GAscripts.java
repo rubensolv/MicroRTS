@@ -21,6 +21,7 @@ public class SOARoundRobinTOScale_GAscripts {
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
+        String pathTableScripts = args[2];
         int qtdMapas = 1;
         //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/USP/Test_map8_10script_USP/logs/";
@@ -38,7 +39,7 @@ public class SOARoundRobinTOScale_GAscripts {
                 System.out.println("Processando arquivo " + arquivo);
                 try {
                     for (int map = 0; map < qtdMapas; map++) {
-                        if (processarMatch(pathLog, arquivo, map)) {
+                        if (processarMatch(pathLog, arquivo, map, pathTableScripts)) {
                         }
                         System.gc();
                     }
@@ -67,7 +68,7 @@ public class SOARoundRobinTOScale_GAscripts {
      * @param arquivo String com o nome do arquivo que contém a configuração
      * @return True se processado corretamente
      */
-    private static boolean processarMatch(String pathLog, String arquivo, int map) {
+    private static boolean processarMatch(String pathLog, String arquivo, int map, String pathTableScripts) {
         //ler o arquivo e pegar a linha com dados
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
@@ -77,7 +78,7 @@ public class SOARoundRobinTOScale_GAscripts {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog, map);
+                    Integer.decode(itens[3]), pathLog, map, pathTableScripts);
         } catch (Exception ex) {
             Logger.getLogger(SOARoundRobinTOScale_GAscripts.class.getName()).log(Level.SEVERE, null, ex);
         }
