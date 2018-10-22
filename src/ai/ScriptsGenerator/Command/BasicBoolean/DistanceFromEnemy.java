@@ -32,78 +32,75 @@ import rts.units.UnitTypeTable;
 
 /**
  *
- * @author rubens Julian
- * This condition evaluates if some unitAlly is in a distance x of an enemy
+ * @author rubens Julian This condition evaluates if some unitAlly is in a
+ * distance x of an enemy
  */
 public class DistanceFromEnemy extends AbstractBooleanAction {
 
+    public DistanceFromEnemy(List<ICommand> commandsBoolean) {
+        this.commandsBoolean = commandsBoolean;
+    }
 
-	public DistanceFromEnemy(List<ICommand> commandsBoolean) {
-		this.commandsBoolean=commandsBoolean;
-	}
+    @Override
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+        utt = a_utt;
+        ResourceUsage resources = new ResourceUsage();
+        PhysicalGameState pgs = game.getPhysicalGameState();
+        ArrayList<Unit> unitstoApplyWait = new ArrayList<>();
+        //update variable resources
+        resources = getResourcesUsed(currentPlayerAction, pgs);
 
+        //now whe iterate for all ally units in order to discover wich one satisfy the condition
+        for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
+            boolean applyWait = true;
+            if (currentPlayerAction.getAction(unAlly) == null) {
 
-	@Override
-	public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-		ResourceUsage resources = new ResourceUsage();
-		PhysicalGameState pgs = game.getPhysicalGameState();
-		ArrayList<Unit> unitstoApplyWait = new ArrayList<>();
-		//update variable resources
-		resources = getResourcesUsed(currentPlayerAction, pgs);
+                for (Unit u2 : pgs.getUnits()) {
 
-		//now whe iterate for all ally units in order to discover wich one satisfy the condition
+                    if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
 
-		for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
-			boolean applyWait=true;
-			if(currentPlayerAction.getAction(unAlly) == null)
-			{
+                        int dx = u2.getX() - unAlly.getX();
+                        int dy = u2.getY() - unAlly.getY();
+                        double d = Math.sqrt(dx * dx + dy * dy);
 
-				for (Unit u2 : pgs.getUnits()) {
+                        //If satisfies, an action is applied to that unit. Units that not satisfies will be set with
+                        // an action wait.
+                        if (d <= getDistanceFromParam().getDistance()) {
 
-					if (u2.getPlayer() >= 0 && u2.getPlayer() != player ) {
+                            applyWait = false;
+                        }
+                    }
 
-						int dx = u2.getX()-unAlly.getX();
-						int dy = u2.getY()-unAlly.getY();
-						double d = Math.sqrt(dx*dx+dy*dy);
-
-						//If satisfies, an action is applied to that unit. Units that not satisfies will be set with
-						// an action wait.
-						if (d<=getDistanceFromParam().getDistance()) {
-
-							applyWait=false;
-						}
-					}     
-
-				}
-				if(applyWait)
-					unitstoApplyWait.add(unAlly);
-			}
-		}
-		//here we set with wait the units that dont satisfy the condition
-		temporalWaitActions(game, player, unitstoApplyWait, currentPlayerAction);
-		//here we apply the action just over the units that satisfy the condition
-		currentPlayerAction=appendCommands(player, game, currentPlayerAction);
-		//here we remove the wait action f the other units and the flow continues
-		restoreOriginalActions(game, player, unitstoApplyWait, currentPlayerAction);
-		return currentPlayerAction;
-	}
-
+                }
+                if (applyWait) {
+                    unitstoApplyWait.add(unAlly);
+                }
+            }
+        }
+        //here we set with wait the units that dont satisfy the condition
+        temporalWaitActions(game, player, unitstoApplyWait, currentPlayerAction);
+        //here we apply the action just over the units that satisfy the condition
+        currentPlayerAction = appendCommands(player, game, currentPlayerAction);
+        //here we remove the wait action f the other units and the flow continues
+        restoreOriginalActions(game, player, unitstoApplyWait, currentPlayerAction);
+        return currentPlayerAction;
+    }
 
     public String toString() {
         String listParam = "Params:{";
         for (IParameters parameter : getParameters()) {
-            listParam += parameter.toString()+",";
+            listParam += parameter.toString() + ",";
         }
         listParam += "Actions:{";
-        
+
         for (ICommand command : commandsBoolean) {
-        	listParam +=  command.toString();
+            listParam += command.toString();
         }
         //remove the last comma.
         listParam = listParam.substring(0, listParam.lastIndexOf(","));
         listParam += "}";
-        
-        return "{DistanceFromEnemy:{" + listParam+"}}";
+
+        return "{DistanceFromEnemy:{" + listParam + "}}";
     }
 
 }

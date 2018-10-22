@@ -32,49 +32,47 @@ import rts.units.UnitTypeTable;
 
 /**
  *
- * @author rubens Julian
- * This condition evaluates if there are X enemy units of type t in the map
+ * @author rubens Julian This condition evaluates if there are X enemy units of
+ * type t in the map
  */
 public class NEnemyUnitsofType extends AbstractBooleanAction {
 
+    public NEnemyUnitsofType(List<ICommand> commandsBoolean) {
+        this.commandsBoolean = commandsBoolean;
+    }
 
-	public NEnemyUnitsofType(List<ICommand> commandsBoolean) {
-		this.commandsBoolean=commandsBoolean;
-	}
+    @Override
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+        utt = a_utt;
+        ResourceUsage resources = new ResourceUsage();
+        PhysicalGameState pgs = game.getPhysicalGameState();
+        ArrayList<Unit> unitstoApplyWait = new ArrayList<>();
+        //update variable resources
+        resources = getResourcesUsed(currentPlayerAction, pgs);
 
+        //here we validate if there are x ally units of type t in the map
+        if (getEnemyUnitsOfType(game, currentPlayerAction, player).size() >= getQuantityFromParam().getQuantity()) {
+            currentPlayerAction = appendCommands(player, game, currentPlayerAction);
+        }
 
-	@Override
-	public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-		ResourceUsage resources = new ResourceUsage();
-		PhysicalGameState pgs = game.getPhysicalGameState();
-		ArrayList<Unit> unitstoApplyWait = new ArrayList<>();
-		//update variable resources
-		resources = getResourcesUsed(currentPlayerAction, pgs);
+        return currentPlayerAction;
+    }
 
-		//here we validate if there are x ally units of type t in the map
-		
-		if(getEnemyUnitsOfType(game, currentPlayerAction, player).size()>=getQuantityFromParam().getQuantity())
-			currentPlayerAction=appendCommands(player, game, currentPlayerAction);
-		
-
-		return currentPlayerAction;
-	}
-	
     public String toString() {
         String listParam = "Params:{";
         for (IParameters parameter : getParameters()) {
-            listParam += parameter.toString()+",";
+            listParam += parameter.toString() + ",";
         }
         listParam += "Actions:{";
-        
+
         for (ICommand command : commandsBoolean) {
-        	listParam +=  command.toString();
+            listParam += command.toString();
         }
         //remove the last comma.
         listParam = listParam.substring(0, listParam.lastIndexOf(","));
         listParam += "}";
-        
-        return "{NEnemyUnitsofType:{" + listParam+"}}";
+
+        return "{NEnemyUnitsofType:{" + listParam + "}}";
     }
 
 }
