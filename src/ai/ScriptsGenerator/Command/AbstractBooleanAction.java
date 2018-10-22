@@ -41,7 +41,7 @@ import util.Pair;
 public abstract class AbstractBooleanAction extends AbstractCommand {
 	
 	 protected List<ICommand> commandsBoolean = new ArrayList<>();
-	 UnitTypeTable utt;
+	 protected UnitTypeTable utt;
 	
     public PlayerAction appendCommands(int player, GameState gs, PlayerAction currentActions) {
         PathFinding pf = new AStarPathFinding();
