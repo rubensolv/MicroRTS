@@ -277,18 +277,22 @@ public class RoundRobinTOScale_GAScripts {
 
         
         for (Integer idSc : iScripts) {
-        	
-            scriptsAI.add(buildScript(utt,scriptsTable.get(idSc)));
+        	System.out.println("tam tab"+scriptsTable.size());
+        	System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
+            scriptsAI.add(buildScript(utt,scriptsTable.get(BigDecimal.valueOf(idSc))));
+            System.out.println("kamelotagem ");
         }
 
         return scriptsAI;
     }
     
     public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
+    	System.out.println("laut");
     	TableCommandsGenerator tcg=new TableCommandsGenerator(utt);
     	List<ICommand> commands=new ArrayList<>();
+    	System.out.println("sizeeiRules "+iRules.size());
         for (Integer idSc : iRules) {
-        	
+        	System.out.println("idSc "+idSc);
         	commands.add(tcg.getCommandByID(idSc));;
         }   	
     	AI aiscript = new ChromosomeAI(utt,commands , "P1");
@@ -299,10 +303,11 @@ public class RoundRobinTOScale_GAScripts {
     public HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable(){
     	
     	scriptsTable=new HashMap<BigDecimal, ArrayList<Integer>>();
-    	ArrayList<Integer> idsRulesList=new ArrayList<>();
+    	ArrayList<Integer> idsRulesList;
     	try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts+"/ScriptsTable.txt"))) {
     	    String line;
     	    while ((line = br.readLine()) != null) {
+    	    	idsRulesList=new ArrayList<>();
     	    	String[] strArray = line.split(" ");
     	    	int[] intArray = new int[strArray.length];
     	    	for(int i = 0; i < strArray.length; i++) {
