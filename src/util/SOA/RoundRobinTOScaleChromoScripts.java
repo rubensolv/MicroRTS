@@ -230,7 +230,7 @@ public class RoundRobinTOScaleChromoScripts {
 //    }
     
     public static AI decodeRules(UnitTypeTable utt, ArrayList<Integer> iRules) {
-    	TableCommandsGenerator tcg=new TableCommandsGenerator(utt);
+    	TableCommandsGenerator tcg= TableCommandsGenerator.getInstance(utt);;
     	List<ICommand> commands=new ArrayList<>();
         for (Integer idSc : iRules) {
         	

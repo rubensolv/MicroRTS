@@ -55,16 +55,16 @@ public class RoundRobinTOScale_GAScripts {
     static AI[] strategies = null;
     private HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
     String pathTableScripts;
-    
+
     public RoundRobinTOScale_GAScripts(String pathTableScripts) {
-    	this.pathTableScripts=pathTableScripts;
-    	buildScriptsTable();
-    	
+        this.pathTableScripts = pathTableScripts;
+        buildScriptsTable();
+
     }
 
     public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
-    	this.pathTableScripts=pathTableScripts;
-    	ArrayList<String> log = new ArrayList<>();
+        this.pathTableScripts = pathTableScripts;
+        ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
         Duration duracao;
@@ -120,15 +120,14 @@ public class RoundRobinTOScale_GAScripts {
         for (String element : itens) {
             iScriptsAi2.add(Integer.decode(element));
         }
-        
+
         //check for possible updates in scriptsTable
-        
         updateTableIfnecessary();
 
         //pgs 
         AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
         AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-        
+
 //        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
@@ -137,7 +136,6 @@ public class RoundRobinTOScale_GAScripts {
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
 //                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
-        
 //        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
 //        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
 
@@ -233,31 +231,29 @@ public class RoundRobinTOScale_GAScripts {
         //System.exit(0);
         return true;
     }
- 
+
     public void updateTableIfnecessary() {
-    	int currentSizeTable=0;
-    	
-    	try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts+"SizeTable.txt"))) {
-    	    String line;
-    	    
-    	    while ((line = br.readLine()) != null) {
-    	    	currentSizeTable=Integer.valueOf(line);
-    	    }
-    	} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	
-    	if(scriptsTable.size()<currentSizeTable)
-    	{
-    		buildScriptsTable();
-    	}
-		
-	}
+        int currentSizeTable = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "SizeTable.txt"))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                currentSizeTable = Integer.valueOf(line);
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        if (scriptsTable.size() < currentSizeTable) {
+            buildScriptsTable();
+        }
+
+    }
 
 //    public static List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
 //        List<AI> scriptsAI = new ArrayList<>();
@@ -271,69 +267,64 @@ public class RoundRobinTOScale_GAScripts {
 //
 //        return scriptsAI;
 //    }
-    
     public List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
         List<AI> scriptsAI = new ArrayList<>();
 
-        
         for (Integer idSc : iScripts) {
-        	//System.out.println("tam tab"+scriptsTable.size());
-        	//System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-            scriptsAI.add(buildScript(utt,scriptsTable.get(BigDecimal.valueOf(idSc))));
+            //System.out.println("tam tab"+scriptsTable.size());
+            //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
+            scriptsAI.add(buildScript(utt, scriptsTable.get(BigDecimal.valueOf(idSc))));
         }
 
         return scriptsAI;
     }
-    
+
     public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
-    	//System.out.println("laut");
-    	TableCommandsGenerator tcg=new TableCommandsGenerator(utt);
-    	List<ICommand> commands=new ArrayList<>();
-    	//System.out.println("sizeeiRules "+iRules.size());
+        //System.out.println("laut");
+        TableCommandsGenerator tcg = TableCommandsGenerator.getInstance(utt);
+        List<ICommand> commands = new ArrayList<>();
+        //System.out.println("sizeeiRules "+iRules.size());
         for (Integer idSc : iRules) {
-        	//System.out.println("idSc "+idSc);
-        	commands.add(tcg.getCommandByID(idSc));;
-        }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+            //System.out.println("idSc "+idSc);
+            commands.add(tcg.getCommandByID(idSc));;
+        }
+        AI aiscript = new ChromosomeAI(utt, commands, "P1");
 
         return aiscript;
     }
-    
-    public HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable(){
-    	
-    	scriptsTable=new HashMap<BigDecimal, ArrayList<Integer>>();
-    	ArrayList<Integer> idsRulesList;
-    	try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts+"/ScriptsTable.txt"))) {
-    	    String line;
-    	    while ((line = br.readLine()) != null) {
-    	    	idsRulesList=new ArrayList<>();
-    	    	String[] strArray = line.split(" ");
-    	    	int[] intArray = new int[strArray.length];
-    	    	for(int i = 0; i < strArray.length; i++) {
-    	    	    intArray[i] = Integer.parseInt(strArray[i]);
-    	    	}
-    	    	int idScript=intArray[0];
-    	    	int[] rules = Arrays.copyOfRange(intArray, 1, intArray.length);
-    	    	
-    	    	for (int i : rules)
-    	    	{
-    	    		idsRulesList.add(i);
-    	    	}
-    	    	
-    	    	scriptsTable.put( BigDecimal.valueOf(idScript),idsRulesList);
-    	    }
-    	} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-	
-    return scriptsTable;	
+    public HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable() {
+
+        scriptsTable = new HashMap<BigDecimal, ArrayList<Integer>>();
+        ArrayList<Integer> idsRulesList;
+        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                idsRulesList = new ArrayList<>();
+                String[] strArray = line.split(" ");
+                int[] intArray = new int[strArray.length];
+                for (int i = 0; i < strArray.length; i++) {
+                    intArray[i] = Integer.parseInt(strArray[i]);
+                }
+                int idScript = intArray[0];
+                int[] rules = Arrays.copyOfRange(intArray, 1, intArray.length);
+
+                for (int i : rules) {
+                    idsRulesList.add(i);
+                }
+
+                scriptsTable.put(BigDecimal.valueOf(idScript), idsRulesList);
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return scriptsTable;
     }
-
 
     private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, String pathLog) throws IOException {
         if (!pathLog.endsWith("/")) {

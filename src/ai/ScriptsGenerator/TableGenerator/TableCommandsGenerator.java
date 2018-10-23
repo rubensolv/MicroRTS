@@ -59,7 +59,16 @@ public class TableCommandsGenerator {
     private static final int MAP_SIZE = 24;
     private static final int MAX_QTD_NAllyUnitsAttacking = 10;
 
-    public TableCommandsGenerator(UnitTypeTable utt) {
+    private static TableCommandsGenerator uniqueInstance;
+    
+    public static synchronized TableCommandsGenerator getInstance(UnitTypeTable utt){
+        if(uniqueInstance == null){
+            uniqueInstance = new TableCommandsGenerator(utt);
+        }
+        return uniqueInstance;
+    }
+    
+    private TableCommandsGenerator(UnitTypeTable utt) {
         this.utt = utt;
         commands = new ArrayList<>();
         dicCommand = new HashMap<>();
@@ -107,7 +116,7 @@ public class TableCommandsGenerator {
         commands.addAll(getMoveToUnit());
         //MoveToCoordenates
         commands.addAll(getMoveToCoordenates());
-        //------------- booleans
+        //------------- booleans 
         ArrayList<ICommand> commandsBasic = new ArrayList<>(commands);
         //AllyRange
         commands.addAll(getAllyRangeCommands(commandsBasic));

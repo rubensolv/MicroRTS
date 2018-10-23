@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.SOA;
+package util.SOA.ScriptedEval;
 
+import util.SOA.*;
 import PVAI.util.Permutation;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
@@ -43,37 +44,43 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTypeTable;
+import static util.SOA.RoundRobinTOScale_GAScripts.buildScript;
 
 /**
  *
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOScale_GAScripts {
+public class FixedScriptedMatch {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
     private HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
-    String fileNameScriptTable="tableScripts.txt";
-    
-    public RoundRobinTOScale_GAScripts() {
-    	buildScriptsTable();
+    //String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
+    String pathTableScripts = ("/home/rubens/cluster/TesteNewGASG/Table/");
+    TableCommandsGenerator tcg;
+
+    public FixedScriptedMatch() {
+        buildScriptsTable();
     }
 
-    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
+    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap, int order) throws Exception {
         ArrayList<String> log = new ArrayList<>();
-        //controle de tempo
-        Instant timeInicial = Instant.now();
-        Duration duracao;
+       this.tcg = tcg;
 
-        log.add("Tupla A1 = " + tupleAi1);
-        log.add("Tupla A2 = " + tupleAi2);
+        if (order == 0) {
+            log.add("Tupla A1 = " + tupleAi1);
+            log.add("Tupla A2 = (" + tupleAi2+")");
+        } else {
+            log.add("Tupla A1 = (" + tupleAi1+")");
+            log.add("Tupla A2 = " + tupleAi2);
+        }
 
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
+        //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -117,15 +124,13 @@ public class RoundRobinTOScale_GAScripts {
         for (String element : itens) {
             iScriptsAi2.add(Integer.decode(element));
         }
-        
+
         //check for possible updates in scriptsTable
-        
         updateTableIfnecessary();
 
         //pgs 
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-        
 //        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
@@ -134,10 +139,17 @@ public class RoundRobinTOScale_GAScripts {
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
 //                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
-        
-        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
+        AI ai1 = null;
+        AI ai2 = null;
+        if (order == 0) {
+            ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
+            ai2 = new GABScriptChoose(utt, 1, 7, decodeCompletScripts(utt, iScriptsAi2), "GAB");
+        } else {
+            ai1 = new GABScriptChoose(utt, 1, 7, decodeCompletScripts(utt, iScriptsAi1), "GAB");
+            ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi2), "GAB");
+        }
 
+        System.out.println("util.SOA.ScriptedEval.FixedScriptedMatch.run()");
         /*
             Variáveis para coleta de tempo
          */
@@ -156,6 +168,11 @@ public class RoundRobinTOScale_GAScripts {
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
+
+         //controle de tempo
+        Instant timeInicial = Instant.now();
+        Duration duracao;
+        
         long startTime;
         long timeTemp;
         //System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
@@ -230,103 +247,101 @@ public class RoundRobinTOScale_GAScripts {
         //System.exit(0);
         return true;
     }
- 
-    public void updateTableIfnecessary() {
-    	int currentSizeTable=0;
-    	
-    	try (BufferedReader br = new BufferedReader(new FileReader("SizeTable.txt"))) {
-    	    String line;
-    	    
-    	    while ((line = br.readLine()) != null) {
-    	    	currentSizeTable=Integer.valueOf(line);
-    	    }
-    	} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	
-    	if(scriptsTable.size()<currentSizeTable)
-    	{
-    		buildScriptsTable();
-    	}
-		
-	}
 
-//    public static List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
-//        List<AI> scriptsAI = new ArrayList<>();
-//
-//        ScriptsCreator sc = new ScriptsCreator(utt, 300);
-//        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
-//        
-//        for (Integer idSc : iScripts) {
-//            scriptsAI.add(scriptsCompleteSet.get(idSc));
-//        }
-//
-//        return scriptsAI;
-//    }
-    
-    public List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+    public void updateTableIfnecessary() {
+        int currentSizeTable = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "SizeTable.txt"))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                currentSizeTable = Integer.valueOf(line);
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        if (scriptsTable.size() < currentSizeTable) {
+            buildScriptsTable();
+        }
+
+    }
+
+    public static List<AI> decodeCompletScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
         List<AI> scriptsAI = new ArrayList<>();
 
-        
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
         for (Integer idSc : iScripts) {
-        	
-            scriptsAI.add(buildScript(utt,scriptsTable.get(idSc)));
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
         }
 
         return scriptsAI;
     }
-    
+
+    public List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+        List<AI> scriptsAI = new ArrayList<>();
+
+        for (Integer idSc : iScripts) {
+            //System.out.println("tam tab"+scriptsTable.size());
+            //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
+            scriptsAI.add(buildScript(utt, scriptsTable.get(BigDecimal.valueOf(idSc))));
+        }
+
+        return scriptsAI;
+    }
+
     public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
-    	TableCommandsGenerator tcg=new TableCommandsGenerator(utt);
-    	List<ICommand> commands=new ArrayList<>();
+        //System.out.println("laut");
+        TableCommandsGenerator tcg = TableCommandsGenerator.getInstance(utt);
+        List<ICommand> commands = new ArrayList<>();
+        //System.out.println("sizeeiRules "+iRules.size());
         for (Integer idSc : iRules) {
-        	
-        	commands.add(tcg.getCommandByID(idSc));;
-        }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+            //System.out.println("idSc "+idSc);
+            commands.add(tcg.getCommandByID(idSc));;
+        }
+        AI aiscript = new ChromosomeAI(utt, commands, "P1");
 
         return aiscript;
     }
-    
-    public HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable(){
-    	
-    	scriptsTable=new HashMap<BigDecimal, ArrayList<Integer>>();
-    	ArrayList<Integer> idsRulesList=new ArrayList<>();
-    	try (BufferedReader br = new BufferedReader(new FileReader("ScriptsTable.txt"))) {
-    	    String line;
-    	    while ((line = br.readLine()) != null) {
-    	    	String[] strArray = line.split(" ");
-    	    	int[] intArray = new int[strArray.length];
-    	    	for(int i = 0; i < strArray.length; i++) {
-    	    	    intArray[i] = Integer.parseInt(strArray[i]);
-    	    	}
-    	    	int idScript=intArray[0];
-    	    	int[] rules = Arrays.copyOfRange(intArray, 1, intArray.length);
-    	    	
-    	    	for (int i : rules)
-    	    	{
-    	    		idsRulesList.add(i);
-    	    	}
-    	    	
-    	    	scriptsTable.put( BigDecimal.valueOf(idScript),idsRulesList);
-    	    }
-    	} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-	
-    return scriptsTable;	
+    public HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable() {
+
+        scriptsTable = new HashMap<BigDecimal, ArrayList<Integer>>();
+        ArrayList<Integer> idsRulesList;
+        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                idsRulesList = new ArrayList<>();
+                String[] strArray = line.split(" ");
+                int[] intArray = new int[strArray.length];
+                for (int i = 0; i < strArray.length; i++) {
+                    intArray[i] = Integer.parseInt(strArray[i]);
+                }
+                int idScript = intArray[0];
+                int[] rules = Arrays.copyOfRange(intArray, 1, intArray.length);
+
+                for (int i : rules) {
+                    idsRulesList.add(i);
+                }
+
+                scriptsTable.put(BigDecimal.valueOf(idScript), idsRulesList);
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return scriptsTable;
     }
-
 
     private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, String pathLog) throws IOException {
         if (!pathLog.endsWith("/")) {

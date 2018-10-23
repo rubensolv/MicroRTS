@@ -2,12 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.SOA;
+package util.SOA.ScriptedEval;
 
+import ai.core.AI;
+import util.SOA.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,14 +20,17 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTOScaleNash {
+public class SOAFixedScriptedEvaluation {
+
+    public static ArrayList<Integer> listEnemies;
 
     public static void main(String args[]) throws Exception {
-        String pathSOA = args[0];
-        String pathLog = args[1];
+        //String pathSOA = args[0];
+        //String pathLog = args[1];
         int qtdMapas = 1;
-        //String pathSOA = "/home/rubens/cluster/GA_PGS_map8/configSOA/SOA1/";
-        //String pathLog = "/home/rubens/cluster/GA_PGS_map8/logs/";
+        buildListEnemy();
+        String pathSOA = "/home/rubens/cluster/TesteNewGASG/configSOA/SOA1/";
+        String pathLog = "/home/rubens/cluster/TesteNewGASG/logs/";
         File SOA = new File(pathSOA);
         if (!SOA.exists()) {
             SOA.mkdir();
@@ -71,18 +78,27 @@ public class SOARoundRobinTOScaleNash {
         //ler o arquivo e pegar a linha com dados
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
-
-        RoundRobinTOScaleNash control = new RoundRobinTOScaleNash();
-        try {
-            return control.run(itens[0].trim(),
-                    itens[1].trim(),
-                    Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog, map,
-                    itens[4], itens[5]);
-        } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTOScaleNash.class.getName()).log(Level.SEVERE, null, ex);
+        for (Integer listEnemy : listEnemies) {
+            FixedScriptedMatch control = new FixedScriptedMatch();
+            try {
+                control.run(itens[0].trim(),
+                        Integer.toString(listEnemy),
+                        Integer.decode(itens[1]),
+                        Integer.decode(itens[2]), pathLog, map, 0);
+                System.gc();
+                
+                control = new FixedScriptedMatch();
+                control.run(Integer.toString(listEnemy),
+                        itens[0].trim(),
+                        Integer.decode(itens[1]),
+                        Integer.decode(itens[2]), pathLog, map, 1);
+                System.gc();
+            } catch (Exception ex) {
+                Logger.getLogger(SOAFixedScriptedEvaluation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        return false;
+
+        return true;
     }
 
     /**
@@ -177,6 +193,12 @@ public class SOARoundRobinTOScaleNash {
             System.out.println(e.toString());
         }
         return linha;
+    }
+
+    private static void buildListEnemy() {
+        listEnemies = new ArrayList<>();
+        listEnemies.add(0);
+        listEnemies.add(1);
     }
 
 }
