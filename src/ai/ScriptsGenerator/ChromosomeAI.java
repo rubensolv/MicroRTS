@@ -60,11 +60,10 @@ public class ChromosomeAI extends AI{
         PlayerAction currentActions = new PlayerAction();
         PathFinding pf = new AStarPathFinding();
 
-        //simulate one WR
         for (ICommand command : commands) {
             currentActions = command.getAction(gs, player, currentActions, pf, utt);
         }
-
+        currentActions = fillWithWait(currentActions, player, gs, utt);
         return currentActions;
     }
 
@@ -93,6 +92,11 @@ public class ChromosomeAI extends AI{
 			
 		}
         return "ChromosomeAI_"+ name+" "+nameCommand;
+    }
+
+    private PlayerAction fillWithWait(PlayerAction currentActions, int player, GameState gs, UnitTypeTable utt) {
+        currentActions.fillWithNones(gs, player, 10);
+        return currentActions;
     }
     
     
