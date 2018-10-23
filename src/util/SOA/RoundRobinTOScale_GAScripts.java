@@ -212,7 +212,7 @@ public class RoundRobinTOScale_GAScripts {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 7));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -277,22 +277,21 @@ public class RoundRobinTOScale_GAScripts {
 
         
         for (Integer idSc : iScripts) {
-        	System.out.println("tam tab"+scriptsTable.size());
-        	System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
+        	//System.out.println("tam tab"+scriptsTable.size());
+        	//System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
             scriptsAI.add(buildScript(utt,scriptsTable.get(BigDecimal.valueOf(idSc))));
-            System.out.println("kamelotagem ");
         }
 
         return scriptsAI;
     }
     
     public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
-    	System.out.println("laut");
+    	//System.out.println("laut");
     	TableCommandsGenerator tcg=new TableCommandsGenerator(utt);
     	List<ICommand> commands=new ArrayList<>();
-    	System.out.println("sizeeiRules "+iRules.size());
+    	//System.out.println("sizeeiRules "+iRules.size());
         for (Integer idSc : iRules) {
-        	System.out.println("idSc "+idSc);
+        	//System.out.println("idSc "+idSc);
         	commands.add(tcg.getCommandByID(idSc));;
         }   	
     	AI aiscript = new ChromosomeAI(utt,commands , "P1");
