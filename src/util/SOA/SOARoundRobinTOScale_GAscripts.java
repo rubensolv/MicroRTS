@@ -17,11 +17,13 @@ import java.util.logging.Logger;
  * totalmente observáveis.
  */
 public class SOARoundRobinTOScale_GAscripts {
-	private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
+
+    private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
+
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
-        
+
         int qtdMapas = 1;
         //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/USP/Test_map8_10script_USP/logs/";

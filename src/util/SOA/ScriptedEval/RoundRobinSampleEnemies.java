@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.SOA;
+package util.SOA.ScriptedEval;
 
+import util.SOA.*;
 import PVAI.util.Permutation;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
@@ -49,21 +50,21 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOScale_GAScripts {
+public class RoundRobinSampleEnemies {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
     private HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
     String pathTableScripts;
+    
 
-    public RoundRobinTOScale_GAScripts(String pathTableScripts) {
+    public RoundRobinSampleEnemies(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
         buildScriptsTable();
 
     }
 
     public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
-        this.pathTableScripts = pathTableScripts;
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -75,8 +76,8 @@ public class RoundRobinTOScale_GAScripts {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -108,14 +109,14 @@ public class RoundRobinTOScale_GAScripts {
 
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
-        String[] itens = tupleAi1.split(";");
+        String[] itens = tupleAi1.replace("(", "").replace(")", "").split(";");
 
         for (String element : itens) {
             iScriptsAi1.add(Integer.decode(element));
         }
 
         ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
-        itens = tupleAi2.split(";");
+        itens = tupleAi2.replace("(", "").replace(")", "").split(";");
 
         for (String element : itens) {
             iScriptsAi2.add(Integer.decode(element));
@@ -295,7 +296,7 @@ public class RoundRobinTOScale_GAScripts {
 
     public HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable() {
 
-        scriptsTable = new HashMap<BigDecimal, ArrayList<Integer>>();
+        scriptsTable = new HashMap<>();
         ArrayList<Integer> idsRulesList;
         try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable.txt"))) {
             String line;

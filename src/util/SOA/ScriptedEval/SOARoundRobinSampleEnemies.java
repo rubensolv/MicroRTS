@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.SOA;
+package util.SOA.ScriptedEval;
 
+import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
+import util.SOA.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,15 +18,18 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTOScale_GAscripts {
-	private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
+public class SOARoundRobinSampleEnemies {
+
+    private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
+    //private static final String pathTableScripts = ("/home/rubens/cluster/TesteNewGASG/Table/");
+
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
-        
+
         int qtdMapas = 1;
-        //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/configSOA/SOA1/";
-        //String pathLog = "/home/rubens/cluster/USP/Test_map8_10script_USP/logs/";
+        //String pathSOA = "/home/rubens/cluster/TesteNewGASG/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/TesteNewGASG/logs/";
         File SOA = new File(pathSOA);
         if (!SOA.exists()) {
             SOA.mkdir();
@@ -73,14 +78,14 @@ public class SOARoundRobinTOScale_GAscripts {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinTOScale_GAScripts control = new RoundRobinTOScale_GAScripts(pathTableScripts);
+        RoundRobinSampleEnemies control = new RoundRobinSampleEnemies(pathTableScripts);
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
                     Integer.decode(itens[3]), pathLog, map);
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTOScale_GAscripts.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOARoundRobinSampleEnemies.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

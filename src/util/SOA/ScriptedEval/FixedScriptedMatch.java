@@ -149,7 +149,6 @@ public class FixedScriptedMatch {
             ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGS", 2, 200);
         }
 
-        System.out.println("util.SOA.ScriptedEval.FixedScriptedMatch.run()");
         /*
             Variáveis para coleta de tempo
          */
