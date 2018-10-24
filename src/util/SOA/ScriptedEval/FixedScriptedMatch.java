@@ -142,11 +142,11 @@ public class FixedScriptedMatch {
         AI ai1 = null;
         AI ai2 = null;
         if (order == 0) {
-            ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-            ai2 = new GABScriptChoose(utt, 1, 7, decodeCompletScripts(utt, iScriptsAi2), "GAB");
+            ai1 = new PGSSCriptChoiceRandom(utt,decodeScripts(utt, iScriptsAi1), "PGS",2,200);
+            ai2 = new PGSSCriptChoiceRandom(utt,decodeCompletScripts(utt, iScriptsAi2), "PGS", 2, 200);
         } else {
-            ai1 = new GABScriptChoose(utt, 1, 7, decodeCompletScripts(utt, iScriptsAi1), "GAB");
-            ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi2), "GAB");
+            ai1 = new PGSSCriptChoiceRandom(utt, decodeCompletScripts(utt, iScriptsAi1), "PGS",2, 200);
+            ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGS", 2, 200);
         }
 
         System.out.println("util.SOA.ScriptedEval.FixedScriptedMatch.run()");

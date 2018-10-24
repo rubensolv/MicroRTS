@@ -31,11 +31,13 @@ import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.AlphaBetaSearchAbstract;
 import ai.asymmetric.GAB.SandBox.GAB;
+import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.GAB.SandBox.GAB_SandBox_Parcial_State;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_Paralel_JulianTest;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_Paralel_SandBox;
 import ai.asymmetric.PGS.SandBox.PGSmRTS_SandBox;
 import ai.asymmetric.SAB.SAB;
+import ai.asymmetric.SAB.SABScriptChoose;
 import ai.asymmetric.SAB.SAB_seed;
 import ai.asymmetric.SSS.NSSS;
 import ai.asymmetric.SSS.NSSSLimit;
@@ -105,11 +107,11 @@ public class GameVisualSimulationTest {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
@@ -140,7 +142,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RandomBiasedAI(utt);
         //AI ai1 = new PuppetSearchMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
-        //AI ai1 = new POLightRush(utt);
+        AI ai1 = new POLightRush(utt);
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new PGSmRTS_SandBox(utt);
         //AI ai1 = new PGSmRTS(utt); 
@@ -168,14 +170,19 @@ public class GameVisualSimulationTest {
         //AI ai1 = new NSSSLimit(utt);
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
         //AI ai1 = new StrategyTactics(utt);
-        AI ai1 = new WorkerRush(utt);
+        //AI ai1 = new WorkerRush(utt);
 
-        //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-        //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-        //                                     new SimpleSqrtEvaluationFunction3(), true, utt, 
-        //                                    "ManagerClosestEnemy", 1,decodeScripts(utt, "48;0;")); //A3N
+        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 0, decodeScripts2(utt, "0;1;2;3;")); //A3N
+        
+        //AI ai2 = new GABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), "GAB");
+        //AI ai2 = new SABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), "GAB");
+       //AI ai2 = new GABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), decodeScripts2(utt, "1;"), "GAB");
+       // AI ai2 = new SABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), decodeScripts2(utt, "1;"), "SAB");
         //AI ai2 = new GAB(utt);
-        AI ai2 = new SAB(utt);
+        //AI ai2 = new SAB(utt);
         //AI ai1 = new Tiamat(utt);
         //AI ai2 = new Capivara(utt);
         //AI ai2 = new SCVPlus(utt);

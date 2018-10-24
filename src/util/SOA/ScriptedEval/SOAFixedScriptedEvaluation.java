@@ -25,12 +25,12 @@ public class SOAFixedScriptedEvaluation {
     public static ArrayList<Integer> listEnemies;
 
     public static void main(String args[]) throws Exception {
-        //String pathSOA = args[0];
-        //String pathLog = args[1];
+        String pathSOA = args[0];
+        String pathLog = args[1];
         int qtdMapas = 1;
         buildListEnemy();
-        String pathSOA = "/home/rubens/cluster/TesteNewGASG/configSOA/SOA1/";
-        String pathLog = "/home/rubens/cluster/TesteNewGASG/logs/";
+        //String pathSOA = "/home/rubens/cluster/TesteNewGASG/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/TesteNewGASG/logs/";
         File SOA = new File(pathSOA);
         if (!SOA.exists()) {
             SOA.mkdir();
