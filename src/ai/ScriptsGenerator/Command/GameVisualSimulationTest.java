@@ -78,12 +78,18 @@ import ai.portfolio.PortfolioAI;
 import ai.puppet.PuppetSearchMCTS;
 import ai.scv.SCVPlus;
 import gui.PhysicalGameStatePanel;
+
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -105,6 +111,7 @@ public class GameVisualSimulationTest {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
+    private static HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
 
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
@@ -191,7 +198,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator", "ManagerClosestEnemy", 1);
         //AI ai1 = new StrategyTactics(utt);
         //AI ai2 = new SSSmRTS(utt);
-        //AI ai2 = new PGSIterationRandom(utt); 
+        //AI ai2 = new PGSIterationRandom(utt); 	
         //AI ai2 = new SSSIterationRandom(utt); 
         //AI ai1 = new SSSResponseMRTS(utt);
         //AI ai2 = new NaiveMCTS(utt);
@@ -235,41 +242,82 @@ public class GameVisualSimulationTest {
         //AI ai2 = new PVAIML_SLFWMS(utt);
         //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");
         
-        //AI ai2 = new PassiveAI(utt);
+//        AI ai2 = new PassiveAI(utt);
 //        ChromosomesBag bag = new ChromosomesBag(utt);
-//       AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag41(utt), "");
-//       AI ai2 = new PassiveAI(utt);
+//        AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag41(utt), "");
+//          AI ai2 = new PassiveAI(utt);
         
         
         List<ICommand> commandsAI1=new ArrayList<>(); 
-        TableCommandsGenerator tcg=new TableCommandsGenerator(utt);
-        commandsAI1.add(tcg.getCommandByID(2818));;
-        commandsAI1.add(tcg.getCommandByID(5147));;
-        commandsAI1.add(tcg.getCommandByID(2101));;
-        commandsAI1.add(tcg.getCommandByID(1364));;
-        commandsAI1.add(tcg.getCommandByID(1267));;
-        commandsAI1.add(tcg.getCommandByID(3591));;
-        commandsAI1.add(tcg.getCommandByID(7840));;
-        commandsAI1.add(tcg.getCommandByID(4778));;
-        commandsAI1.add(tcg.getCommandByID(1050));;
-        commandsAI1.add(tcg.getCommandByID(171));;
-        commandsAI1.add(tcg.getCommandByID(1361));;
-        commandsAI1.add(tcg.getCommandByID(7989));;
-        commandsAI1.add(tcg.getCommandByID(5442));;
-        commandsAI1.add(tcg.getCommandByID(4073));;
-        commandsAI1.add(tcg.getCommandByID(2905));;
-        AI ai1 = new ChromosomeAI(utt, commandsAI1, "");
+        TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
+        commandsAI1.add(tcg.getCommandByID(5138));;
+//        commandsAI1.add(tcg.getCommandByID(5147));;
+//        commandsAI1.add(tcg.getCommandByID(2101));;
+//        commandsAI1.add(tcg.getCommandByID(1364));;
+//        commandsAI1.add(tcg.getCommandByID(1267));;
+//        commandsAI1.add(tcg.getCommandByID(3591));;
+//        commandsAI1.add(tcg.getCommandByID(7840));;
+//        commandsAI1.add(tcg.getCommandByID(4778));;
+//        commandsAI1.add(tcg.getCommandByID(1050));;
+//        commandsAI1.add(tcg.getCommandByID(171));;
+//        commandsAI1.add(tcg.getCommandByID(1361));;
+//        commandsAI1.add(tcg.getCommandByID(7989));;
+//        commandsAI1.add(tcg.getCommandByID(5442));;
+//        commandsAI1.add(tcg.getCommandByID(4073));;
+//        commandsAI1.add(tcg.getCommandByID(2905));;
+//        AI ai1 = new ChromosomeAI(utt, commandsAI1, "");
+//        
+//        List<ICommand> commandsAI2=new ArrayList<>(); 
+//        tcg=new TableCommandsGenerator(utt);
+//        commandsAI2.add(tcg.getCommandByID(2818));;
+//        commandsAI2.add(tcg.getCommandByID(5147));;
+//        commandsAI2.add(tcg.getCommandByID(2101));;
+//        commandsAI2.add(tcg.getCommandByID(2924));;
+//        commandsAI2.add(tcg.getCommandByID(4915));;
+//        commandsAI2.add(tcg.getCommandByID(3748));;
+//        AI ai2 = new ChromosomeAI(utt, commandsAI2, "");
+//        AI ai2 = new PassiveAI(utt);        
+          
+        buildScriptsTable();
         
-        List<ICommand> commandsAI2=new ArrayList<>(); 
-        tcg=new TableCommandsGenerator(utt);
-        commandsAI2.add(tcg.getCommandByID(2818));;
-        commandsAI2.add(tcg.getCommandByID(5147));;
-        commandsAI2.add(tcg.getCommandByID(2101));;
-        commandsAI2.add(tcg.getCommandByID(2924));;
-        commandsAI2.add(tcg.getCommandByID(4915));;
-        commandsAI2.add(tcg.getCommandByID(3748));;
-        AI ai2 = new ChromosomeAI(utt, commandsAI2, "");
-      //AI ai2 = new PassiveAI(utt);        
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
+        
+        //iScriptsAi1.add(758);
+        
+        iScriptsAi1.add(923);
+        iScriptsAi1.add(395);
+        iScriptsAi1.add(234);
+        iScriptsAi1.add(576);
+        iScriptsAi1.add(98);
+        iScriptsAi1.add(961);
+        iScriptsAi1.add(521);
+        
+//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(0).toString());
+//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(1).toString());
+//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(2).toString());
+//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(3).toString());
+//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(4).toString());
+//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(5).toString());
+//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(6).toString());
+//        iScriptsAi1.add(404);
+//        iScriptsAi1.add(402);
+        
+        
+        iScriptsAi2.add(964);
+        iScriptsAi2.add(651);
+        iScriptsAi2.add(154);
+        iScriptsAi2.add(142);
+        iScriptsAi2.add(267);
+        iScriptsAi2.add(640);
+        iScriptsAi2.add(716);
+        iScriptsAi2.add(404);
+//        iScriptsAi2.add(188);
+        
+        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
+        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGSR", 2, 200);
+        
+        //AI ai1= decodeScripts2(utt, iScriptsAi1).get(0);
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());
@@ -349,6 +397,69 @@ public class GameVisualSimulationTest {
         });
 
         return scriptsAI;
+    }
+    
+    public static List<AI> decodeScripts2(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+        List<AI> scriptsAI = new ArrayList<>();
+
+        
+        for (Integer idSc : iScripts) {
+        	System.out.println("tam tab"+scriptsTable.size());
+        	System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
+            scriptsAI.add(buildScript(utt,scriptsTable.get(BigDecimal.valueOf(idSc))));
+            System.out.println("kamelotagem ");
+        }
+
+        return scriptsAI;
+    }
+    
+    public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
+    	System.out.println("laut");
+    	TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
+    	List<ICommand> commands=new ArrayList<>();
+    	System.out.println("sizeeiRules "+iRules.size());
+        for (Integer idSc : iRules) {
+        	System.out.println("idSc "+idSc);
+        	commands.add(tcg.getCommandByID(idSc));;
+        }   	
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+
+        return aiscript;
+    }
+    
+    public static HashMap<BigDecimal, ArrayList<Integer>> buildScriptsTable(){
+    	
+    	scriptsTable=new HashMap<BigDecimal, ArrayList<Integer>>();
+    	ArrayList<Integer> idsRulesList;
+    	try (BufferedReader br = new BufferedReader(new FileReader("ScriptsTable.txt"))) {
+    	    String line;
+    	    while ((line = br.readLine()) != null) {
+    	    	idsRulesList=new ArrayList<>();
+    	    	String[] strArray = line.split(" ");
+    	    	int[] intArray = new int[strArray.length];
+    	    	for(int i = 0; i < strArray.length; i++) {
+    	    	    intArray[i] = Integer.parseInt(strArray[i]);
+    	    	}
+    	    	int idScript=intArray[0];
+    	    	int[] rules = Arrays.copyOfRange(intArray, 1, intArray.length);
+    	    	
+    	    	for (int i : rules)
+    	    	{
+    	    		idsRulesList.add(i);
+    	    	}
+    	    	
+    	    	scriptsTable.put( BigDecimal.valueOf(idScript),idsRulesList);
+    	    }
+    	} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	
+    return scriptsTable;	
     }
 
 
