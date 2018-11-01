@@ -53,11 +53,11 @@ public class TableCommandsGenerator {
     HashMap<Integer, ICommand> dicCommand;
 
     //list of fixed param
-    private static final int MAX_QTD_WORKERS_HARVERST = 10;
+    private static final int MAX_QTD_WORKERS_HARVERST = 5;
     private static final int MAX_QTD_UNITS_TO_BUILD = 3;
     private static final int MAX_QTD_UNITS_TO_TRAIN = 20;
-    private static final int MAP_SIZE = 24;
-    private static final int MAX_QTD_NAllyUnitsAttacking = 10;
+    private static final int MAP_SIZE = 8;
+    private static final int MAX_QTD_NAllyUnitsAttacking = 4;
 
     private static TableCommandsGenerator uniqueInstance;
     
@@ -172,78 +172,78 @@ public class TableCommandsGenerator {
         ArrayList<ICommand> tCommandTrain = new ArrayList<>();
         //generate position permutation
         char v[] = {'0', '1', '2', '3'};
-        Permutation.clear();
-        Permutation.createPermutation(v, 4);
+        //Permutation.clear();
+        //Permutation.createPermutation(v, 4);
         //Permutation.imprime();
         //train using base
         for (int i = 1; i <= MAX_QTD_UNITS_TO_TRAIN; i++) {
-            for (int j = 0; j < Permutation.totalItens(); j++) {
+            //for (int j = 0; j < Permutation.totalItens(); j++) {
                 TrainBasic train = new TrainBasic();
                 train.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
                 train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
                 //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
                 train.addParameter(new QuantityParam(i)); //add qtd unit
                 PriorityPositionParam pos = new PriorityPositionParam();
-                for (Integer position : Permutation.getPermutation(j)) {
-                    pos.addPosition(EnumPositionType.byCode(position));
-                }
+                //for (Integer position : Permutation.getPermutation(j)) {
+                    pos.addPosition(EnumPositionType.byCode(4));
+                //}
 
                 train.addParameter(pos);
                 tCommandTrain.add(train);
-            }
+            //}
         }
 
         //train using barracks
         //light
         for (int i = 1; i <= MAX_QTD_UNITS_TO_TRAIN; i++) {
-            for (int j = 0; j < Permutation.totalItens(); j++) {
+            //for (int j = 0; j < Permutation.totalItens(); j++) {
                 TrainBasic train = new TrainBasic();
                 train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
                 train.addParameter(TypeConcrete.getTypeLight()); //add unit Type
                 //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
                 train.addParameter(new QuantityParam(i)); //add qtd unit
                 PriorityPositionParam pos = new PriorityPositionParam();
-                for (Integer position : Permutation.getPermutation(j)) {
-                    pos.addPosition(EnumPositionType.byCode(position));
-                }
+                //for (Integer position : Permutation.getPermutation(j)) {
+                    pos.addPosition(EnumPositionType.byCode(4));
+                //}
 
                 train.addParameter(pos);
                 tCommandTrain.add(train);
-            }
+            //}
         }
         //ranged
         for (int i = 1; i <= MAX_QTD_UNITS_TO_TRAIN; i++) {
-            for (int j = 0; j < Permutation.totalItens(); j++) {
+            //for (int j = 0; j < Permutation.totalItens(); j++) {
                 TrainBasic train = new TrainBasic();
                 train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
                 train.addParameter(TypeConcrete.getTypeRanged()); //add unit Type
                 //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
                 train.addParameter(new QuantityParam(i)); //add qtd unit
                 PriorityPositionParam pos = new PriorityPositionParam();
-                for (Integer position : Permutation.getPermutation(j)) {
-                    pos.addPosition(EnumPositionType.byCode(position));
-                }
+                //for (Integer position : Permutation.getPermutation(j)) {
+                    pos.addPosition(EnumPositionType.byCode(4));
+                //}
 
                 train.addParameter(pos);
                 tCommandTrain.add(train);
-            }
+            //}
         }
         //heavy
         for (int i = 1; i <= MAX_QTD_UNITS_TO_TRAIN; i++) {
-            for (int j = 0; j < Permutation.totalItens(); j++) {
+            //for (int j = 0; j < Permutation.totalItens(); j++) {
                 TrainBasic train = new TrainBasic();
                 train.addParameter(TypeConcrete.getTypeBarracks()); //add unit construct type
                 train.addParameter(TypeConcrete.getTypeRanged()); //add unit Type
                 //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
                 train.addParameter(new QuantityParam(i)); //add qtd unit
                 PriorityPositionParam pos = new PriorityPositionParam();
-                for (Integer position : Permutation.getPermutation(j)) {
-                    pos.addPosition(EnumPositionType.byCode(position));
-                }
+                //for (Integer position : Permutation.getPermutation(j)) {
+                    pos.addPosition(EnumPositionType.byCode(4));
+                //}
 
                 train.addParameter(pos);
                 tCommandTrain.add(train);
-            }
+            //}
         }
 
         return tCommandTrain;
