@@ -161,13 +161,73 @@ public class TrainBasic extends AbstractBasicAction {
         PriorityPositionParam order = getPriorityParam();
         UnitAction ua = null;
         for (EnumPositionType enumPositionType : order.getSelectedPosition()) {
-            ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumPositionType.code(), unitType);
+            if (enumPositionType.code() == 4) {
+                for (int enumCodePosition : getDirectionByEnemy(game, unit)) {
+                    ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumCodePosition, unitType);
+                    if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) {
+                        return ua;
+                    }
+                }
+            } else {
+                ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumPositionType.code(), unitType);
+            }
             if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) {
                 return ua;
             }
         }
 
         return null;
+    }
+
+    private List<Integer> getDirectionByEnemy(GameState game, Unit unit) {
+        int player = unit.getPlayer();
+        int enemy = (1 - player);
+        ArrayList<Integer> directions = new ArrayList<>();
+
+        //get (following the order) base, barrack or enemy.
+        Unit enUnit = getOrderedUnit(enemy, game);
+        //check if the enemy is left or right
+        if (enUnit.getX() >= unit.getX()) {
+            directions.add(DIRECTION_RIGHT);
+        } else {
+            directions.add(DIRECTION_LEFT);
+        }
+        //check if the enemy is up or bottom
+        if (enUnit.getY() >= unit.getY()) {
+            directions.add(DIRECTION_DOWN);
+        } else {
+            directions.add(DIRECTION_UP);
+        }
+
+        //return all possible positions
+        return directions;
+    }
+
+    private Unit getOrderedUnit(int enemy, GameState game) {
+        Unit base = null;
+        Unit barrack = null;
+        Unit other = null;
+
+        for (Unit unit : game.getUnits()) {
+            if (unit.getPlayer() == enemy) {
+                if (base == null && unit.getType().ID == 1) {
+                    base = unit;
+                } else if (barrack == null && unit.getType().ID == 2) {
+                    barrack = unit;
+                } else if (other == null) {
+                    other = unit;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (base != null) {
+            return base;
+        } else if (barrack != null) {
+            return barrack;
+        }
+        return other;
     }
 
     private PriorityPositionParam getPriorityParam() {
@@ -213,15 +273,13 @@ public class TrainBasic extends AbstractBasicAction {
     public String toString() {
         String listParam = "Params:{";
         for (IParameters parameter : getParameters()) {
-            listParam += parameter.toString()+",";
+            listParam += parameter.toString() + ",";
         }
         //remove the last comma.
         listParam = listParam.substring(0, listParam.lastIndexOf(","));
         listParam += "}";
-        
-        return "{TrainBasic:{" + listParam+"}}";
+
+        return "{TrainBasic:{" + listParam + "}}";
     }
-    
-    
 
 }

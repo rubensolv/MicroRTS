@@ -10,7 +10,7 @@ package ai.ScriptsGenerator.Command.Enumerators;
  * @author rubens
  */
 public enum EnumPositionType {
-    Left(3), Right(1), Up(0), Down(2);
+    Left(3), Right(1), Up(0), Down(2), EnemyDirection(4);
     
     private final int code;
     
@@ -40,6 +40,8 @@ public enum EnumPositionType {
             return EnumPositionType.Up;
         }else if (name.equals("Down")) {
             return EnumPositionType.Down;
+        }else if (name.equals("EnemyDirection")) {
+            return EnumPositionType.EnemyDirection;
         }
         throw new IllegalArgumentException("invalid name!");
     }
