@@ -107,12 +107,12 @@ public class RoundRobinClusterLeve_Cluster_SG {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
                 //"maps/DoubleGame24x24.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		"maps/8x8/basesWorkers8x8A.xml"
+        		//"maps/8x8/basesWorkers8x8A.xml"
                 
         ));
 
@@ -143,11 +143,11 @@ public class RoundRobinClusterLeve_Cluster_SG {
       
 
 
-        String GA_PGS = "49;0;4;151;189;226;186;"; 
+        String GA_PGS = "297;69;154;275;"; 
         String GA_SSS = "289;194;86;242;";                   
         String GA_A3N = "284;233";
         
-        String PGS_SG = "1512;1594;1544;";
+        String PGS_SG = "949;868;865;1199;1094;1105";
         
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
@@ -174,7 +174,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
                new LightRush(utt),
                
                //bg1
-               //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
+               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
                //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
                //plus
                //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "PGS+",2,200),
@@ -259,7 +259,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 7));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 

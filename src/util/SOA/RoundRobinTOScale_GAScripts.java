@@ -75,8 +75,8 @@ public class RoundRobinTOScale_GAScripts {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -210,7 +210,7 @@ public class RoundRobinTOScale_GAScripts {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 7));
+        } while (!gameover && (gs.getTime() < 5000) && (duracao.toMinutes() < 7));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
