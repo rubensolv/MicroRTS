@@ -98,8 +98,8 @@ public class AllyRange extends AbstractBooleanAction {
             listParam += command.toString();
         }
         //remove the last comma.
-        listParam = listParam.substring(0, listParam.lastIndexOf(","));
-        listParam += "}";
+//        listParam = listParam.substring(0, listParam.lastIndexOf(","));
+//        listParam += "}";
 
         return "{AllyRange:{" + listParam + "}}";
     }
