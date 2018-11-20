@@ -51,6 +51,8 @@ public class TableCommandsGenerator {
     UnitTypeTable utt;
     ArrayList<ICommand> commands;
     HashMap<Integer, ICommand> dicCommand;
+    ArrayList<ArrayList<Integer>> bagofTypes;
+    
 
     //list of fixed param
     private static final int MAX_QTD_WORKERS_HARVERST = 5;
@@ -368,12 +370,12 @@ public class TableCommandsGenerator {
     }
 
     private void generateDic() {
-    	ArrayList<ArrayList<Integer>> bagofTypes= new ArrayList<ArrayList<Integer>>();
+    	bagofTypes= new ArrayList<ArrayList<Integer>>();
     	initializeBagOfTypes(bagofTypes);
         int cont = 0;
         for (ICommand command : commands) {
             dicCommand.put(cont, command);
-            addIdToBagofTypes(cont, command, bagofTypes);
+            addIdToBagofTypes(cont, command);
             cont++;
         }
         commands.clear();
@@ -532,7 +534,7 @@ public class TableCommandsGenerator {
     	}
     }
     
-    private void addIdToBagofTypes(int idCommand, ICommand com, ArrayList<ArrayList<Integer>> bagTypes) {  	
+    private void addIdToBagofTypes(int idCommand, ICommand com) {  	
     	
     	String s = com.toString();
     	
@@ -541,60 +543,60 @@ public class TableCommandsGenerator {
     	
     	switch (s) {
         case "AttackBasic":  
-        	if(bagTypes.size()>0)
-        		bagTypes.get(0).add(idCommand);
+        	if(bagofTypes.size()>0)
+        		bagofTypes.get(0).add(idCommand);
             break;
         case "BuildBasic":  
-        	if(bagTypes.size()>1)
-        		bagTypes.get(1).add(idCommand);
+        	if(bagofTypes.size()>1)
+        		bagofTypes.get(1).add(idCommand);
             break;
         case "HarvestBasic":  
-        	if(bagTypes.size()>2)
-        		bagTypes.get(2).add(idCommand);
+        	if(bagofTypes.size()>2)
+        		bagofTypes.get(2).add(idCommand);
             break;
         case "MoveToCoordinatesBasic":  
-        	if(bagTypes.size()>3)
-        		bagTypes.get(3).add(idCommand);
+        	if(bagofTypes.size()>3)
+        		bagofTypes.get(3).add(idCommand);
             break;
         case "MoveToUnitBasic":  
-        	if(bagTypes.size()>4)
-        		bagTypes.get(4).add(idCommand);
+        	if(bagofTypes.size()>4)
+        		bagofTypes.get(4).add(idCommand);
             break;
         case "TrainBasic":  
-        	if(bagTypes.size()>5)
-        		bagTypes.get(5).add(idCommand);
+        	if(bagofTypes.size()>5)
+        		bagofTypes.get(5).add(idCommand);
             break;
         case "AllyRange":  
-        	if(bagTypes.size()>6)
-        		bagTypes.get(6).add(idCommand);
+        	if(bagofTypes.size()>6)
+        		bagofTypes.get(6).add(idCommand);
             break;
         case "DistanceFromEnemy":  
-        	if(bagTypes.size()>7)
-        		bagTypes.get(7).add(idCommand);
+        	if(bagofTypes.size()>7)
+        		bagofTypes.get(7).add(idCommand);
             break;
         case "EnemyRange":  
-        	if(bagTypes.size()>8)
-        		bagTypes.get(8).add(idCommand);
+        	if(bagofTypes.size()>8)
+        		bagofTypes.get(8).add(idCommand);
             break;
         case "NAllyUnitsAttacking":  
-        	if(bagTypes.size()>9)
-        		bagTypes.get(9).add(idCommand);
+        	if(bagofTypes.size()>9)
+        		bagofTypes.get(9).add(idCommand);
             break;
         case "NAllyUnitsHarvesting":  
-        	if(bagTypes.size()>10)
-        		bagTypes.get(10).add(idCommand);
+        	if(bagofTypes.size()>10)
+        		bagofTypes.get(10).add(idCommand);
             break;
         case "NAllyUnitsofType":  
-        	if(bagTypes.size()>11)
-        		bagTypes.get(11).add(idCommand);
+        	if(bagofTypes.size()>11)
+        		bagofTypes.get(11).add(idCommand);
             break;
         case "NEnemyUnitsofType":  
-        	if(bagTypes.size()>12)
-        		bagTypes.get(12).add(idCommand);
+        	if(bagofTypes.size()>12)
+        		bagofTypes.get(12).add(idCommand);
             break;
     }
     	
-    	System.out.println("String s"+s);
+    	//System.out.println("String s"+s);
     	
     }
 }
