@@ -39,6 +39,7 @@ import ai.ScriptsGenerator.ParametersConcrete.WeakestEnemy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import rts.units.UnitTypeTable;
 
@@ -53,6 +54,7 @@ public class TableCommandsGenerator {
     HashMap<Integer, ICommand> dicCommand;
     ArrayList<ArrayList<Integer>> bagofTypes;
     HashMap<Integer, Integer> correspondenceofTypes;
+    ArrayList<String> differentTypes;
     
 
     //list of fixed param
@@ -61,9 +63,6 @@ public class TableCommandsGenerator {
     private static final int MAX_QTD_UNITS_TO_TRAIN = 20;
     private static final int MAP_SIZE = 8;
     private static final int MAX_QTD_NAllyUnitsAttacking = 4;
-    
-    
-    private static final int NUMBER_TYPES= 13;
     
 //    private static final int ID_TYPE_AttackBasic= 0;
 //    private static final int ID_TYPE_BuildBasic= 1;
@@ -373,7 +372,8 @@ public class TableCommandsGenerator {
     private void generateDic() {
     	bagofTypes= new ArrayList<ArrayList<Integer>>();
     	correspondenceofTypes=new HashMap<>();
-    	initializeBagOfTypes(bagofTypes);
+    	separateTypes();
+    	initializeBagOfTypes();    	
         int cont = 0;
         for (ICommand command : commands) {
             dicCommand.put(cont, command);
@@ -524,8 +524,8 @@ public class TableCommandsGenerator {
     /**
 	 * @return the numberTypes
 	 */
-	public static int getNumberTypes() {
-		return NUMBER_TYPES;
+	public int getNumberTypes() {
+		return differentTypes.size();
 	}
 
 	/**
@@ -535,13 +535,25 @@ public class TableCommandsGenerator {
 		return bagofTypes;
 	}
 
-	private void initializeBagOfTypes(ArrayList<ArrayList<Integer>> bagofTypes)
+	private void initializeBagOfTypes()
     {
-    	for(int i=0; i< NUMBER_TYPES; i++)
+    	for(int i=0; i< differentTypes.size(); i++)
     	{
     		bagofTypes.add(new ArrayList<Integer>());
     	}
     }
+	
+	private void separateTypes()
+	{
+		differentTypes=new ArrayList<String>();
+        for (ICommand command : commands) {
+        	String s = command.toString();        	
+        	s = s.substring(s.indexOf("{") + 1);
+        	s = s.substring(0, s.indexOf(":"));
+        	if(!differentTypes.contains(s))
+        		differentTypes.add(s);
+        }
+	}
     
     private void addIdToBagofTypes(int idCommand, ICommand com) {  	
     	
@@ -550,75 +562,14 @@ public class TableCommandsGenerator {
     	s = s.substring(s.indexOf("{") + 1);
     	s = s.substring(0, s.indexOf(":"));
     	
-    	switch (s) {
-        case "AttackBasic":  
-        	if(bagofTypes.size()>0)
-        		bagofTypes.get(0).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 0);
-            break;
-        case "BuildBasic":  
-        	if(bagofTypes.size()>1)
-        		bagofTypes.get(1).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 1);
-            break;
-        case "HarvestBasic":  
-        	if(bagofTypes.size()>2)
-        		bagofTypes.get(2).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 2);
-            break;
-        case "MoveToCoordinatesBasic":  
-        	if(bagofTypes.size()>3)
-        		bagofTypes.get(3).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 3);
-            break;
-        case "MoveToUnitBasic":  
-        	if(bagofTypes.size()>4)
-        		bagofTypes.get(4).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 4);
-            break;
-        case "TrainBasic":  
-        	if(bagofTypes.size()>5)
-        		bagofTypes.get(5).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 5);
-            break;
-        case "AllyRange":  
-        	if(bagofTypes.size()>6)
-        		bagofTypes.get(6).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 6);
-            break;
-        case "DistanceFromEnemy":  
-        	if(bagofTypes.size()>7)
-        		bagofTypes.get(7).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 7);
-            break;
-        case "EnemyRange":  
-        	if(bagofTypes.size()>8)
-        		bagofTypes.get(8).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 8);
-            break;
-        case "NAllyUnitsAttacking":  
-        	if(bagofTypes.size()>9)
-        		bagofTypes.get(9).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 9);
-            break;
-        case "NAllyUnitsHarvesting":  
-        	if(bagofTypes.size()>10)
-        		bagofTypes.get(10).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 10);
-            break;
-        case "NAllyUnitsofType":  
-        	if(bagofTypes.size()>11)
-        		bagofTypes.get(11).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 11);
-            break;
-        case "NEnemyUnitsofType":  
-        	if(bagofTypes.size()>12)
-        		bagofTypes.get(12).add(idCommand);
-        		correspondenceofTypes.put(idCommand, 12);
-            break;
-    }
+    	for(int i=0;i<differentTypes.size();i++)
+    	{
+    		if(differentTypes.get(i)==s)
+    			bagofTypes.get(i).add(idCommand);
+    			correspondenceofTypes.put(idCommand, i);
+    	}
     	
-    	//System.out.println("String s"+s);
+    	//System.out.println("String s "+correspondenceofTypes.size());
     	
     }
 }
