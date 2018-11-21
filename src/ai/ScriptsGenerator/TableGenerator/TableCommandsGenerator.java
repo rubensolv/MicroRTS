@@ -565,8 +565,12 @@ public class TableCommandsGenerator {
     	for(int i=0;i<differentTypes.size();i++)
     	{
     		if(differentTypes.get(i)==s)
+    		{
     			bagofTypes.get(i).add(idCommand);
     			correspondenceofTypes.put(idCommand, i);
+    			break;
+    		}
+    			
     	}
     	
     	//System.out.println("String s "+correspondenceofTypes.size());
