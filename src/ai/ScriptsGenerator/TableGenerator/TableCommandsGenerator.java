@@ -535,6 +535,13 @@ public class TableCommandsGenerator {
 		return bagofTypes;
 	}
 
+	/**
+	 * @return the correspondenceofTypes
+	 */
+	public HashMap<Integer, Integer> getCorrespondenceofTypes() {
+		return correspondenceofTypes;
+	}
+
 	private void initializeBagOfTypes()
     {
     	for(int i=0; i< differentTypes.size(); i++)
