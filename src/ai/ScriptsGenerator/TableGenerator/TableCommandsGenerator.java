@@ -39,6 +39,7 @@ import ai.ScriptsGenerator.ParametersConcrete.WeakestEnemy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import rts.units.UnitTypeTable;
 
@@ -51,6 +52,10 @@ public class TableCommandsGenerator {
     UnitTypeTable utt;
     ArrayList<ICommand> commands;
     HashMap<Integer, ICommand> dicCommand;
+    ArrayList<ArrayList<Integer>> bagofTypes;
+    HashMap<Integer, Integer> correspondenceofTypes;
+    ArrayList<String> differentTypes;
+    
 
     //list of fixed param
     private static final int MAX_QTD_WORKERS_HARVERST = 5;
@@ -58,6 +63,22 @@ public class TableCommandsGenerator {
     private static final int MAX_QTD_UNITS_TO_TRAIN = 20;
     private static final int MAP_SIZE = 8;
     private static final int MAX_QTD_NAllyUnitsAttacking = 4;
+    
+//    private static final int ID_TYPE_AttackBasic= 0;
+//    private static final int ID_TYPE_BuildBasic= 1;
+//    private static final int ID_TYPE_HarvestBasic= 2;
+//    private static final int ID_TYPE_MoveToCoordinatesBasic= 3;
+//    private static final int ID_TYPE_MoveToUnitBasic= 4;
+//    private static final int ID_TYPE_TrainBasic= 5;
+//    private static final int ID_TYPE_AllyRange= 6;
+//    private static final int ID_TYPE_DistanceFromEnemy= 7;
+//    private static final int ID_TYPE_EnemyRange= 8;
+//    private static final int ID_TYPE_NAllyUnitsAttacking= 9;
+//    private static final int ID_TYPE_NAllyUnitsHarvesting= 10;
+//    private static final int ID_TYPE_NAllyUnitsofType= 11;
+//    private static final int ID_TYPE_NEnemyUnitsofType= 12;
+    
+    
 
     private static TableCommandsGenerator uniqueInstance;
     
@@ -349,9 +370,14 @@ public class TableCommandsGenerator {
     }
 
     private void generateDic() {
+    	bagofTypes= new ArrayList<ArrayList<Integer>>();
+    	correspondenceofTypes=new HashMap<>();
+    	separateTypes();
+    	initializeBagOfTypes();    	
         int cont = 0;
         for (ICommand command : commands) {
             dicCommand.put(cont, command);
+            addIdToBagofTypes(cont, command);
             cont++;
         }
         commands.clear();
@@ -493,5 +519,61 @@ public class TableCommandsGenerator {
         }
 
         return tCommandNEnemyUnitsofType;
+    }
+    
+    /**
+	 * @return the numberTypes
+	 */
+	public int getNumberTypes() {
+		return differentTypes.size();
+	}
+
+	/**
+	 * @return the bagofTypes
+	 */
+	public ArrayList<ArrayList<Integer>> getBagofTypes() {
+		return bagofTypes;
+	}
+
+	private void initializeBagOfTypes()
+    {
+    	for(int i=0; i< differentTypes.size(); i++)
+    	{
+    		bagofTypes.add(new ArrayList<Integer>());
+    	}
+    }
+	
+	private void separateTypes()
+	{
+		differentTypes=new ArrayList<String>();
+        for (ICommand command : commands) {
+        	String s = command.toString();        	
+        	s = s.substring(s.indexOf("{") + 1);
+        	s = s.substring(0, s.indexOf(":"));
+        	if(!differentTypes.contains(s))
+        		differentTypes.add(s);
+        }
+	}
+    
+    private void addIdToBagofTypes(int idCommand, ICommand com) {  	
+    	
+    	String s = com.toString();
+    	
+    	s = s.substring(s.indexOf("{") + 1);
+    	s = s.substring(0, s.indexOf(":"));
+    	
+    	for(int i=0;i<differentTypes.size();i++)
+    	{
+    		if(differentTypes.get(i).equals(s))
+    		{
+    			bagofTypes.get(i).add(idCommand);
+    			correspondenceofTypes.put(idCommand, i);
+    			break;
+    		}
+    			
+    	}
+    	
+    	//System.out.println("String s "+correspondenceofTypes.size());
+    	
     }
 }

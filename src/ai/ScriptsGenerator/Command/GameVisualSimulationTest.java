@@ -250,6 +250,8 @@ public class GameVisualSimulationTest {
         
         List<ICommand> commandsAI1=new ArrayList<>(); 
         TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
+        
+        //System.out.println("Table "+(tcg.getCommandByID(5138).toString()));
         commandsAI1.add(tcg.getCommandByID(5138));;
 //        commandsAI1.add(tcg.getCommandByID(5147));;
 //        commandsAI1.add(tcg.getCommandByID(2101));;
@@ -285,14 +287,14 @@ public class GameVisualSimulationTest {
         
         //iScriptsAi1.add(758);
         
-        iScriptsAi1.add(949);
-        iScriptsAi1.add(868);
-        iScriptsAi1.add(865);
-        iScriptsAi1.add(1092);
-        iScriptsAi1.add(1199);
-        iScriptsAi1.add(1094);
-        iScriptsAi1.add(1505);
-        iScriptsAi1.add(1105);
+        iScriptsAi1.add(2383);
+        iScriptsAi1.add(1262);
+        iScriptsAi1.add(1323);
+        iScriptsAi1.add(2716);
+        iScriptsAi1.add(2772);
+//        iScriptsAi1.add(1094);
+//        iScriptsAi1.add(1505);
+//        iScriptsAi1.add(1105);
         
 //        System.out.println(decodeScripts2(utt, iScriptsAi1).get(0).toString());
 //        System.out.println(decodeScripts2(utt, iScriptsAi1).get(1).toString());
