@@ -251,7 +251,7 @@ public class GameVisualSimulationTest {
         List<ICommand> commandsAI1=new ArrayList<>(); 
         TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
         
-        System.out.println("Table "+(tcg.getCommandByID(5138).toString()));
+        //System.out.println("Table "+(tcg.getCommandByID(5138).toString()));
         commandsAI1.add(tcg.getCommandByID(5138));;
 //        commandsAI1.add(tcg.getCommandByID(5147));;
 //        commandsAI1.add(tcg.getCommandByID(2101));;
