@@ -117,7 +117,7 @@ public class GameVisualSimulationTest {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8C.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
@@ -287,11 +287,11 @@ public class GameVisualSimulationTest {
         
         //iScriptsAi1.add(758);
         
-        iScriptsAi1.add(2383);
-        iScriptsAi1.add(1262);
-        iScriptsAi1.add(1323);
-        iScriptsAi1.add(2716);
-        iScriptsAi1.add(2772);
+        iScriptsAi1.add(6312);
+        iScriptsAi1.add(5616);
+        iScriptsAi1.add(5928);
+        iScriptsAi1.add(7026);
+        iScriptsAi1.add(5872);
 //        iScriptsAi1.add(1094);
 //        iScriptsAi1.add(1505);
 //        iScriptsAi1.add(1105);
