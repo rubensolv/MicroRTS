@@ -88,6 +88,7 @@ import rts.units.Unit;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import static tests.ClusterTesteLeve.decodeScripts;
+import static util.SOA.RoundRobinClusterLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -106,12 +107,18 @@ public class ClusterTesteLeve_Cluster {
 
         List<String> maps = new ArrayList<>(Arrays.asList(
                 "maps/8x8/basesWorkers8x8A.xml",
+                "maps/NoWhereToRun9x8.xml",
                 "maps/16x16/basesWorkers16x16A.xml",
-                "maps/BWDistantResources32x32.xml",
+                "maps/16x16/TwoBasesBarracks16x16.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
+                "maps/DoubleGame24x24.xml",
+                "maps/BWDistantResources32x32.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml",
+                "maps/BroodWar/(4)CircuitBreaker.scxF.xml",
+                "maps/BroodWar/(4)Fortress.scxA.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -119,7 +126,7 @@ public class ClusterTesteLeve_Cluster {
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 20000;
+        int MAXCYCLES = 12000;
         int PERIOD = 20;
         boolean gameover = false;
 
@@ -140,20 +147,18 @@ public class ClusterTesteLeve_Cluster {
         }
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                new AHTNAI(utt),
+               new AHTNAI(utt),
                new NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
                new PuppetSearchMCTSBasicScripts(utt),
                new StrategyTactics(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
+               new PGSSCriptChoice(utt, decodeScripts(utt, "1;2;3;"), "PGS"),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "1;2;3;"), "SSS"),
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
                new SCVPlus(utt)
-                //new GAB(utt),
-                //new SAB(utt)
         ));
         //add GAB e SAB by map settings
         switch(maps.get(map)){
@@ -203,6 +208,10 @@ public class ClusterTesteLeve_Cluster {
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
                                             "ManagerClosestEnemy", 1));
+        ais.add(15,new ai.competition.capivara.CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 2,decodeScripts(utt, "1;2;3;"),"A3N_2Unit_3Sc_Symmetric") );
         
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);

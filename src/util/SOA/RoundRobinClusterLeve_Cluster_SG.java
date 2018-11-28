@@ -147,7 +147,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
         String GA_SSS = "289;194;86;242;";                   
         String GA_A3N = "284;233";
         
-        String PGS_SG = "2383;1262;1323;2716;2772";
+        String PGS_SG = "14427;14082;13722;13594;14116;13723;13984;14351;14120;11904;13158;";
         
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
@@ -169,9 +169,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
-               new SCVPlus(utt),
-               new WorkerRush(utt),
-               new LightRush(utt),
+               new SCVPlus(utt),               
                
                //bg1
                //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),

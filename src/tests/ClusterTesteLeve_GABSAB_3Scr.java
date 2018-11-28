@@ -18,6 +18,7 @@ import PVAI.RangedDefense;
 import Standard.StrategyTactics;
 import ai.core.AI;
 import ai.*;
+import ai.CMAB.CmabAssymetricMCTS;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -26,19 +27,31 @@ import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
+import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.BFSPathFinding;
 import ai.ahtn.AHTNAI;
+import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.aiSelection.IDABCD.ABSelection;
 import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.GAB;
-import ai.asymmetric.GAB.SandBox.GABRandom;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SAB_oldVersion;
-import ai.asymmetric.SAB.SAB_seed;
+import ai.cluster.CABA;
+import ai.cluster.CABA_Enemy;
+import ai.cluster.CIA;
+import ai.cluster.CIA_Enemy;
+import ai.cluster.CIA_EnemyEuclidieanInfluence;
+import ai.cluster.CIA_EnemyWithTime;
+import ai.cluster.CIA_PlayoutCluster;
+import ai.cluster.CIA_PlayoutPower;
+import ai.cluster.CIA_PlayoutTemporal;
+import ai.cluster.CIA_TDLearning;
+import ai.competition.capivara.Capivara;
+import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -51,6 +64,10 @@ import ai.portfolio.PortfolioAI;
 import ai.portfolio.portfoliogreedysearch.PGSAI;
 import ai.puppet.BasicConfigurableScript;
 import ai.puppet.PuppetSearchMCTS;
+import ai.puppet.PuppetSearchMCTSBasicScripts;
+import ai.scv.SCV;
+import ai.scv.SCVPlus;
+import ai.utalca.UTalcaBot;
 import gui.PhysicalGameStatePanel;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -61,7 +78,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -69,118 +85,51 @@ import rts.PhysicalGameState;
 import rts.Player;
 import rts.PlayerAction;
 import rts.units.Unit;
+import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import static tests.ClusterTesteLeve.decodeScripts;
+import static util.SOA.RoundRobinClusterLeve.decodeScripts;
 import util.XMLWriter;
 
 /**
  *
  * @author Rubens
  */
-public class ClusterTesteLeve_GAB_SAB {
-    
-    static HashMap<Integer, ArrayList<Integer>>  mapElements = new HashMap<>();
+public class ClusterTesteLeve_GABSAB_3Scr {
 
     public static void main(String args[]) throws Exception {
         int iAi1 = Integer.parseInt(args[0]);
         int iAi2 = Integer.parseInt(args[1]);
         int map = Integer.parseInt(args[2]);
-        
-        
+
         Instant timeInicial = Instant.now();
         Duration duracao;
-        
-        /*
-        
-       
-        
-        "maps/BroodWar/(3)Aztec.scxA.xml", 
-            "maps/BroodWar/(3)Aztec.scxC.xml", 
-            "maps/BroodWar/(4)Andromeda.scxB.xml",
-            "maps/BroodWar/(4)Andromeda.scxF.xml",
-            "maps/BroodWar/(4)Fortress.scxD.xml", 
-            "maps/BroodWar/(4)Fortress.scxA.xml", 
-            "maps/BroodWar/(4)EmpireoftheSun.scmC.xml",
-            "maps/BroodWar/(4)EmpireoftheSun.scmF.xml"
-        
-            "maps/BroodWar/(3)TauCross.scxA.xml",
-                "maps/BroodWar/(3)TauCross.scxB.xml",
-                "maps/BroodWar/(3)TauCross.scxC.xml",
-                "maps/BroodWar/(4)CircuitBreaker.scxB.xml",
-                "maps/BroodWar/(4)CircuitBreaker.scxD.xml",
-                "maps/BroodWar/(4)CircuitBreaker.scxF.xml",
-                "maps/BroodWar/(4)Python.scxA.xml",
-                "maps/BroodWar/(4)Python.scxC.xml",
-                "maps/BroodWar/(4)Python.scxF.xml"
-        
-             
-             
-            "maps/8x8/basesWorkers8x8A.xml" 
-             "maps/16x16/basesWorkers16x16A.xml" 
-        "maps/NoWhereToRun9x8.xml"     
-            
-        "maps/8x8/basesWorkers8x8A.xml", 
-                "maps/8x8/basesWorkers8x8C.xml",
-                "maps/8x8/basesWorkers8x8F.xml",
-                "maps/8x8/basesWorkers8x8E.xml",
-                "maps/8x8/basesWorkers8x8H.xml",
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml"
-        
-                
-        
-                //novos mapas de treino
-         "maps/8x8/basesWorkers8x8Obstacle.xml",
-                "maps/8x8/TwoBasesWorkers8x8.xml",
-                "maps/8x8/basesWorkersBarracks8x8.xml",
-                "maps/9x8/BlockWall9x8.xml",
-                "maps/9x8/BlockDiagonal9x8.xml",
-                "maps/9x8/BlockTwoResources9x8.xml",
-                "maps/9x8/BlockTwoResourcesWithBarracks9x8.xml",
-                "maps/16x16/EightBasesWorkers16x16.xml",
-                "maps/16x16/BasesWithWalls16x16.xml",
-                "maps/16x16/BasesTwoBarracksWithWalls16x16.xml",
-                "maps/16x16/NoWhereWithBlocks16x16.xml",
-                "maps/24x24/basesWorkers24x24A.xml",
-                "maps/24x24/DoubleMapaWithBlock24x24.xml",
-                "maps/24x24/DoubleMapaWithBlockTwoBarracks24x24.xml",
-                "maps/24x24/DoubleMapaWithBlockTwoBases24x24.xml",
-                "maps/32x32/ComplexPathToFight32x32.xml",
-                "maps/32x32/DiagonalRuntoGold32x32.xml",
-                "maps/32x32/RuntoGoldWithBlocksBarracks32x32.xml",
-                "maps/32x32/SimplePathToFight32x32.xml",
-                "maps/64x64/ComplexPathToFight64x64.xml",
-                "maps/64x64/SimplePathExplore64x64.xml",
-                "maps/64x64/SimplePathToFight64x64.xml"
- 
-        
 
-
-        */
-        
         List<String> maps = new ArrayList<>(Arrays.asList(
                 "maps/8x8/basesWorkers8x8A.xml",
                 "maps/NoWhereToRun9x8.xml",
                 "maps/16x16/basesWorkers16x16A.xml",
                 "maps/16x16/TwoBasesBarracks16x16.xml",
-                "maps/BWDistantResources32x32.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
                 "maps/DoubleGame24x24.xml",
+                "maps/BWDistantResources32x32.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml",
+                "maps/BroodWar/(4)CircuitBreaker.scxF.xml",
+                "maps/BroodWar/(4)Fortress.scxA.xml"
         ));
-        
+
+        //UnitTypeTable utt = new UnitTYpeTableBattle();
         UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 20000;
+        int MAXCYCLES = 12000;
         int PERIOD = 20;
         boolean gameover = false;
-        
+
         if (pgs.getHeight() == 8) {
             MAXCYCLES = 4000;
         }
@@ -194,94 +143,87 @@ public class ClusterTesteLeve_GAB_SAB {
             MAXCYCLES = 7000;
         }
         if (pgs.getHeight() == 64) {
-            MAXCYCLES = 9000;
+            MAXCYCLES = 12000;
         }
 
-        /*
-            new NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new BS3_NaiveMCTS(utt),
-                new AHTNAI(utt),
-        
-                new LightRush(utt),
-                new WorkerRush(utt),
-                new HeavyRush(utt),
-                new RangedRush(utt),
-                new EconomyRush(utt),
-                new SCV(utt),
-                new SCV_GAB(utt),
-                new PVAIML_SL_ONE_STRATEGY(utt),
-                new PVAI(utt)
-        
-                new WorkerRush(utt),
-                new POLightRush(utt),
-                new RandomBiasedAI(),
-                new POHeavyRush(utt),
-                new PORangedRush(utt),
-                new LightDefense(utt),
-                new RangedDefense(utt),
-                new WorkerDefense(utt),
-                new EconomyMilitaryRush(utt),
-            
-        
-        //IAs GA 
-                new AHTNAI(utt),
+        List<AI> ais = new ArrayList<>(Arrays.asList(
+               new AHTNAI(utt),
                new NaiveMCTS(utt),
-               new BS3_NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
+               new PuppetSearchMCTSBasicScripts(utt),
                new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new SSSmRTS(utt),
-               new GAB(utt),
-               new GAB_ABActionGeneration(utt),
-               new SAB_oldVersion(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, best), "BR"), //PGS com o best response do GA
-               new GAB_ScriptC(utt, decodeScripts(utt, best), "BR"), //GAB com o best response do GA
-               new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Nash"), //PGS com o best response do Nash
-               new GAB_ScriptC(utt, decodeScripts(utt, sc2Nash), "Nash"),  //GAB com o best response do Nash
-               new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA"), //PGS com o melhor GA
-               new GAB_ScriptC(utt, decodeScripts(utt, bestGA), "bGA")  //GAB com o melhor GA
-        
-        
-        
-        //IAS SCV
-                //IA's SCV usadas
-                //new WorkerDefense(utt),
-                //new WorkerRush(utt),
-                //new RangedDefense(utt),
-                //new RangedRush(utt),
-                //new LightRush(utt),
-                //new LightDefense(utt),
-                //new HeavyDefense(utt),
-                //new HeavyRush(utt),
-                //new EMRDeterministico(utt),
-                new PVAIML_SL_ONE_STRATEGY(utt),  //SBS
-                new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                new BS3_NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new SCV_Full(utt, pgs.getHeight(), pgs.getWidth()),
-                new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
-         */            
-        
-        generateConfig();
-        List<AI> ais = new ArrayList<>();
-
-        AI ai1;
-        AI ai2;
-        if(iAi1 == 0){
-            //ai1 = new PGSmRTS(utt);
-            ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "1;2;3;"), "PGS");
-            ai2 = getIA(utt,iAi2);
-        }else{
-            //ai2 = new PGSmRTS(utt);
-            ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, "1;2;3;"), "PGS");
-            ai1 = getIA(utt,iAi2);
+               new PGSSCriptChoice(utt, decodeScripts(utt, "1;2;3;"), "PGS"),
+               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "1;2;3;"), "SSS"),
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
+               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
+               new SCVPlus(utt)
+        ));
+        //add GAB e SAB by map settings
+        switch(maps.get(map)){
+            case "maps/8x8/basesWorkers8x8A.xml" :
+                ais.add(12, new GAB(utt, 2, 3)); //3 ManagerFather
+                ais.add(13, new SAB(utt, 1, 5)); //8 ManagerLessLife
+                break;
+            case     "maps/8x8/FourBasesWorkers8x8.xml" :                
+                ais.add(12, new GAB(utt, 2, 3)); //3 ManagerFather
+                ais.add(13, new SAB(utt, 1, 5)); //8 ManagerLessLife
+                break;
+            case     "maps/NoWhereToRun9x8.xml" :
+                ais.add(12, new GAB(utt, 4, 4)); //ManagerFartherEnemy
+                ais.add(13, new SAB(utt, 8, 7)); //ManagerLessDPS
+                break;
+            case     "maps/16x16/basesWorkers16x16A.xml" :
+                ais.add(12, new GAB(utt, 1, 7));  //7 ManagerLessDPS
+                ais.add(13, new SAB(utt, 3, 4)); //4 ManagerFartherEnemy
+                break;
+            case     "maps/16x16/TwoBasesBarracks16x16.xml" :
+                ais.add(12, new GAB(utt, 3, 7)); //7 ManagerLessDPS
+                ais.add(13, new SAB(utt, 2, 3)); //3 ManagerFather
+                break;
+            case     "maps/24x24/basesWorkers24x24A.xml" :
+                ais.add(12, new GAB(utt, 2, 2)); // 2  ManagerClosestEnemy
+                ais.add(13, new SAB(utt, 4, 3)); //3 ManagerFather
+                break;
+            case     "maps/DoubleGame24x24.xml" :
+                ais.add(12, new GAB(utt, 2, 5)); // 5 ManagerLessLife
+                ais.add(13, new SAB(utt, 2, 2)); //2  ManagerClosestEnemy
+                break;
+            case     "maps/32x32/basesWorkers32x32A.xml" :
+                ais.add(12, new GAB(utt, 2, 2)); //2  ManagerClosestEnemy
+                ais.add(13, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
+                break;
+            case     "maps/BWDistantResources32x32.xml" :
+                ais.add(12, new GAB(utt, 3, 2)); //2  ManagerClosestEnemy
+                ais.add(13, new SAB(utt, 3, 2)); //2  ManagerClosestEnemy
+                break;
+            case     "maps/BroodWar/(4)BloodBath.scmB.xml" :
+                ais.add(12, new GAB(utt, 1, 7)); // 7 ManagerLessDPS
+                ais.add(13, new SAB(utt, 1, 5)); // 5 ManagerLessLife
+                break;
+            default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                ais.add(12, new GAB(utt, 2, 2));
+                ais.add(13, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
+                break;
         }
         
-        ais.clear();
+        ais.add(14, new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 1));
+        ais.add(15,new ai.competition.capivara.CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 2,decodeScripts(utt, "1;2;3;"),"A3N_2Unit_3Sc_Symmetric") );
+        
+        AI ai1 = ais.get(iAi1);
+        AI ai2 = ais.get(iAi2);
+
+        ai1.preGameAnalysis(gs, 100);
+        ai2.preGameAnalysis(gs, 100);
+        
+        
 
         /*
             Variáveis para coleta de tempo
@@ -363,11 +305,11 @@ public class ClusterTesteLeve_GAB_SAB {
                 } 
             }
              */
-            
+
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
-            
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
+
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 120));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;
@@ -384,9 +326,9 @@ public class ClusterTesteLeve_GAB_SAB {
         System.out.println("Winner " + Integer.toString(gs.winner()));
         System.out.println("Game Over");
     }
-    
+
     public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
-        
+
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
         String[] itens = sScripts.split(";");
@@ -394,10 +336,10 @@ public class ClusterTesteLeve_GAB_SAB {
         for (String element : itens) {
             iScriptsAi1.add(Integer.decode(element));
         }
-        
+
         List<AI> scriptsAI = new ArrayList<>();
 
-        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
 
         iScriptsAi1.forEach((idSc) -> {
@@ -405,28 +347,6 @@ public class ClusterTesteLeve_GAB_SAB {
         });
 
         return scriptsAI;
-    }
-    
-    public static void generateConfig(){
-        int cont = 0;
-        for (int i = 0; i <= 10; i++) {
-            for (int j = 0; j < 9; j++) {
-                 ArrayList<Integer>  choices = new ArrayList<>();
-                 choices.add(0, i);
-                 choices.add(1, j);
-                mapElements.put(cont, choices);
-                cont++;
-                        
-            }
-        }
-        //System.out.println("tests.ClusterTesteLeve_GAB_SAB.generateConfig() teste total ="+ mapElements.keySet().size());
-        
-    }
-
-    private static AI getIA(UnitTypeTable utt, int iAi2) {
-        ArrayList<Integer>  choices = mapElements.get(iAi2);
-        return new GAB(utt, choices.get(0), choices.get(1));
-        //return new SAB(utt, choices.get(0), choices.get(1));
     }
 
 }

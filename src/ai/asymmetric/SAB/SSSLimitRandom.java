@@ -86,6 +86,10 @@ public class SSSLimitRandom extends AIWithComputationBudget implements Interrupt
         buildPortfolio();
         randAI = new RandomBiasedAI(a_utt);
     }
+    
+    public void setNewPortfolio(List<AI> scripts){
+        this.scripts = scripts;
+    }
 
     protected void buildPortfolio() {
         this.scripts.add(new POWorkerRush(utt));

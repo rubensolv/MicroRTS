@@ -16,11 +16,13 @@ import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
+import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.NGS;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SAB.SABScriptChoose;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
@@ -88,12 +90,12 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
-                //"maps/DoubleGame24x24.xml"
-                //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/BWDistantResources32x32.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
-                
+        "maps/24x24/basesWorkers24x24A.xml"
+        //"maps/DoubleGame24x24.xml"
+        //"maps/32x32/basesWorkers32x32A.xml"
+        //"maps/BWDistantResources32x32.xml"
+        //"maps/BroodWar/(4)BloodBath.scmB.xml"
+
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -107,45 +109,38 @@ public class RoundRobinClusterLeve_Cluster {
 
         if (pgs.getHeight() == 8) {
             MAXCYCLES = 4000;
-        }
-        if (pgs.getHeight() == 16) {
+        } else if (pgs.getHeight() == 16) {
             MAXCYCLES = 5000;
-        }
-        if (pgs.getHeight() == 24) {
+        } else if (pgs.getHeight() == 24) {
             MAXCYCLES = 6000;
-        }
-        if (pgs.getHeight() == 32) {
+        } else if (pgs.getHeight() == 32) {
             MAXCYCLES = 7000;
-        }
-        if (pgs.getHeight() == 64) {
+        } else if (pgs.getHeight() == 64) {
             MAXCYCLES = 12000;
         }
 
-        String GA_PGS = "49;0;4;151;189;226;186;"; 
-        String GA_SSS = "289;194;86;242;";                   
-        String GA_A3N = "284;233";
-        
+        String GA_A3N = "297;69;154;275;";
+
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               
-               new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
-               new SCVPlus(utt),
-               //bg1
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
-               //plus
-               new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "PGS+",2,200),
-               new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SSS+",2,200),
-               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts(utt, GA_A3N))
-               
+                new AHTNAI(utt),
+                new NaiveMCTS(utt),
+                new PuppetSearchMCTS(utt),
+                new StrategyTactics(utt),
+                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), //lr
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
+                new SCVPlus(utt),
+                //bg1
+                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_PGS", 2, 200)/*,
+                new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_SSS", 2, 200),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 2,
+                         decodeScripts(utt, GA_A3N)),
+                new GABScriptChoose(utt, 9, 5, decodeScripts(utt, GA_A3N), "GAB"),
+                new SABScriptChoose(utt, 1, 2, decodeScripts(utt, GA_A3N), "SAB")*/
         ));
 
         AI ai1 = ais.get(iAi1);

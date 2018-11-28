@@ -6,11 +6,13 @@ package util.SOA;
 
 import PVAI.util.Permutation;
 import ai.RandomBiasedAI;
+import ai.asymmetric.GAB.SandBox.GABRandom;
 import static ai.asymmetric.PGS.GameVisualSimulationTest.decodeScripts;
 import ai.core.AI;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
+import ai.asymmetric.SAB.SABScriptChoose;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
@@ -115,8 +117,10 @@ public class RoundRobinTOScaleTIAMAT {
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
 //                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
         
-        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi2), "GAB");
+        //AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
+        //AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
+        AI ai1 = new GABRandom(utt, 2, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
+        AI ai2 = new GABRandom(utt, 2, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
 
         /*
             Variáveis para coleta de tempo
@@ -189,7 +193,7 @@ public class RoundRobinTOScaleTIAMAT {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
