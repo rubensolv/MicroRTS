@@ -69,7 +69,6 @@ public class PuppetSearchMCTSBasicScripts extends PuppetBase {
                  new RandomBiasedAI(),
                  new SingleChoiceConfigurableScript(new FloodFillPathFinding(),
                                         new AI[]{
-                                            new POWorkerRush(utt, new FloodFillPathFinding()),
                                             new POLightRush(utt, new FloodFillPathFinding()),
                                             new PORangedRush(utt, new FloodFillPathFinding()),
                                             new POHeavyRush(utt, new FloodFillPathFinding()),

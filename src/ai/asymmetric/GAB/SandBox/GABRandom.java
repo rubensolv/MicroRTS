@@ -59,6 +59,7 @@ public class GABRandom extends AIWithComputationBudget implements InterruptibleA
     //tste
     UnitScriptData currentScriptData;
     RandomAI rAI ;
+    String name = "";
 
     public GABRandom(UnitTypeTable utt) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(),
@@ -70,6 +71,12 @@ public class GABRandom extends AIWithComputationBudget implements InterruptibleA
 
     public GABRandom(UnitTypeTable utt, int numUnits, int numManager) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+    }
+    
+    public GABRandom(UnitTypeTable utt, int numUnits, int numManager, List<AI> IAsPort, String name) {
+        this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+        this.name = name;
+        this._pgs.setNewPortfolio(IAsPort);
     }
 
     public GABRandom(int time, int max_playouts, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
@@ -348,7 +355,12 @@ public class GABRandom extends AIWithComputationBudget implements InterruptibleA
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "GAB_SandBox_" + _numUnits + "_" + _numManager;
+        if(name != ""){
+            return name + _numUnits + "_" + _numManager;
+        }else{
+            return "GABRandom_" + _numUnits + "_" + _numManager;
+        }
+        
     }
 
 }

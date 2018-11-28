@@ -80,6 +80,10 @@ public class PGSLimitRandom extends AIWithComputationBudget implements Interrupt
         randAI = new RandomBiasedAI(utt);
     }
     
+    public void setNewPortfolio(List<AI> scripts){
+        this.scripts = scripts;
+    }
+    
     protected void buildPortfolio(){
         this.scripts.add(new POLightRush(utt));
         this.scripts.add(new POHeavyRush(utt));
