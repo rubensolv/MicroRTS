@@ -56,10 +56,10 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
+                "maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -119,8 +119,8 @@ public class RoundRobinTOScaleTIAMAT {
         
         //AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
         //AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-        AI ai1 = new GABRandom(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
-        AI ai2 = new GABRandom(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
+        AI ai1 = new GABRandom(utt, 2, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
+        AI ai2 = new GABRandom(utt, 2, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
 
         /*
             Variáveis para coleta de tempo
