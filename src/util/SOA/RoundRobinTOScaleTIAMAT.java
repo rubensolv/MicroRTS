@@ -6,6 +6,7 @@ package util.SOA;
 
 import PVAI.util.Permutation;
 import ai.RandomBiasedAI;
+import ai.asymmetric.GAB.SandBox.GABRandom;
 import static ai.asymmetric.PGS.GameVisualSimulationTest.decodeScripts;
 import ai.core.AI;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
@@ -118,8 +119,8 @@ public class RoundRobinTOScaleTIAMAT {
         
         //AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
         //AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-        AI ai1 = new SABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "SAB");
-        AI ai2 = new SABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "SAB");
+        AI ai1 = new GABRandom(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
+        AI ai2 = new GABRandom(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GABRandom");
 
         /*
             Variáveis para coleta de tempo
