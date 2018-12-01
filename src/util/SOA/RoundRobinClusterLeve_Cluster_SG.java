@@ -147,7 +147,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
         String GA_SSS = "289;194;86;242;";                   
         String GA_A3N = "284;233";
         
-        String PGS_SG = "14427;14082;13722;13594;14116;13723;13984;14351;14120;11904;13158;";
+        String PGS_SG = "5127;5892;4299;4063;4979;4302;3804;";
         
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
