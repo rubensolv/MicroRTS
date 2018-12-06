@@ -50,7 +50,7 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinSampleEnemies {
+public class RoundRobinSampleEnemiesandElite {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
@@ -58,7 +58,7 @@ public class RoundRobinSampleEnemies {
     String pathTableScripts;
     
 
-    public RoundRobinSampleEnemies(String pathTableScripts) {
+    public RoundRobinSampleEnemiesandElite(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
         buildScriptsTable();
 

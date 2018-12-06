@@ -117,7 +117,7 @@ public class GameVisualSimulationTest {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8Obstacle.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
@@ -128,6 +128,8 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8Obstacle.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //testes 
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         
@@ -157,15 +159,15 @@ public class GameVisualSimulationTest {
         //AI ai1 = new PuppetSearchMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
         //AI ai1 = new POLightRush(utt);
-        //AI ai1 = new WorkerRush(utt);
+        AI ai1 = new WorkerRush(utt);
         //AI ai1 = new PGSmRTS_SandBox(utt);
-        //AI ai1 = new PGSmRTS(utt); 
+        //AI ai2 = new PGSmRTS(utt); 
         //AI ai1 = new GAB(utt);
         //AI ai1 = new SAB(utt);
         //AI ai1 = new IDABCD(utt);
-        //AI ai1 = new StrategyTactics(utt);
+        //AI ai2 = new StrategyTactics(utt);
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "65;184;217;"), "bGA");
-        //AI ai1 = new SSSmRTS(utt);
+        //AI ai2 = new SSSmRTS(utt);
         //AI ai1 = new AlphaBetaSearch(utt, new LTD2(), "LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new RandomBiasedAI(utt), new RandomBiasedAI(utt), new LTD2()), "Play_Rand_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
@@ -224,7 +226,7 @@ public class GameVisualSimulationTest {
         //AI ai2 = new AlphaBetaSearchAbstract(utt);
         //AI ai2 = new GAB_SandBox_Parcial_State(utt);
         //AI ai2 = new GAB(utt);
-        AI ai2 = new WorkerRush(utt);
+        //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
         //AI ai2 = new POLightRush(utt);
         //AI ai2 = new RangedDefense(utt);
@@ -278,7 +280,7 @@ public class GameVisualSimulationTest {
 //        commandsAI2.add(tcg.getCommandByID(4915));;
 //        commandsAI2.add(tcg.getCommandByID(3748));;
 //        AI ai2 = new ChromosomeAI(utt, commandsAI2, "");
-       // AI ai2 = new PassiveAI(utt);        
+//        AI ai2 = new PassiveAI(utt);        
           
         buildScriptsTable();
         
@@ -286,14 +288,25 @@ public class GameVisualSimulationTest {
         ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
         
         //iScriptsAi1.add(758);
+                     
         
-       
-        
-        iScriptsAi1.add(59);
-        iScriptsAi1.add(8581);
-        iScriptsAi1.add(6559);
-        iScriptsAi1.add(5248);
-        iScriptsAi1.add(8477);
+        iScriptsAi1.add(3692);
+        iScriptsAi1.add(4655);
+        iScriptsAi1.add(4829);
+        iScriptsAi1.add(4140);
+//        iScriptsAi1.add(2646);
+//        iScriptsAi1.add(4024);
+//        
+//        iScriptsAi1.add(2275);
+//        iScriptsAi1.add(3175);
+//        iScriptsAi1.add(4271);
+//        iScriptsAi1.add(343);
+//        iScriptsAi1.add(3512);
+//        iScriptsAi1.add(4212);
+//        
+//        iScriptsAi1.add(3640);
+//        iScriptsAi1.add(2741);
+        //iScriptsAi1.add(8477);
 //        iScriptsAi1.add(1094);
 //        iScriptsAi1.add(1505);
 //        iScriptsAi1.add(1105);
@@ -319,8 +332,16 @@ public class GameVisualSimulationTest {
 //        iScriptsAi2.add(404);
 //        iScriptsAi2.add(188);
         
-        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
+        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
+        AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGSR", 2, 200);
+        
+//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+//                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+//                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+//                                            "ManagerClosestEnemy", 1,decodeScripts2(utt, iScriptsAi1)); //A3N
+        
+  
         
         //AI ai1= decodeScripts2(utt, iScriptsAi1).get(0);
         
