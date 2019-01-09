@@ -274,18 +274,18 @@ public class GameState {
                         } else {
                             // This is more a problem, since it means there is a bug somewhere...
                             // (probably in one of the AIs)
-                            System.err.println("Inconsistent actions were executed!");
-                            System.err.println(uaa);
-                            System.err.println("  Resources: " + uaa.action.resourceUsage(uaa.unit, pgs));
-                            System.err.println(p.m_a + " assigned action " + p.m_b + " at time " + time);
-                            System.err.println("  Resources: " + ru);
-                            System.err.println("Player resources: " + pgs.getPlayer(0).getResources() + ", " + pgs.getPlayer(1).getResources());
-                            System.err.println("Resource Consistency: " + uaa.action.resourceUsage(uaa.unit, pgs).consistentWith(ru, this));
+//                            System.err.println("Inconsistent actions were executed!");
+//                            System.err.println(uaa);
+//                            System.err.println("  Resources: " + uaa.action.resourceUsage(uaa.unit, pgs));
+//                            System.err.println(p.m_a + " assigned action " + p.m_b + " at time " + time);
+//                            System.err.println("  Resources: " + ru);
+//                            System.err.println("Player resources: " + pgs.getPlayer(0).getResources() + ", " + pgs.getPlayer(1).getResources());
+//                            System.err.println("Resource Consistency: " + uaa.action.resourceUsage(uaa.unit, pgs).consistentWith(ru, this));
                             
                             try {
-                                throw new Exception("dummy");   // just to be able to print the stack trace
+                                throw new Exception();   // just to be able to print the stack trace
                             }catch(Exception e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
                             
                             // only the newly issued action is cancelled, since it's the problematic one...

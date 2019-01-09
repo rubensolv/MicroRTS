@@ -129,17 +129,20 @@ public class RoundRobinSampleEnemiesandElite {
         updateTableIfnecessary();
 
         //pgs 
-        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
-        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+//        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
+//        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+        
+//          AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1), "PGS");
+//          AI ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2), "PGS");
 
-//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-//                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-//                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-//                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
-//        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-//                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-//                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-//                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
+        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
+        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
 //        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
 //        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
 

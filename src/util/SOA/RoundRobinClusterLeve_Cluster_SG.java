@@ -112,8 +112,8 @@ public class RoundRobinClusterLeve_Cluster_SG {
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		//"maps/8x8/basesWorkers8x8A.xml"
-        		"maps/16x16/BasesWithWalls16x16.xml"
+        		"maps/8x8/basesWorkers8x8A.xml"
+        		//"maps/16x16/BasesWithWalls16x16.xml"
                 
         ));
 
@@ -149,7 +149,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
         String GA_A3N = "284;233";
         
         //     
-        String PGS_SG = "21380;31676;31677;29518;31603;29930;31229;30799;";
+        String PGS_SG = "11833;16372;16270;1459";
         
         String PGS_SG2 = "31647;26009;30396;30677;29677;31802";
         
@@ -162,12 +162,12 @@ public class RoundRobinClusterLeve_Cluster_SG {
         }
         
         //decompõe a tupla
-        ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
-        String[] itens2 = PGS_SG2.split(";");
-
-        for (String element : itens2) {
-            iScriptsAi2.add(Integer.decode(element));
-        }
+//        ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
+//        String[] itens2 = PGS_SG2.split(";");
+//
+//        for (String element : itens2) {
+//            iScriptsAi2.add(Integer.decode(element));
+//        }
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
                
@@ -181,7 +181,11 @@ public class RoundRobinClusterLeve_Cluster_SG {
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
-               new SCVPlus(utt),                         
+               new SCVPlus(utt),      
+               
+               //new PGSSCriptChoice(utt, decodeScripts2(utt, iScriptsAi1), "PGS_SG")
+               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts2(utt, iScriptsAi1),"GA"), //A3N
+               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts(utt, "1;2;3;")) //A3N
                
                //bg1
                //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
@@ -191,15 +195,15 @@ public class RoundRobinClusterLeve_Cluster_SG {
                //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SSS+",2,200),
                //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts(utt, GA_A3N)),
                
-               new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGS_SG",2,200),
-               
-               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts2(utt, iScriptsAi1)), //A3N
- 
-               new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGS_SG2",2,200),
-               
-               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts2(utt, iScriptsAi2)), //A3N               
-               
-               new Capivara(utt)
+//               new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGS_SG",2,200),
+//               
+//               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts2(utt, iScriptsAi1)), //A3N
+// 
+//               new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGS_SG2",2,200),
+//               
+//               new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts2(utt, iScriptsAi2)), //A3N               
+//               
+//               new Capivara(utt)
         		));
 
         AI ai1 = ais.get(iAi1);
@@ -276,7 +280,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES));
+        } while (!gameover && (gs.getTime() < 8000));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 

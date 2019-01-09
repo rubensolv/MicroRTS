@@ -288,12 +288,15 @@ public class GameVisualSimulationTest {
         ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
         
         //iScriptsAi1.add(758);
-                     
         
-        iScriptsAi1.add(3692);
-        iScriptsAi1.add(4655);
-        iScriptsAi1.add(4829);
-        iScriptsAi1.add(4140);
+              
+                     
+        iScriptsAi1.add(15262);
+        iScriptsAi1.add(15263);
+        iScriptsAi1.add(14553);
+        iScriptsAi1.add(16008);
+        iScriptsAi1.add(15972);
+        iScriptsAi1.add(15709);
 //        iScriptsAi1.add(2646);
 //        iScriptsAi1.add(4024);
 //        
@@ -333,10 +336,11 @@ public class GameVisualSimulationTest {
 //        iScriptsAi2.add(188);
         
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
-        AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
+        //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGSR", 2, 200);
         
-//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        AI ai2 = new PGSSCriptChoice(utt, decodeScripts2(utt, iScriptsAi1), "PGSR");
+//        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
 //                                            "ManagerClosestEnemy", 1,decodeScripts2(utt, iScriptsAi1)); //A3N
