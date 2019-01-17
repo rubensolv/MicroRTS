@@ -30,3 +30,8 @@ DELETE FROM logUCB
     WITH RECURSIVE
       for(i) AS (VALUES(1) UNION ALL SELECT i+1 FROM for WHERE i < 60088)
     INSERT INTO UCB SELECT i,0 FROM for;
+    
+ CREATE UNIQUE INDEX index_UCB_ID ON UCB (id_rule);
+ 
+ CREATE INDEX index_log_FK ON logUCB(id_rule)
+    
