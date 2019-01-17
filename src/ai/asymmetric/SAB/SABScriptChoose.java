@@ -82,6 +82,12 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
         this._sss.setNewPortfolio(IAsPort);
     }
     
+    public SABScriptChoose(UnitTypeTable utt, int max_playouts, int numUnits, int numManager, List<AI> IAsPort, String name) {
+        this(100, max_playouts, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+        this.name = name;
+        this._sss.setNewPortfolio(IAsPort);
+    }
+    
     public SABScriptChoose(UnitTypeTable utt, int numUnits, int numManager, List<AI> IAsPort, List<AI> IAsABCD,String name) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
         this.name = name;
@@ -411,7 +417,8 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "SAB_SandBox_" + _numUnits + "_" + _numManager;
+        //return "SAB_SandBox_" + _numUnits + "_" + _numManager;
+        return name;
     }
 
 }

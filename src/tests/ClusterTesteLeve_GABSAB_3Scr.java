@@ -118,7 +118,12 @@ public class ClusterTesteLeve_GABSAB_3Scr {
                 "maps/BroodWar/(4)BloodBath.scmD.xml",
                 "maps/BroodWar/(4)EmpireoftheSun.scmC.xml",
                 "maps/BroodWar/(4)CircuitBreaker.scxF.xml",
-                "maps/BroodWar/(4)Fortress.scxA.xml"
+                "maps/BroodWar/(4)Fortress.scxA.xml",
+                "maps/BroodWar/(4)BloodBath.scmA.xml",
+                "maps/BroodWar/(4)BloodBath.scmC.xml",
+                "maps/BroodWar/(4)Andromeda.scxE.xml",
+                "maps/BroodWar/(4)Python.scxB.xml",
+                "maps/BroodWar/(2)Destination.scxA.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -150,7 +155,7 @@ public class ClusterTesteLeve_GABSAB_3Scr {
                new AHTNAI(utt),
                new NaiveMCTS(utt),
                new PuppetSearchMCTS(utt),
-               new PuppetSearchMCTSBasicScripts(utt),
+               //new PuppetSearchMCTSBasicScripts(utt),
                new StrategyTactics(utt),
                new PGSSCriptChoice(utt, decodeScripts(utt, "1;2;3;"), "PGS"),
                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "1;2;3;"), "SSS"),
@@ -162,57 +167,57 @@ public class ClusterTesteLeve_GABSAB_3Scr {
         ));
         //add GAB e SAB by map settings
         switch(maps.get(map)){
-            case "maps/8x8/basesWorkers8x8A.xml" :
-                ais.add(12, new GAB(utt, 2, 3)); //3 ManagerFather
-                ais.add(13, new SAB(utt, 1, 5)); //8 ManagerLessLife
+            case " maps/8x8/basesWorkers8x8A.xml" :
+                ais.add(11, new GAB(utt, 2, 3)); //3 ManagerFather
+                ais.add(12, new SAB(utt, 1, 5)); //8 ManagerLessLife
                 break;
-            case     "maps/8x8/FourBasesWorkers8x8.xml" :                
-                ais.add(12, new GAB(utt, 2, 3)); //3 ManagerFather
-                ais.add(13, new SAB(utt, 1, 5)); //8 ManagerLessLife
+            case     " maps/8x8/FourBasesWorkers8x8.xml" :                
+                ais.add(11, new GAB(utt, 2, 3)); //3 ManagerFather
+                ais.add(12, new SAB(utt, 1, 5)); //8 ManagerLessLife
                 break;
-            case     "maps/NoWhereToRun9x8.xml" :
-                ais.add(12, new GAB(utt, 4, 4)); //ManagerFartherEnemy
-                ais.add(13, new SAB(utt, 8, 7)); //ManagerLessDPS
+            case     " maps/NoWhereToRun9x8.xml" :
+                ais.add(11, new GAB(utt, 4, 4)); //ManagerFartherEnemy
+                ais.add(12, new SAB(utt, 8, 7)); //ManagerLessDPS
                 break;
-            case     "maps/16x16/basesWorkers16x16A.xml" :
-                ais.add(12, new GAB(utt, 1, 7));  //7 ManagerLessDPS
-                ais.add(13, new SAB(utt, 3, 4)); //4 ManagerFartherEnemy
+            case     " maps/16x16/basesWorkers16x16A.xml" :
+                ais.add(11, new GAB(utt, 1, 7));  //7 ManagerLessDPS
+                ais.add(12, new SAB(utt, 3, 4)); //4 ManagerFartherEnemy
                 break;
-            case     "maps/16x16/TwoBasesBarracks16x16.xml" :
-                ais.add(12, new GAB(utt, 3, 7)); //7 ManagerLessDPS
-                ais.add(13, new SAB(utt, 2, 3)); //3 ManagerFather
+            case     " maps/16x16/TwoBasesBarracks16x16.xml" :
+                ais.add(11, new GAB(utt, 3, 7)); //7 ManagerLessDPS
+                ais.add(12, new SAB(utt, 2, 3)); //3 ManagerFather
                 break;
-            case     "maps/24x24/basesWorkers24x24A.xml" :
-                ais.add(12, new GAB(utt, 2, 2)); // 2  ManagerClosestEnemy
-                ais.add(13, new SAB(utt, 4, 3)); //3 ManagerFather
+            case     " maps/24x24/basesWorkers24x24A.xml" :
+                ais.add(11, new GAB(utt, 2, 2)); // 2  ManagerClosestEnemy
+                ais.add(12, new SAB(utt, 4, 3)); //3 ManagerFather
                 break;
-            case     "maps/DoubleGame24x24.xml" :
-                ais.add(12, new GAB(utt, 2, 5)); // 5 ManagerLessLife
-                ais.add(13, new SAB(utt, 2, 2)); //2  ManagerClosestEnemy
+            case     " maps/DoubleGame24x24.xml" :
+                ais.add(11, new GAB(utt, 2, 5)); // 5 ManagerLessLife
+                ais.add(12, new SAB(utt, 2, 2)); //2  ManagerClosestEnemy
                 break;
-            case     "maps/32x32/basesWorkers32x32A.xml" :
-                ais.add(12, new GAB(utt, 2, 2)); //2  ManagerClosestEnemy
-                ais.add(13, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
+            case     " maps/32x32/basesWorkers32x32A.xml" :
+                ais.add(11, new GAB(utt, 2, 2)); //2  ManagerClosestEnemy
+                ais.add(12, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
                 break;
-            case     "maps/BWDistantResources32x32.xml" :
-                ais.add(12, new GAB(utt, 3, 2)); //2  ManagerClosestEnemy
-                ais.add(13, new SAB(utt, 3, 2)); //2  ManagerClosestEnemy
+            case     " maps/BWDistantResources32x32.xml" :
+                ais.add(11, new GAB(utt, 3, 2)); //2  ManagerClosestEnemy
+                ais.add(12, new SAB(utt, 3, 2)); //2  ManagerClosestEnemy
                 break;
-            case     "maps/BroodWar/(4)BloodBath.scmB.xml" :
-                ais.add(12, new GAB(utt, 1, 7)); // 7 ManagerLessDPS
-                ais.add(13, new SAB(utt, 1, 5)); // 5 ManagerLessLife
+            case     " maps/BroodWar/(4)BloodBath.scmB.xml" :
+                ais.add(11, new GAB(utt, 1, 7)); // 7 ManagerLessDPS
+                ais.add(12, new SAB(utt, 1, 5)); // 5 ManagerLessLife
                 break;
             default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
-                ais.add(12, new GAB(utt, 2, 2));
-                ais.add(13, new SAB(utt, 1, 2)); //2  ManagerClosestEnemy
+                ais.add(11, new GAB(utt, 1, 7));
+                ais.add(12, new SAB(utt, 7, 8)); //2  ManagerClosestEnemy
                 break;
         }
         
-        ais.add(14, new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        ais.add(13, new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
                                             "ManagerClosestEnemy", 1));
-        ais.add(15,new ai.competition.capivara.CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        ais.add(14,new ai.competition.capivara.CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
                                             "ManagerClosestEnemy", 2,decodeScripts(utt, "1;2;3;"),"A3N_2Unit_3Sc_Symmetric") );

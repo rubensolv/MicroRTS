@@ -86,7 +86,7 @@ public class PGSLimit_SandBox extends AIWithComputationBudget implements Interru
         this.scripts.add(0, scriptsCompleteSet.get(1));
         this.scripts.add(1, scriptsCompleteSet.get(2));
         this.scripts.add(2, scriptsCompleteSet.get(3));
-        //this.scripts.add(3, scriptsCompleteSet.get(0));
+        this.scripts.add(3, scriptsCompleteSet.get(0));
         
         //this.scripts.add(new POLightRush(utt));
         //this.scripts.add(new POHeavyRush(utt));

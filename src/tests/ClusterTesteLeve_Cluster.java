@@ -106,19 +106,18 @@ public class ClusterTesteLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/NoWhereToRun9x8.xml",
+               "maps/8x8/basesWorkers8x8A.xml",
+                "maps/8x8/FourBasesWorkers8x8.xml",
                 "maps/16x16/basesWorkers16x16A.xml",
                 "maps/16x16/TwoBasesBarracks16x16.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
-                "maps/DoubleGame24x24.xml",
-                "maps/BWDistantResources32x32.xml",
+                "maps/24x24/basesWorkers24x24A_Barrack.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
+                "maps/32x32/basesWorkersBarracks32x32.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml",
                 "maps/BroodWar/(4)BloodBath.scmD.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml",
-                "maps/BroodWar/(4)CircuitBreaker.scxF.xml",
-                "maps/BroodWar/(4)Fortress.scxA.xml"
+                "maps/BroodWar/(4)Fortress.scxA.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();

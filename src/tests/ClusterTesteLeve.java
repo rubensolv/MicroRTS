@@ -33,12 +33,16 @@ import ai.ahtn.AHTNAI;
 import ai.aiSelection.IDABCD.ABSelection;
 import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.GAB;
+import ai.asymmetric.GAB.SandBox.GABRandom;
+import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SAB.SAB;
+import ai.asymmetric.SAB.SABRandom;
+import ai.asymmetric.SAB.SABScriptChoose;
 import ai.asymmetric.SAB.SAB_oldVersion;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
@@ -86,11 +90,10 @@ public class ClusterTesteLeve {
         int iAi1 = Integer.parseInt(args[0]);
         int iAi2 = Integer.parseInt(args[1]);
         int map = Integer.parseInt(args[2]);
-        
-        
+
         Instant timeInicial = Instant.now();
         Duration duracao;
-        
+
         /*
         
        
@@ -208,24 +211,30 @@ public class ClusterTesteLeve {
                 (4)Python.scxA.xml
                 (4)Python.scxF.xml
 
-        */
-        
+         */
         List<String> maps = new ArrayList<>(Arrays.asList(
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/8x8/FourBasesWorkers8x8.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
+                "maps/16x16/TwoBasesBarracks16x16.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
-                "maps/DoubleGame24x24.xml",
+                "maps/24x24/basesWorkers24x24A_Barrack.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/32x32/basesWorkersBarracks32x32.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)Fortress.scxA.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
         ));
-        
+
         UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 20000;
+        int MAXCYCLES = 14000;
         int PERIOD = 20;
         boolean gameover = false;
-        
+
         if (pgs.getHeight() == 8) {
             MAXCYCLES = 4000;
         }
@@ -242,90 +251,22 @@ public class ClusterTesteLeve {
             MAXCYCLES = 12000;
         }
 
-        /*
-            new NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new BS3_NaiveMCTS(utt),
-                new AHTNAI(utt),
-        
-                new LightRush(utt),
-                new WorkerRush(utt),
-                new HeavyRush(utt),
-                new RangedRush(utt),
-                new EconomyRush(utt),
-                new SCV(utt),
-                new SCV_GAB(utt),
-                new PVAIML_SL_ONE_STRATEGY(utt),
-                new PVAI(utt)
-        
-                new WorkerRush(utt),
-                new POLightRush(utt),
-                new RandomBiasedAI(),
-                new POHeavyRush(utt),
-                new PORangedRush(utt),
-                new LightDefense(utt),
-                new RangedDefense(utt),
-                new WorkerDefense(utt),
-                new EconomyMilitaryRush(utt),
-            
-        
-        //IAs GA 
-                new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               new BS3_NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSmRTS(utt),
-               new SSSmRTS(utt),
-               new GAB(utt),
-               new GAB_ABActionGeneration(utt),
-               new SAB_oldVersion(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, best), "BR"), //PGS com o best response do GA
-               new GAB_ScriptC(utt, decodeScripts(utt, best), "BR"), //GAB com o best response do GA
-               new PGSSCriptChoice(utt, decodeScripts(utt, sc2Nash), "Nash"), //PGS com o best response do Nash
-               new GAB_ScriptC(utt, decodeScripts(utt, sc2Nash), "Nash"),  //GAB com o best response do Nash
-               new PGSSCriptChoice(utt, decodeScripts(utt, bestGA), "bGA"), //PGS com o melhor GA
-               new GAB_ScriptC(utt, decodeScripts(utt, bestGA), "bGA")  //GAB com o melhor GA
-        
-        
-        
-        //IAS SCV
-                //IA's SCV usadas
-                //new WorkerDefense(utt),
-                //new WorkerRush(utt),
-                //new RangedDefense(utt),
-                //new RangedRush(utt),
-                //new LightRush(utt),
-                //new LightDefense(utt),
-                //new HeavyDefense(utt),
-                //new HeavyRush(utt),
-                //new EMRDeterministico(utt),
-                new PVAIML_SL_ONE_STRATEGY(utt),  //SBS
-                new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                new BS3_NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new SCV_Full(utt, pgs.getHeight(), pgs.getWidth()),
-                new SCV_GABFull(utt, pgs.getHeight(), pgs.getWidth())
-         */            
-        
         List<AI> ais = new ArrayList<>(Arrays.asList(
-               
-               new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
-               new SCVPlus(utt),
-               new GAB(utt),
-               new SAB(utt)
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;"), "SAB_W"), //0
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;"), "SAB_L"), // 1
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;"), "SAB_R"), //2
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "3;"), "SAB_H"), //3
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;"), "SAB_WL"), //4
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;"), "SAB_WR"), // 5
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;3;"), "SAB_WH"), //6
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;"), "SAB_LR"), //7
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;3;"), "SAB_LH"), //8
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;3;"), "SAB_RH"), //9
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;"), "SAB_WLR"), //10
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;3;"), "SAB_WRH"), // 11
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;3;"), "SAB_WLH"), //12
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;3;"), "SAB_LRH"), //13
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;3;"), "SAB_WLRH") //14
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -411,11 +352,11 @@ public class ClusterTesteLeve {
                 } 
             }
              */
-            
+
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
-            
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 200));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;
@@ -432,9 +373,9 @@ public class ClusterTesteLeve {
         System.out.println("Winner " + Integer.toString(gs.winner()));
         System.out.println("Game Over");
     }
-    
+
     public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
-        
+
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
         String[] itens = sScripts.split(";");
@@ -442,10 +383,10 @@ public class ClusterTesteLeve {
         for (String element : itens) {
             iScriptsAi1.add(Integer.decode(element));
         }
-        
+
         List<AI> scriptsAI = new ArrayList<>();
 
-        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
         ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
 
         iScriptsAi1.forEach((idSc) -> {

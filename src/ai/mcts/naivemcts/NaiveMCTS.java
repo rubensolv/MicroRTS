@@ -67,7 +67,14 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
              new SimpleSqrtEvaluationFunction3(), true);
-    }    
+    }
+    
+    public NaiveMCTS(UnitTypeTable utt, int lookahead) {
+        this(100,-1,lookahead,10,
+             0.3f, 0.0f, 0.4f,
+             new RandomBiasedAI(),
+             new SimpleSqrtEvaluationFunction3(), true);
+    }
     
     
     public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
@@ -317,7 +324,8 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + MAXSIMULATIONTIME + "," + MAX_TREE_DEPTH + "," + epsilon_l + ", " + discount_l + ", " + epsilon_g + ", " + discount_g + ", " + epsilon_0 + ", " + discount_0 + ", " + playoutPolicy + ", " + ef + ")";
+        //return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + MAXSIMULATIONTIME + "," + MAX_TREE_DEPTH + "," + epsilon_l + ", " + discount_l + ", " + epsilon_g + ", " + discount_g + ", " + epsilon_0 + ", " + discount_0 + ", " + playoutPolicy + ", " + ef + ")";
+        return getClass().getSimpleName()+""+MAXSIMULATIONTIME;
     }
     
     @Override

@@ -218,11 +218,171 @@ public class GameState {
     }
     
     
+      public boolean issue(PlayerAction pa) {
+
+        boolean returnValue = false;
+
+        
+
+        for(Pair<Unit,UnitAction> p:pa.actions) {
+
+//            if (p.m_a==null) {
+
+//                System.err.println("Issuing an action to a null unit!!!");
+
+//                System.exit(1);
+
+//            }
+
+//            if (unitActions.get(p.m_a)!=null) {
+
+//                System.err.println("Issuing an action to a unit with another action!");
+
+//            } else 
+
+//            {
+
+                // check for conflicts:
+
+                ResourceUsage ru = p.m_b.resourceUsage(p.m_a, pgs);
+
+                for(UnitActionAssignment uaa:unitActions.values()) {
+
+                    if (!uaa.action.resourceUsage(uaa.unit, pgs).consistentWith(ru, this)) {
+
+                        // conflicting actions:
+
+                        if (uaa.time==time) {
+
+                            // The actions were issued in the same game cycle, so it's normal
+
+                            boolean cancel_old = false;
+
+                            boolean cancel_new = false;
+
+                            switch(utt.getMoveConflictResolutionStrategy()) {
+
+                                default:
+
+                                    System.err.println("Unknown move conflict resolution strategy in the UnitTypeTable!: " + utt.getMoveConflictResolutionStrategy());
+
+                                    System.err.println("Defaulting to MOVE_CONFLICT_RESOLUTION_CANCEL_BOTH");
+
+                                case UnitTypeTable.MOVE_CONFLICT_RESOLUTION_CANCEL_BOTH:
+
+                                    cancel_old = cancel_new = true;
+
+                                    break;
+
+                                case UnitTypeTable.MOVE_CONFLICT_RESOLUTION_CANCEL_RANDOM:
+
+                                    if (r.nextInt(2)==0) cancel_new = true;
+
+                                                    else cancel_old = true;
+
+                                    break;
+
+                                case UnitTypeTable.MOVE_CONFLICT_RESOLUTION_CANCEL_ALTERNATING:
+
+                                    if ((unitCancelationCounter%2)==0) cancel_new = true;
+
+                                                                  else cancel_old = true;
+
+                                    unitCancelationCounter++;
+
+                                    break;
+
+                            }
+
+                            int duration1 = uaa.action.ETA(uaa.unit);
+
+                            int duration2 = p.m_b.ETA(p.m_a);
+
+                            if (cancel_old) {
+
+//                                System.out.println("Old action canceled: " + uaa.unit.getID() + ", " + uaa.action);
+
+                                uaa.action = new UnitAction(UnitAction.TYPE_NONE,Math.min(duration1,duration2));
+
+                            }
+
+                            if (cancel_new) {
+
+//                                System.out.println("New action canceled: " + p.m_a.getID() + ", " + p.m_b);
+
+                                p = new Pair<>(p.m_a, new UnitAction(UnitAction.TYPE_NONE,Math.min(duration1,duration2)));
+
+                            }
+
+                        } else {
+
+                            // This is more a problem, since it means there is a bug somewhere...
+
+                            // (probably in one of the AIs)
+
+//                            System.err.println("Inconsistent actions were executed!");
+
+//                            System.err.println(uaa);
+
+//                            System.err.println("  Resources: " + uaa.action.resourceUsage(uaa.unit, pgs));
+
+//                            System.err.println(p.m_a + " assigned action " + p.m_b + " at time " + time);
+
+//                            System.err.println("  Resources: " + ru);
+
+//                            System.err.println("Player resources: " + pgs.getPlayer(0).getResources() + ", " + pgs.getPlayer(1).getResources());
+
+//                            System.err.println("Resource Consistency: " + uaa.action.resourceUsage(uaa.unit, pgs).consistentWith(ru, this));
+
+                            
+
+                            try {
+
+                                throw new Exception();   // just to be able to print the stack trace
+
+                            }catch(Exception e) {
+
+                                //e.printStackTrace();
+
+                            }
+
+                            
+
+                            // only the newly issued action is cancelled, since it's the problematic one...
+
+                            p.m_b = new UnitAction(UnitAction.TYPE_NONE);
+
+                        }
+
+                    }
+
+                }
+
+                
+
+                UnitActionAssignment uaa = new UnitActionAssignment(p.m_a, p.m_b, time);
+
+                unitActions.put(p.m_a,uaa);
+
+                if (p.m_b.type!=UnitAction.TYPE_NONE) returnValue = true;
+
+//                System.out.println("Issuing action " + p.m_b + " to " + p.m_a);                
+
+//            }
+
+        }
+
+        return returnValue;
+
+    }
+    
+    
     /**
      * Issues a player action
      * @param pa
      * @return "true" is any action different from NONE was issued
      */
+      /*
     public boolean issue(PlayerAction pa) {
         boolean returnValue = false;
         
@@ -302,7 +462,7 @@ public class GameState {
         }
         return returnValue;
     }
-    
+   */
     
     /**
      * Issues a player action, with additional checks for validity. This function is slower

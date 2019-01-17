@@ -18,6 +18,8 @@ import PVAI.RangedDefense;
 import Standard.StrategyTactics;
 import ai.core.AI;
 import ai.*;
+import ai.CMAB.CMABBuilder;
+import ai.CMAB.CmabAssymetricMCTS;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -155,21 +157,26 @@ public class ClusterTesteLeve_GAB_SAB {
                 "maps/64x64/SimplePathExplore64x64.xml",
                 "maps/64x64/SimplePathToFight64x64.xml"
  
-        
-
+                testes do GAB SAB A3N
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/8x8/FourBasesWorkers8x8.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
+                "maps/16x16/TwoBasesBarracks16x16.xml",
+                "maps/24x24/basesWorkers24x24A.xml",
+                "maps/24x24/basesWorkers24x24A_Barrack.xml",
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/32x32/basesWorkersBarracks32x32.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)Fortress.scxA.xml", 
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
 
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/NoWhereToRun9x8.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                "maps/BWDistantResources32x32.xml",
-                "maps/24x24/basesWorkers24x24A.xml",
-                "maps/DoubleGame24x24.xml",
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/24x24/basesWorkers24x24A_Barrack.xml",
+                "maps/32x32/basesWorkersBarracks32x32.xml",
+                "maps/BroodWar/(4)Fortress.scxA.xml", 
                 "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
         ));
         
@@ -194,7 +201,7 @@ public class ClusterTesteLeve_GAB_SAB {
             MAXCYCLES = 7000;
         }
         if (pgs.getHeight() == 64) {
-            MAXCYCLES = 9000;
+            MAXCYCLES = 12000;
         }
 
         /*
@@ -273,11 +280,15 @@ public class ClusterTesteLeve_GAB_SAB {
         AI ai2;
         if(iAi1 == 0){
             //ai1 = new PGSmRTS(utt);
-            ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "1;2;3;"), "PGS");
+            //ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS");
+            ai1 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
+            //ai1 = new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator");;
             ai2 = getIA(utt,iAi2);
         }else{
             //ai2 = new PGSmRTS(utt);
-            ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, "1;2;3;"), "PGS");
+            //ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS");
+            ai2 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
+            //ai2 = new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator");;
             ai1 = getIA(utt,iAi2);
         }
         
@@ -367,7 +378,7 @@ public class ClusterTesteLeve_GAB_SAB {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
             
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 20));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 280));
         // remover 
         //System.out.println("------------Análise de estratégias-----------------");
         //SCV_forEval sct = (SCV_forEval) ai2;
@@ -425,8 +436,47 @@ public class ClusterTesteLeve_GAB_SAB {
 
     private static AI getIA(UnitTypeTable utt, int iAi2) {
         ArrayList<Integer>  choices = mapElements.get(iAi2);
-        return new GAB(utt, choices.get(0), choices.get(1));
-        //return new SAB(utt, choices.get(0), choices.get(1));
+        //return new GAB(utt, choices.get(0), choices.get(1));
+        return new SAB(utt, choices.get(0), choices.get(1));
+        //return new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt,
+        //        new ArrayList<>(), "CmabCombinatorialGenerator", getManager(choices.get(1)), choices.get(0));
+    }
+    
+     protected static String getManager(int idBehavior) {
+        String ret;
+        switch (idBehavior) {
+            case 0:
+                ret = "ManagerRandom";
+                break;
+            case 1:
+                ret = "ManagerClosest";
+                break;
+            case 2:
+                ret = "ManagerClosestEnemy";
+                break;
+            case 3:
+                ret = "ManagerFather";
+                break;
+            case 4:
+                ret = "ManagerFartherEnemy";
+                break;
+            case 5:
+                ret = "ManagerLessLife";
+                break;
+            case 6:
+                ret = "ManagerMoreLife";
+                break;
+            case 7:
+                ret = "ManagerLessDPS";
+                break;
+            case 8:
+                ret = "ManagerMoreDPS";
+                break;
+            default:
+                ret = "ManagerRandom";
+        }
+        
+        return ret;
     }
 
 }

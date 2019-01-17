@@ -12,6 +12,7 @@ import rts.units.Unit;
 import util.Pair;
 import util.Sampler;
 import ai.CMAB.ActionGenerator.ICMAB_ActionGenerator;
+import ai.core.AI;
 import rts.units.UnitTypeTable;
 
 /**
@@ -44,10 +45,15 @@ public class CmabNaiveMCTSNode extends MCTSNode {
     UnitTypeTable utt;
     String classGeneratorMove;
 
-    public CmabNaiveMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabNaiveMCTSNode a_parent, double a_evaluation_bound, int a_creation_ID, boolean fensa, UnitTypeTable a_utt, String classGenerator) throws Exception {
+    List<AI> abstraction = new ArrayList<>();
+
+    public CmabNaiveMCTSNode(int maxplayer, int minplayer, GameState a_gs, CmabNaiveMCTSNode a_parent, double a_evaluation_bound,
+            int a_creation_ID, boolean fensa, UnitTypeTable a_utt, String classGenerator,
+             List<AI> abstraction) throws Exception {
         this.utt = a_utt;
         parent = a_parent;
         gs = a_gs;
+        this.abstraction = abstraction;
         classGeneratorMove = classGenerator;
         if (parent == null) {
             depth = 0;
@@ -68,7 +74,7 @@ public class CmabNaiveMCTSNode extends MCTSNode {
             type = -1;
         } else if (gs.canExecuteAnyAction(maxplayer)) {
             type = 0;
-            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+classGenerator).getConstructors()[0].newInstance(gs,maxplayer, utt);
+            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator." + classGenerator).getConstructors()[0].newInstance(gs, maxplayer, utt, abstraction);
             actions = new ArrayList<>();
             children = new ArrayList<>();
             unitActionTable = new LinkedList<>();
@@ -93,7 +99,7 @@ public class CmabNaiveMCTSNode extends MCTSNode {
             }
         } else if (gs.canExecuteAnyAction(minplayer)) {
             type = 1;
-            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator."+classGenerator).getConstructors()[0].newInstance(gs,minplayer, utt);
+            moveGenerator = (ICMAB_ActionGenerator) Class.forName("ai.CMAB.ActionGenerator." + classGenerator).getConstructors()[0].newInstance(gs, minplayer, utt, abstraction);
             actions = new ArrayList<>();
             children = new ArrayList<>();
             unitActionTable = new LinkedList<>();
@@ -315,7 +321,7 @@ public class CmabNaiveMCTSNode extends MCTSNode {
                         dist_l.add(distribution[j]);
                         dist_outputs.add(j);
                     }
-                    
+
                     do {
                         int idx = dist_outputs.indexOf(code);
                         dist_l.remove(idx);
@@ -345,7 +351,7 @@ public class CmabNaiveMCTSNode extends MCTSNode {
         if (pate == null) {
             actions.add(pa2);
             GameState gs2 = gs.cloneIssue(pa2);
-            CmabNaiveMCTSNode node = new CmabNaiveMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, classGeneratorMove);
+            CmabNaiveMCTSNode node = new CmabNaiveMCTSNode(maxplayer, minplayer, gs2.clone(), this, evaluation_bound, a_creation_ID, forceExplorationOfNonSampledActions, utt, classGeneratorMove,  abstraction);
             childrenMap.put(actionCode, node);
             children.add(node);
             return node;

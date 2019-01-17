@@ -34,7 +34,7 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOWRDominance {
+public class RoundRobinUSPTOWRDominance {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
@@ -45,6 +45,7 @@ public class RoundRobinTOWRDominance {
         //controle de tempo
         Instant timeInicial = Instant.now();
         Duration duracao;
+        int WRplayer=1;
 
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
@@ -102,6 +103,7 @@ public class RoundRobinTOWRDominance {
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
         AI ai1;
         if(iScriptsAi1.get(0) == 0 && iScriptsAi1.size() == 1){
+            WRplayer = 0;
             ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "SSSR", 2, 200);    
         }else{
             iScriptsAi1 = Permutation.getPermutation(iScriptsAi1.get(0));
@@ -110,6 +112,7 @@ public class RoundRobinTOWRDominance {
         
         AI ai2;
         if(iScriptsAi2.get(0) == 0 && iScriptsAi2.size() == 1){
+            WRplayer = 1;
             ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "SSSR", 2, 200);
         }else{
             iScriptsAi2 = Permutation.getPermutation(iScriptsAi2.get(0));
@@ -198,7 +201,7 @@ public class RoundRobinTOWRDominance {
 
         log.add("Tempos de AI 2 = " + ai2.toString());
         log.add("Tempo minimo= " + ai2TempoMin + " Tempo maximo= " + ai2TempoMax + " Tempo medio= " + (sumAi2 / (long) totalAction) + "\n");
-
+        //System.out.println("WRPlayer "+ WRplayer +" Winner " + Integer.toString(gs.winner()));
         log.add("Winner " + Integer.toString(gs.winner()));
         log.add("Game Over");
         log.add("-----------------------------------------------------------------------------------------");
@@ -207,7 +210,9 @@ public class RoundRobinTOWRDominance {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
-        gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog, SOANumber);
+        if(gs.winner() != WRplayer){
+            gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog, SOANumber);
+        }
         //System.exit(0);
         return true;
     }

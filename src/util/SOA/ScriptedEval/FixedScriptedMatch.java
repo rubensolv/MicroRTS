@@ -79,8 +79,9 @@ public class FixedScriptedMatch {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                "maps/8x8/basesWorkers8x8A.xml"
-        //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                //"maps/8x8/basesWorkers8x8A.xml"
+                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/16x16/BasesWithWalls16x16.xml "
         ));
 
         UnitTypeTable utt = new UnitTypeTable();

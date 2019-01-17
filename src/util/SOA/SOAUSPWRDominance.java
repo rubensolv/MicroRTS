@@ -11,26 +11,25 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static util.SOA.SOAClusterTesteLeve_Cluster.buscarParcial;
 
 /**
  *
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOAWRDominance {
+public class SOAUSPWRDominance {
 
     public static void main(String args[]) throws Exception {
-        //String pathSOA = args[0];
-        //String pathLog = args[1];
+        String pathSOA = args[0];
+        String pathLog = args[1];
         int qtdMapas = 1;
-        
+
         char v[] = {'0', '1', '2', '3', '4', '5', '6', '7'};
         Permutation.createPermutation(v, 8);
         //System.out.println("Total de itens "+ Permutation.totalItens());
-        
-        String pathSOA = "/home/rubens/cluster/USP/WRDominance_USP_part1/configSOA/SOA1/";
-        String pathLog = "/home/rubens/cluster/USP/WRDominance_USP_part1/logs/";
+
+        //String pathSOA = "/home/rubens/cluster/USP/WRDominance_USP_part1/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/USP/WRDominance_USP_part1/logs/";
         File SOA = new File(pathSOA);
         if (!SOA.exists()) {
             SOA.mkdir();
@@ -75,20 +74,54 @@ public class SOAWRDominance {
      * @return True se processado corretamente
      */
     private static boolean processarMatch(String pathLog, String arquivo, int map) {
-        //ler o arquivo e pegar a linha com dados
-        String config = getLinha(arquivo);
-        String[] itens = config.split("#");
+        //get the file's name using the param "arquivo"
+        String arqName = arquivo;
+        arqName = arqName.substring(arqName.lastIndexOf("/")+1, arqName.lastIndexOf("."));
+        File file = new File(arquivo);
+        String linha = "";
+        try {
+            FileReader arq = new FileReader(file);
+            java.io.BufferedReader learArq = new BufferedReader(arq);
 
-        RoundRobinTOWRDominance control = new RoundRobinTOWRDominance();
+            linha = learArq.readLine();
+            while (linha != null) {
+
+                String[] itens = linha.split("#");
+
+                RoundRobinUSPTOWRDominance control = new RoundRobinUSPTOWRDominance();
+                try {
+                    control.run(itens[0].trim(),
+                            itens[1].trim(),
+                            Integer.decode(itens[2]),
+                            Integer.decode(itens[3]), pathLog, map, arqName);
+                    System.gc();
+                } catch (Exception ex) {
+                    Logger.getLogger(SOAUSPWRDominance.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                linha = learArq.readLine();
+            }
+
+            arq.close();
+        } catch (Exception e) {
+            System.err.printf("Erro na leitura da linha de configuração");
+            System.out.println(e.toString());
+        }
+
+        //ler o arquivo e pegar a linha com dados
+        //String config = getLinha(arquivo);
+        /* String[] itens = config.split("#");
+
+        RoundRobinUSPTOWRDominance control = new RoundRobinUSPTOWRDominance();
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog, map,config);
+                    Integer.decode(itens[3]), pathLog, map, config);
         } catch (Exception ex) {
-            Logger.getLogger(SOAWRDominance.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
+            Logger.getLogger(SOAUSPWRDominance.class.getName()).log(Level.SEVERE, null, ex);
+        } */
+        return true;
     }
 
     /**

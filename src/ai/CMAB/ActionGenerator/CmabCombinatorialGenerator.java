@@ -36,12 +36,13 @@ public class CmabCombinatorialGenerator implements ICMAB_ActionGenerator {
     private List<Pair<Unit, List<UnitAction>>> choices;
     private long size = 1;  // this will be capped at Long.MAX_VALUE;
 
-    public CmabCombinatorialGenerator(GameState a_gs, int pID, UnitTypeTable utt) throws Exception {
+    public CmabCombinatorialGenerator(GameState a_gs, int pID, UnitTypeTable utt, List<AI> abstraction) throws Exception {
         this.gs_to_start_from = a_gs;
         this.playerForThisComputation = pID;
-        scripts = new ArrayList<>();
-        buildPortfolio(utt);
+        scripts = abstraction;
+        //buildPortfolio(utt);
         generateChoices();
+        
     }
 
     protected final void buildPortfolio(UnitTypeTable utt) {

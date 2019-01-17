@@ -81,6 +81,12 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
         this._pgs.setNewPortfolio(IAsPort);
     }
     
+    public GABScriptChoose(UnitTypeTable utt, int max_playouts, int numUnits, int numManager, List<AI> IAsPort, String name) {
+        this(100, max_playouts, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
+        this.name = name;
+        this._pgs.setNewPortfolio(IAsPort);
+    }
+    
     public GABScriptChoose(UnitTypeTable utt, int numUnits, int numManager, List<AI> IAsPort, List<AI> IAsABCD,String name) {
         this(100, 200, new SimpleSqrtEvaluationFunction3(), utt, new AStarPathFinding(), numUnits, numManager);
         this.name = name;
@@ -413,7 +419,8 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        return "GABScriptChoose" + _numUnits + "_" + _numManager+"_"+name;
+        //return "GABScriptChoose" + _numUnits + "_" + _numManager+"_"+name;
+        return name;
     }
 
 }

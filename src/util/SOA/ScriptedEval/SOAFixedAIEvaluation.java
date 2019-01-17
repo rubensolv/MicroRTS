@@ -2,35 +2,37 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.SOA;
+package util.SOA.ScriptedEval;
 
-import PVAI.util.Permutation;
+import ai.core.AI;
+import util.SOA.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static util.SOA.SOAClusterTesteLeve_Cluster.buscarParcial;
 
 /**
  *
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOAWRDominance {
+public class SOAFixedAIEvaluation {
+
+    public static ArrayList<Integer> listEnemies;
+    private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
+    //private static final String pathTableScripts = "/home/rubens/cluster/ComputerCanada/PGS_forced_16_Cedar/Table/";
 
     public static void main(String args[]) throws Exception {
-        //String pathSOA = args[0];
-        //String pathLog = args[1];
+        String pathSOA = args[0];
+        String pathLog = args[1];
         int qtdMapas = 1;
-        
-        char v[] = {'0', '1', '2', '3', '4', '5', '6', '7'};
-        Permutation.createPermutation(v, 8);
-        //System.out.println("Total de itens "+ Permutation.totalItens());
-        
-        String pathSOA = "/home/rubens/cluster/USP/WRDominance_USP_part1/configSOA/SOA1/";
-        String pathLog = "/home/rubens/cluster/USP/WRDominance_USP_part1/logs/";
+        buildListEnemy();
+        //String pathSOA = "/home/rubens/cluster/ComputerCanada/PGS_forced_16_Cedar/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/ComputerCanada/PGS_forced_16_Cedar/logs/";
         File SOA = new File(pathSOA);
         if (!SOA.exists()) {
             SOA.mkdir();
@@ -78,17 +80,26 @@ public class SOAWRDominance {
         //ler o arquivo e pegar a linha com dados
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
-
-        RoundRobinTOWRDominance control = new RoundRobinTOWRDominance();
-        try {
-            return control.run(itens[0].trim(),
-                    itens[1].trim(),
-                    Integer.decode(itens[2]),
-                    Integer.decode(itens[3]), pathLog, map,config);
-        } catch (Exception ex) {
-            Logger.getLogger(SOAWRDominance.class.getName()).log(Level.SEVERE, null, ex);
+        for (Integer listEnemy : listEnemies) {
+            FixedAIMatch control = new FixedAIMatch(pathTableScripts);
+            try {
+                control.run(itens[0].trim(),
+                        Integer.toString(listEnemy),
+                        Integer.decode(itens[1]),
+                        Integer.decode(itens[2]), pathLog, map, 0);
+                System.gc();
+                
+                control.run(Integer.toString(listEnemy),
+                        itens[0].trim(),
+                        Integer.decode(itens[1]),
+                        Integer.decode(itens[2]), pathLog, map, 1);
+                System.gc();
+            } catch (Exception ex) {
+                Logger.getLogger(SOAFixedAIEvaluation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        return false;
+
+        return true;
     }
 
     /**
@@ -114,9 +125,9 @@ public class SOAWRDominance {
     private static boolean finalizarSOA(String pathSOA) {
         ArrayList<String> arquivos = new ArrayList<>();
         File diretorio = new File(pathSOA);
-        buscarParcial(diretorio, ".txt", arquivos);
+        buscar(diretorio, "exit", arquivos);
 
-        if (arquivos.isEmpty()) {
+        if (arquivos.size() > 0) {
             return true;
         }
 
@@ -183,6 +194,16 @@ public class SOAWRDominance {
             System.out.println(e.toString());
         }
         return linha;
+    }
+
+    private static void buildListEnemy() {
+        listEnemies = new ArrayList<>();
+        listEnemies.add(0);
+        listEnemies.add(1);
+        listEnemies.add(2);
+        listEnemies.add(3);
+        listEnemies.add(4);
+        
     }
 
 }

@@ -67,6 +67,7 @@ import ai.evaluation.EvaluationFunctionForwarding;
 import ai.evaluation.LTD2;
 import ai.evaluation.LanchesterEvaluationFunction;
 import ai.evaluation.PlayoutFunction;
+import ai.evaluation.SimpleSqrtEvaluationFunction2;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.mcts.naivemcts.NaiveMCTS;
 import ai.minimax.ABCD.IDABCD;
@@ -107,11 +108,11 @@ public class GameVisualSimulationTest {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
@@ -142,7 +143,12 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RandomBiasedAI(utt);
         //AI ai1 = new PuppetSearchMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
-        AI ai1 = new POLightRush(utt);
+        //AI ai1 = new POLightRush(utt);
+        //AI ai1 = new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3); //WR
+        //AI ai1 = new PGSSCriptChoice(utt, decodeScripts2(utt, "0;1;;"), "PGSRSym");
+        //AI ai1 = new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+        //                          true, "CmabCombinatorialGenerator", utt, decodeScriptsFull(utt, "0;"), "A1N_W");
+        AI ai1 = new SABScriptChoose(utt, 2, 2, decodeScriptsFull(utt, "0;"), "GAB_W");
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new PGSmRTS_SandBox(utt);
         //AI ai1 = new PGSmRTS(utt); 
@@ -160,7 +166,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new CmabNaiveMCTS(utt);
         //AI ai1 = new PGSmRTS_Paralel_JulianTest(utt);
         //AI ai1 = new PGSmRTSRandom(utt, 4, 200);
-        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "23;73;208;208;193;"), "PGSRSym",4,200);
+        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, "0;"), "PGSRSym",2,200);
         //AI ai1 = new PGSResponseMRTS(utt);
         //AI ai1 = new NGSRandom(utt);
         //AI ai1 = new NSSSRandom(utt);
@@ -172,10 +178,11 @@ public class GameVisualSimulationTest {
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new WorkerRush(utt);
 
-        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 0, decodeScripts2(utt, "0;1;2;3;")); //A3N
+        //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+        //                                     new SimpleSqrtEvaluationFunction3(), true, utt, 
+        //                                    "ManagerClosestEnemy", 0, decodeScripts2(utt, "0;1;2;3;")); //A3N
+        AI ai2 = new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3); //WR
         
         //AI ai2 = new GABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), "GAB");
         //AI ai2 = new SABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), "GAB");
@@ -286,6 +293,12 @@ public class GameVisualSimulationTest {
             }
              */
         } while (!gameover && gs.getTime() < MAXCYCLES);
+        
+        SimpleSqrtEvaluationFunction2 ltd3 = new SimpleSqrtEvaluationFunction2();
+        
+        System.out.println(ltd3.evaluate(0, 1, gs));
+        System.out.println(ltd3.evaluate(1, 0, gs));        
+        
         System.out.println("Winner " + Integer.toString(gs.winner()));
         System.out.println("Game Over");
     }
@@ -333,6 +346,28 @@ public class GameVisualSimulationTest {
         for (Integer idSc : iScripts) {
             scriptsAI.add(AIs[idSc]);
         }
+
+        return scriptsAI;
+    }
+    
+    public static List<AI> decodeScriptsFull(UnitTypeTable utt, String sScripts) {
+        
+        //decompõe a tupla
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        String[] itens = sScripts.split(";");
+
+        for (String element : itens) {
+            iScriptsAi1.add(Integer.decode(element));
+        }
+        
+        List<AI> scriptsAI = new ArrayList<>();
+
+        ScriptsCreator sc = new ScriptsCreator(utt,300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
+        iScriptsAi1.forEach((idSc) -> {
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
+        });
 
         return scriptsAI;
     }

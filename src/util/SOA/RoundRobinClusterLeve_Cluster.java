@@ -6,6 +6,7 @@ package util.SOA;
 
 import Standard.StrategyTactics;
 import ai.CMAB.CMABBuilder;
+import ai.CMAB.CmabNaiveMCTS;
 import ai.RandomBiasedAI;
 import ai.abstraction.combat.KitterDPS;
 import ai.abstraction.combat.NOKDPS;
@@ -90,12 +91,18 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-        "maps/24x24/basesWorkers24x24A.xml"
-        //"maps/DoubleGame24x24.xml"
-        //"maps/32x32/basesWorkers32x32A.xml"
-        //"maps/BWDistantResources32x32.xml"
-        //"maps/BroodWar/(4)BloodBath.scmB.xml"
-
+                "maps/8x8/basesWorkers8x8A.xml",
+                "maps/8x8/FourBasesWorkers8x8.xml",
+                "maps/16x16/basesWorkers16x16A.xml",
+                "maps/16x16/TwoBasesBarracks16x16.xml",
+                "maps/24x24/basesWorkers24x24A.xml",
+                "maps/24x24/basesWorkers24x24A_Barrack.xml",
+                "maps/32x32/basesWorkers32x32A.xml",
+                "maps/32x32/basesWorkersBarracks32x32.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)Fortress.scxA.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -103,7 +110,7 @@ public class RoundRobinClusterLeve_Cluster {
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(map), utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 20000;
+        int MAXCYCLES = 14000;
         int PERIOD = 20;
         boolean gameover = false;
 
@@ -119,28 +126,62 @@ public class RoundRobinClusterLeve_Cluster {
             MAXCYCLES = 12000;
         }
 
-        String GA_A3N = "297;69;154;275;";
+        String GA_A3N = "0;1;2;3;";
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), //lr
-                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
-                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
-                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
-                new SCVPlus(utt),
-                //bg1
-                new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_PGS", 2, 200)/*,
-                new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_SSS", 2, 200),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 2,
-                         decodeScripts(utt, GA_A3N)),
-                new GABScriptChoose(utt, 9, 5, decodeScripts(utt, GA_A3N), "GAB"),
-                new SABScriptChoose(utt, 1, 2, decodeScripts(utt, GA_A3N), "SAB")*/
+                
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator", utt, decodeScripts(utt, "0;"), "A1N_W"), //0
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;"), "A1N_L"), // 1
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "2;"), "A1N_R"), //2
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "3;"), "A1N_H"), //3
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;"), "A1N_WL"), //4
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;2;"), "A1N_WR"), // 5
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;3;"), "A1N_WH"), //6
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;2;"), "A1N_LR"), //7
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;3;"), "A1N_LH"), //8
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "2;3;"), "A1N_RH"), //9
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;2;"), "A1N_WLR"), //10
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;2;3;"), "A1N_WRH"), // 11
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;3;"), "A1N_WLH"), //12
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;2;3;"), "A1N_LRH"), //13
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
+                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;2;3;"), "A1N_WLRH") //14
+                
+                
+
+        //new AHTNAI(utt),
+        //new NaiveMCTS(utt),
+        //new PuppetSearchMCTS(utt),
+        //new StrategyTactics(utt),
+        //new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+        //new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
+        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), //lr
+        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
+        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
+        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
+        //new SCVPlus(utt),
+        //bg1
+        //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_PGS", 2, 200)/*,
+        //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_SSS", 2, 200),
+        //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+        //        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 2,
+        //         decodeScripts(utt, GA_A3N)),
+        //new GABScriptChoose(utt, 9, 5, decodeScripts(utt, GA_A3N), "GAB"),
+        //new SABScriptChoose(utt, 1, 2, decodeScripts(utt, GA_A3N), "SAB")*/
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -217,7 +258,7 @@ public class RoundRobinClusterLeve_Cluster {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 200));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 

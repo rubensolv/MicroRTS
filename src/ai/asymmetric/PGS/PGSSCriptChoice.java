@@ -79,6 +79,17 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         this.scripts = scripts;
         this.tuplaInScripts = tuplaIndSc;
     }
+    
+    public PGSSCriptChoice(UnitTypeTable utt, int max_playouts, List<AI> scripts, String tuplaIndSc) {
+        this(100, -1, max_playouts, 4, 4,
+                new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
+        this.scripts = scripts;
+        this.tuplaInScripts = tuplaIndSc;
+    }
 
     public PGSSCriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
@@ -145,6 +156,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
             currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
         //teste
+        //currentScriptData.print();
         //currentScriptData.print();
         return getFinalAction(currentScriptData);
     }
@@ -251,7 +263,8 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
     @Override
     public String toString() {
         //return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + LOOKAHEAD + ", " + I + ", " + R + ", " + evaluation + ", " + pf + ")";
-        return getClass().getSimpleName() +"_"+tuplaInScripts;
+        //return getClass().getSimpleName() +"_"+tuplaInScripts;
+        return tuplaInScripts;
     }
 
     public int getPlayoutLookahead() {

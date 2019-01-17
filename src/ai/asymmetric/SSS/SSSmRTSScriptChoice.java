@@ -88,6 +88,18 @@ public class SSSmRTSScriptChoice extends AIWithComputationBudget implements Inte
         this.scripts = scripts;
         this.tuplaInScripts = tuplaIndSc;
     }
+    
+    public SSSmRTSScriptChoice(UnitTypeTable utt, int max_playouts, List<AI> scripts, String tuplaIndSc) {
+        this(100, -1, max_playouts, 4, 4,
+                //new CombinedEvaluation(),
+                new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
+        this.scripts = scripts;
+        this.tuplaInScripts = tuplaIndSc;
+    }
 
     public SSSmRTSScriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
@@ -275,7 +287,8 @@ public class SSSmRTSScriptChoice extends AIWithComputationBudget implements Inte
     @Override
     public String toString() {
         //return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + LOOKAHEAD + ", " + I + ", " + R + ", " + evaluation + ", " + pf + ")";
-        return getClass().getSimpleName()+"_"+tuplaInScripts+"_"+this.scripts.toString();
+        //return getClass().getSimpleName()+"_"+tuplaInScripts+"_"+this.scripts.toString();
+        return tuplaInScripts;
     }
 
     public int getPlayoutLookahead() {
