@@ -5,6 +5,8 @@
  */
 package util.sqlLite;
 
+import java.util.HashMap;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -38,6 +40,27 @@ public class Log_Facade {
         em.getTransaction().begin();
         int updateCount = query.executeUpdate();
         em.getTransaction().commit();
+    }
+    
+    public static void shrinkRewardTable(){
+        List<LogUCB> sh = jpa.findLogUCBEntities();
+        //id_rule, score
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for (LogUCB logUCB : sh) {
+            if(map.containsKey(logUCB.getIdRule().getIdRule())){
+                //get the object and sum the score
+                int score = map.get(logUCB.getIdRule().getIdRule());
+                map.put(logUCB.getIdRule().getIdRule(), (score+logUCB.getReward()));
+            }else{
+                map.put(logUCB.getIdRule().getIdRule(), logUCB.getReward());
+            }
+        }
+        
+        clearRewardTable();
+        
+        for (Integer key : map.keySet()) {
+            createNewReward(key, map.get(key));
+        }
     }
 
 }
