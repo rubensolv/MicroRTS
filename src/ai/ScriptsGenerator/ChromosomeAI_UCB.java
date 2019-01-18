@@ -29,6 +29,8 @@ import ai.abstraction.pathfinding.PathFinding;
 import ai.core.AI;
 import ai.core.ParameterSpecification;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import rts.GameState;
@@ -39,21 +41,27 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class ChromosomeAI extends AI{
+public class ChromosomeAI_UCB extends AI{
 
     List<ICommand> commands = new ArrayList<>();
     UnitTypeTable utt;
     String name;
+    int player;
+    HashMap<ICommand, Integer> dicCommands;
+    HashMap<ICommand, Boolean> dicActivation;
 
-    public ChromosomeAI(UnitTypeTable utt) {
+    public ChromosomeAI_UCB(UnitTypeTable utt) {
         this.utt = utt;
 
     }
     
-    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name) {
+    public ChromosomeAI_UCB(UnitTypeTable utt, List<ICommand> commands, String name, int player, HashMap<ICommand, Integer> dicCommands) {
         this.utt = utt;
         this.commands = commands;
         this.name = name;
+        this.player = player;
+        this.dicCommands = dicCommands;
+        dicActivation  = new HashMap<>();
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -61,7 +69,15 @@ public class ChromosomeAI extends AI{
         PathFinding pf = new AStarPathFinding();
 
         for (ICommand command : commands) {
+            //evaluate if the currentActions was changed
+            String oldCurrent = currentActions.toString();
+            
             currentActions = command.getAction(gs, player, currentActions, pf, utt);
+            
+            // if the currentActions was changed, I will log the information
+            if(!currentActions.toString().equals(oldCurrent)){
+                dicActivation.put(command, Boolean.TRUE);
+            }
         }
         currentActions = fillWithWait(currentActions, player, gs, utt);
         return currentActions;
@@ -99,5 +115,14 @@ public class ChromosomeAI extends AI{
         return currentActions;
     }
     
+    public List<Integer> getRulesUsed(){
+        List<Integer> idRules = new ArrayList<>();
+        
+        for (ICommand iCommand : dicActivation.keySet()) {
+            idRules.add(dicCommands.get(iCommand));
+        }
+        
+        return idRules;
+    }
     
 }

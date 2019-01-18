@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinSampleEnemiesandElite {
+public class SOARoundRobinSampleUCB {
 
     private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
     //private static final String pathTableScripts = ("/home/rubens/cluster/TesteNewGASG/Table/");
@@ -78,14 +78,14 @@ public class SOARoundRobinSampleEnemiesandElite {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinSampleEnemiesandElite control = new RoundRobinSampleEnemiesandElite(pathTableScripts);
+        RoundRobinSampleUCB control = new RoundRobinSampleUCB(pathTableScripts);
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
                     Integer.decode(itens[3]), pathLog, map);
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinSampleEnemiesandElite.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOARoundRobinSampleUCB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

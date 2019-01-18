@@ -36,10 +36,11 @@ public class LogUCB implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(generator="sqliteLog")
-    @TableGenerator(name="sqliteLog", table="sqlite_sequence",
-    pkColumnName="name", valueColumnName="seq",
-    pkColumnValue="logUCB", initialValue=1, allocationSize=1)
+    //@GeneratedValue(generator="sqliteLog")
+    //@TableGenerator(name="sqliteLog", table="sqlite_sequence",
+    //pkColumnName="name", valueColumnName="seq",
+    //pkColumnValue="logUCB", initialValue=1, allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)

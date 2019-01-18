@@ -562,4 +562,14 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     {
         forceExplorationOfNonSampledActions = fensa;
     }    
+
+    public List<AI> getScripts() {
+        return scripts;
+    }
+
+    public void setScripts(List<AI> scripts) {
+        this.scripts = scripts;
+    }
+    
+    
 }

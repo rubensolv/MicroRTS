@@ -130,36 +130,21 @@ public class RoundRobinClusterLeve_Cluster {
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
                 
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator", utt, decodeScripts(utt, "0;"), "A1N_W"), //0
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;"), "A1N_L"), // 1
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "2;"), "A1N_R"), //2
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "3;"), "A1N_H"), //3
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;"), "A1N_WL"), //4
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;2;"), "A1N_WR"), // 5
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;3;"), "A1N_WH"), //6
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;2;"), "A1N_LR"), //7
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;3;"), "A1N_LH"), //8
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "2;3;"), "A1N_RH"), //9
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;2;"), "A1N_WLR"), //10
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;2;3;"), "A1N_WRH"), // 11
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;3;"), "A1N_WLH"), //12
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "1;2;3;"), "A1N_LRH"), //13
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
-                                  true, "CmabCombinatorialGenerator",utt, decodeScripts(utt, "0;1;2;3;"), "A1N_WLRH") //14
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;"), "SAB_W"), //0
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;"), "SAB_L"), // 1
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;"), "SAB_R"), //2
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "3;"), "SAB_H"), //3
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;"), "SAB_WL"), //4
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;"), "SAB_WR"), // 5
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;3;"), "SAB_WH"), //6
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;"), "SAB_LR"), //7
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;3;"), "SAB_LH"), //8
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;3;"), "SAB_RH"), //9
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;"), "SAB_WLR"), //10
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;3;"), "SAB_WRH"), // 11
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;3;"), "SAB_WLH"), //12
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;3;"), "SAB_LRH"), //13
+                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;3;"), "SAB_WLRH") //14
                 
                 
 

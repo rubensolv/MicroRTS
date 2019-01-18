@@ -19,11 +19,12 @@ import javax.persistence.Query;
  */
 public class UCB_Facade {
 
-    static EntityManagerFactory factory = Persistence.createEntityManagerFactory("MicroRTSPU");
+    static EntityManagerFactory factory = Persistence.createEntityManagerFactory("MicroRTSPU2");
     static UcbJpaController jpa = new UcbJpaController(factory);
 
     /**
      * Create a new entity in the DB using the idRule as primary key
+     *
      * @param idRule Identification of the rule
      * @return true if the entity was persisted correctly and false if not.
      */
@@ -39,7 +40,7 @@ public class UCB_Facade {
             return false;
         }
     }
-    
+
     /**
      * Persist the Ucb class in the DB
      *
@@ -73,16 +74,20 @@ public class UCB_Facade {
      * @return true if the entity was persisted correctly and false if not.
      */
     public static boolean incrementQtdUsed(int idRule) {
-        Ucb upUcb = findRuleById(idRule);
-        upUcb.setQtdUsed(upUcb.getQtdUsed() + 1);
         try {
-            jpa.edit(upUcb);
-            return true;
-        } catch (Exception ex) {
-            Logger.getLogger(UCB_Facade.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            Ucb upUcb = findRuleById(idRule);
+            upUcb.setQtdUsed(upUcb.getQtdUsed() + 1);
+            try {
+                jpa.edit(upUcb);
+                return true;
+            } catch (Exception ex) {
+                Logger.getLogger(UCB_Facade.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+        } catch (Exception e) {
+                Logger.getLogger(UCB_Facade.class.getName()).log(Level.SEVERE, null, e);
         }
-
+        return false;
     }
 
     /**
@@ -121,39 +126,40 @@ public class UCB_Facade {
     public static List<Ucb> getAllRules() {
         return jpa.findUcbEntities();
     }
-    
+
     /**
      * clear the quantity of hints used to calculate the average value.
+     *
      * @return quantity of rows updated.
      */
-    public static int clearQtdUsedFromAll(){
-        EntityManager  em = jpa.getEntityManager();
+    public static int clearQtdUsedFromAll() {
+        EntityManager em = jpa.getEntityManager();
         Query query = em.createQuery("UPDATE Ucb SET qtdUsed = 0");
         em.getTransaction().begin();
         int updateCount = query.executeUpdate();
         em.getTransaction().commit();
         return updateCount;
     }
-    
-    public static int clearUCBTable(){
-        EntityManager  em = jpa.getEntityManager();
+
+    public static int clearUCBTable() {
+        EntityManager em = jpa.getEntityManager();
         Query query = em.createQuery("DELETE FROM Ucb");
         em.getTransaction().begin();
         int updateCount = query.executeUpdate();
         em.getTransaction().commit();
         return updateCount;
-        
+
     }
-    
-    public static double getAverageValueFromRule(int idRule){
+
+    public static double getAverageValueFromRule(int idRule) {
         Ucb ucb = findRuleById(idRule);
         double sum = 0.0;
         for (LogUCB logUCB : ucb.getLogUCBList()) {
             sum += logUCB.getReward();
         }
         double total = ucb.getQtdUsed();
-        
-        return sum/total;
+
+        return sum / total;
     }
 
 }

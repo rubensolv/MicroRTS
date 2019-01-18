@@ -34,4 +34,10 @@ DELETE FROM logUCB
  CREATE UNIQUE INDEX index_UCB_ID ON UCB (id_rule);
  
  CREATE INDEX index_log_FK ON logUCB(id_rule)
+ 
+ update ucb set qtdused = 0
+ 
+ select * from ucb where id_rule = 0
+ 
+ insert into ucb values (0,0)
     

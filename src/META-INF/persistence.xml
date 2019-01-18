@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="MicroRTSPU" transaction-type="RESOURCE_LOCAL">
-    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>util.sqlLite.Ucb</class>
-    <class>util.sqlLite.LogUCB</class>
-    <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:/home/rubens/MicroRTS/data/db/rank.db"/>
-      <property name="javax.persistence.jdbc.user" value=""/>
-      <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
-      <property name="javax.persistence.jdbc.password" value=""/>
-    </properties>
-  </persistence-unit>
+    <persistence-unit name="MicroRTSPU2" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <class>util.sqlLite.LogUCB</class>
+        <class>util.sqlLite.Ucb</class>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:hsql://localhost/rank"/>
+            <property name="javax.persistence.jdbc.user" value="SA"/>
+            <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="eclipselink.allow-zero-id" value="true"/>
+        </properties>
+    </persistence-unit>
 </persistence>

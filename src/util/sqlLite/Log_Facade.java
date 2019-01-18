@@ -17,7 +17,7 @@ import static util.sqlLite.UCB_Facade.jpa;
  */
 public class Log_Facade {
 
-    static EntityManagerFactory factory = Persistence.createEntityManagerFactory("MicroRTSPU");
+    static EntityManagerFactory factory = Persistence.createEntityManagerFactory("MicroRTSPU2");
     static LogUCBJpaController jpa = new LogUCBJpaController(factory);
 
     public static void createNewReward(int idRule, int rewardValue){

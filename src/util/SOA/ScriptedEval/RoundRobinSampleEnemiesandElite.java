@@ -61,7 +61,6 @@ public class RoundRobinSampleEnemiesandElite {
     public RoundRobinSampleEnemiesandElite(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
         buildScriptsTable();
-
     }
 
     public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {

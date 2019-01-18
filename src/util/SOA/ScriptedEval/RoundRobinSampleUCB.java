@@ -7,7 +7,7 @@ package util.SOA.ScriptedEval;
 import util.SOA.*;
 import PVAI.util.Permutation;
 import ai.RandomBiasedAI;
-import ai.ScriptsGenerator.ChromosomeAI;
+import ai.ScriptsGenerator.ChromosomeAI_UCB;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 
@@ -34,34 +34,37 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTypeTable;
+import util.sqlLite.Log_Facade;
+import util.sqlLite.UCB_Facade;
+import util.sqlLite.Ucb;
 
 /**
  *
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinSampleEnemiesandElite {
+public class RoundRobinSampleUCB {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
     private HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
     String pathTableScripts;
-    
 
-    public RoundRobinSampleEnemiesandElite(String pathTableScripts) {
+    public RoundRobinSampleUCB(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
         buildScriptsTable();
-
     }
 
     public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
@@ -77,10 +80,10 @@ public class RoundRobinSampleEnemiesandElite {
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 "maps/8x8/basesWorkers8x8A.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		//"maps/16x16/basesWorkers16x16A.xml"
-        		//"maps/8x8/basesWorkers8x8Obstacle.xml"
-        		//"maps/16x16/BasesWithWalls16x16.xml"
+        //"maps/BroodWar/(4)BloodBath.scmB.xml"
+        //"maps/16x16/basesWorkers16x16A.xml"
+        //"maps/8x8/basesWorkers8x8Obstacle.xml"
+        //"maps/16x16/BasesWithWalls16x16.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -131,18 +134,16 @@ public class RoundRobinSampleEnemiesandElite {
         //pgs 
 //        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-        
 //          AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1), "PGS");
 //          AI ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2), "PGS");
-
-        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
-        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
+        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
+                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                new SimpleSqrtEvaluationFunction3(), true, utt,
+                "ManagerClosestEnemy", 1, decodeScripts(utt, iScriptsAi1, 0));
+        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
+                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                new SimpleSqrtEvaluationFunction3(), true, utt,
+                "ManagerClosestEnemy", 1, decodeScripts(utt, iScriptsAi2, 1));
 //        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
 //        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
 
@@ -181,7 +182,7 @@ public class RoundRobinSampleEnemiesandElite {
                 if (ai1TempoMin > timeTemp) {
                     ai1TempoMin = timeTemp;
                 }
-                
+
                 //coleto tempo maximo
                 if (ai1TempoMax < timeTemp) {
                     ai1TempoMax = timeTemp;
@@ -236,6 +237,9 @@ public class RoundRobinSampleEnemiesandElite {
         }
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
+        CmabAssymetricMCTS realAi1 = (CmabAssymetricMCTS) ai1;
+        CmabAssymetricMCTS realAi2 = (CmabAssymetricMCTS) ai2;
+        saveActivationRules(realAi1.getScripts(), realAi2.getScripts(), gs.winner());
         //System.exit(0);
         return true;
     }
@@ -275,28 +279,32 @@ public class RoundRobinSampleEnemiesandElite {
 //
 //        return scriptsAI;
 //    }
-    public List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+    public List<AI> decodeScripts(UnitTypeTable utt, ArrayList<Integer> iScripts, int player) {
         List<AI> scriptsAI = new ArrayList<>();
 
         for (Integer idSc : iScripts) {
             //System.out.println("tam tab"+scriptsTable.size());
             //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-            scriptsAI.add(buildScript(utt, scriptsTable.get(BigDecimal.valueOf(idSc))));
+            scriptsAI.add(buildScript(utt, scriptsTable.get(BigDecimal.valueOf(idSc)), player));
         }
 
         return scriptsAI;
     }
 
-    public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
+    public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules, int player) {
         //System.out.println("laut");
         TableCommandsGenerator tcg = TableCommandsGenerator.getInstance(utt);
         List<ICommand> commands = new ArrayList<>();
+        HashMap<ICommand, Integer> dicCommands = new HashMap<>();
         //System.out.println("sizeeiRules "+iRules.size());
         for (Integer idSc : iRules) {
             //System.out.println("idSc "+idSc);
-            commands.add(tcg.getCommandByID(idSc));;
+            ICommand temp = tcg.getCommandByID(idSc);
+            commands.add(temp);
+            dicCommands.put(temp, idSc);
+            
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1");
+        AI aiscript = new ChromosomeAI_UCB(utt, commands, "P1", player, dicCommands);
 
         return aiscript;
     }
@@ -357,6 +365,47 @@ public class RoundRobinSampleEnemiesandElite {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    private void saveActivationRules(List<AI> scriptsIA0, List<AI> scriptsIA1, int winner) {
+        List<ChromosomeAI_UCB> AI0 = translate(scriptsIA0);
+        List<ChromosomeAI_UCB> AI1 = translate(scriptsIA1);
+        //get all rules activated
+        List<Integer> rules_AI0_used = getRulesUsed(AI0);
+        List<Integer> rules_AI1_used = getRulesUsed(AI1);
+        
+        if(winner == 0){
+            saveRules(rules_AI0_used, 1);
+            saveRules(rules_AI1_used, -1);
+        }else{
+            saveRules(rules_AI0_used, -1);
+            saveRules(rules_AI1_used, 1);
+        }
+    }
+
+    private List<ChromosomeAI_UCB> translate(List<AI> scripts) {
+        List<ChromosomeAI_UCB> temp = new ArrayList<>();
+        for (AI ai : scripts) {
+            temp.add((ChromosomeAI_UCB) ai);
+        }
+        return temp;
+    }
+
+    private List<Integer> getRulesUsed(List<ChromosomeAI_UCB> AI0) {
+        HashSet<Integer> rulesUsed = new HashSet<>();
+        
+        for (ChromosomeAI_UCB sc : AI0) {
+            rulesUsed.addAll(sc.getRulesUsed());
+        }
+        
+        return new ArrayList<>(rulesUsed);
+    }
+
+    private void saveRules(List<Integer> rules_AI0_used, int i) {
+        for (Integer ruleID : rules_AI0_used) {            
+            UCB_Facade.incrementQtdUsed(ruleID);
+            Log_Facade.createNewReward(ruleID, i);
         }
     }
 }
