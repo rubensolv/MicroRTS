@@ -127,32 +127,45 @@ public class TableCommandsGenerator {
         commands.clear();
         //harvest
         commands.addAll(getHarvestCommands());
+        System.out.println("index harvest "+commands.size());
         //build
         commands.addAll(getBuildCommands());
+        System.out.println("index build "+commands.size());
         //Train
         commands.addAll(getTrainCommands());
+        System.out.println("index train "+commands.size());
         //attack
         commands.addAll(getAttackCommands());
+        System.out.println("index attack "+commands.size());
         //MoveToUnit
         commands.addAll(getMoveToUnit());
+        System.out.println("index move "+commands.size());
         //MoveToCoordenates
         commands.addAll(getMoveToCoordenates());
+        System.out.println("index move coordenates "+commands.size());
         //------------- booleans 
         ArrayList<ICommand> commandsBasic = new ArrayList<>(commands);
         //AllyRange
         commands.addAll(getAllyRangeCommands(commandsBasic));
+        System.out.println("index ally range commands "+commands.size());
         //DistanceFromEnemy
         commands.addAll(getDistanceFromEnemyCommands(commandsBasic));
+        System.out.println("index distance from enemys "+commands.size());
         //EnemyRange
         commands.addAll(getEnemyRangeCommands(commandsBasic));
+        System.out.println("index enemy range commands "+commands.size());
         //NAllyUnitsAttacking
         commands.addAll(getNAllyUnitsAttackingCommands(commandsBasic));
+        System.out.println("index NAllyUnitsAttacking "+commands.size());
         //NAllyUnitsHarvesting
         commands.addAll(getNAllyUnitsHarvestingCommands(commandsBasic));
+        System.out.println("index NAllyUnitsHarvesting "+commands.size());
         //NAllyUnitsofType
         commands.addAll(getNAllyUnitsofTypeCommands(commandsBasic));
+        System.out.println("index NAllyUnitsofType "+commands.size());
         //NEnemyUnitsofType
         commands.addAll(getNEnemyUnitsofTypeCommands(commandsBasic));
+        System.out.println("index NEnemyUnitsofType "+commands.size());
     }
 
     private Collection<? extends ICommand> getHarvestCommands() {

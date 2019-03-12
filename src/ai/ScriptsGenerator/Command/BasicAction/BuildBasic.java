@@ -50,18 +50,20 @@ public class BuildBasic extends AbstractBasicAction {
         //get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
-            //check if we have resources
-            if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)
-                    && limitReached(game, player, currentPlayerAction)) {
-                //pick one work to build
-                Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt);
-                if (workToBuild != null) {
-                    //execute the build action
-                    UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
-                    if (unAcTemp != null) {
-                        currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
-                    }
+            //verify if the limit of units are reached
+            if (!limitReached(game, player, currentPlayerAction)) {
+                //check if we have resources
+                if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)) {
+                    //pick one work to build
+                    Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt);
+                    if (workToBuild != null) {
+                        //execute the build action
+                        UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
+                        if (unAcTemp != null) {
+                            currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
+                        }
 
+                    }
                 }
             }
         }
@@ -85,16 +87,16 @@ public class BuildBasic extends AbstractBasicAction {
         reservedPositions.addAll(game.getResourceUsage().getPositionsUsed());
         reservedPositions.addAll(currentPlayerAction.getResourceUsage().getPositionsUsed());
         PhysicalGameState pgs = game.getPhysicalGameState();
-        
+
         int pos = findBuildingPosition(reservedPositions, unit.getX(), unit.getY(), game.getPlayer(player), pgs);
         //pick the type to be builded
         UnitType unType = getUnitTyppe(a_utt);
-        
+
         AbstractAction buildAct = new Build(unit, unType, pos % pgs.getWidth(), pos / pgs.getWidth(), pf);
         ResourceUsage res = game.getResourceUsage();
         res.merge(currentPlayerAction.getResourceUsage());
         UnitAction unAct = buildAct.execute(game, res);
-        if(unAct != null){
+        if (unAct != null) {
             return unAct;
         }
         return null;
@@ -104,7 +106,7 @@ public class BuildBasic extends AbstractBasicAction {
         IQuantity qtt = getQuantityFromParam();
 
         //verify if the quantity of units associated with the specific type were reached.
-        if (qtt.getQuantity() <= getQuantityUnitsBuilded(game, player, currentPlayerAction)) {
+        if (qtt.getQuantity() > getQuantityUnitsBuilded(game, player, currentPlayerAction)) {
             return false;
         }
         return true;
@@ -115,8 +117,8 @@ public class BuildBasic extends AbstractBasicAction {
         HashSet<EnumTypeUnits> types = new HashSet<>();
         //get types in EnumTypeUnits
         for (IParameters param : getParameters()) {
-            if (param instanceof UnitTypeParam) {
-                types.addAll(((UnitTypeParam) param).getParamTypes());
+            if (param instanceof ConstructionTypeParam) {
+                types.addAll(((ConstructionTypeParam) param).getParamTypes());
             }
         }
         //count
@@ -212,7 +214,6 @@ public class BuildBasic extends AbstractBasicAction {
         }
     }
 
-    
     public int findBuildingPosition(List<Integer> reserved, int desiredX, int desiredY, Player p, PhysicalGameState pgs) {
 
         boolean[][] free = pgs.getAllFree();
@@ -226,8 +227,7 @@ public class BuildBasic extends AbstractBasicAction {
             }
             System.out.println("");
         }
-        */
-        
+         */
         for (int l = 1; l < Math.max(pgs.getHeight(), pgs.getWidth()); l++) {
             for (int side = 0; side < 4; side++) {
                 switch (side) {
@@ -303,23 +303,23 @@ public class BuildBasic extends AbstractBasicAction {
 
     private UnitType getUnitTyppe(UnitTypeTable a_utt) {
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
-         if (unitToBeBuilded.getParamTypes().get(0) == EnumTypeUnits.Base) {
+        if (unitToBeBuilded.getParamTypes().get(0) == EnumTypeUnits.Base) {
             return a_utt.getUnitType("Base");
         } else {
             return a_utt.getUnitType("Barracks");
         }
     }
-    
+
     @Override
     public String toString() {
         String listParam = "Params:{";
         for (IParameters parameter : getParameters()) {
-            listParam += parameter.toString()+",";
+            listParam += parameter.toString() + ",";
         }
         //remove the last comma.
         listParam = listParam.substring(0, listParam.lastIndexOf(","));
         listParam += "}";
-        
-        return "{BuildBasic:{" + listParam+"}}";
-    }    
+
+        return "{BuildBasic:{" + listParam + "}}";
+    }
 }
