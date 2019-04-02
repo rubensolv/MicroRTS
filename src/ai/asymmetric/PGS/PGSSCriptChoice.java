@@ -80,6 +80,17 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         this.tuplaInScripts = tuplaIndSc;
     }
     
+    public PGSSCriptChoice(UnitTypeTable utt, List<AI> scripts,int  max_playouts, String tuplaIndSc) {
+        this(100, -1, max_playouts, 4, 4,
+                new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
+        this.scripts = scripts;
+        this.tuplaInScripts = tuplaIndSc;
+    }
+    
     public PGSSCriptChoice(UnitTypeTable utt, int max_playouts, List<AI> scripts, String tuplaIndSc) {
         this(100, -1, max_playouts, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),

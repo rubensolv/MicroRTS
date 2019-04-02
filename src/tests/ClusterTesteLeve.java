@@ -19,6 +19,7 @@ import PVAI.util.Permutation;
 import Standard.StrategyTactics;
 import ai.core.AI;
 import ai.*;
+import ai.CMAB.CmabNaiveMCTS;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -252,21 +253,18 @@ public class ClusterTesteLeve {
         }
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;"), "SAB_W"), //0
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;"), "SAB_L"), // 1
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;"), "SAB_R"), //2
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "3;"), "SAB_H"), //3
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;"), "SAB_WL"), //4
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;"), "SAB_WR"), // 5
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;3;"), "SAB_WH"), //6
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;"), "SAB_LR"), //7
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;3;"), "SAB_LH"), //8
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;3;"), "SAB_RH"), //9
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;"), "SAB_WLR"), //10
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;3;"), "SAB_WRH"), // 11
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;3;"), "SAB_WLH"), //12
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;3;"), "SAB_LRH"), //13
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;3;"), "SAB_WLRH") //14
+                new CmabNaiveMCTS(100, -1, 50, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
+                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_50"),
+                new CmabNaiveMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
+                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_100"),
+                new CmabNaiveMCTS(100, -1, 150, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
+                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_150"),
+                new CmabNaiveMCTS(100, -1, 200, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
+                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_200")
         ));
 
         AI ai1 = ais.get(iAi1);

@@ -15,9 +15,11 @@ import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
+import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSmRTS;
+import ai.asymmetric.SAB.SABScriptChoose;
 import ai.asymmetric.SAB.SAB_seed;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
@@ -27,6 +29,7 @@ import ai.cluster.CABA_TDLearning;
 import ai.cluster.CIA_Enemy;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
+import ai.competition.capivara.CmabAssymetricMCTS;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.ScriptsCreator;
 import ai.evaluation.LTD2;
@@ -58,6 +61,7 @@ import rts.PlayerAction;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import static tests.ClusterTesteLeve_GAB_SAB.generateConfig;
+import static util.SOA.RoundRobinClusterLeve.decodeScripts;
 
 /**
  *
@@ -80,14 +84,17 @@ public class RoundRobinClusterLeve_TableBehavior {
 
         List<String> maps = new ArrayList<>(Arrays.asList(
                 "maps/8x8/basesWorkers8x8A.xml",
-                "maps/NoWhereToRun9x8.xml",
+                "maps/8x8/FourBasesWorkers8x8.xml",
                 "maps/16x16/basesWorkers16x16A.xml",
                 "maps/16x16/TwoBasesBarracks16x16.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
-                "maps/DoubleGame24x24.xml",
+                "maps/24x24/basesWorkers24x24A_Barrack.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
-                "maps/BWDistantResources32x32.xml", 
-                "maps/BroodWar/(4)BloodBath.scmB.xml" //9 maps
+                "maps/32x32/basesWorkersBarracks32x32.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)Fortress.scxA.xml",
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -114,34 +121,12 @@ public class RoundRobinClusterLeve_TableBehavior {
         if (pgs.getHeight() == 64) {
             MAXCYCLES = 15000;
         }
-        /*
-        List<AI> ais = new ArrayList<>(Arrays.asList(
-                new RandomBiasedAI(utt), //RND
-                new POLightRush(utt),
-                new POWorkerRush(utt),
-                new AHTNAI(utt),
-                new NaiveMCTS(utt),
-                new BS3_NaiveMCTS(utt),
-                //new ABCD(utt), inutilizável
-                new AlphaBetaSearch(utt),
-                new UCT(utt),
-                new MonteCarlo(utt),
-                new NaiveMCTS(100, -1, 100, 1, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Egreedy MonteCarlo using 0.25 epsilon
-                new NaiveMCTS(100, -1, 100, 1, 0.33f, 0.0f, 0.75f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true), //Naive MonteCarlo
-                new NaiveMCTS(100, -1, 100, 10, 1.00f, 0.0f, 0.25f, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), true),//e-greedy MCTS
-                
-                //new PuppetSearchMCTS(utt),
-                //new StrategyTactics(utt),
-                //new PGSmRTS(utt),
-                //new SSSmRTS(utt),
-                //new PORangedRush(utt),
-                //new POHeavyRush(utt),
-                new CMABBuilder(utt)
-        ));
-         */
+
         generateConfig();
-        AI ai1 = getIA(utt, iAi1);
-        AI ai2 = new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator");
+        //AI ai1 = getIA(utt, iAi1, maps.get(map));
+        //AI ai2 = new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator");
+        AI ai1 = getIA(utt, iAi1, maps.get(map));
+        AI ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"),"PGS");
         if (side == 1) {
             AI temp = ai1;
             ai1 = ai2;
@@ -219,7 +204,7 @@ public class RoundRobinClusterLeve_TableBehavior {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 120));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -276,19 +261,74 @@ public class RoundRobinClusterLeve_TableBehavior {
                 choices.add(1, j);
                 mapElements.put(cont, choices);
                 cont++;
-
             }
         }
         //System.out.println("tests.ClusterTesteLeve_GAB_SAB.generateConfig() teste total ="+ mapElements.keySet().size());
 
     }
 
-    private static AI getIA(UnitTypeTable utt, int ia) {
+    private static AI getIA(UnitTypeTable utt, int ia, String map) {
         ArrayList<Integer> choices = mapElements.get(ia);
         //return new SAB_seed(utt, choices.get(0), choices.get(1));
+        //return new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt,
+        //        new ArrayList<>(), "CmabCombinatorialGenerator", getManager(choices.get(1)), choices.get(0));
 
-        return new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt,
-                new ArrayList<>(), "CmabCombinatorialGenerator", getManager(choices.get(1)), choices.get(0));
+        switch (map) {
+            case "maps/8x8/basesWorkers8x8A.xml": //1
+                return new GABScriptChoose(utt, 200, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;2;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+                
+            case "maps/8x8/FourBasesWorkers8x8.xml": //2
+                return new GABScriptChoose(utt, 150, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;2;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/16x16/basesWorkers16x16A.xml": //3
+                return new GABScriptChoose(utt, 200, choices.get(0), choices.get(1), decodeScripts(utt, "0;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/16x16/TwoBasesBarracks16x16.xml": //4
+                return new GABScriptChoose(utt, 50, choices.get(0), choices.get(1), decodeScripts(utt, "1;2;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/24x24/basesWorkers24x24A.xml": //5
+                return new GABScriptChoose(utt, 150, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;2;3;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/24x24/basesWorkers24x24A_Barrack.xml": //6
+                return new GABScriptChoose(utt, 50, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;2;3;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/32x32/basesWorkers32x32A.xml": //7
+                return new GABScriptChoose(utt, 50, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/32x32/basesWorkersBarracks32x32.xml": //8
+                return new GABScriptChoose(utt, 150, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/BroodWar/(4)BloodBath.scmB.xml": //9
+                return new GABScriptChoose(utt, 100, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;3;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/BroodWar/(4)BloodBath.scmD.xml": //10
+                return new GABScriptChoose(utt, 100, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;3;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/BroodWar/(4)Fortress.scxA.xml": //11
+                return new GABScriptChoose(utt, 50, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            case "maps/BroodWar/(4)EmpireoftheSun.scmC.xml": //12
+                return new GABScriptChoose(utt, 100, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+            default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                System.out.println("Error!");
+                return new GABScriptChoose(utt, 50, choices.get(0), choices.get(1), decodeScripts(utt, "0;1;"), 
+                        "GAB_"+ getManager(choices.get(1)) + "_" + choices.get(0));
+
+        }
+
     }
 
     protected static String getManager(int idBehavior) {
@@ -324,8 +364,30 @@ public class RoundRobinClusterLeve_TableBehavior {
             default:
                 ret = "ManagerRandom";
         }
-        
+
         return ret;
+    }
+
+    public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
+
+        //decompõe a tupla
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        String[] itens = sScripts.split(";");
+
+        for (String element : itens) {
+            iScriptsAi1.add(Integer.decode(element));
+        }
+
+        List<AI> scriptsAI = new ArrayList<>();
+
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
+        iScriptsAi1.forEach((idSc) -> {
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
+        });
+
+        return scriptsAI;
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOAClusterTesteLeve {
+public class SOAClusterBehaviorTask3 {
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
@@ -66,14 +66,14 @@ public class SOAClusterTesteLeve {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinClusterLeve control = new RoundRobinClusterLeve();
+        RoundRobinClusterBehaviorTask3 control = new RoundRobinClusterBehaviorTask3();
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     itens[2].trim(),
                     itens[3].trim(), pathLog);
         } catch (Exception ex) {
-            Logger.getLogger(SOAClusterTesteLeve.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOAClusterBehaviorTask3.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

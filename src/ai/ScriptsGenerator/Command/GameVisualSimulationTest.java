@@ -295,7 +295,7 @@ public class GameVisualSimulationTest {
         iScriptsAi1.add(13);
         iScriptsAi1.add(6);
         iScriptsAi1.add(0);
-        iScriptsAi1.add(54);
+        iScriptsAi1.add(56);
         iScriptsAi1.add(95);
         
         //iScriptsAi1.add(15263);

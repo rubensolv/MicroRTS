@@ -89,7 +89,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
     static AI[] strategies = null;
     private HashMap<BigDecimal, ArrayList<Integer>> scriptsTable;
     String pathTableScripts;
-    
+
     public RoundRobinClusterLeve_Cluster_SG(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
         buildScriptsTable();
@@ -107,14 +107,15 @@ public class RoundRobinClusterLeve_Cluster_SG {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/24x24/basesWorkers24x24A.xml"
-                //"maps/DoubleGame24x24.xml"
+                //"maps/24x24/basesWorkers24x24A.xml",
+                //"maps/DoubleGame24x24.xml",
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        	//"maps/8x8/basesWorkers8x8A.xml"
-                "maps/16x16/BasesWithWalls16x16.xml"
-                
+                //"maps/8x8/basesWorkers8x8A.xml"
+                //"maps/16x16/BasesWithWalls16x16.xml"
+                "maps/16x16/basesWorkers16x16A.xml"
+        //"maps/NoWhereToRun9x8.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -141,49 +142,47 @@ public class RoundRobinClusterLeve_Cluster_SG {
         if (pgs.getHeight() == 64) {
             MAXCYCLES = 12000;
         }
-      
-
-
-        String GA_PGS = "297;69;154;275;"; 
-        String GA_SSS = "289;194;86;242;";                   
-        String GA_A3N = "284;233";
-        
-        //String PGS_SG_child = "37157;37474;38400;38990;36892;39225;";
-        String PGS_SG = "40099;41714;41150;";
-        
-        //decompõe a tupla
-        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
-        String[] itens = PGS_SG.split(";");
-
-        for (String element : itens) {
-            iScriptsAi1.add(Integer.decode(element));
-        }
-        
-        List<AI> ais = new ArrayList<>(Arrays.asList(
-               
-               new AHTNAI(utt),
-               new NaiveMCTS(utt),
-               new PuppetSearchMCTS(utt),
-               new StrategyTactics(utt),
-               new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-               new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,4), //lr
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,5), //HR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,6), //RR
-               new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3), //WR
-               new SCVPlus(utt),               
-               
-               //bg1
-               //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
-               //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
-               //plus
-               //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "PGS+",2,200),
-               //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SSS+",2,200),
-               //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts(utt, GA_A3N)),
-               
-               new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGS_SG",2,200)
-        
-        		));
+        String bestGAAAAI = "198;272;100;168;78;86;27;120;279;93;";
+        List<AI> ais;
+        ais = new ArrayList<>(Arrays.asList(
+                new AHTNAI(utt),
+                new NaiveMCTS(utt),
+                new PuppetSearchMCTS(utt),
+                new StrategyTactics(utt),
+                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), //lr
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
+                //new SCVPlus(utt),
+                //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                //        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                //        decodeScripts(utt, bestGAAAAI), "A3N_GA-3AI"), //12
+                /*
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15187;15781;15914;14726;11902;15767;14569;14658;"))), "GA-run2-400") /*,
+                
+                 */
+                //bg1
+                //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
+                //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
+                //plus
+                //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "PGS+",2,200),
+                //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SSS+",2,200),
+                //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,decodeScripts(utt, GA_A3N)),
+                /*
+                new PGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("8756;6292;7903;7486;8265;9031;8953;"))), "PGS_GA"),
+                new SSSmRTSScriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("8756;6292;7903;7486;8265;9031;8953;"))), "SSS_GA"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("8756;6292;7903;7486;8265;9031;8953;"))), "GA-225")
+                 */
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("429;1349;1632;"))), "GA-21")
+        ));
 
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);
@@ -306,7 +305,29 @@ public class RoundRobinClusterLeve_Cluster_SG {
             e.printStackTrace();
         }
     }
-    
+
+    public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
+
+        //decompõe a tupla
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        String[] itens = sScripts.split(";");
+
+        for (String element : itens) {
+            iScriptsAi1.add(Integer.decode(element));
+        }
+
+        List<AI> scriptsAI = new ArrayList<>();
+
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
+        iScriptsAi1.forEach((idSc) -> {
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
+        });
+
+        return scriptsAI;
+    }
+
     public List<AI> decodeScripts2(UnitTypeTable utt, ArrayList<Integer> iScripts) {
         List<AI> scriptsAI = new ArrayList<>();
 
@@ -364,5 +385,16 @@ public class RoundRobinClusterLeve_Cluster_SG {
         }
 
         return scriptsTable;
+    }
+
+    public ArrayList<Integer> getListIfInteger(String conf) {
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        String[] itens = conf.split(";");
+
+        for (String element : itens) {
+            iScriptsAi1.add(Integer.decode(element));
+        }
+
+        return iScriptsAi1;
     }
 }

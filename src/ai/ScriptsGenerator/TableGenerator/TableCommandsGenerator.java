@@ -144,7 +144,7 @@ public class TableCommandsGenerator {
         commands.addAll(getMoveToCoordenates());
         System.out.println("index move coordenates "+commands.size());
         //------------- booleans 
-        ArrayList<ICommand> commandsBasic = new ArrayList<>(commands);
+        /* ArrayList<ICommand> commandsBasic = new ArrayList<>(commands);
         //AllyRange
         commands.addAll(getAllyRangeCommands(commandsBasic));
         System.out.println("index ally range commands "+commands.size());
@@ -165,7 +165,7 @@ public class TableCommandsGenerator {
         System.out.println("index NAllyUnitsofType "+commands.size());
         //NEnemyUnitsofType
         commands.addAll(getNEnemyUnitsofTypeCommands(commandsBasic));
-        System.out.println("index NEnemyUnitsofType "+commands.size());
+        System.out.println("index NEnemyUnitsofType "+commands.size()); */
     }
 
     private Collection<? extends ICommand> getHarvestCommands() {

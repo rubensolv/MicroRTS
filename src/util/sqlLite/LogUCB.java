@@ -7,6 +7,7 @@ package util.sqlLite;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -47,7 +48,7 @@ public class LogUCB implements Serializable {
     @Column(name = "reward", nullable = false)
     private int reward;
     @JoinColumn(name = "id_rule", referencedColumnName = "id_rule", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.REFRESH,optional = false, fetch = FetchType.EAGER)
     private Ucb idRule;
 
     public LogUCB() {

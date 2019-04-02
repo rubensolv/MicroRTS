@@ -38,7 +38,7 @@ public class Ucb implements Serializable {
     private Integer idRule;
     @Column(name = "qtdUsed")
     private Integer qtdUsed;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRule", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REFRESH, mappedBy = "idRule", fetch = FetchType.EAGER)
     private List<LogUCB> logUCBList;
 
     public Ucb() {

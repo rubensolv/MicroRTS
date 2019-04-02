@@ -68,15 +68,15 @@ public class TestsSqLite {
         //System.out.println(tbl.getNumberOfCommands());
         
         //UCB_Facade.clearUCBTable();
-        /*
+        
         UnitTypeTable utt = new UnitTypeTable();
         TableCommandsGenerator tbl = TableCommandsGenerator.getInstance(utt);
         for (int i = 0; i < tbl.getNumberOfCommands(); i++) {
             UCB_Facade.createNewUCBRule(i);
         }
-        */
+        
         //System.out.println(UCB_Facade.findRuleById(0));
-        Log_Facade.shrinkRewardTable();
+        //Log_Facade.shrinkRewardTable();
     }
 
     public static void update() {
