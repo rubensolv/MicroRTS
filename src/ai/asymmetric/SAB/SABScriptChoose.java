@@ -46,8 +46,8 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    SSSLimitScriptChoose _sss = null;
-    AlphaBetaSearchAbstractScriptChoose _ab = null;
+    LightSSSLimitScriptChoose _sss = null;
+    LightAlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
     int _time;
@@ -102,8 +102,8 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _sss = new SSSLimitScriptChoose(utt);
-        _ab = new AlphaBetaSearchAbstractScriptChoose(utt);
+        _sss = new LightSSSLimitScriptChoose(utt);
+        _ab = new LightAlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
@@ -119,8 +119,8 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _sss = new SSSLimitScriptChoose(utt);
-        _ab = new AlphaBetaSearchAbstractScriptChoose(utt);
+        _sss = new LightSSSLimitScriptChoose(utt);
+        _ab = new LightAlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
@@ -232,7 +232,7 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
             return paSSS;
         }
 
-        if ((System.currentTimeMillis() - start) < 90) {
+        if ((System.currentTimeMillis() - start) < 80) {
             //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
             //aplico o AB
             manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
@@ -245,7 +245,7 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
             if (timeUsed < 80) {
                 _ab.setTimeBudget(100 - timeUsed);
             } else {
-                _ab.setTimeBudget(20);
+                _ab.setTimeBudget(10);
             }
             //System.out.println("----------------------------------------" + _unitsAbsAB);
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);
@@ -253,7 +253,7 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
             //if(_ab.getBestScore() > _pgs.getBestScore()){
             //if(playoutAnalise(paAB)> playoutAnalise(paSSS)){
             //if (playoutAnalise(paAB) > _pgs.getBestScore()) {
-            //System.out.println("Escolhido paAB");
+            System.out.println("Escolhido paAB");
             //currentScriptData = new UnitScriptData(playerForThisComputation);
                 return paAB;
             //}

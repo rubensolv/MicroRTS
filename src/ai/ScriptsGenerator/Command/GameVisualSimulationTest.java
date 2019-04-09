@@ -16,6 +16,7 @@ import ai.core.AI;
 import ai.*;
 import ai.CMAB.CMABBuilder;
 import ai.CMAB.CmabNaiveMCTS;
+import ai.ScriptsGenerator.BasicConditional.ConditionalBiggerThen;
 import ai.ScriptsGenerator.Chromosome;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.ChromosomesBag;
@@ -380,6 +381,7 @@ public class GameVisualSimulationTest {
                 if( (System.currentTimeMillis() - startTime) >0){
                    System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
                 }
+                
                 //System.out.println("Action A2 ="+ pa2.toString());
                 
                 gs.issueSafe(pa1);

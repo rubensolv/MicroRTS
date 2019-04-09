@@ -30,7 +30,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements InterruptibleAI {
+public class LightPGS extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 10;  // number of iterations for improving a given player
@@ -52,11 +52,11 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
     //tupla scripts
     String tuplaInScripts = "";
     AI randAI = null;
-    int qtdSumPlayout = 1;
+    int qtdSumPlayout = 2;
     //
     HashMap<String, PlayerAction> cache;
 
-    public PGSSCriptChoiceRandom(UnitTypeTable utt) {
+    public LightPGS(UnitTypeTable utt) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -65,7 +65,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
                 new AStarPathFinding());
     }
 
-    public PGSSCriptChoiceRandom(UnitTypeTable utt, List<AI> scripts) {
+    public LightPGS(UnitTypeTable utt, List<AI> scripts) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -75,7 +75,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
         this.scripts = scripts;
     }
 
-    public PGSSCriptChoiceRandom(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
+    public LightPGS(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -86,7 +86,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
         this.tuplaInScripts = tuplaIndSc;
     }
 
-    public PGSSCriptChoiceRandom(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc, int qtdPlayout, int lookahead) {
+    public LightPGS(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc, int qtdPlayout, int lookahead) {
         this(100, -1, lookahead, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -98,7 +98,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
         this.qtdSumPlayout = qtdPlayout;
     }
 
-    public PGSSCriptChoiceRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public LightPGS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -115,7 +115,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
 
     }
 
-    public PGSSCriptChoiceRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
+    public LightPGS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -175,12 +175,17 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
         AI enemyAI = defaultScript.clone();
         //vou iterar para todos os scripts do portfolio
         for (AI script : scripts) {
-            double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            //double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            double sum = 0.0;
+            for (int i = 0; i < qtdSumPlayout; i++) {
+                sum += eval(player, gs_to_start_from, script, enemyAI);;
+            }
+            double tEval = sum / qtdSumPlayout;
             if (tEval > bestEval) {
                 bestEval = tEval;
                 seed = script;
             }
-            if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET-5)) {
+            if ((System.currentTimeMillis() - start_time) > TIME_BUDGET) {
                 return seed;
             }
         }
@@ -198,14 +203,17 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
         GameState gs2 = gs.clone();
         ai1.reset();
         ai2.reset();
+        gs2.issue(ai1.getAction(player, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
+        
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && (gs2.getTime() < timeLimit) && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
         double e = evaluation.evaluate(player, 1 - player, gs2);
@@ -229,14 +237,12 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
         AI ai2 = aiEnemy.clone();
         ai2.reset();
         GameState gs2 = gs.clone();
-        //actions default
-        //gs2.issue(uScriptPlayer.getAction(player, gs2));
-        //gs2.issue(ai2.getAction(1 - player, gs2));
+        
         gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
         gs2.issue(ai2.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
@@ -250,7 +256,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
 
     @Override
     public AI clone() {
-        return new PGSSCriptChoiceRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf, scripts);
+        return new LightPGS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf, scripts);
     }
 
     @Override
@@ -344,14 +350,12 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
         UnitScriptData bestScriptData = currentScriptData.clone();
         double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
-        //controle pelo número de iterações
-        //for (int i = 0; i < I; i++) {
-        //controla por tempo
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 8))) {
+        
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET))) {
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
+                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET ))) {
                     return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
@@ -367,7 +371,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET - 5)) {
+                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET)) {
                         return bestScriptData.clone();
                     }
                 }
@@ -420,7 +424,7 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
                 String sAI = uScriptPlayer.getAIUnit(u).toString();
 
                 UnitAction uAt = getUnitAction(u, cache.get(sAI));
-                if(uAt != null){
+                if (uAt != null) {
                     temp.addUnitAction(u, uAt);
                 }
             }
@@ -445,13 +449,21 @@ public class PGSSCriptChoiceRandom extends AIWithComputationBudget implements In
                 String sAI = aiDefault.toString();
 
                 UnitAction uAt = getUnitAction(u, cache.get(sAI));
-                if(uAt != null){
+                if (uAt != null) {
                     temp.addUnitAction(u, uAt);
                 }
             }
         }
 
         return temp;
+    }
+
+    private boolean hasMoreTime() {
+        if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

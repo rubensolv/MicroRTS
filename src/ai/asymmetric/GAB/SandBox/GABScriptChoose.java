@@ -45,8 +45,8 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    PGSLimit_ScriptChoose _pgs = null;
-    AlphaBetaSearchAbstractScriptChoose _ab = null;
+    LightPGSLimit_ScriptChoose _pgs = null;
+    LightAlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
     int _time;
@@ -100,8 +100,8 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_ScriptChoose(utt);
-        _ab = new AlphaBetaSearchAbstractScriptChoose(utt);
+        _pgs = new LightPGSLimit_ScriptChoose(utt);
+        _ab = new LightAlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
@@ -118,8 +118,8 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_ScriptChoose(utt);
-        _ab = new AlphaBetaSearchAbstractScriptChoose(utt);
+        _pgs = new LightPGSLimit_ScriptChoose(utt);
+        _ab = new LightAlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
         _unitsAbsAB = new HashSet<>();
@@ -232,7 +232,7 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
             return paPGS;
         }
 
-        if ((System.currentTimeMillis() - start) < 90) {
+        if ((System.currentTimeMillis() - start) < 80) {
             //System.out.println("Sobrou tempo para o AB:"+ (System.currentTimeMillis() - start));
             //aplico o AB
             manager.controlUnitsForAB(gs_to_start_from, _unitsAbsAB);
@@ -245,7 +245,7 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
             if (timeUsed < 80) {
                 _ab.setTimeBudget(100 - timeUsed);
             } else {
-                _ab.setTimeBudget(20);
+                _ab.setTimeBudget(10);
             }
             //System.out.println("----------------------------------------" + _unitsAbsAB);
             PlayerAction paAB = _ab.getActionForAssymetric(playerForThisComputation, gs_to_start_from, currentScriptData, _unitsAbsAB);

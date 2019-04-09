@@ -133,7 +133,7 @@ public class MoveArrayAbstract {
         boolean isVecValid = false;
 
         while (isVecValid == false) {
-            if (Duration.between(initialTime, Instant.now()).toMillis() <= (98)) {
+            if (Duration.between(initialTime, Instant.now()).toMillis() <= (95)) {
                 if (calcFullResourcesVec(tempActions, state, codPlayer, lkp)) {
                     isVecValid = true;
                 } else {

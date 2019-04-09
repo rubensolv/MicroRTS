@@ -33,7 +33,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implements InterruptibleAI {
+public class LightSSS extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -58,11 +58,11 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
     //tupla scripts
     String tuplaInScripts = "";
     AI randAI = null;
-    int qtdSumPlayout = 1;
+    int qtdSumPlayout = 2;
     //
     HashMap<String, PlayerAction> cache;
 
-    public SSSmRTSScriptChoiceRandom(UnitTypeTable utt) {
+    public LightSSS(UnitTypeTable utt) {
         this(100, -1, 200, 4, 4,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
@@ -72,7 +72,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
                 new AStarPathFinding());
     }
     
-    public SSSmRTSScriptChoiceRandom(UnitTypeTable utt, List<AI> scripts) {
+    public LightSSS(UnitTypeTable utt, List<AI> scripts) {
         this(100, -1, 200, 4, 4,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
@@ -83,7 +83,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
         this.scripts = scripts;
     }
     
-    public SSSmRTSScriptChoiceRandom(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
+    public LightSSS(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
         this(100, -1, 200, 4, 4,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
@@ -95,7 +95,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
         this.tuplaInScripts = tuplaIndSc;
     }
     
-    public SSSmRTSScriptChoiceRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
+    public LightSSS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -108,7 +108,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
         this.scripts = scripts;
     }
     
-    public SSSmRTSScriptChoiceRandom(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc, int qtdPlayout, int lookahead) {
+    public LightSSS(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc, int qtdPlayout, int lookahead) {
         this(100, -1, lookahead, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -120,7 +120,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
         this.qtdSumPlayout = qtdPlayout;
     }
     
-    public SSSmRTSScriptChoiceRandom(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public LightSSS(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -141,16 +141,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
     @Override
     public void reset() {
 
-    }    
-    
-    private boolean portfolioHasWorkerRush() {
-        for (AI script : scripts) {
-            if(script.toString().contains("POWorkerRush")){
-                return true;
-            }
-        }
-        return false;
-    }
+    }        
 
     @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception {
@@ -208,12 +199,16 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
         AI enemyAI = defaultScript.clone();
         //vou iterar para todos os scripts do portfolio
         for (AI script : scripts) {
-            double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            double sum = 0.0;
+            for (int i = 0; i < qtdSumPlayout; i++) {
+                sum += eval(player, gs_to_start_from, script, enemyAI);;
+            }
+            double tEval = sum / qtdSumPlayout;
             if (tEval > bestEval) {
                 bestEval = tEval;
                 seed = script;
             }
-            if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET-5)) {
+            if ((System.currentTimeMillis() - start_time) > TIME_BUDGET) {
                 return seed;
             }
         }
@@ -231,14 +226,17 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
         GameState gs2 = gs.clone();
         ai1.reset();
         ai2.reset();
+        gs2.issue(ai1.getAction(player, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
+        
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
         double e = evaluation.evaluate(player, 1 - player, gs2);
@@ -258,18 +256,15 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
      * @throws Exception
      */
     public double eval(int player, GameState gs, UnitScriptData uScriptPlayer, AI aiEnemy) throws Exception {
-        //AI ai1 = defaultScript.clone();
         AI ai2 = aiEnemy.clone();
         ai2.reset();
         GameState gs2 = gs.clone();
-        //actions default
-        //gs2.issue(uScriptPlayer.getAction(player, gs2));
-        //gs2.issue(ai2.getAction(1 - player, gs2));
+        
         gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
         gs2.issue(ai2.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
@@ -283,7 +278,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
 
     @Override
     public AI clone() {
-        return new SSSmRTSScriptChoiceRandom(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new LightSSS(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -395,7 +390,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
 
         boolean hasFinishedIteration = false;
 
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 4))) {
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
@@ -425,7 +420,7 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
                     currentScriptData.setUnitScript(un, bestScriptVec[typeIndex]);
                 }
                 
-                if( System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0)) ){
+                if( System.currentTimeMillis() > (start_time + (TIME_BUDGET)) ){
                     timePlayout =  (double)(System.currentTimeMillis() - start_time) /(numberEvals);
                     return hasFinishedIteration;
                 }
@@ -508,6 +503,14 @@ public class SSSmRTSScriptChoiceRandom extends AIWithComputationBudget implement
             }
         }
         return null;
+    }
+    
+    private boolean hasMoreTime() {
+        if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

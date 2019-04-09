@@ -46,7 +46,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget implements InterruptibleAI {
+public class LightAlphaBetaSearchAbstract extends AIWithComputationBudget implements InterruptibleAI {
 
     private AlphaBetaSearchParameters _params;
     private AlphaBetaSearchResults _results;
@@ -70,11 +70,11 @@ public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget
     LookUpUnits lKp = new LookUpUnits();
     public boolean scriptedMove;
 
-    public AlphaBetaSearchAbstractScriptChoose(UnitTypeTable utt) {
+    public LightAlphaBetaSearchAbstract(UnitTypeTable utt) {
         this(100, 100, new AlphaBetaSearchParameters(), new TranspositionTable(), utt);
     }
 
-    public AlphaBetaSearchAbstractScriptChoose(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
+    public LightAlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT, UnitTypeTable utt) {
         super(time, max_playouts);
         _params.setTimeLimit(time);
         _params.setPlayerModel(Players.Player_One.codigo(), new POLightRush(utt));
@@ -106,7 +106,7 @@ public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget
         _params.setOrderedMoveScripts(IAs);
     }
 
-    public AlphaBetaSearchAbstractScriptChoose(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT) {
+    public LightAlphaBetaSearchAbstract(int time, int max_playouts, AlphaBetaSearchParameters _params, TranspositionTable _TT) {
         super(time, max_playouts);
         this._params = _params;
         this._TT = _TT;
@@ -523,9 +523,10 @@ public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget
         try {
             AllMoves = new PlayerActionGenerator_Asymmetric(state, playerToMove.codigo(), this.currentScriptData, _unitsAbsAB);
         } catch (Exception ex) {
-            Logger.getLogger(AlphaBetaSearchAbstractScriptChoose.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LightAlphaBetaSearchAbstract.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Problem line 523 AlphaBetaSearchAbstract!");
         }
+        stopSearch();
         List<Pair<Unit, List<UnitAction>>> choices = AllMoves.getChoices();
         for (Pair<Unit, List<UnitAction>> choice : choices) {
             Integer idIndex = lKp.getUnitIndex(choice.m_a.getID());
@@ -533,6 +534,7 @@ public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget
             for (UnitAction uAc : choice.m_b) {
                 Action act = new Action(idIndex, playerToMove.codigo(), uAc.getType(), uAc);
                 moves.add(idIndex, act);
+                stopSearch();
             }
         }
 
@@ -613,6 +615,7 @@ public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget
 
                 for (Action a : moves.getNextValidMoveVec(stateTemp, playerToMove.codigo(), lKp, _searchTimer)) {
                     moveVec.add(a);
+                    stopSearch();
                 }
 
                 return true;
@@ -663,7 +666,7 @@ public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget
                         pAIUnit = ai.getAction(playerToMove.codigo(), state);
                     } catch (Exception ex) {
                         System.out.println("Problem line 653 AlphaBetaSearchAbstract!");
-                        Logger.getLogger(AlphaBetaSearchAbstractScriptChoose.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(LightAlphaBetaSearchAbstract.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     actions.put(ai.toString(), pAIUnit);
                 }
@@ -758,7 +761,7 @@ public class AlphaBetaSearchAbstractScriptChoose extends AIWithComputationBudget
 
     @Override
     public AI clone() {
-        return new AlphaBetaSearchAbstractScriptChoose(TIME_BUDGET, ITERATIONS_BUDGET, _params, _TT);
+        return new LightAlphaBetaSearchAbstract(TIME_BUDGET, ITERATIONS_BUDGET, _params, _TT);
     }
 
     @Override

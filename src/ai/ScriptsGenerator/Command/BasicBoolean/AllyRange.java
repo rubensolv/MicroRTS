@@ -50,7 +50,7 @@ public class AllyRange extends AbstractBooleanAction {
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
 
-        //now whe iterate for all ally units in order to discover wich one satisfy the condition
+        //now we iterate for all ally units in order to discover wich one satisfy the condition
         for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
             boolean applyWait = true;
             if (currentPlayerAction.getAction(unAlly) == null) {

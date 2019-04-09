@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.SAB;
 
+import ai.RandomBiasedAI;
 import ai.asymmetric.SSS.*;
 import ai.abstraction.partialobservability.POHeavyRush;
 import ai.abstraction.partialobservability.POLightRush;
@@ -29,12 +30,13 @@ import rts.PlayerAction;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
  * @author rubens
  */
-public class SSSLimitScriptChoose extends AIWithComputationBudget implements InterruptibleAI {
+public class LightSSSLimitScriptChoose extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 1;  // number of iterations for improving a given player
@@ -58,8 +60,14 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
     private Double timePlayout;
 
     double _bestScore;
+    
+    String tuplaInScripts = "";
+    AI randAI = null;
+    int qtdSumPlayout = 2;
+    //
+    HashMap<String, PlayerAction> cache;
 
-    public SSSLimitScriptChoose(UnitTypeTable utt) {
+    public LightSSSLimitScriptChoose(UnitTypeTable utt) {
         this(100, -1, 200, 1, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
@@ -69,7 +77,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
                 new AStarPathFinding());
     }
 
-    public SSSLimitScriptChoose(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public LightSSSLimitScriptChoose(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -81,6 +89,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
         defaultScript = new POLightRush(a_utt);
         scripts = new ArrayList<>();
         buildPortfolio();
+        randAI = new RandomBiasedAI(a_utt);
     }
     
     public void setNewPortfolio(List<AI> scripts){
@@ -132,7 +141,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -172,7 +181,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
         //GameState gs2 = gs.clone();
         //gs2.cycle();
         startNewComputation(player, gs);
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         //AI seedPlayer = getSeedPlayer(playerForThisComputation);
         //AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -210,13 +219,21 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
     protected AI getSeedPlayer(int player) throws Exception {
         AI seed = null;
         double bestEval = -9999;
-        AI enemyAI = new POLightRush(utt);
+        //AI enemyAI = new POLightRush(utt);
+        AI enemyAI = defaultScript.clone();
         //vou iterar para todos os scripts do portfolio
         for (AI script : scripts) {
-            double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            double sum = 0.0;
+            for (int i = 0; i < qtdSumPlayout; i++) {
+                sum += eval(player, gs_to_start_from, script, enemyAI);;
+            }
+            double tEval = sum / qtdSumPlayout;
             if (tEval > bestEval) {
                 bestEval = tEval;
                 seed = script;
+            }
+            if ((System.currentTimeMillis() - start_time) > TIME_BUDGET) {
+                return seed;
             }
         }
 
@@ -233,14 +250,17 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
         GameState gs2 = gs.clone();
         ai1.reset();
         ai2.reset();
+        gs2.issue(ai1.getAction(player, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
+        
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
         double e = evaluation.evaluate(player, 1 - player, gs2);
@@ -260,21 +280,20 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
      * @throws Exception
      */
     public double eval(int player, GameState gs, UnitScriptData uScriptPlayer, AI aiEnemy) throws Exception {
-        //AI ai1 = defaultScript.clone();
         AI ai2 = aiEnemy.clone();
-
-        GameState gs2 = gs.clone();
-        //ai1.reset();
         ai2.reset();
+        GameState gs2 = gs.clone();
+        
+        gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
@@ -283,7 +302,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
 
     @Override
     public AI clone() {
-        return new SSSLimitScriptChoose(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
+        return new LightSSSLimitScriptChoose(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf);
     }
 
     @Override
@@ -362,6 +381,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
         _startTime = gs.getTime();
         start_time = System.currentTimeMillis();
         _bestScore = 0.0;
+        this.cache = new HashMap<>();
     }
 
     @Override
@@ -383,8 +403,8 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
         int enemy = 1 - player;
         int numberEvals = 0;
 
-        UnitScriptData bestScriptData = currentScriptData.clone();
-        double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
+        //UnitScriptData bestScriptData = currentScriptData.clone();
+        //double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
 
         //compute the set of type for each unit that can move
         HashMap<AdaptableStratType, ArrayList<Unit>> typeUnits = new HashMap<>();
@@ -406,7 +426,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
         boolean hasFinishedIteration = false;
         int counterIterations = 0;
 
-        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 10))) {
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET))) {
 
             // set up data for best scripts
             AI bestScriptVec[] = new AI[typeUnits.size()];
@@ -420,7 +440,12 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
                         currentScriptData.setUnitScript(un, ai);
                     }
 
-                    double score = eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    double sum = 0.0;
+                    for (int i = 0; i < qtdSumPlayout; i++) {
+                        sum += eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    }
+                    double score = sum / qtdSumPlayout;
+                    
                     numberEvals++;
                     if ((sIndex == 0) || (score > bestScoreVec[typeIndex])) {
                         bestScriptVec[typeIndex] = scripts.get(sIndex);
@@ -436,7 +461,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
                     currentScriptData.setUnitScript(un, bestScriptVec[typeIndex]);
                 }
 
-                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET - 0))) {
+                if (System.currentTimeMillis() > (start_time + (TIME_BUDGET))) {
                     timePlayout = (double) (System.currentTimeMillis() - start_time) / (numberEvals);
                     return hasFinishedIteration;
                 }
@@ -501,7 +526,7 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
     }
 
     public UnitScriptData getBestUnitScriptSoFar() throws Exception {
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -521,6 +546,45 @@ public class SSSLimitScriptChoose extends AIWithComputationBudget implements Int
 
     public AI getEnemyScript() {
         return enemyScript;
+    }
+    
+    private void getCache() throws Exception {
+        for (AI script : scripts) {
+            cache.put(script.toString(), script.getAction(playerForThisComputation, gs_to_start_from));
+        }
+    }
+    
+    private PlayerAction getActionsUScript(int player, UnitScriptData uScriptPlayer, GameState gs2) {
+        PlayerAction temp = new PlayerAction();
+        for (Unit u : gs2.getUnits()) {
+            if (u.getPlayer() == player) {
+                String sAI = uScriptPlayer.getAIUnit(u).toString();
+
+                UnitAction uAt = getUnitAction(u, cache.get(sAI));
+                if(uAt != null){
+                    temp.addUnitAction(u, uAt);
+                }
+            }
+        }
+
+        return temp;
+    }
+    
+    private UnitAction getUnitAction(Unit u, PlayerAction get) {
+        for (Pair<Unit, UnitAction> tmp : get.getActions()) {
+            if (tmp.m_a.getID() == u.getID()) {
+                return tmp.m_b;
+            }
+        }
+        return null;
+    }
+    
+    private boolean hasMoreTime() {
+        if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

@@ -5,6 +5,7 @@
  */
 package ai.asymmetric.PGS;
 
+import ai.RandomBiasedAI;
 import ai.abstraction.partialobservability.POLightRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
@@ -23,12 +24,13 @@ import rts.PlayerAction;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
  * @author rubens
  */
-public class PGSSCriptChoice extends AIWithComputationBudget implements InterruptibleAI {
+public class LightPGSSCriptChoice extends AIWithComputationBudget implements InterruptibleAI {
 
     int LOOKAHEAD = 200;
     int I = 10;  // number of iterations for improving a given player
@@ -46,11 +48,15 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
 
     GameState gs_to_start_from = null;
     int playerForThisComputation;
-    
+
     //tupla scripts
     String tuplaInScripts = "";
+    AI randAI = null;
+    int qtdSumPlayout = 2;
+    //
+    HashMap<String, PlayerAction> cache;
 
-    public PGSSCriptChoice(UnitTypeTable utt) {
+    public LightPGSSCriptChoice(UnitTypeTable utt) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -58,18 +64,8 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
                 utt,
                 new AStarPathFinding());
     }
-    
-    public PGSSCriptChoice(UnitTypeTable utt, List<AI> scripts) {
-        this(100, -1, 200, 4, 4,
-                new SimpleSqrtEvaluationFunction3(),
-                //new SimpleSqrtEvaluationFunction2(),
-                //new LanchesterEvaluationFunction(),
-                utt,
-                new AStarPathFinding());
-        this.scripts = scripts;
-    }
-    
-    public PGSSCriptChoice(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
+
+    public LightPGSSCriptChoice(UnitTypeTable utt, List<AI> scripts) {
         this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -77,11 +73,10 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
                 utt,
                 new AStarPathFinding());
         this.scripts = scripts;
-        this.tuplaInScripts = tuplaIndSc;
     }
-    
-    public PGSSCriptChoice(UnitTypeTable utt, List<AI> scripts,int  max_playouts, String tuplaIndSc) {
-        this(100, -1, max_playouts, 4, 4,
+
+    public LightPGSSCriptChoice(UnitTypeTable utt, List<AI> scripts, String tuplaIndSc) {
+        this(100, -1, 200, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
                 //new LanchesterEvaluationFunction(),
@@ -90,8 +85,8 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         this.scripts = scripts;
         this.tuplaInScripts = tuplaIndSc;
     }
-    
-    public PGSSCriptChoice(UnitTypeTable utt, int max_playouts, List<AI> scripts, String tuplaIndSc) {
+
+    public LightPGSSCriptChoice(UnitTypeTable utt, List<AI> scripts, int max_playouts, String tuplaIndSc) {
         this(100, -1, max_playouts, 4, 4,
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -102,7 +97,18 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         this.tuplaInScripts = tuplaIndSc;
     }
 
-    public PGSSCriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
+    public LightPGSSCriptChoice(UnitTypeTable utt, int max_playouts, List<AI> scripts, String tuplaIndSc) {
+        this(100, -1, max_playouts, 4, 4,
+                new SimpleSqrtEvaluationFunction3(),
+                //new SimpleSqrtEvaluationFunction2(),
+                //new LanchesterEvaluationFunction(),
+                utt,
+                new AStarPathFinding());
+        this.scripts = scripts;
+        this.tuplaInScripts = tuplaIndSc;
+    }
+
+    public LightPGSSCriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -114,11 +120,12 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         defaultScript = new POLightRush(a_utt);
         //defaultScript = new POWorkerRush(a_utt);
         scripts = new ArrayList<>();
+        randAI = new RandomBiasedAI(a_utt);
         //The next two lines is for calling the set Z of scripts created with the BasicExpandedConfigurableScript class
-        
+
     }
-    
-    public PGSSCriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
+
+    public LightPGSSCriptChoice(int time, int max_playouts, int la, int a_I, int a_R, EvaluationFunction e, UnitTypeTable a_utt, PathFinding a_pf, List<AI> scripts) {
         super(time, max_playouts);
 
         LOOKAHEAD = la;
@@ -130,15 +137,15 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         defaultScript = new POLightRush(a_utt);
         //defaultScript = new POWorkerRush(a_utt);
         this.scripts = scripts;
+        randAI = new RandomBiasedAI(a_utt);
         //The next two lines is for calling the set Z of scripts created with the BasicExpandedConfigurableScript class
-        
+
     }
 
     @Override
     public void reset() {
 
     }
-    
 
     @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception {
@@ -153,7 +160,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-
+        getCache();
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
         AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
@@ -163,7 +170,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         UnitScriptData currentScriptData = new UnitScriptData(playerForThisComputation);
         currentScriptData.setSeedUnits(seedPlayer);
         setAllScripts(playerForThisComputation, currentScriptData, seedPlayer);
-        if( (System.currentTimeMillis()-start_time ) < TIME_BUDGET){
+        if ((System.currentTimeMillis() - start_time) < TIME_BUDGET) {
             currentScriptData = doPortfolioSearch(playerForThisComputation, currentScriptData, seedEnemy);
         }
         //teste
@@ -179,12 +186,17 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         AI enemyAI = defaultScript.clone();
         //vou iterar para todos os scripts do portfolio
         for (AI script : scripts) {
-            double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            //double tEval = eval(player, gs_to_start_from, script, enemyAI);
+            double sum = 0.0;
+            for (int i = 0; i < qtdSumPlayout; i++) {
+                sum += eval(player, gs_to_start_from, script, enemyAI);;
+            }
+            double tEval = sum / qtdSumPlayout;
             if (tEval > bestEval) {
                 bestEval = tEval;
                 seed = script;
             }
-            if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET-5)) {
+            if ((System.currentTimeMillis() - start_time) > TIME_BUDGET) {
                 return seed;
             }
         }
@@ -202,14 +214,17 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         GameState gs2 = gs.clone();
         ai1.reset();
         ai2.reset();
+        gs2.issue(ai1.getAction(player, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
+        
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && (gs2.getTime() < timeLimit) && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
         double e = evaluation.evaluate(player, 1 - player, gs2);
@@ -229,22 +244,20 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
      * @throws Exception
      */
     public double eval(int player, GameState gs, UnitScriptData uScriptPlayer, AI aiEnemy) throws Exception {
-        //AI ai1 = defaultScript.clone();
         AI ai2 = aiEnemy.clone();
-
-        GameState gs2 = gs.clone();
-        //ai1.reset();
         ai2.reset();
+        GameState gs2 = gs.clone();
+        
+        gs2.issue(getActionsUScript(player, uScriptPlayer, gs2));
+        gs2.issue(ai2.getAction(1 - player, gs2));
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
-        while (!gameover && gs2.getTime() < timeLimit) {
+        while (!gameover && gs2.getTime() < timeLimit && hasMoreTime()) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                //gs2.issue(ai1.getAction(player, gs2));
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
-                //
-                gs2.issue(ai2.getAction(1 - player, gs2));
+                gs2.issue(randAI.getAction(player, gs2));
+                gs2.issue(randAI.getAction(1 - player, gs2));
             }
         }
 
@@ -253,7 +266,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
 
     @Override
     public AI clone() {
-        return new PGSSCriptChoice(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf, scripts);
+        return new LightPGSSCriptChoice(TIME_BUDGET, ITERATIONS_BUDGET, LOOKAHEAD, I, R, evaluation, utt, pf, scripts);
     }
 
     @Override
@@ -276,6 +289,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         //return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + LOOKAHEAD + ", " + I + ", " + R + ", " + evaluation + ", " + pf + ")";
         //return getClass().getSimpleName() +"_"+tuplaInScripts;
         return tuplaInScripts;
+        //return getClass().getSimpleName() + "_" + tuplaInScripts + "_" + qtdSumPlayout + "_" + LOOKAHEAD;
     }
 
     public int getPlayoutLookahead() {
@@ -325,6 +339,7 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         nplayouts = 0;
         _startTime = gs.getTime();
         start_time = System.currentTimeMillis();
+        this.cache = new HashMap<>();
     }
 
     @Override
@@ -350,23 +365,27 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         //controle pelo número de iterações
         //for (int i = 0; i < I; i++) {
         //controla por tempo
-        while(System.currentTimeMillis() < (start_time + (TIME_BUDGET - 8))){
+        while (System.currentTimeMillis() < (start_time + (TIME_BUDGET))) {
             //fazer o improve de cada unidade
             for (Unit unit : unitsPlayer) {
                 //inserir controle de tempo
-                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET - 2))) {
+                if (System.currentTimeMillis() >= (start_time + (TIME_BUDGET))) {
                     return currentScriptData;
                 }
                 //iterar sobre cada script do portfolio
                 for (AI ai : scripts) {
                     currentScriptData.setUnitScript(unit, ai);
-                    double scoreTemp = eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    double sum = 0.0;
+                    for (int i = 0; i < qtdSumPlayout; i++) {
+                        sum += eval(player, gs_to_start_from, currentScriptData, seedEnemy);
+                    }
+                    double scoreTemp = sum / qtdSumPlayout;
 
                     if (scoreTemp > bestScore) {
                         bestScriptData = currentScriptData.clone();
                         bestScore = scoreTemp;
                     }
-                    if( (System.currentTimeMillis()-start_time ) > (TIME_BUDGET-5)){
+                    if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET)) {
                         return bestScriptData.clone();
                     }
                 }
@@ -404,6 +423,61 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
         }
 
         return pAction;
+    }
+    
+    private void getCache() throws Exception {
+        for (AI script : scripts) {
+            cache.put(script.toString(), script.getAction(playerForThisComputation, gs_to_start_from));
+        }
+    }
+
+    private PlayerAction getActionsUScript(int player, UnitScriptData uScriptPlayer, GameState gs2) {
+        PlayerAction temp = new PlayerAction();
+        for (Unit u : gs2.getUnits()) {
+            if (u.getPlayer() == player) {
+                String sAI = uScriptPlayer.getAIUnit(u).toString();
+
+                UnitAction uAt = getUnitAction(u, cache.get(sAI));
+                if (uAt != null) {
+                    temp.addUnitAction(u, uAt);
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    private UnitAction getUnitAction(Unit u, PlayerAction get) {
+        for (Pair<Unit, UnitAction> tmp : get.getActions()) {
+            if (tmp.m_a.getID() == u.getID()) {
+                return tmp.m_b;
+            }
+        }
+        return null;
+    }
+
+    private PlayerAction getCacheActions(int player, GameState gs2, AI aiDefault) {
+        PlayerAction temp = new PlayerAction();
+        for (Unit u : gs2.getUnits()) {
+            if (u.getPlayer() == player) {
+                String sAI = aiDefault.toString();
+
+                UnitAction uAt = getUnitAction(u, cache.get(sAI));
+                if (uAt != null) {
+                    temp.addUnitAction(u, uAt);
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    private boolean hasMoreTime() {
+        if ((System.currentTimeMillis() - start_time) > (TIME_BUDGET)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

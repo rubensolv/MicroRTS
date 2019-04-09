@@ -45,7 +45,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
     EvaluationFunction evaluation = null;
     UnitTypeTable utt;
     PathFinding pf;
-    PGSLimit_SandBox _pgs = null;
+    LightPGSLimit _pgs = null;
     AlphaBetaSearchAbstract _ab = null;
     GameState gs_to_start_from = null;
     private int playerForThisComputation;
@@ -80,7 +80,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
+        _pgs = new LightPGSLimit(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
@@ -98,7 +98,7 @@ public class GAB extends AIWithComputationBudget implements InterruptibleAI {
         evaluation = e;
         utt = a_utt;
         pf = a_pf;
-        _pgs = new PGSLimit_SandBox(utt);
+        _pgs = new LightPGSLimit(utt);
         _ab = new AlphaBetaSearchAbstract(utt);
         _time = time;
         _max_playouts = max_playouts;
