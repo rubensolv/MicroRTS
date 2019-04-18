@@ -22,6 +22,8 @@ import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.ChromosomesBag;
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.ICompiler;
+import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
@@ -108,7 +110,7 @@ import util.XMLWriter;
  *
  * @author santi
  */
-public class GameVisualSimulationTest {
+public class GVS_GP {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
@@ -119,14 +121,14 @@ public class GameVisualSimulationTest {
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8Obstacle.xml", utt);
@@ -251,7 +253,9 @@ public class GameVisualSimulationTest {
 //        AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag41(utt), "");
 //          AI ai2 = new PassiveAI(utt);
         
-        
+        ICompiler compiler = new MainGPCompiler();  
+        List<ICommand> commandsGP = compiler.CompilerCode("1! 12! 113! if(2) (if(4) (if(6) (183!)))", utt);
+      
         List<ICommand> commandsAI1=new ArrayList<>(); 
         TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
         
@@ -286,62 +290,6 @@ public class GameVisualSimulationTest {
           
         //buildScriptsTable();
         
-        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
-        ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
-        
-        //iScriptsAi1.add(758);
-        
-              
-                     
-        iScriptsAi1.add(13);
-        iScriptsAi1.add(6);
-        iScriptsAi1.add(0);
-        iScriptsAi1.add(56);
-        iScriptsAi1.add(95);
-        
-        //iScriptsAi1.add(15263);
-        //iScriptsAi1.add(14553);
-        //iScriptsAi1.add(16008);
-        //iScriptsAi1.add(15972);
-        //iScriptsAi1.add(15709);
-//        iScriptsAi1.add(2646);
-//        iScriptsAi1.add(4024);
-//        
-//        iScriptsAi1.add(2275);
-//        iScriptsAi1.add(3175);
-//        iScriptsAi1.add(4271);
-//        iScriptsAi1.add(343);
-//        iScriptsAi1.add(3512);
-//        iScriptsAi1.add(4212);
-//        
-//        iScriptsAi1.add(3640);
-//        iScriptsAi1.add(2741);
-        //iScriptsAi1.add(8477);
-//        iScriptsAi1.add(1094);
-//        iScriptsAi1.add(1505);
-//        iScriptsAi1.add(1105);
-        
-//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(0).toString());
-//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(1).toString());
-//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(2).toString());
-//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(3).toString());
-//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(4).toString());
-//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(5).toString());
-//        System.out.println(decodeScripts2(utt, iScriptsAi1).get(6).toString());
-//        iScriptsAi1.add(404);
-//        iScriptsAi1.add(402);
-        
-        
-        //iScriptsAi2.add(1512);
-        //iScriptsAi2.add(1594);
-       // iScriptsAi2.add(1544);
-//        iScriptsAi2.add(142);
-//        iScriptsAi2.add(267);
-//        iScriptsAi2.add(640);
-//        iScriptsAi2.add(716);
-//        iScriptsAi2.add(404);
-//        iScriptsAi2.add(188);
-        
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGSR", 2, 200);
@@ -350,7 +298,7 @@ public class GameVisualSimulationTest {
         AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 0, buildScriptList(utt, iScriptsAi1)); //A3N
+                                            "ManagerClosestEnemy", 0, buildCommandsList(utt, commandsGP), "GP"); //A3N
         
   
         
@@ -475,6 +423,14 @@ public class GameVisualSimulationTest {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+        List<AI> scriptsAI = new ArrayList<>();
+        scriptsAI.add(aiscript);
+        return scriptsAI;
+    }
+    
+    public static List<AI> buildCommandsList(UnitTypeTable utt, List<ICommand> commands) {
+    	//System.out.println("laut");    	
     	AI aiscript = new ChromosomeAI(utt,commands , "P1");
         List<AI> scriptsAI = new ArrayList<>();
         scriptsAI.add(aiscript);

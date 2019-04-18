@@ -18,12 +18,14 @@ import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
+import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.NGS;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SAB.SABScriptChoose;
+import ai.asymmetric.SSS.LightSSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
@@ -68,7 +70,6 @@ import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
-import static tests.ClusterTesteLeve.decodeScripts;
 
 /**
  *
@@ -85,6 +86,10 @@ public class RoundRobinClusterLeve_Cluster {
         int iAi2 = Integer.parseInt(sIA2);
         int map = Integer.parseInt(sMap);
 
+        if (map > 9) {
+            return true;
+        }
+
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -100,9 +105,10 @@ public class RoundRobinClusterLeve_Cluster {
                 "maps/32x32/basesWorkers32x32A.xml",
                 "maps/32x32/basesWorkersBarracks32x32.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)BloodBath.scmD.xml"/*,
                 "maps/BroodWar/(4)Fortress.scxA.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml" 
+         */
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -126,48 +132,20 @@ public class RoundRobinClusterLeve_Cluster {
             MAXCYCLES = 12000;
         }
 
-        String GA_A3N = "0;1;2;3;";
-
-        List<AI> ais = new ArrayList<>(Arrays.asList(
-                
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;"), "SAB_W"), //0
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;"), "SAB_L"), // 1
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;"), "SAB_R"), //2
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "3;"), "SAB_H"), //3
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;"), "SAB_WL"), //4
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;"), "SAB_WR"), // 5
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;3;"), "SAB_WH"), //6
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;"), "SAB_LR"), //7
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;3;"), "SAB_LH"), //8
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "2;3;"), "SAB_RH"), //9
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;"), "SAB_WLR"), //10
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;2;3;"), "SAB_WRH"), // 11
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;3;"), "SAB_WLH"), //12
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "1;2;3;"), "SAB_LRH"), //13
-                new SABScriptChoose(utt, 2, 2, decodeScripts(utt, "0;1;2;3;"), "SAB_WLRH") //14
-                
-                
-
-        //new AHTNAI(utt),
-        //new NaiveMCTS(utt),
-        //new PuppetSearchMCTS(utt),
-        //new StrategyTactics(utt),
-        //new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
-        //new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
-        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), //lr
-        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
-        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
-        //new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
-        //new SCVPlus(utt),
-        //bg1
-        //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_PGS", 2, 200)/*,
-        //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_A3N), "GA_SSS", 2, 200),
-        //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-        //        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 2,
-        //         decodeScripts(utt, GA_A3N)),
-        //new GABScriptChoose(utt, 9, 5, decodeScripts(utt, GA_A3N), "GAB"),
-        //new SABScriptChoose(utt, 1, 2, decodeScripts(utt, GA_A3N), "SAB")*/
-        ));
+        List<AI> ais = new ArrayList<>();        
+        //A3N
+        ais.add(new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N_50"));
+        ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N_100"));
+        ais.add(new CmabAssymetricMCTS(100, -1, 150, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N_150"));
+        ais.add(new CmabAssymetricMCTS(100, -1, 200, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N_200"));
 
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);
@@ -289,5 +267,27 @@ public class RoundRobinClusterLeve_Cluster {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
+
+        //decompõe a tupla
+        ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
+        String[] itens = sScripts.split(";");
+
+        for (String element : itens) {
+            iScriptsAi1.add(Integer.decode(element));
+        }
+
+        List<AI> scriptsAI = new ArrayList<>();
+
+        ScriptsCreator sc = new ScriptsCreator(utt, 300);
+        ArrayList<BasicExpandedConfigurableScript> scriptsCompleteSet = sc.getScriptsMixReducedSet();
+
+        iScriptsAi1.forEach((idSc) -> {
+            scriptsAI.add(scriptsCompleteSet.get(idSc));
+        });
+
+        return scriptsAI;
     }
 }

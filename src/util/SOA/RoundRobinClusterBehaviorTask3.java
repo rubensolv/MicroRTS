@@ -18,6 +18,7 @@ import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
+import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.NGS;
 import ai.asymmetric.PGS.NGSLimit;
 import ai.asymmetric.PGS.NGSLimitRandom;
@@ -32,6 +33,7 @@ import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SABScriptChoose;
+import ai.asymmetric.SSS.LightSSSmRTSScriptChoice;
 import ai.asymmetric.SSS.NSSS;
 import ai.asymmetric.SSS.NSSSLimit;
 import ai.asymmetric.SSS.NSSSLimitRandom;
@@ -95,6 +97,10 @@ public class RoundRobinClusterBehaviorTask3 {
         int iAi1 = Integer.parseInt(sIA1);
         int side = Integer.parseInt(sSide);
         int map = Integer.parseInt(sMap);
+        
+        if(map > 9){
+            return true;
+        }
 
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
@@ -111,9 +117,7 @@ public class RoundRobinClusterBehaviorTask3 {
                 "maps/32x32/basesWorkers32x32A.xml",
                 "maps/32x32/basesWorkersBarracks32x32.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml",
-                "maps/BroodWar/(4)Fortress.scxA.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BroodWar/(4)BloodBath.scmD.xml"                
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -292,69 +296,59 @@ public class RoundRobinClusterBehaviorTask3 {
         //        new ArrayList<>(), "CmabCombinatorialGenerator", getManager(choices.get(1)), choices.get(0));
 
         switch (map) {
-            case "maps/8x8/basesWorkers8x8A.xml": {
-                return new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "0;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/8x8/basesWorkers8x8A.xml": { //1
+                return new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/8x8/FourBasesWorkers8x8.xml": {
-                return new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "0;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/8x8/FourBasesWorkers8x8.xml": { //2
+                return new CmabAssymetricMCTS(100, -1, 200, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/16x16/basesWorkers16x16A.xml": {
-                return new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/16x16/basesWorkers16x16A.xml": { //3
+                return new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/16x16/TwoBasesBarracks16x16.xml": {
-                return new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/16x16/TwoBasesBarracks16x16.xml": { //4
+                return new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/24x24/basesWorkers24x24A.xml": {
-                return new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/24x24/basesWorkers24x24A.xml": { //5
+                return new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/24x24/basesWorkers24x24A_Barrack.xml": {
-                return new CmabAssymetricMCTS(100, -1, 50, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;2;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/24x24/basesWorkers24x24A_Barrack.xml": { //6
+                return new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/32x32/basesWorkers32x32A.xml": {
-                return new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/32x32/basesWorkers32x32A.xml": { //7
+                return new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/32x32/basesWorkersBarracks32x32.xml": {
-                return new CmabAssymetricMCTS(100, -1, 50, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;2;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/32x32/basesWorkersBarracks32x32.xml": { //8
+                return new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
-            case "maps/BroodWar/(4)BloodBath.scmB.xml": {
-                return new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+            case "maps/BroodWar/(4)BloodBath.scmB.xml": { //9
+                return new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
             }
             case "maps/BroodWar/(4)BloodBath.scmD.xml": {
-                return new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
-            }
-            case "maps/BroodWar/(4)Fortress.scxA.xml": {
-                return new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
-            }
-            case "maps/BroodWar/(4)EmpireoftheSun.scmC.xml": {
-                return new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), 
-                        decodeScripts(utt, "1;2;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
-            }
+                return new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0),
+                        decodeScripts(utt, "1;2;3;"), "A3N_"+getManager(choices.get(1))+"_"+choices.get(0));
+            }                        
         }
         System.out.println("Error!");
-        return new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, utt, getManager(choices.get(1)), choices.get(0), decodeScripts(utt, "1;"), "A3N_" + getManager(choices.get(1)) + "_" + choices.get(0));
+        return new GABScriptChoose(utt, 50, (int)choices.get(0), choices.get(1), decodeScripts(utt, "0;1;"), "GAB_" + getManager(choices.get(1)) + "_" + choices.get(0));
     }
 
     protected static String getManager(int idBehavior) {
@@ -418,68 +412,58 @@ public class RoundRobinClusterBehaviorTask3 {
 
     private AI getBaseIA(UnitTypeTable utt, String map) {
         switch (map) {
-            case "maps/8x8/basesWorkers8x8A.xml": { //1
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+            case "maps/8x8/basesWorkers8x8A.xml": {
+                return new CmabNaiveMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "0;"), "A1N");
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
             }
-            case "maps/8x8/FourBasesWorkers8x8.xml": { //2
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+            case "maps/8x8/FourBasesWorkers8x8.xml": {
+                return new CmabNaiveMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "0;"), "A1N");
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
             }
-            case "maps/16x16/basesWorkers16x16A.xml": { //3
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+            case "maps/16x16/basesWorkers16x16A.xml": {
+                return new CmabNaiveMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
             }
-            case "maps/16x16/TwoBasesBarracks16x16.xml": { //4
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
-            }
-            case "maps/24x24/basesWorkers24x24A.xml": { //5
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
-            }
-            case "maps/24x24/basesWorkers24x24A_Barrack.xml": { //6
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
-            }
-            case "maps/32x32/basesWorkers32x32A.xml": { //7
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
-            }
-            case "maps/32x32/basesWorkersBarracks32x32.xml": { //8
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
-            }
-            case "maps/BroodWar/(4)BloodBath.scmB.xml": { //9
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
-            }
-            case "maps/BroodWar/(4)BloodBath.scmD.xml": { //10
-                return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N");
-            }
-            case "maps/BroodWar/(4)Fortress.scxA.xml": { //11
+            case "maps/16x16/TwoBasesBarracks16x16.xml": {
                 return new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;2;"), "A1N");
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
             }
-            case "maps/BroodWar/(4)EmpireoftheSun.scmC.xml": { //10
+            case "maps/24x24/basesWorkers24x24A.xml": {
                 return new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;2;"), "A1N");
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
             }
+            case "maps/24x24/basesWorkers24x24A_Barrack.xml": {
+                return new CmabNaiveMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
+            }
+            case "maps/32x32/basesWorkers32x32A.xml": {
+                return new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
+            }
+            case "maps/32x32/basesWorkersBarracks32x32.xml": {
+                return new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
+            }
+            case "maps/BroodWar/(4)BloodBath.scmB.xml": {
+                return new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
+            }
+            case "maps/BroodWar/(4)BloodBath.scmD.xml": {
+                return new CmabNaiveMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
+                        decodeScripts(utt, "0;1;2;3;"), "A1N");
+            }            
         }
         System.out.println("Error!");
-        return new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N");
+        return new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 50, "PGS");
     }
 }

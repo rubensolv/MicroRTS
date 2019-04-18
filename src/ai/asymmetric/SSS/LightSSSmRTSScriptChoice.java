@@ -95,7 +95,7 @@ public class LightSSSmRTSScriptChoice extends AIWithComputationBudget implements
         this.tuplaInScripts = tuplaIndSc;
     }
     
-    public LightSSSmRTSScriptChoice(UnitTypeTable utt, int max_playouts, List<AI> scripts, String tuplaIndSc) {
+    public LightSSSmRTSScriptChoice(UnitTypeTable utt, List<AI> scripts, int max_playouts, String tuplaIndSc) {
         this(100, -1, max_playouts, 4, 4,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),

@@ -110,7 +110,7 @@ public class GameVisualSimulationTest {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
@@ -123,7 +123,7 @@ public class GameVisualSimulationTest {
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //testes 
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)EmpireoftheSun.scmC.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)EmpireoftheSun.scmC.xml", utt);
 
         GameState gs = new GameState(pgs, utt);
         int MAXCYCLES = 8000;
@@ -146,7 +146,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new RandomBiasedAI(utt);
         //AI ai1 = new PuppetSearchMCTS(utt);
         //AI ai1 = new PortfolioAI(utt);
-        AI ai1 = new POLightRush(utt);
+        //AI ai1 = new POLightRush(utt);
         //AI ai1 = new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18,0,0,1,2,2,-1,-1,3); //WR
         //AI ai1 = new PGSSCriptChoice(utt, decodeScripts2(utt, "0;1;;"), "PGSRSym");
         //AI ai1 = new CmabNaiveMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(),
@@ -180,7 +180,13 @@ public class GameVisualSimulationTest {
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
         //AI ai1 = new StrategyTactics(utt);
         //AI ai1 = new WorkerRush(utt);
+        AI ai1 = new GABScriptChoose(utt, 150, 6, 6, // MoreLife
+                        decodeScriptsFull(utt, "0;1;2;3;"), "GAB");
 
+        AI ai2 = new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScriptsFull(utt, "1;2;3;"), "A3N");
+        
         //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
         //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
         //                                     new SimpleSqrtEvaluationFunction3(), true, utt, 
@@ -191,8 +197,8 @@ public class GameVisualSimulationTest {
         //AI ai2 = new LightPGSLimit(utt);
         //AI ai2 = new GABScriptChoose(utt, 100, 1, 1, //closest
         //                decodeScripts2(utt, "0;1;3;"), "GAB");
-        AI ai2 = new SABScriptChoose(utt, 200, 1, 1, //closest
-                decodeScripts2(utt, "0;1;2;3;"), "SAB");
+        //AI ai2 = new SABScriptChoose(utt, 200, 1, 1, //closest
+        //        decodeScripts2(utt, "0;1;2;3;"), "SAB");
 
         //AI ai2 = new GABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), "GAB");
         //AI ai2 = new SABScriptChoose(utt, 2, 2, decodeScripts2(utt, "0;1;2;3;"), "GAB");

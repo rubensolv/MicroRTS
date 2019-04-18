@@ -54,7 +54,7 @@ public abstract class AbstractBooleanAction extends AbstractCommand {
     }
     
     //This method removes the default wait action to a unit, which was added just for
-    //avoid apply actions to unitsthat doesnt sattisfy the boolean
+    //avoid apply actions to units that doesnt sattisfy the boolean
     
     protected void restoreOriginalActions(GameState game, int player, ArrayList<Unit> unitstoApplyWait, PlayerAction currentPlayerAction)
     {

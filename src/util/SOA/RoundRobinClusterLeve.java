@@ -96,6 +96,10 @@ public class RoundRobinClusterLeve {
         int iAi2 = Integer.parseInt(sIA2);
         int map = Integer.parseInt(sMap);
 
+        if (map > 9) {
+            return true;
+        }
+
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -111,9 +115,9 @@ public class RoundRobinClusterLeve {
                 "maps/32x32/basesWorkers32x32A.xml",
                 "maps/32x32/basesWorkersBarracks32x32.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml",
+                "maps/BroodWar/(4)BloodBath.scmD.xml"/*,
                 "maps/BroodWar/(4)Fortress.scxA.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"*/
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -168,172 +172,144 @@ public class RoundRobinClusterLeve {
 
         switch (maps.get(map)) {
             case "maps/8x8/basesWorkers8x8A.xml": //1
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;3;"), 200, "PGS"));
-                ais.add(new GABScriptChoose(utt, 200, 3, 4, // ManagerFartherEnemy
-                        decodeScripts(utt, "0;1;2;"), "GAB"));
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 50, "PGS"));
+                ais.add(new GABScriptChoose(utt, 150, 6, 6, // MoreLife
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "0;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "0;1;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 200, 6, 4,
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 50, "SSS"));
+                ais.add(new SABScriptChoose(utt, 150, 3, 5, //LessLife
                         decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/8x8/FourBasesWorkers8x8.xml": //2
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;3;"), 100, "PGS"));
-                ais.add(new GABScriptChoose(utt, 150, 5, 6, //morelife
-                        decodeScripts(utt, "0;1;2;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 50, "PGS"));
+                ais.add(new GABScriptChoose(utt, 50, 2, 1, //closest
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
+                ais.add(new CmabNaiveMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "0;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2,
-                        decodeScripts(utt, "0;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "0;1;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 50, 2, 4,
-                        decodeScripts(utt, "0;3;"), "SAB"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;"), 50, "SSS"));
+                ais.add(new SABScriptChoose(utt, 150, 7, 3, //Father
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/16x16/basesWorkers16x16A.xml": //3
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;"), 50, "PGS"));
-                ais.add(new GABScriptChoose(utt, 200, 1, 2, //ClosestEnemy
-                        decodeScripts(utt, "0;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS"));
+                ais.add(new GABScriptChoose(utt, 150, 1, 1, //Closest
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
+                ais.add(new CmabNaiveMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "0;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 100, 7, 8,
-                        decodeScripts(utt, "0;"), "SAB"));
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "SSS"));
+                ais.add(new SABScriptChoose(utt, 200, 1, 2, //closestEnemy
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/16x16/TwoBasesBarracks16x16.xml": //4
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "1;"), 200, "PGS"));
-                ais.add(new GABScriptChoose(utt, 50, 3, 7, //lessDPS
-                        decodeScripts(utt, "1;2;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "PGS"));
+                ais.add(new GABScriptChoose(utt, 150, 1, 1, //LessLife
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
+                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "1;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 200, 2, 8,
-                        decodeScripts(utt, "0;1;"), "SAB"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFartherEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "SSS"));
+                ais.add(new SABScriptChoose(utt, 50, 2, 2, //closestEnemy
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/24x24/basesWorkers24x24A.xml": //5
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;3;"), 100, "PGS"));
-                ais.add(new GABScriptChoose(utt, 150, 3, 7, //lessdps
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS"));
+                ais.add(new GABScriptChoose(utt, 50, 1, 0, //random
                         decodeScripts(utt, "0;1;2;3;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "0;1;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 150, 4, 2,
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "SSS"));
+                ais.add(new SABScriptChoose(utt, 150, 1, 2, //closestEnemy
                         decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/24x24/basesWorkers24x24A_Barrack.xml": //6
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), 100, "PGS"));
-                ais.add(new GABScriptChoose(utt, 50, 9, 5, //lesslife
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 150, "PGS"));
+                ais.add(new GABScriptChoose(utt, 200, 1, 4, //fartherEnemy
                         decodeScripts(utt, "0;1;2;3;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new CmabNaiveMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;2;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "0;1;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 150, 3, 2,
-                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "SSS"));
+                ais.add(new SABScriptChoose(utt, 150, 1, 5, //lessLife
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
                 break;
             case "maps/32x32/basesWorkers32x32A.xml": //7
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "1;3;"), 200, "PGS"));
-                ais.add(new GABScriptChoose(utt, 150, 4, 2, //closestEnemy
-                        decodeScripts(utt, "0;1;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "PGS"));
+                ais.add(new GABScriptChoose(utt, 200, 1, 7, //LessDPS
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
+                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerRandom", 1,
-                        decodeScripts(utt, "1;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "1;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 200, 1, 7,
-                        decodeScripts(utt, "0;1;"), "SAB"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 150, "SSS"));
+                ais.add(new SABScriptChoose(utt, 200, 5, 3, //father
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
                 break;
             case "maps/32x32/basesWorkersBarracks32x32.xml": //8
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "1;3;"), 200, "PGS"));
-                ais.add(new GABScriptChoose(utt, 150, 1, 5, //lesslife
-                        decodeScripts(utt, "0;1;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "PGS"));
+                ais.add(new GABScriptChoose(utt, 150, 1, 8, //MoreDPS
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
+                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3,
-                        decodeScripts(utt, "1;2;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "1;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 150, 6, 4,
-                        decodeScripts(utt, "0;1;"), "SAB"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "SSS"));
+                ais.add(new SABScriptChoose(utt, 150, 1, 5, //LessLife
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
                 break;
             case "maps/BroodWar/(4)BloodBath.scmB.xml": //9
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;"), 100, "PGS"));
-                ais.add(new GABScriptChoose(utt, 100, 1, 1, //closest
-                        decodeScripts(utt, "0;1;3;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS"));
+                ais.add(new GABScriptChoose(utt, 100, 1, 2, //ClosestEnemy
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
+                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1,
-                        decodeScripts(utt, "1;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "0;1;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 50, 5, 0,
-                        decodeScripts(utt, "0;1;"), "SAB"));
+                        decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "SSS"));
+                ais.add(new SABScriptChoose(utt, 200, 1, 4, //ManagerFartherEnemy
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/BroodWar/(4)BloodBath.scmD.xml": //10
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "0;1;"), 100, "PGS"));
-                ais.add(new GABScriptChoose(utt, 50, 5, 3, //father
-                        decodeScripts(utt, "0;1;3;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS"));
+                ais.add(new GABScriptChoose(utt, 100, 1, 5, //LessLife
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"));
+                ais.add(new CmabNaiveMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1,
-                        decodeScripts(utt, "1;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "0;1;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 200, 1, 0,
-                        decodeScripts(utt, "0;1;2;"), "SAB"));
-                break;
-            case "maps/BroodWar/(4)Fortress.scxA.xml": //11
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "1;2;3;"), 200, "PGS"));
-                ais.add(new GABScriptChoose(utt, 50, 1, 8, //moredps
-                        decodeScripts(utt, "0;1;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;2;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1,
-                        decodeScripts(utt, "1;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "1;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 200, 1, 7,
-                        decodeScripts(utt, "0;1;2;"), "SAB"));
-                break;
-            case "maps/BroodWar/(4)EmpireoftheSun.scmC.xml": //12
-                ais.add(new LightPGSSCriptChoice(utt, RoundRobinClusterLeve.decodeScripts(utt, "1;2;3;"), 200, "PGS"));
-                ais.add(new GABScriptChoose(utt, 50, 1, 2, //ManagerClosestEnemy
-                        decodeScripts(utt, "0;1;"), "GAB"));
-                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;2;"), "A1N"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;2;"), "A3N"));
-                ais.add(new LightSSSmRTSScriptChoice(utt, 50, decodeScripts(utt, "1;2;3;"), "SSS"));
-                ais.add(new SABScriptChoose(utt, 150, 1, 8,
-                        decodeScripts(utt, "0;1;"), "SAB"));
+                        decodeScripts(utt, "1;2;3;"), "A3N"));
+                ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "1;"), 200, "SSS"));
+                ais.add(new SABScriptChoose(utt, 100, 1, 2, //closesEnemy
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
                 break;
 
             default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
@@ -373,10 +349,7 @@ public class RoundRobinClusterLeve {
 
                 PlayerAction pa1 = ai1.getAction(0, gs);
                 //dados de tempo ai1
-                timeTemp = (System.currentTimeMillis() - startTime);
-                if (timeTemp > 0) {
-                    log.add("Tempo de execução "+ai1.toString()+ " " + timeTemp);
-                }
+                timeTemp = (System.currentTimeMillis() - startTime);                
                 sumAi1 += timeTemp;
                 //coleto tempo mínimo
                 if (ai1TempoMin > timeTemp) {
@@ -390,10 +363,7 @@ public class RoundRobinClusterLeve {
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
                 //dados de tempo ai2
-                timeTemp = (System.currentTimeMillis() - startTime);
-                if (timeTemp > 0) {
-                    log.add("Tempo de execução "+ai2.toString()+ " " + timeTemp);
-                }
+                timeTemp = (System.currentTimeMillis() - startTime);                
                 sumAi2 += timeTemp;
                 //coleto tempo mínimo
                 if (ai2TempoMin > timeTemp) {

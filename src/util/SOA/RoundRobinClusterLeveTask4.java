@@ -93,6 +93,10 @@ public class RoundRobinClusterLeveTask4 {
         int iAi1 = Integer.parseInt(sIA1);
         int iAi2 = Integer.parseInt(sIA2);
         int map = Integer.parseInt(sMap);
+        
+        if (map > 9) {
+            return true;
+        }
 
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
@@ -109,9 +113,7 @@ public class RoundRobinClusterLeveTask4 {
                 "maps/32x32/basesWorkers32x32A.xml",
                 "maps/32x32/basesWorkersBarracks32x32.xml",
                 "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml",
-                "maps/BroodWar/(4)Fortress.scxA.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BroodWar/(4)BloodBath.scmD.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -156,425 +158,355 @@ public class RoundRobinClusterLeveTask4 {
 
         switch (maps.get(map)) {
             case "maps/8x8/basesWorkers8x8A.xml": //1
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 2,
-                        decodeScripts(utt, "0;"), "A3N10"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerLessLife", 8,
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "0;"), "A1N"));
+                        decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/8x8/FourBasesWorkers8x8.xml": //2
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerMoreLife", 2, 
-                        decodeScripts(utt, "0;"), "A3N10"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 8, 
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "0;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/16x16/basesWorkers16x16A.xml": //3
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N10"));
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/16x16/TwoBasesBarracks16x16.xml": //4
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N10"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosest", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/24x24/basesWorkers24x24A.xml": //5
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;"), "A3N10"));
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/24x24/basesWorkers24x24A_Barrack.xml": //6
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N10"));
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/32x32/basesWorkers32x32A.xml": //7
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerRandom", 1, 
-                        decodeScripts(utt, "1;"), "A3N10"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt,"ManagerFather", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/32x32/basesWorkersBarracks32x32.xml": //8
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3, 
-                        decodeScripts(utt, "1;2;"), "A3N10"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/BroodWar/(4)BloodBath.scmB.xml": //9
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 150, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N10"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
                 break;
             case "maps/BroodWar/(4)BloodBath.scmD.xml": //10
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N1"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N2"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N3"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N4"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N5"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N6"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N7"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N8"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                        decodeScripts(utt, "1;2;3;"), "A3N9"));
+                ais.add(new CmabAssymetricMCTS(100, -1, 50, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N10"));
+                        decodeScripts(utt, "1;2;3;"), "A3N10"));
                 ais.add(new CmabNaiveMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;"), "A1N"));
-                break;
-            case "maps/BroodWar/(4)Fortress.scxA.xml": //11
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerFather", 1, 
-                        decodeScripts(utt, "1;"), "A3N10"));
-                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;2;"), "A1N"));
-                break;
-            case "maps/BroodWar/(4)EmpireoftheSun.scmC.xml": //12
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 1, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N1"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N2"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 3, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N3"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 4, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N4"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 5, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N5"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N6"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 7, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N7"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 8, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N8"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 9, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N9"));
-                ais.add(new CmabAssymetricMCTS(100, -1, 200, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1, 
-                        decodeScripts(utt, "1;2;"), "A3N10"));
-                ais.add(new CmabNaiveMCTS(100, -1, 100, 10, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt,
-                        RoundRobinClusterLeve.decodeScripts(utt, "1;2;"), "A1N"));
-                break;
+                        RoundRobinClusterLeve.decodeScripts(utt, "0;1;2;3;"), "A1N"));
+                break;            
             default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
                 System.out.println("Error!");
                 break;
