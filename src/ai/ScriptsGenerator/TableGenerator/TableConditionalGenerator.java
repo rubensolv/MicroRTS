@@ -8,7 +8,9 @@ package ai.ScriptsGenerator.TableGenerator;
 import ai.ScriptsGenerator.BasicConditional.IConditional;
 import ai.ScriptsGenerator.BasicConditional.SimpleConditional;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import rts.units.UnitTypeTable;
@@ -41,7 +43,7 @@ public class TableConditionalGenerator {
     }
     
     private void generateTable() {
-        conditional.add(new SimpleConditional("hasUnitsHarversting", new ArrayList()));
+        conditional.add(new SimpleConditional("haveQtdUnitsHarversting", new ArrayList(Arrays.asList(new QuantityParam(1)))));
     }
     
     private void generateDic() {

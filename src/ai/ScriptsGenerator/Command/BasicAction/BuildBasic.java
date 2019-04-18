@@ -140,7 +140,7 @@ public class BuildBasic extends AbstractBasicAction {
         }
         // count units in currentPlayerAction 
         for (Pair<Unit, UnitAction> action : currentPlayerAction.getActions()) {
-            if (action.m_b.getUnitType().ID == type.code()) {
+            if (action.m_a.getType().ID == type.code()) {
                 qtt++;
             }
         }
