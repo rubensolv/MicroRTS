@@ -254,7 +254,7 @@ public class GVS_GP {
 //          AI ai2 = new PassiveAI(utt);
         
         ICompiler compiler = new MainGPCompiler();  
-        List<ICommand> commandsGP = compiler.CompilerCode("1! 12! 113! if(2) (if(4) (if(6) (183!)))", utt);
+        List<ICommand> commandsGP = compiler.CompilerCode("1! 12! 113! if(10) (if(4) (if(6) (183!)))", utt);
       
         List<ICommand> commandsAI1=new ArrayList<>(); 
         TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);

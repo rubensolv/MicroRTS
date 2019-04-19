@@ -5,21 +5,18 @@
  */
 package ai.ScriptsGenerator.BasicConditional.functions;
 
-import ai.ScriptsGenerator.ParametersConcrete.DistanceParam;
-import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
-import ai.abstraction.pathfinding.PathFinding;
-import java.util.ArrayList;
+import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import java.util.List;
 import rts.GameState;
+import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.Unit;
-import rts.units.UnitTypeTable;
 
 /**
  *
  * @author rubens
  */
-public class haveQtdUnitsHarversting implements IConditionalFunction{
+public class haveUnitsBeenAttacked extends AbstractConditionalFunction {
 
     @Override
     public boolean runFunction(List lParam1) {
@@ -28,31 +25,40 @@ public class haveQtdUnitsHarversting implements IConditionalFunction{
         PlayerAction currentPlayerAction = (PlayerAction) lParam1.get(2);
         //PathFinding pf = (PathFinding) lParam1.get(3);
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
-        QuantityParam qtd = (QuantityParam) lParam1.get(5);
-        boolean eval = false;
-        
-        if (getAllyUnitsHarvesting(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
-            return true;
-        }
-        
-        return eval;
-    }
+        UnitTypeParam unitType = (UnitTypeParam) lParam1.get(5);
+        parameters.add(unitType);
 
-     protected ArrayList<Unit> getAllyUnitsHarvesting(GameState game, PlayerAction currentPlayerAction, int player) {
-        ArrayList<Unit> unitAllys = new ArrayList<>();
-        for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player && currentPlayerAction.getAction(u)!=null){
-            	if(currentPlayerAction.getAction(u).getType()==2 || currentPlayerAction.getAction(u).getType()==3 )
-            		unitAllys.add(u);
+        PhysicalGameState pgs = game.getPhysicalGameState();
+
+        //now whe iterate for all ally units in order to discover wich one satisfy the condition
+        for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
+            if (currentPlayerAction.getAction(unAlly) == null) {
+
+                for (Unit u2 : pgs.getUnits()) {
+
+                    if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
+
+                        int dx = u2.getX() - unAlly.getX();
+                        int dy = u2.getY() - unAlly.getY();
+                        double d = Math.sqrt(dx * dx + dy * dy);
+
+                        //If satisfies, an action is applied to that unit. Units that not satisfies will be set with
+                        // an action wait.
+                        if ((d <= u2.getAttackRange())) {
+                            return true;
+                        }
+                    }
+
+                }
             }
         }
-        return unitAllys;
+
+        return false;
     }
 
     @Override
     public String toString() {
-        return " ( hasUnitsHarversting ) ";
+        return "haveUnitsBeenAttacked";
     }
-     
-    
+
 }

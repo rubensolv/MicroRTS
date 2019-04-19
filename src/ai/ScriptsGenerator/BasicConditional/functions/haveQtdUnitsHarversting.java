@@ -5,21 +5,19 @@
  */
 package ai.ScriptsGenerator.BasicConditional.functions;
 
-import ai.ScriptsGenerator.ParametersConcrete.DistanceParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
-import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.units.Unit;
-import rts.units.UnitTypeTable;
+
 
 /**
  *
  * @author rubens
  */
-public class haveQtdUnitsHarversting implements IConditionalFunction{
+public class haveQtdUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
     public boolean runFunction(List lParam1) {
@@ -29,13 +27,12 @@ public class haveQtdUnitsHarversting implements IConditionalFunction{
         //PathFinding pf = (PathFinding) lParam1.get(3);
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
         QuantityParam qtd = (QuantityParam) lParam1.get(5);
-        boolean eval = false;
         
         if (getAllyUnitsHarvesting(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
             return true;
         }
         
-        return eval;
+        return false;
     }
 
      protected ArrayList<Unit> getAllyUnitsHarvesting(GameState game, PlayerAction currentPlayerAction, int player) {
@@ -51,7 +48,7 @@ public class haveQtdUnitsHarversting implements IConditionalFunction{
 
     @Override
     public String toString() {
-        return " ( hasUnitsHarversting ) ";
+        return " ( haveQtdUnitsHarversting ) ";
     }
      
     

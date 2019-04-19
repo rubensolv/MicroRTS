@@ -17,7 +17,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class hasUnitsHarversting implements IConditionalFunction{
+public class hasUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
     public boolean runFunction(List lParam1) {
