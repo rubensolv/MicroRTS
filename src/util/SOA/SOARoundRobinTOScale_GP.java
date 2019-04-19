@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author rubens Classe utilizada para gerir o serviço SOA para testes
  * totalmente observáveis.
  */
-public class SOARoundRobinTOScale_GAscripts {
+public class SOARoundRobinTOScale_GP {
 
     private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
 
@@ -75,14 +75,14 @@ public class SOARoundRobinTOScale_GAscripts {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinTOScale_GAScripts control = new RoundRobinTOScale_GAScripts(pathTableScripts);
+        RoundRobinTOScale_GP control = new RoundRobinTOScale_GP(pathTableScripts);
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),
                     Integer.decode(itens[2]),
                     Integer.decode(itens[3]), pathLog, map);
         } catch (Exception ex) {
-            Logger.getLogger(SOARoundRobinTOScale_GAscripts.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOARoundRobinTOScale_GP.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
