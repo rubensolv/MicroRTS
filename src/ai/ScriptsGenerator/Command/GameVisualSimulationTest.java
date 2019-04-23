@@ -16,7 +16,7 @@ import ai.core.AI;
 import ai.*;
 import ai.CMAB.CMABBuilder;
 import ai.CMAB.CmabNaiveMCTS;
-import ai.ScriptsGenerator.BasicConditional.ConditionalBiggerThen;
+//import ai.ScriptsGenerator.BasicConditional.ConditionalBiggerThen;
 import ai.ScriptsGenerator.Chromosome;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.ChromosomesBag;

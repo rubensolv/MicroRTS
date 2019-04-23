@@ -5,19 +5,19 @@
  */
 package ai.ScriptsGenerator.BasicConditional.functions;
 
-import ai.abstraction.pathfinding.PathFinding;
+import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import java.util.ArrayList;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.units.Unit;
-import rts.units.UnitTypeTable;
+
 
 /**
  *
  * @author rubens
  */
-public class hasUnitsHarversting extends AbstractConditionalFunction{
+public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
     public boolean runFunction(List lParam1) {
@@ -26,13 +26,13 @@ public class hasUnitsHarversting extends AbstractConditionalFunction{
         PlayerAction currentPlayerAction = (PlayerAction) lParam1.get(2);
         //PathFinding pf = (PathFinding) lParam1.get(3);
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
-        boolean eval = false;
+        QuantityParam qtd = (QuantityParam) lParam1.get(5);
         
-        if (getAllyUnitsHarvesting(game, currentPlayerAction, player).size() > 0){
+        if (getAllyUnitsHarvesting(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
             return true;
         }
         
-        return eval;
+        return false;
     }
 
      protected ArrayList<Unit> getAllyUnitsHarvesting(GameState game, PlayerAction currentPlayerAction, int player) {
@@ -48,7 +48,7 @@ public class hasUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
     public String toString() {
-        return " ( hasUnitsHarversting ) ";
+        return "HaveQtdUnitsHarversting";
     }
      
     

@@ -58,4 +58,5 @@ public abstract class AbstractConditionalFunction implements IConditionalFunctio
         }
         return types;
     }
+  
 }
