@@ -45,7 +45,7 @@ public class IfGPCompiler implements ICompiler {
         String[] thenFragments = thenCode.split(" ");
         for (int i = 0; i < thenFragments.length; i++) {
             if (thenFragments[i].contains("if")) {
-                finalPos = getPositionFinalIF(1, thenFragments, true);
+                finalPos = getPositionFinalIF(i, thenFragments, true);
                 String newCode = MainGPCompiler.generateString(i, finalPos, thenFragments);
                 if (newCode.startsWith("(")) {
                     newCode = newCode.substring(1, newCode.length());
@@ -78,7 +78,7 @@ public class IfGPCompiler implements ICompiler {
             String[] elseFragments = elseCode.split(" ");
             for (int i = 0; i < elseFragments.length; i++) {
                 if (elseFragments[i].contains("if")) {
-                    finalPos = getPositionFinalIF(1, elseFragments, true);
+                    finalPos = getPositionFinalIF(i, elseFragments, true);
                     String newCode = MainGPCompiler.generateString(i, finalPos, elseFragments);
                     if (newCode.startsWith("(")) {
                         newCode = newCode.substring(1, newCode.length());
