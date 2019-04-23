@@ -5,6 +5,7 @@
  */
 package ai.ScriptsGenerator.BasicConditional.functions;
 
+import ai.ScriptsGenerator.ParametersConcrete.DistanceParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import java.util.List;
 import rts.GameState;
@@ -16,7 +17,7 @@ import rts.units.Unit;
  *
  * @author rubens
  */
-public class haveUnitsBeenAttacked extends AbstractConditionalFunction {
+public class HaveUnitsToDistantToEnemy extends AbstractConditionalFunction {
 
     @Override
     public boolean runFunction(List lParam1) {
@@ -26,7 +27,9 @@ public class haveUnitsBeenAttacked extends AbstractConditionalFunction {
         //PathFinding pf = (PathFinding) lParam1.get(3);
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
         UnitTypeParam unitType = (UnitTypeParam) lParam1.get(5);
+        DistanceParam distance = (DistanceParam) lParam1.get(6);
         parameters.add(unitType);
+        parameters.add(distance);
 
         PhysicalGameState pgs = game.getPhysicalGameState();
 
@@ -44,7 +47,8 @@ public class haveUnitsBeenAttacked extends AbstractConditionalFunction {
 
                         //If satisfies, an action is applied to that unit. Units that not satisfies will be set with
                         // an action wait.
-                        if ((d <= u2.getAttackRange())) {
+                        if (d <= distance.getDistance()) {
+
                             return true;
                         }
                     }
@@ -58,7 +62,7 @@ public class haveUnitsBeenAttacked extends AbstractConditionalFunction {
 
     @Override
     public String toString() {
-        return "haveUnitsBeenAttacked";
+        return "HaveUnitsToDistantToEnemy";
     }
 
 }

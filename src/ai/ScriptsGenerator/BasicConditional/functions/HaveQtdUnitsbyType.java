@@ -6,6 +6,8 @@
 package ai.ScriptsGenerator.BasicConditional.functions;
 
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
+import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
+
 import java.util.ArrayList;
 import java.util.List;
 import rts.GameState;
@@ -17,7 +19,7 @@ import rts.units.Unit;
  *
  * @author rubens
  */
-public class haveQtdUnitsHarversting extends AbstractConditionalFunction{
+public class HaveQtdUnitsbyType extends AbstractConditionalFunction{
 
     @Override
     public boolean runFunction(List lParam1) {
@@ -27,20 +29,21 @@ public class haveQtdUnitsHarversting extends AbstractConditionalFunction{
         //PathFinding pf = (PathFinding) lParam1.get(3);
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
         QuantityParam qtd = (QuantityParam) lParam1.get(5);
+        UnitTypeParam unitType = (UnitTypeParam) lParam1.get(6);
+        parameters.add(unitType);
         
-        if (getAllyUnitsHarvesting(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
+        if (getUnitsOfType(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
             return true;
         }
         
         return false;
     }
 
-     protected ArrayList<Unit> getAllyUnitsHarvesting(GameState game, PlayerAction currentPlayerAction, int player) {
+    protected ArrayList<Unit> getUnitsOfType(GameState game, PlayerAction currentPlayerAction, int player) {
         ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player && currentPlayerAction.getAction(u)!=null){
-            	if(currentPlayerAction.getAction(u).getType()==2 || currentPlayerAction.getAction(u).getType()==3 )
-            		unitAllys.add(u);
+            if(u.getPlayer() == player && isUnitControlledByParam(u)){
+                unitAllys.add(u);
             }
         }
         return unitAllys;
@@ -48,7 +51,7 @@ public class haveQtdUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
     public String toString() {
-        return " ( haveQtdUnitsHarversting ) ";
+        return "HaveQtdUnitsbyType";
     }
      
     

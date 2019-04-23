@@ -4,6 +4,7 @@
  */
 package util.SOA;
 
+import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
@@ -11,7 +12,10 @@ import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 
 import ai.core.AI;
+import ai.evaluation.SimpleSqrtEvaluationFunction3;
+import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
+import ai.competition.capivara.CmabAssymetricMCTS;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -96,14 +100,14 @@ public class RoundRobinTOScale_GP {
 
         //decompõe a tupla
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
-        String[] itens = tupleAi1.split(";");
+        String[] itens = tupleAi1.replace("(", "").replace(")", "").split(";");
 
         for (String element : itens) {
             iScriptsAi1.add(Integer.decode(element));
         }
 
         ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
-        itens = tupleAi2.split(";");
+        itens = tupleAi2.replace("(", "").replace(")", "").split(";");
 
         for (String element : itens) {
             iScriptsAi2.add(Integer.decode(element));
@@ -113,19 +117,27 @@ public class RoundRobinTOScale_GP {
         updateTableIfnecessary();
 
         //pgs 
-        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
-        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-
-//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-//                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-//                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-//                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
-//        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-//                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-//                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-//                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
-//        AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-//        AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
+        //pgs 
+//      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
+//      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+      
+//      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
+//      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+      
+      AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
+      
+      AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
+                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
+      
+//      AI ai1 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GAB");
+//      AI ai2 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "GAB");
+//      AI ai1 = new SABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "SAB");
+//      AI ai2 = new SABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "SAB");
 
         /*
             Variáveis para coleta de tempo

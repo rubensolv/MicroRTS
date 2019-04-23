@@ -10,6 +10,7 @@ import ai.asymmetric.GAB.SandBox.GABRandom;
 import static ai.asymmetric.PGS.GameVisualSimulationTest.decodeScripts;
 import ai.core.AI;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
+import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.SAB.SABRandom;
@@ -57,10 +58,10 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -106,8 +107,11 @@ public class RoundRobinTOScaleTIAMAT {
         }
 
         //pgs 
-        //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
-        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+//        AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
+//        AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+        
+//        	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
+//        	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
         
 //        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
@@ -118,10 +122,10 @@ public class RoundRobinTOScaleTIAMAT {
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
 //                                            "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
         
-        //AI ai1 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-        //AI ai2 = new GABScriptChoose(utt, 1, 7, decodeScripts(utt, iScriptsAi1), "GAB");
-        AI ai1 = new SABRandom(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "SABRandom");
-        AI ai2 = new SABRandom(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "SABRandom");
+        AI ai1 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GAB");
+        AI ai2 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "GAB");
+//        AI ai1 = new SABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "SAB");
+//        AI ai2 = new SABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "SAB");
 
         /*
             Variáveis para coleta de tempo
@@ -194,7 +198,7 @@ public class RoundRobinTOScaleTIAMAT {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 120));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
