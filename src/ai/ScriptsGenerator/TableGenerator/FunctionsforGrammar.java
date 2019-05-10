@@ -190,4 +190,18 @@ public class FunctionsforGrammar {
         return conditionalsForGrammar;
     }
 
+    public String getNameFunction() {
+        return nameFunction;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+    
+    
+
 }

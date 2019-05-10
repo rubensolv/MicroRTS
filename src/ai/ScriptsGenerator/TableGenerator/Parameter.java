@@ -6,15 +6,23 @@ import java.util.List;
 public class Parameter {
 	
 	String parameterName;
-	double superiorLimit;
-	double inferiorLimit;
+	Double superiorLimit;
+	Double inferiorLimit;
 	List<String> discreteSpecificValues;
 
 	public Parameter(String parameterName, Object superiorLimit, Object inferiorLimit, Object discreteSpecificValues)
 	{
 		this.parameterName=parameterName;
-		this.superiorLimit=(double)superiorLimit;
-		this.inferiorLimit=(double)inferiorLimit;
+                if(superiorLimit != null){
+                    this.superiorLimit=(double)superiorLimit;
+                }else{
+                    this.superiorLimit = null;
+                }
+                if(inferiorLimit != null){
+                    this.inferiorLimit=(double)inferiorLimit;
+                }else{
+                    this.inferiorLimit = null;
+                }
 		this.discreteSpecificValues=(List<String>)discreteSpecificValues;
 	}
 
