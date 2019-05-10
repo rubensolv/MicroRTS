@@ -127,22 +127,22 @@ public class TableCommandsGenerator {
         commands.clear();
         //harvest
         commands.addAll(getHarvestCommands());
-        System.out.println("index harvest "+commands.size());
+        //System.out.println("index harvest "+commands.size());
         //build
         commands.addAll(getBuildCommands());
-        System.out.println("index build "+commands.size());
+        //System.out.println("index build "+commands.size());
         //Train
         commands.addAll(getTrainCommands());
-        System.out.println("index train "+commands.size());
+        //System.out.println("index train "+commands.size());
         //attack
         commands.addAll(getAttackCommands());
-        System.out.println("index attack "+commands.size());
+        //System.out.println("index attack "+commands.size());
         //MoveToUnit
         commands.addAll(getMoveToUnit());
-        System.out.println("index move "+commands.size());
+        //System.out.println("index move "+commands.size());
         //MoveToCoordenates
         commands.addAll(getMoveToCoordenates());
-        System.out.println("index move coordenates "+commands.size());
+        //System.out.println("index move coordenates "+commands.size());
         //------------- booleans 
         /* ArrayList<ICommand> commandsBasic = new ArrayList<>(commands);
         //AllyRange

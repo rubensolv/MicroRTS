@@ -40,7 +40,7 @@ public enum EnumPositionType {
             return EnumPositionType.Up;
         }else if (name.equals("Down")) {
             return EnumPositionType.Down;
-        }else if (name.equals("EnemyDirection")) {
+        }else if (name.equals("EnemyDir")) {
             return EnumPositionType.EnemyDirection;
         }
         throw new IllegalArgumentException("invalid name!");
