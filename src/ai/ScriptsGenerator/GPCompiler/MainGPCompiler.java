@@ -6,6 +6,7 @@
 package ai.ScriptsGenerator.GPCompiler;
 
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.TableGenerator.FunctionsforGrammar;
 import java.util.ArrayList;
 import java.util.List;
 import rts.units.UnitTypeTable;
@@ -18,6 +19,7 @@ public class MainGPCompiler implements ICompiler {
 
     private FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
     private IfGPCompiler ifCompiler = new IfGPCompiler();
+    private FunctionsforGrammar fGrammar = new FunctionsforGrammar();
 
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
@@ -30,8 +32,13 @@ public class MainGPCompiler implements ICompiler {
 
         for (int i = 0; i < fragments.length; i++) {
             String fragment = fragments[i];
-            if (fragment.contains("!")) {
-                commands.addAll(functionCompiler.CompilerCode(fragment, utt));
+            if(isBasicCommand(fragment)){
+                //get the position to cut the fragments 
+                int idToCut = FunctionGPCompiler.getLastPositionForBasicFunction(i, fragments);
+                String completeBasicFunction = generateString(i, idToCut, fragments);
+                //get the complete string                
+                commands.addAll(functionCompiler.CompilerCode(completeBasicFunction, utt));
+                i = idToCut;
             } else if (fragment.contains("if")) {
                 //method to remove all String from the fragments
                 int idToCut = ifCompiler.getPositionFinalIF(i, fragments, true);
@@ -57,6 +64,16 @@ public class MainGPCompiler implements ICompiler {
             fullString += fragments[i] + " ";
         }
         return fullString.trim();
+    }
+
+    private boolean isBasicCommand(String fragment) {
+        List<FunctionsforGrammar> basicFunctions = fGrammar.getBasicFunctionsForGrammar();
+        for (FunctionsforGrammar basicFunction : basicFunctions) {
+            if(fragment.contains(basicFunction.getNameFunction())){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
