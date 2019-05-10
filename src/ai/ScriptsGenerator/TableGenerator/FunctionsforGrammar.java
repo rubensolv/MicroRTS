@@ -84,21 +84,21 @@ public class FunctionsforGrammar {
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 1, 3, null));
+        parameters.add(new Parameter("Quantity", 1.0, 3.0, null));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("build", parameters,
         "ai.ScriptsGenerator.Command.BasicAction.BuildBasic"));
 
         //Function HarvestBasic
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 1, 5, null));
+        parameters.add(new Parameter("Quantity", 1.0, 5.0, null));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("harvest", parameters,
         "ai.ScriptsGenerator.Command.BasicAction.HarvestBasic"));
 
         //Function MoveToCoordinatesBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add((new Parameter("x", 0, 7, null)));
-        parameters.add((new Parameter("y", 0, 7, null)));
+        parameters.add((new Parameter("x", 0.0, 7.0, null)));
+        parameters.add((new Parameter("y", 0.0, 7.0, null)));
         //parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToCoord", parameters,
         "ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic"));
@@ -115,7 +115,7 @@ public class FunctionsforGrammar {
         //Function TrainBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1, 20, null));
+        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         parameters.add(new Parameter("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("train", parameters,
         "ai.ScriptsGenerator.Command.BasicAction.TrainBasic"));
@@ -135,27 +135,27 @@ public class FunctionsforGrammar {
         //Conditional HaveQtdEnemiesbyType
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1, 20, null));
+        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdEnemiesbyType", parameters,
         "ai.ScriptsGenerator.BasicConditional.functions.HaveQtdEnemiesbyType"));
 
         //Conditional HaveQtdEnemiesAttacking
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1, 20, null));
+        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdUnitsAttacking", parameters,
         "ai.ScriptsGenerator.BasicConditional.functions.HaveQtdEnemiesAttacking"));
 
         //Conditional HaveQtdUnitsbyType
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1, 20, null));
+        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdUnitsbyType", parameters,
         "ai.ScriptsGenerator.BasicConditional.functions.HaveQtdUnitsbyType"));
 
         //Conditional HaveQtdUnitsHarvesting
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 1, 20, null));
+        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdUnitsHarversting", parameters,
         "ai.ScriptsGenerator.BasicConditional.functions.HaveQtdUnitsHarvesting"));
 
@@ -169,7 +169,7 @@ public class FunctionsforGrammar {
         //Conditional HaveUnitsToDistantToEnemy
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Distance", 1, 20, null));
+        parameters.add(new Parameter("Distance", 1.0, 20.0, null));
         //parameters.add(new Parameter("u", null, null, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveUnitsToDistantToEnemy", parameters,
         "ai.ScriptsGenerator.BasicConditional.functions.HaveUnitsToDistantToEnemy"));

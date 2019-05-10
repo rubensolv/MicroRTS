@@ -14,12 +14,12 @@ public class Parameter {
 	{
 		this.parameterName=parameterName;
                 if(superiorLimit != null){
-                    this.superiorLimit=(double)superiorLimit;
+                    this.superiorLimit=(Double)superiorLimit;
                 }else{
                     this.superiorLimit = null;
                 }
                 if(inferiorLimit != null){
-                    this.inferiorLimit=(double)inferiorLimit;
+                    this.inferiorLimit=(Double)inferiorLimit;
                 }else{
                     this.inferiorLimit = null;
                 }
