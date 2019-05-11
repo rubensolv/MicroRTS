@@ -153,7 +153,12 @@ public class FunctionGPCompiler extends AbstractCompiler {
         String[] params = code.split(" ");
 
         TrainBasic train = new TrainBasic();
-        train.addParameter(getTypeConstructByName(params[1])); //add unit construct type
+        //train.addParameter(getTypeConstructByName(params[1])); //add unit construct type
+        if(params[0].equals("Worker")){
+            train.addParameter(getTypeConstructByName("Base")); //add unit construct type
+        }else{
+            train.addParameter(getTypeConstructByName("Barrack"));
+        }
         train.addParameter(getTypeUnitByString(params[0])); //add unit Type
         //train.addParameter(TypeConcrete.getTypeWorker()); //add unit Type
         train.addParameter(new QuantityParam(Integer.decode(params[2]))); //add qtd unit

@@ -109,7 +109,7 @@ public class FunctionsforGrammar {
         //Function TrainBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
+        //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
         parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         parameters.add(new Parameter("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("train", parameters));
