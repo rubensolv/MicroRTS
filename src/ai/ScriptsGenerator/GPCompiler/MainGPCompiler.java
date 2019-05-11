@@ -6,7 +6,6 @@
 package ai.ScriptsGenerator.GPCompiler;
 
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
-import ai.ScriptsGenerator.TableGenerator.FunctionsforGrammar;
 import java.util.ArrayList;
 import java.util.List;
 import rts.units.UnitTypeTable;
@@ -17,6 +16,8 @@ import rts.units.UnitTypeTable;
  */
 public class MainGPCompiler extends AbstractCompiler {
     private IfGPCompiler ifCompiler = new IfGPCompiler();
+    protected FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
+    protected ConditionalGPCompiler conditionalCompiler = new ConditionalGPCompiler();
 
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
@@ -45,9 +46,9 @@ public class MainGPCompiler extends AbstractCompiler {
             }
         }
 
-        //for (ICommand command : commands) {
-        //    System.out.println(command.toString());
-        //}
+        for (ICommand command : commands) {
+            System.out.println(command.toString());
+        }
         
         return commands;
     }

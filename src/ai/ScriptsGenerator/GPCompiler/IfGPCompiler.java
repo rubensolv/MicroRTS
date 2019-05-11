@@ -17,11 +17,12 @@ import rts.units.UnitTypeTable;
  * @author rubens
  */
 public class IfGPCompiler extends AbstractCompiler {
+    protected FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
+    protected ConditionalGPCompiler conditionalCompiler = new ConditionalGPCompiler();
 
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
-        IfFunction ifFun = new IfFunction();;
-        TableConditionalGenerator tcg = new TableConditionalGenerator(utt);
+        IfFunction ifFun = new IfFunction();        
 
         List<ICommand> commands = new ArrayList<>();
         String[] fragments = code.split(" ");
@@ -30,8 +31,8 @@ public class IfGPCompiler extends AbstractCompiler {
         if (isIfInitialClause(fragments[pos])) {
             //remove the tags and get the conditional
             String sCond = fragments[pos];
-            sCond = sCond.replace("if(", "").replace(")", "").trim();
-            ifFun.setConditional(tcg.getConditionalByID(Integer.decode(sCond)));
+            sCond = sCond.replace("if(", "").trim();
+            ifFun.setConditional(conditionalCompiler.getConditionalByCode(sCond));
             pos++;
         }
         //second build the then

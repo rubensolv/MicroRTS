@@ -14,20 +14,11 @@ import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
-import ai.ScriptsGenerator.IParameters.IParameters;
-import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.CoordinatesParam;
-import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
-import ai.ScriptsGenerator.ParametersConcrete.LessHealthyEnemy;
-import ai.ScriptsGenerator.ParametersConcrete.MostHealthyEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.PriorityPositionParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
-import ai.ScriptsGenerator.ParametersConcrete.RandomEnemy;
-import ai.ScriptsGenerator.ParametersConcrete.StrongestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
-import ai.ScriptsGenerator.ParametersConcrete.WeakestEnemy;
-import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import rts.units.UnitTypeTable;
@@ -88,7 +79,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
     private ICommand buildCommand(String code, UnitTypeTable utt) {
         code = code.replace("build(", "");
-        code = code.replace(")", "").replace(",", "");
+        code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
         BuildBasic build = new BuildBasic();
         if (params[0].equals("Base")) {
@@ -104,7 +95,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
     private ICommand harvestCommand(String code, UnitTypeTable utt) {
         code = code.replace("harvest(", "");
-        code = code.replace(")", "").replace(",", "");
+        code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
         HarvestBasic harverst = new HarvestBasic();
         harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
@@ -115,7 +106,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
     private ICommand attackCommand(String code, UnitTypeTable utt) {
         code = code.replace("attack(", "");
-        code = code.replace(")", "").replace(",", "");
+        code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
         AttackBasic attack = new AttackBasic();
         attack.addParameter(getTypeUnitByString(params[0])); //add unit type
@@ -129,7 +120,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
     private ICommand moveToCoordCommand(String code, UnitTypeTable utt) {
         code = code.replace("moveToCoord(", "");
-        code = code.replace(")", "").replace(",", "");
+        code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
 
         MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
@@ -143,7 +134,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
     private ICommand moveToUnitCommand(String code, UnitTypeTable utt) {
         code = code.replace("moveToUnit(", "");
-        code = code.replace(")", "").replace(",", "");
+        code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
@@ -158,7 +149,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
     private ICommand trainCommand(String code, UnitTypeTable utt) {
         code = code.replace("train(", "");
-        code = code.replace(")", "").replace(",", "");
+        code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
 
         TrainBasic train = new TrainBasic();

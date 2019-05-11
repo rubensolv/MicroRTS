@@ -23,8 +23,7 @@ import java.util.List;
  * @author rubens
  */
 public abstract class AbstractCompiler implements ICompiler {
-
-    protected FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
+    
     protected final FunctionsforGrammar fGrammar = new FunctionsforGrammar();
 
     public static String generateString(int initialPos, int finalPos, String[] fragments) {
