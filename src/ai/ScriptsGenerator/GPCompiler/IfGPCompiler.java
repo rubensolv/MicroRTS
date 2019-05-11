@@ -16,7 +16,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class IfGPCompiler implements ICompiler {
+public class IfGPCompiler extends AbstractCompiler {
 
     private FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
 
@@ -55,7 +55,7 @@ public class IfGPCompiler implements ICompiler {
                 }
                 ifFun.includeFullCommandsThen(CompilerCode(newCode, utt));
                 i = finalPos;
-            } else if (thenFragments[i].contains("!")) {
+            } else if (isBasicCommand(thenFragments[i])) {
                 finalPos = getPositionParentClose(i, thenFragments);
                 String newCode = MainGPCompiler.generateString(i, finalPos, thenFragments);
                 if (newCode.startsWith("(")) {
@@ -88,7 +88,7 @@ public class IfGPCompiler implements ICompiler {
                     }
                     ifFun.includeFullCommandsElse(CompilerCode(newCode, utt));
                     i = finalPos;
-                } else if (elseFragments[i].contains("!")) {
+                } else if (isBasicCommand(elseFragments[i])) {
                     finalPos = getPositionParentClose(i, elseFragments);
                     String newCode = MainGPCompiler.generateString(i, finalPos, elseFragments);
                     if (newCode.startsWith("(")) {
@@ -151,16 +151,8 @@ public class IfGPCompiler implements ICompiler {
         }
     }
 
-    private int countCaracter(String fragment, String toFind) {
-        int total = 0;
-        for (int i = 0; i < fragment.length(); i++) {
-            char ch = fragment.charAt(i);
-            String x1 = String.valueOf(ch);
-            if (x1.equalsIgnoreCase(toFind)) {
-                total = total + 1;
-            }
-        }
-        return total;
-    }
+    
+    
+    
 
 }

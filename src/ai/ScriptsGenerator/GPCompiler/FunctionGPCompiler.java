@@ -36,7 +36,7 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class FunctionGPCompiler implements ICompiler {
+public class FunctionGPCompiler extends AbstractCompiler {
 
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
@@ -53,7 +53,7 @@ public class FunctionGPCompiler implements ICompiler {
         return tcg.getCommandByID(ID);
     }
 
-    public static int getLastPositionForBasicFunction(int initialPosition, String[] fragments) {
+    public int getLastPositionForBasicFunction(int initialPosition, String[] fragments) {
         int contOpen = 0, contClosed = 0;
 
         for (int i = initialPosition; i < fragments.length; i++) {
@@ -68,17 +68,6 @@ public class FunctionGPCompiler implements ICompiler {
         return fragments.length;
     }
 
-    public static int countCaracter(String fragment, String toFind) {
-        int total = 0;
-        for (int i = 0; i < fragment.length(); i++) {
-            char ch = fragment.charAt(i);
-            String x1 = String.valueOf(ch);
-            if (x1.equalsIgnoreCase(toFind)) {
-                total = total + 1;
-            }
-        }
-        return total;
-    }
 
     private ICommand buildFunctionByCode(String code, UnitTypeTable utt) {
         if (code.contains("build")) {

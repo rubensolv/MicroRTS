@@ -15,11 +15,10 @@ import rts.units.UnitTypeTable;
  *
  * @author julian and rubens
  */
-public class MainGPCompiler implements ICompiler {
+public class MainGPCompiler extends AbstractCompiler {
 
     private FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
     private IfGPCompiler ifCompiler = new IfGPCompiler();
-    private FunctionsforGrammar fGrammar = new FunctionsforGrammar();
 
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
@@ -34,7 +33,7 @@ public class MainGPCompiler implements ICompiler {
             String fragment = fragments[i];
             if(isBasicCommand(fragment)){
                 //get the position to cut the fragments 
-                int idToCut = FunctionGPCompiler.getLastPositionForBasicFunction(i, fragments);
+                int idToCut = functionCompiler.getLastPositionForBasicFunction(i, fragments);
                 String completeBasicFunction = generateString(i, idToCut, fragments);
                 //get the complete string                
                 commands.addAll(functionCompiler.CompilerCode(completeBasicFunction, utt));
@@ -55,25 +54,6 @@ public class MainGPCompiler implements ICompiler {
         return commands;
     }
 
-    public static String generateString(int initialPos, int finalPos, String[] fragments) {
-        String fullString = "";
-        if (finalPos > (fragments.length - 1)) {
-            finalPos = (fragments.length - 1);
-        }
-        for (int i = initialPos; i <= finalPos; i++) {
-            fullString += fragments[i] + " ";
-        }
-        return fullString.trim();
-    }
-
-    private boolean isBasicCommand(String fragment) {
-        List<FunctionsforGrammar> basicFunctions = fGrammar.getBasicFunctionsForGrammar();
-        for (FunctionsforGrammar basicFunction : basicFunctions) {
-            if(fragment.contains(basicFunction.getNameFunction())){
-                return true;
-            }
-        }
-        return false;
-    }
+    
 
 }
