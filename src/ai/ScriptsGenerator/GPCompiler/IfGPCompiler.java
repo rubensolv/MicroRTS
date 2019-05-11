@@ -18,8 +18,6 @@ import rts.units.UnitTypeTable;
  */
 public class IfGPCompiler extends AbstractCompiler {
 
-    private FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
-
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
         IfFunction ifFun = new IfFunction();;
@@ -70,7 +68,7 @@ public class IfGPCompiler extends AbstractCompiler {
 
         pos += ++finalPos;
         //third build the else, if exists  ATTENTION
-        if ((pos<= (fragments.length-1) ) && fragments[pos].startsWith("(")) {
+        if ((pos <= (fragments.length - 1)) && fragments[pos].startsWith("(")) {
             finalPos = getPositionFinalIF(pos, fragments, false);
             String elseCode = MainGPCompiler.generateString(pos, finalPos, fragments);
             elseCode = elseCode.substring(1, elseCode.length());
@@ -115,11 +113,11 @@ public class IfGPCompiler extends AbstractCompiler {
         initialPosition = getPositionParentClose(initialPosition, fragments);
 
         //third get the else, if exists ATTENTION
-        if(getElse && ((initialPosition+1) <= (fragments.length-1)) ){
-        if ( fragments[initialPosition + 1].startsWith("(")) {
-            initialPosition++;
-            initialPosition = getPositionParentClose(initialPosition, fragments);
-        }
+        if (getElse && ((initialPosition + 1) <= (fragments.length - 1))) {
+            if (fragments[initialPosition + 1].startsWith("(")) {
+                initialPosition++;
+                initialPosition = getPositionParentClose(initialPosition, fragments);
+            }
         }
 
         if (initialPosition > (fragments.length - 1)) {
@@ -150,9 +148,5 @@ public class IfGPCompiler extends AbstractCompiler {
             return false;
         }
     }
-
-    
-    
-    
 
 }

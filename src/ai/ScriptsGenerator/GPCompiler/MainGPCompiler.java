@@ -16,8 +16,6 @@ import rts.units.UnitTypeTable;
  * @author julian and rubens
  */
 public class MainGPCompiler extends AbstractCompiler {
-
-    private FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
     private IfGPCompiler ifCompiler = new IfGPCompiler();
 
     @Override

@@ -48,11 +48,6 @@ public class FunctionGPCompiler extends AbstractCompiler {
         return commands;
     }
 
-    public static ICommand getFunctionByID(int ID, UnitTypeTable utt) {
-        TableCommandsGenerator tcg = TableCommandsGenerator.getInstance(utt);
-        return tcg.getCommandByID(ID);
-    }
-
     public int getLastPositionForBasicFunction(int initialPosition, String[] fragments) {
         int contOpen = 0, contClosed = 0;
 
@@ -67,7 +62,6 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
         return fragments.length;
     }
-
 
     private ICommand buildFunctionByCode(String code, UnitTypeTable utt) {
         if (code.contains("build")) {
@@ -119,42 +113,6 @@ public class FunctionGPCompiler extends AbstractCompiler {
         return harverst;
     }
 
-    private IParameters getBehaviorByName(String i) {
-        switch (i) {
-            case "closest":
-                return new ClosestEnemy();
-            case "farthest":
-                return new FarthestEnemy();
-            case "lessHealthy":
-                return new LessHealthyEnemy();
-            case "mostHealthy":
-                return new MostHealthyEnemy();
-            case "strongest":
-                return new StrongestEnemy();
-            case "weakest":
-                return new WeakestEnemy();
-            default:
-                return new RandomEnemy();
-
-        }
-    }
-
-    private IParameters getTypeUnitByString(String j) {
-        switch (j) {
-            case "Worker":
-                return TypeConcrete.getTypeWorker();
-            case "Light":
-                return TypeConcrete.getTypeLight();
-            case "Ranged":
-                return TypeConcrete.getTypeRanged();
-            case "Heavy":
-                return TypeConcrete.getTypeHeavy();
-            default:
-                return TypeConcrete.getTypeUnits();
-
-        }
-    }
-
     private ICommand attackCommand(String code, UnitTypeTable utt) {
         code = code.replace("attack(", "");
         code = code.replace(")", "").replace(",", "");
@@ -198,18 +156,11 @@ public class FunctionGPCompiler extends AbstractCompiler {
         return moveToUnit;
     }
 
-    private EnumPlayerTarget getPlayerTargetByNumber(String p) {
-        if (p.equals("Ally")) {
-            return EnumPlayerTarget.Ally;
-        }
-        return EnumPlayerTarget.Enemy;
-    }
-
     private ICommand trainCommand(String code, UnitTypeTable utt) {
         code = code.replace("train(", "");
         code = code.replace(")", "").replace(",", "");
         String[] params = code.split(" ");
-        
+
         TrainBasic train = new TrainBasic();
         train.addParameter(getTypeConstructByName(params[1])); //add unit construct type
         train.addParameter(getTypeUnitByString(params[0])); //add unit Type
@@ -222,17 +173,6 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
         train.addParameter(pos);
         return train;
-    }      
-    
-
-    private IParameters getTypeConstructByName(String param) {
-        if (param.equals("Base")) {
-            return TypeConcrete.getTypeBase(); //add unit construct type
-        } else if (param.equals("Barrack")) {
-            return TypeConcrete.getTypeBarracks(); //add unit construct type
-        } else {
-            return TypeConcrete.getTypeConstruction();
-        }
     }
 
 }
