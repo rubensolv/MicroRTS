@@ -118,7 +118,7 @@ public class ConditionalGPCompiler extends AbstractCompiler{
     }
 
     private IConditional conditionalHaveUnitsToDistantToEnemy(String code) {
-        code = code.replace("HaveUnitsinEnemyRange(", "");
+        code = code.replace("HaveUnitsToDistantToEnemy(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
         
