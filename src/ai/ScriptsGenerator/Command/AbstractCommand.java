@@ -143,6 +143,7 @@ public abstract class AbstractCommand implements ICommand{
         return unitAllys;
     }
     
+    
     protected ArrayList<Unit> getUnitsOfType(GameState game, PlayerAction currentPlayerAction, int player) {
         ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {

@@ -10,7 +10,7 @@ public class Parameter {
 	Double inferiorLimit;
 	List<String> discreteSpecificValues;
 
-	public Parameter(String parameterName, Object superiorLimit, Object inferiorLimit, Object discreteSpecificValues)
+	public Parameter(String parameterName, Object inferiorLimit, Object superiorLimit, Object discreteSpecificValues)
 	{
 		this.parameterName=parameterName;
                 if(superiorLimit != null){
