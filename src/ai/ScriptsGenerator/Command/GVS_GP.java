@@ -253,8 +253,10 @@ public class GVS_GP {
 //        AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag41(utt), "");
 //          AI ai2 = new PassiveAI(utt);
         
+        String gp = "build(All,2) attack(Worker,strongest) if(HaveQtdUnitsHarversting(16)) (if(HaveEnemiesinUnitsRange(Heavy)) (if(HaveEnemiesinUnitsRange(Heavy)) (build(All,2)) (moveToUnit(All,Ally,random))))";
+
         ICompiler compiler = new MainGPCompiler();  
-        List<ICommand> commandsGP = compiler.CompilerCode("1! 12! 113! if(10) (if(4) (if(6) (183!)))", utt);
+        List<ICommand> commandsGP = compiler.CompilerCode(gp, utt);
       
         List<ICommand> commandsAI1=new ArrayList<>(); 
         TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
