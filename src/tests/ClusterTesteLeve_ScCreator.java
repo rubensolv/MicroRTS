@@ -99,9 +99,9 @@ import util.XMLWriter;
 public class ClusterTesteLeve_ScCreator {
 
     public static void main(String args[]) throws Exception {
-        int iAi1 = Integer.parseInt(args[0]);
-        int iAi2 = Integer.parseInt(args[1]);
-        int map = Integer.parseInt(args[2]);
+        int iAi1 = 0;
+        int iAi2 = 1;
+        int map = 1;
 
         Instant timeInicial = Instant.now();
         Duration duracao;
@@ -139,6 +139,7 @@ public class ClusterTesteLeve_ScCreator {
         ChromosomesBag bag = new ChromosomesBag(utt);
         
         List<AI> ais = new ArrayList<>(Arrays.asList(
+        		new ChromosomeAI(utt, bag.ChromosomesBag0(utt), "C0"),
                 new ChromosomeAI(utt, bag.ChromosomesBag1(utt), "C1"),
                 new ChromosomeAI(utt, bag.ChromosomesBag2(utt), "C2"),
                 new ChromosomeAI(utt, bag.ChromosomesBag3(utt), "C3"),
@@ -206,7 +207,7 @@ public class ClusterTesteLeve_ScCreator {
 
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
-//        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
+        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
         long startTime;
         long timeTemp;
         //System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
@@ -248,7 +249,7 @@ public class ClusterTesteLeve_ScCreator {
 
                 // simulate:
                 gameover = gs.cycle();
-                //w.repaint();
+                w.repaint();
                 nextTimeToUpdate += PERIOD;
             } else {
                 try {

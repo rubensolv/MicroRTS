@@ -113,6 +113,18 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         parameters.add(new Parameter("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("train", parameters));
+        
+        //Function MoveAwayBasic
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
+        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveaway", parameters));
+        
+        //Function ClusterBasic
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
+        basicFunctionsForGrammar.add(new FunctionsforGrammar("cluster", parameters));
 
     }
 
@@ -160,6 +172,18 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("Distance", 1.0, 20.0, null));
         //parameters.add(new Parameter("u", null, null, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveUnitsToDistantToEnemy", parameters));
+        
+        //Conditional HaveUnitsStrongest
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        //parameters.add(new Parameter("u", null, null, null));
+        conditionalsForGrammar.add(new FunctionsforGrammar("HaveUnitsStrongest", parameters));
+        
+        //Conditional HaveEnemiesStrongest
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        //parameters.add(new Parameter("u", null, null, null));
+        conditionalsForGrammar.add(new FunctionsforGrammar("HaveEnemiesStrongest", parameters));
 
     }
 
