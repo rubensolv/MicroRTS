@@ -7,6 +7,7 @@ package ai.ScriptsGenerator.GPCompiler;
 
 import ai.ScriptsGenerator.BasicConditional.IConditional;
 import ai.ScriptsGenerator.BasicConditional.SimpleConditional;
+import ai.ScriptsGenerator.BasicConditional.functions.HaveUnitsStrongest;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.ParametersConcrete.DistanceParam;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
@@ -55,6 +56,12 @@ public class ConditionalGPCompiler extends AbstractCompiler{
         }
         if (code.contains("HaveUnitsToDistantToEnemy")) {
             return conditionalHaveUnitsToDistantToEnemy(code);
+        }
+        if (code.contains("HaveUnitsStrongest")) {
+            return conditionalHaveUnitsStrongest(code);
+        }
+        if (code.contains("HaveEnemiesStrongest")) {
+            return conditionalHaveEnemiesStrongest(code);
         }
         
         return null;
@@ -125,6 +132,24 @@ public class ConditionalGPCompiler extends AbstractCompiler{
         return new SimpleConditional("HaveUnitsToDistantToEnemy", 
                                     new ArrayList(Arrays.asList(getTypeUnitByString(params[0]),
                                     new DistanceParam(Integer.decode(params[1])))));
+    }
+
+    private IConditional conditionalHaveUnitsStrongest(String code) {
+        code = code.replace("HaveUnitsStrongest(", "");
+        code = code.replace(")", "").replace(",", " ");
+        String[] params = code.split(" ");
+
+        return new SimpleConditional("HaveUnitsStrongest", 
+                                    new ArrayList(Arrays.asList(getTypeUnitByString(params[0]))));
+    }
+
+    private IConditional conditionalHaveEnemiesStrongest(String code) {
+        code = code.replace("HaveEnemiesStrongest(", "");
+        code = code.replace(")", "").replace(",", " ");
+        String[] params = code.split(" ");
+
+        return new SimpleConditional("HaveEnemiesStrongest", 
+                                    new ArrayList(Arrays.asList(getTypeUnitByString(params[0]))));
     }
 
     

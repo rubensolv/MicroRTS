@@ -7,7 +7,9 @@ package ai.ScriptsGenerator.GPCompiler;
 
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
 import ai.ScriptsGenerator.Command.BasicAction.BuildBasic;
+import ai.ScriptsGenerator.Command.BasicAction.ClusterBasic;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
+import ai.ScriptsGenerator.Command.BasicAction.MoveAwayBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
@@ -72,6 +74,12 @@ public class FunctionGPCompiler extends AbstractCompiler {
         }
         if (code.contains("train")) {
             return trainCommand(code, utt);
+        }
+        if (code.contains("moveaway")) {
+            return moveAwayCommand(code, utt);
+        }
+        if (code.contains("cluster")) {
+            return clusterCommand(code, utt);
         }
 
         return null;
@@ -171,6 +179,28 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
         train.addParameter(pos);
         return train;
+    }
+
+    private ICommand moveAwayCommand(String code, UnitTypeTable utt) {
+        code = code.replace("moveaway(", "");
+        code = code.replace(")", "").replace(",", " ");
+        String[] params = code.split(" ");
+        
+        MoveAwayBasic moveAway = new MoveAwayBasic();
+        moveAway.addParameter(getTypeUnitByString(params[0]));
+        
+        return moveAway;
+    }
+
+    private ICommand clusterCommand(String code, UnitTypeTable utt) {
+        code = code.replace("cluster(", "");
+        code = code.replace(")", "").replace(",", " ");
+        String[] params = code.split(" ");
+        
+        ClusterBasic cluster = new ClusterBasic();
+        cluster.addParameter(getTypeUnitByString(params[0]));
+        
+        return cluster;
     }
 
 }
