@@ -9,6 +9,7 @@ import ai.ScriptsGenerator.Command.AbstractBasicAction;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
+import ai.ScriptsGenerator.CommandInterfaces.IUnitCommand;
 import ai.ScriptsGenerator.IParameters.IBehavior;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
@@ -32,7 +33,9 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens
  */
-public class AttackBasic extends AbstractBasicAction {
+public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
+
+    boolean needUnit = false;
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
@@ -41,18 +44,20 @@ public class AttackBasic extends AbstractBasicAction {
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
         PlayerTargetParam p = getPlayerTargetFromParam();
-        EnumPlayerTarget enumPlayer=p.getSelectedPlayerTarget().get(0);
-        String pt=enumPlayer.name();
-        int playerTarget=-1;
-        if(pt=="Ally")
-        	playerTarget=player;
-        if(pt=="Enemy")
-        	playerTarget=1-player;
-        for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
-             
-             //pick one enemy unit to set the action
-             Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);  
-            
+        EnumPlayerTarget enumPlayer = p.getSelectedPlayerTarget().get(0);
+        String pt = enumPlayer.name();
+        int playerTarget = -1;
+        if (pt == "Ally") {
+            playerTarget = player;
+        }
+        if (pt == "Enemy") {
+            playerTarget = 1 - player;
+        }
+        for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
+
+            //pick one enemy unit to set the action
+            Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);
+
             if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
                 AbstractAction action = new Attack(unAlly, targetEnemy, pf);
 
@@ -71,13 +76,60 @@ public class AttackBasic extends AbstractBasicAction {
     public String toString() {
         String listParam = "Params:{";
         for (IParameters parameter : getParameters()) {
-            listParam += parameter.toString()+",";
+            listParam += parameter.toString() + ",";
         }
         //remove the last comma.
         listParam = listParam.substring(0, listParam.lastIndexOf(","));
         listParam += "}";
-        
-        return "{AttackBasic:{" + listParam+"}}";
+
+        return "{AttackBasic:{" + listParam + "}}";
+    }
+
+    public void setUnitIsNecessary() {
+        this.needUnit = true;
+    }
+
+    public void setUnitIsNotNecessary() {
+        this.needUnit = false;
+    }
+
+    @Override
+    public Boolean isNecessaryUnit() {
+        return needUnit;
+    }
+
+    @Override
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly) {
+        ResourceUsage resources = new ResourceUsage();
+        PhysicalGameState pgs = game.getPhysicalGameState();
+        //update variable resources
+        resources = getResourcesUsed(currentPlayerAction, pgs);
+        PlayerTargetParam p = getPlayerTargetFromParam();
+        EnumPlayerTarget enumPlayer = p.getSelectedPlayerTarget().get(0);
+        String pt = enumPlayer.name();
+        int playerTarget = -1;
+        if (pt == "Ally") {
+            playerTarget = player;
+        }
+        if (pt == "Enemy") {
+            playerTarget = 1 - player;
+        }
+
+        //pick one enemy unit to set the action
+        Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);
+
+        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
+            AbstractAction action = new Attack(unAlly, targetEnemy, pf);
+
+            UnitAction uAct = action.execute(game, resources);
+
+            if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
+                currentPlayerAction.addUnitAction(unAlly, uAct);
+                resources.merge(uAct.resourceUsage(unAlly, pgs));
+            }
+        }
+
+        return currentPlayerAction;
     }
 
 }

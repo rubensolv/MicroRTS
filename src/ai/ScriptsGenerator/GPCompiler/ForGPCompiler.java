@@ -5,6 +5,7 @@
  */
 package ai.ScriptsGenerator.GPCompiler;
 
+import ai.ScriptsGenerator.Command.BasicLoops.ForFunction;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,53 +13,57 @@ import rts.units.UnitTypeTable;
 
 /**
  *
- * @author julian and rubens
+ * @author rubens
  */
-public class MainGPCompiler extends AbstractCompiler {
-    private IfGPCompiler ifCompiler = new IfGPCompiler();
-    private ForGPCompiler forCompiler = new ForGPCompiler();
+public class ForGPCompiler extends AbstractCompiler {
+    private IfGPCompiler ifCompiler = new IfGPCompiler();    
     protected FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
     protected ConditionalGPCompiler conditionalCompiler = new ConditionalGPCompiler();
 
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
-        return buildCommands(code, utt);
-    }
-
-    private List<ICommand> buildCommands(String code, UnitTypeTable utt) {
+        ForFunction forFunction = new ForFunction();
         List<ICommand> commands = new ArrayList<>();
-        String[] fragments = code.split(" ");
+        String[] fragments = code.split(" ");        
 
-        for (int i = 0; i < fragments.length; i++) {
+        //build the items inside of the compiler
+        //i starts with 1 just to remove the word for(u) from the fragments
+        for (int i = 1; i < fragments.length; i++) {
             String fragment = fragments[i];
             if(isBasicCommand(fragment)){
                 //get the position to cut the fragments 
                 int idToCut = functionCompiler.getLastPositionForBasicFunction(i, fragments);
                 String completeBasicFunction = generateString(i, idToCut, fragments);
                 //get the complete string                
-                commands.addAll(functionCompiler.CompilerCode(completeBasicFunction, utt));
+                forFunction.setCommandsFor(functionCompiler.CompilerCode(completeBasicFunction, utt));
                 i = idToCut;
             } else if (fragment.contains("if")) {
                 //method to remove all String from the fragments
                 int idToCut = ifCompiler.getPositionFinalIF(i, fragments, true);
                 String completeIF = generateString(i, idToCut, fragments);
-                commands.addAll(ifCompiler.CompilerCode(completeIF, utt));
-                i = idToCut;
-            }else if(fragment.contains("for")){
-                int idToCut = forCompiler.getLastPositionForFor(i, fragments);
-                String completeFor = generateString(i, idToCut, fragments);
-                commands.addAll(forCompiler.CompilerCode(code, utt));
+                forFunction.setCommandsFor(ifCompiler.CompilerCode(completeIF, utt));
                 i = idToCut;
             }
         }
-
-        for (ICommand command : commands) {
-            System.out.println(command.toString());
-        }
         
+        commands.add(forFunction);
         return commands;
     }
 
-    
+    public int getLastPositionForFor(int initialPosition, String[] fragments) {
+        //first get the name for(u)
+        if (isForInitialClause(fragments[initialPosition])) {
+            initialPosition++;
+        }
+        //second, we get the full () to complet the for. 
+        return getPositionParentClose(initialPosition, fragments);
+    }
+
+    private boolean isForInitialClause(String fragment) {
+        if (fragment.contains("for(u)")) {
+            return true;
+        }
+        return false;
+    }
 
 }

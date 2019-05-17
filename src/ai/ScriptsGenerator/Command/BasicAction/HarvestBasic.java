@@ -6,6 +6,7 @@
 package ai.ScriptsGenerator.Command.BasicAction;
 
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
+import ai.ScriptsGenerator.CommandInterfaces.IUnitCommand;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
 import ai.abstraction.AbstractAction;
@@ -26,16 +27,17 @@ import util.Pair;
  *
  * @author rubens
  */
-public class HarvestBasic extends AbstractBasicAction {
+public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 
     private final HashSet<Long> unitsID = new HashSet<>();
+    boolean needUnit = false;
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
         ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst
-        if(!hasResources(game)){
+        if (!hasResources(game)) {
             return currentPlayerAction;
         }
         //update variable resources
@@ -54,7 +56,7 @@ public class HarvestBasic extends AbstractBasicAction {
 
                 if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null
                         && closestBase != null && closestResource != null) {
-                    
+
                     AbstractAction action = new Harvest(unit, closestResource, closestBase, pf);
                     UnitAction uAct = action.execute(game, resources);
                     if (uAct != null) {
@@ -132,13 +134,13 @@ public class HarvestBasic extends AbstractBasicAction {
     }
 
     private boolean hasResources(GameState game) {
-        
+
         for (Unit unit : game.getUnits()) {
-            if(unit.getType().isResource){
+            if (unit.getType().isResource) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -146,13 +148,65 @@ public class HarvestBasic extends AbstractBasicAction {
     public String toString() {
         String listParam = "Params:{";
         for (IParameters parameter : getParameters()) {
-            listParam += parameter.toString()+",";
+            listParam += parameter.toString() + ",";
         }
         //remove the last comma.
         listParam = listParam.substring(0, listParam.lastIndexOf(","));
         listParam += "}";
-        
-        return "{HarvestBasic:{" + listParam+"}}";
-    }   
+
+        return "{HarvestBasic:{" + listParam + "}}";
+    }
+
+    public void setUnitIsNecessary() {
+        this.needUnit = true;
+    }
+
+    public void setUnitIsNotNecessary() {
+        this.needUnit = false;
+    }
+
+    @Override
+    public Boolean isNecessaryUnit() {
+        return needUnit;
+    }
+
+    @Override
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u) {
+        ResourceUsage resources = new ResourceUsage();
+        PhysicalGameState pgs = game.getPhysicalGameState();
+        //check if there are resources to harverst
+        if (!hasResources(game)) {
+            return currentPlayerAction;
+        }
+        //update variable resources
+        resources = getResourcesUsed(currentPlayerAction, pgs);
+        //get ID qtd units to be used in harvest process
+        getUnitsToHarvest(game, player, currentPlayerAction);
+        //send the unit to harverst
+        if (!unitsID.isEmpty()) {
+
+            for (Long unID : unitsID) {
+                if (unID == u.getID()) {
+                    Unit unit = game.getUnit(unID);
+                    //get base more closest
+                    Unit closestBase = getClosestBase(game, player, unit);
+                    //get target resource
+                    Unit closestResource = getClosestResource(game, unit);
+
+                    if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null
+                            && closestBase != null && closestResource != null) {
+
+                        AbstractAction action = new Harvest(unit, closestResource, closestBase, pf);
+                        UnitAction uAct = action.execute(game, resources);
+                        if (uAct != null) {
+                            currentPlayerAction.addUnitAction(unit, uAct);
+                            resources.merge(uAct.resourceUsage(unit, pgs));
+                        }
+                    }
+                }
+            }
+        }
+        return currentPlayerAction;
+    }
 
 }

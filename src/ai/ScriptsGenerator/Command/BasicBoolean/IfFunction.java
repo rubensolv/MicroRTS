@@ -6,7 +6,9 @@
 package ai.ScriptsGenerator.Command.BasicBoolean;
 
 import ai.ScriptsGenerator.BasicConditional.IConditional;
+import ai.ScriptsGenerator.BasicConditional.SimpleConditional;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.CommandInterfaces.IUnitCommand;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
@@ -14,30 +16,32 @@ import java.util.ArrayList;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
+import rts.units.Unit;
 import rts.units.UnitTypeTable;
 
 /**
  *
  * @author rubens
  */
-public class IfFunction implements ICommand {
+public class IfFunction implements ICommand, IUnitCommand {
 
-    protected IConditional conditional;
+    protected SimpleConditional conditional;
     protected List<ICommand> commandsThen = new ArrayList<>();
     protected List<ICommand> commandsElse = new ArrayList<>();
 
-    public void setConditional(IConditional conditional) {
+    public void setConditional(SimpleConditional conditional) {
         this.conditional = conditional;
     }
 
     public void setCommandsThen(List<ICommand> commandsThen) {
         this.commandsThen = commandsThen;
     }
-    
-    public void includeFullCommandsThen(List<ICommand> commandsThen){
+
+    public void includeFullCommandsThen(List<ICommand> commandsThen) {
         this.commandsThen.addAll(commandsThen);
     }
-    public void includeFullCommandsElse(List<ICommand> commandsElse){
+
+    public void includeFullCommandsElse(List<ICommand> commandsElse) {
         this.commandsElse.addAll(commandsElse);
     }
 
@@ -92,6 +96,105 @@ public class IfFunction implements ICommand {
         }
 
         return "{If:{" + listParam + "}}";
+    }
+
+    @Override
+    public Boolean isNecessaryUnit() {
+        //look in the conditional if it needs a Unit
+        if (conditional.isNecessaryUnit()) {
+            return true;
+        }
+        for (ICommand iCommand : commandsThen) {
+            if (iCommand instanceof IUnitCommand) {
+                IUnitCommand iUnitCom = (IUnitCommand) iCommand;
+                if (iUnitCom.isNecessaryUnit()) {
+                    return true;
+                }
+            }
+
+        }
+
+        for (ICommand iCommand : commandsElse) {
+            if (iCommand instanceof IUnitCommand) {
+                IUnitCommand iUnitCom = (IUnitCommand) iCommand;
+                if (iUnitCom.isNecessaryUnit()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u) {
+
+        if (conditional.isNecessaryUnit()) {
+            if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt, u)) {
+                for (ICommand command : commandsThen) {
+                    //currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                    if (command instanceof IUnitCommand) {
+                        IUnitCommand tempUnit = (IUnitCommand) command;
+                        if (tempUnit.isNecessaryUnit()) {
+                            currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                        } else {
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                        }
+                    } else {
+                        currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                    }
+                }
+            } else {
+                if (!commandsElse.isEmpty()) {
+                    for (ICommand command : commandsThen) {
+                        if (command instanceof IUnitCommand) {
+                            IUnitCommand tempUnit = (IUnitCommand) command;
+                            if (tempUnit.isNecessaryUnit()) {
+                                currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                            } else {
+                                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                            }
+                        } else {
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                        }
+
+                    }
+                }
+            }
+        } else {
+            if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt)) {
+                for (ICommand command : commandsThen) {
+                    //currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                    if (command instanceof IUnitCommand) {
+                        IUnitCommand tempUnit = (IUnitCommand) command;
+                        if (tempUnit.isNecessaryUnit()) {
+                            currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                        } else {
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                        }
+                    } else {
+                        currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                    }
+                }
+            } else {
+                if (!commandsElse.isEmpty()) {
+                    for (ICommand command : commandsThen) {
+                        if (command instanceof IUnitCommand) {
+                            IUnitCommand tempUnit = (IUnitCommand) command;
+                            if (tempUnit.isNecessaryUnit()) {
+                                currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                            } else {
+                                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                            }
+                        } else {
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                        }
+
+                    }
+                }
+            }
+        }
+        return currentPlayerAction;
     }
 
 }

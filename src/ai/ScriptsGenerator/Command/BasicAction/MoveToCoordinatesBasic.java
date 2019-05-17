@@ -7,6 +7,7 @@ package ai.ScriptsGenerator.Command.BasicAction;
 
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
 import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
+import ai.ScriptsGenerator.CommandInterfaces.IUnitCommand;
 import ai.ScriptsGenerator.IParameters.IBehavior;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
@@ -29,7 +30,9 @@ import rts.units.UnitTypeTable;
  *
  * @author rubens & Julian
  */
-public class MoveToCoordinatesBasic extends AbstractBasicAction {
+public class MoveToCoordinatesBasic extends AbstractBasicAction implements IUnitCommand {
+
+    boolean needUnit = false;
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
@@ -37,21 +40,19 @@ public class MoveToCoordinatesBasic extends AbstractBasicAction {
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
-       for(Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)){
-    	   
+        for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
+
             //pick one enemy unit to set the action
-            int pX = getCoordinatesFromParam().getX();  
+            int pX = getCoordinatesFromParam().getX();
             int pY = getCoordinatesFromParam().getY();
-    	   
-    	   	//pick the positions
-    	   
-            
+
+            //pick the positions
             if (game.getActionAssignment(unAlly) == null && unAlly != null) {
-                
-            	UnitAction uAct = null;
-            	UnitAction move = pf.findPathToAdjacentPosition(unAlly, pX+pY*pgs.getWidth(), game, resources);            	
-            	if (move!=null && game.isUnitActionAllowed(unAlly, move));
-                	uAct = move;
+
+                UnitAction uAct = null;
+                UnitAction move = pf.findPathToAdjacentPosition(unAlly, pX + pY * pgs.getWidth(), game, resources);
+                if (move != null && game.isUnitActionAllowed(unAlly, move));
+                uAct = move;
 
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
                     currentPlayerAction.addUnitAction(unAlly, uAct);
@@ -66,13 +67,53 @@ public class MoveToCoordinatesBasic extends AbstractBasicAction {
     public String toString() {
         String listParam = "Params:{";
         for (IParameters parameter : getParameters()) {
-            listParam += parameter.toString()+",";
+            listParam += parameter.toString() + ",";
         }
         //remove the last comma.
         listParam = listParam.substring(0, listParam.lastIndexOf(","));
         listParam += "}";
-        
-        return "{MoveToCoordinatesBasic:{" + listParam+"}}";
+
+        return "{MoveToCoordinatesBasic:{" + listParam + "}}";
+    }
+
+    public void setUnitIsNecessary() {
+        this.needUnit = true;
+    }
+
+    public void setUnitIsNotNecessary() {
+        this.needUnit = false;
+    }
+
+    @Override
+    public Boolean isNecessaryUnit() {
+        return needUnit;
+    }
+
+    @Override
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly) {
+        ResourceUsage resources = new ResourceUsage();
+        PhysicalGameState pgs = game.getPhysicalGameState();
+        //update variable resources
+        resources = getResourcesUsed(currentPlayerAction, pgs);
+
+        //pick one enemy unit to set the action
+        int pX = getCoordinatesFromParam().getX();
+        int pY = getCoordinatesFromParam().getY();
+
+        //pick the positions
+        if (game.getActionAssignment(unAlly) == null && unAlly != null) {
+
+            UnitAction uAct = null;
+            UnitAction move = pf.findPathToAdjacentPosition(unAlly, pX + pY * pgs.getWidth(), game, resources);
+            if (move != null && game.isUnitActionAllowed(unAlly, move));
+            uAct = move;
+
+            if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
+                currentPlayerAction.addUnitAction(unAlly, uAct);
+                resources.merge(uAct.resourceUsage(unAlly, pgs));
+            }
+        }
+        return currentPlayerAction;
     }
 
 }

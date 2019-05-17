@@ -28,6 +28,46 @@ public class HaveEnemiesinUnitsRange extends AbstractConditionalFunction {
         UnitTypeParam unitType = (UnitTypeParam) lParam1.get(5);
         parameters.add(unitType);
 
+        if (hasUnitInParam(lParam1)) {
+            return runUnitConditional(game, currentPlayerAction, player, getUnitFromParam(lParam1));
+        } else {
+            return runConditionalInSimpleWay(game, currentPlayerAction, player);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "HaveEnemiesinUnitsRange";
+    }
+
+    private boolean runUnitConditional(GameState game, PlayerAction currentPlayerAction, int player, Unit unAlly) {
+        PhysicalGameState pgs = game.getPhysicalGameState();
+
+        //now whe iterate for all ally units in order to discover wich one satisfy the condition
+        if (currentPlayerAction.getAction(unAlly) == null) {
+
+            for (Unit u2 : pgs.getUnits()) {
+
+                if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
+
+                    int dx = u2.getX() - unAlly.getX();
+                    int dy = u2.getY() - unAlly.getY();
+                    double d = Math.sqrt(dx * dx + dy * dy);
+
+                    //If satisfies, an action is applied to that unit. Units that not satisfies will be set with
+                    // an action wait.
+                    if ((d <= unAlly.getAttackRange())) {
+                        return true;
+                    }
+                }
+
+            }
+        }
+
+        return false;
+    }
+
+    private boolean runConditionalInSimpleWay(GameState game, PlayerAction currentPlayerAction, int player) {
         PhysicalGameState pgs = game.getPhysicalGameState();
 
         //now whe iterate for all ally units in order to discover wich one satisfy the condition
@@ -52,13 +92,7 @@ public class HaveEnemiesinUnitsRange extends AbstractConditionalFunction {
                 }
             }
         }
-
         return false;
-    }
-
-    @Override
-    public String toString() {
-        return "HaveEnemiesinUnitsRange";
     }
 
 }

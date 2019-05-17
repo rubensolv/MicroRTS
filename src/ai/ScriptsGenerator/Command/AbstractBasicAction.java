@@ -29,7 +29,7 @@ import util.Pair;
  *
  * @author rubens
  */
-public abstract class AbstractBasicAction extends AbstractCommand{
+public abstract class AbstractBasicAction extends AbstractCommand {
 
     
 }

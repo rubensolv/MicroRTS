@@ -8,6 +8,7 @@ package ai.ScriptsGenerator.Command.BasicAction;
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
+import ai.ScriptsGenerator.CommandInterfaces.IUnitCommand;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.IParameters.IPriorityPosition;
 import ai.ScriptsGenerator.IParameters.IQuantity;
@@ -43,7 +44,9 @@ import util.Pair;
  *
  * @author rubens
  */
-public class BuildBasic extends AbstractBasicAction {
+public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
+    
+    boolean needUnit = false;
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
@@ -321,5 +324,43 @@ public class BuildBasic extends AbstractBasicAction {
         listParam += "}";
 
         return "{BuildBasic:{" + listParam + "}}";
+    }
+    
+    public void setUnitIsNecessary() {
+        this.needUnit = true;
+    }
+
+    public void setUnitIsNotNecessary() {
+        this.needUnit = false;
+    }
+
+    @Override
+    public Boolean isNecessaryUnit() {
+        return needUnit;
+    }
+
+    @Override
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit workToBuild) {
+        //get the unit that it will be builded 
+        ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
+        if (unitToBeBuilded != null) {
+            //verify if the limit of units are reached
+            if (!limitReached(game, player, currentPlayerAction)) {
+                //check if we have resources
+                if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)) {
+                    //pick one work to build
+                    //Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt);
+                    if (workToBuild != null) {
+                        //execute the build action
+                        UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
+                        if (unAcTemp != null) {
+                            currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
+                        }
+
+                    }
+                }
+            }
+        }
+        return currentPlayerAction;
     }
 }

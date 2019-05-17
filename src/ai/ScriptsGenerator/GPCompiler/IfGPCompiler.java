@@ -31,7 +31,11 @@ public class IfGPCompiler extends AbstractCompiler {
         if (isIfInitialClause(fragments[pos])) {
             //remove the tags and get the conditional
             String sCond = fragments[pos];
-            sCond = sCond.replace("if(", "").trim();
+            if(sCond.startsWith("(if(")){
+                sCond = sCond.replace("(if(", "").trim();
+            }else{
+                sCond = sCond.replace("if(", "").trim();
+            }
             ifFun.setConditional(conditionalCompiler.getConditionalByCode(sCond));
             pos++;
         }
@@ -127,23 +131,10 @@ public class IfGPCompiler extends AbstractCompiler {
         return initialPosition;
     }
 
-    protected int getPositionParentClose(int initialPosition, String[] fragments) {
-        int contOpen = 0, contClosed = 0;
-
-        for (int i = initialPosition; i < fragments.length; i++) {
-            String fragment = fragments[i];
-            contOpen += countCaracter(fragment, "(");
-            contClosed += countCaracter(fragment, ")");
-            if (contOpen == contClosed) {
-                return i;
-            }
-        }
-
-        return fragments.length;
-    }
-
     private boolean isIfInitialClause(String fragment) {
-        if (fragment.startsWith("if") && fragment.contains("(") && fragment.contains(")")) {
+        if (fragment.startsWith("(if") && fragment.contains("(") && fragment.contains(")")) {
+            return true;
+        } else if (fragment.startsWith("if") && fragment.contains("(") && fragment.contains(")")) {
             return true;
         } else {
             return false;

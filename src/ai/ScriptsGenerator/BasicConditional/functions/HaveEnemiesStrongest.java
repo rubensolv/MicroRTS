@@ -36,12 +36,26 @@ public class HaveEnemiesStrongest extends AbstractConditionalFunction {
 //        	playerTarget=player;
 //        if(playerT=="Enemy")
 //        	playerTarget=1-player;
-        
+
         parameters.add(unitType);
+        if (hasUnitInParam(lParam1)) {
+            return runUnitConditional(game, currentPlayerAction, player, getUnitFromParam(lParam1));
+        } else {
+            return runConditionalInSimpleWay(game, currentPlayerAction, player);
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        return "HaveUnitsinEnemyRange";
+    }
+
+    private boolean runConditionalInSimpleWay(GameState game, PlayerAction currentPlayerAction, int player) {
 
         PhysicalGameState pgs = game.getPhysicalGameState();
 
-        //now whe iterate for all ally units in order to discover wich one satisfy the condition
+        //now we iterate for all ally units in order to discover wich one satisfy the condition
         for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
             if (currentPlayerAction.getAction(unAlly) == null) {
 
@@ -49,15 +63,13 @@ public class HaveEnemiesStrongest extends AbstractConditionalFunction {
 
                     if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
 
-                    	
-                    	int damage = u2.getMaxDamage();
-                    	int HP= unAlly.getHitPoints();
-                    	
-                    	if(damage>HP)
-                    	{
-                    		return true;
-                    	}
-                    	                    	
+                        int damage = u2.getMaxDamage();
+                        int HP = unAlly.getHitPoints();
+
+                        if (damage > HP) {
+                            return true;
+                        }
+
                     }
 
                 }
@@ -67,9 +79,30 @@ public class HaveEnemiesStrongest extends AbstractConditionalFunction {
         return false;
     }
 
-    @Override
-    public String toString() {
-        return "HaveUnitsinEnemyRange";
+    private boolean runUnitConditional(GameState game, PlayerAction currentPlayerAction, int player, Unit unAlly) {
+
+        PhysicalGameState pgs = game.getPhysicalGameState();
+
+        //now we iterate for all ally units in order to discover wich one satisfy the condition
+        if (currentPlayerAction.getAction(unAlly) == null) {
+
+            for (Unit u2 : pgs.getUnits()) {
+
+                if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
+
+                    int damage = u2.getMaxDamage();
+                    int HP = unAlly.getHitPoints();
+
+                    if (damage > HP) {
+                        return true;
+                    }
+
+                }
+
+            }
+        }
+
+        return false;
     }
 
 }

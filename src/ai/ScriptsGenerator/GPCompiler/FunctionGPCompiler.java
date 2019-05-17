@@ -98,6 +98,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
             build.addParameter(TypeConcrete.getTypeConstruction());
         }
         build.addParameter(new QuantityParam(Integer.decode(params[1]))); //add qtd unit
+        if (params.length > 2) {
+            build.setUnitIsNecessary();
+        }
         return build;
     }
 
@@ -109,6 +112,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
         harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
         harverst.addParameter(new QuantityParam(Integer.decode(params[0]))); //add qtd unit
 
+        if (params.length > 1) {
+            harverst.setUnitIsNecessary();
+        }
         return harverst;
     }
 
@@ -123,6 +129,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
         attack.addParameter(pt);
         attack.addParameter(getBehaviorByName(params[1])); //add behavior
 
+        if (params.length > 2) {
+            attack.setUnitIsNecessary();
+        }
         return attack;
     }
 
@@ -136,7 +145,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
         int y = Integer.decode(params[2]);
         moveToCoordinates.addParameter(new CoordinatesParam(x, y));
         moveToCoordinates.addParameter(getTypeUnitByString(params[0]));//add unit type
-
+        if (params.length > 3) {
+            moveToCoordinates.setUnitIsNecessary();
+        }
         return moveToCoordinates;
     }
 
@@ -151,7 +162,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
         pt.addPlayer(getPlayerTargetByNumber(params[1]));
         moveToUnit.addParameter(pt);
         moveToUnit.addParameter(getBehaviorByName(params[2])); //add behavior
-
+        if (params.length > 3) {
+            moveToUnit.setUnitIsNecessary();
+        }
         return moveToUnit;
     }
 
@@ -162,11 +175,11 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
         TrainBasic train = new TrainBasic();
         //train.addParameter(getTypeConstructByName(params[1])); //add unit construct type
-        if(params[0].equals("All")){
+        if (params[0].equals("All")) {
             train.addParameter(getTypeConstructByName("All"));
-        }else if(params[0].equals("Worker")){
+        } else if (params[0].equals("Worker")) {
             train.addParameter(getTypeConstructByName("Base")); //add unit construct type
-        }else{
+        } else {
             train.addParameter(getTypeConstructByName("Barrack"));
         }
         train.addParameter(getTypeUnitByString(params[0])); //add unit Type
@@ -185,10 +198,13 @@ public class FunctionGPCompiler extends AbstractCompiler {
         code = code.replace("moveaway(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
-        
+
         MoveAwayBasic moveAway = new MoveAwayBasic();
         moveAway.addParameter(getTypeUnitByString(params[0]));
-        
+        if (params.length > 1) {
+            moveAway.setUnitIsNecessary();
+        }
+
         return moveAway;
     }
 
@@ -196,10 +212,10 @@ public class FunctionGPCompiler extends AbstractCompiler {
         code = code.replace("cluster(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
-        
+
         ClusterBasic cluster = new ClusterBasic();
         cluster.addParameter(getTypeUnitByString(params[0]));
-        
+
         return cluster;
     }
 

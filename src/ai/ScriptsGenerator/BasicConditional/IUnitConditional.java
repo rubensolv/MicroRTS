@@ -8,15 +8,16 @@ package ai.ScriptsGenerator.BasicConditional;
 import ai.abstraction.pathfinding.PathFinding;
 import rts.GameState;
 import rts.PlayerAction;
+import rts.units.Unit;
 import rts.units.UnitTypeTable;
 
 /**
  *
  * @author julian and rubens
  */
-public interface IConditional {
-    
+public interface IUnitConditional {
+    public Boolean isNecessaryUnit();
     public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, 
-                                        PathFinding pf, UnitTypeTable a_utt);
+                                        PathFinding pf, UnitTypeTable a_utt, Unit un);
     
 }

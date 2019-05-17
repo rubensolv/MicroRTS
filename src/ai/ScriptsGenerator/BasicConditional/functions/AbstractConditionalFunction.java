@@ -59,4 +59,23 @@ public abstract class AbstractConditionalFunction implements IConditionalFunctio
         return types;
     }
   
+    
+    protected boolean hasUnitInParam(List lParam1) {
+        for (Object object : lParam1) {
+            if(object instanceof Unit){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    protected Unit getUnitFromParam(List lParam1) {
+        for (Object object : lParam1) {
+            if(object instanceof Unit){
+                return (Unit) object;
+            }
+        }
+        
+        return null;
+    }
 }

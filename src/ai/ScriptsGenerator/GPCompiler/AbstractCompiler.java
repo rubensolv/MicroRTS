@@ -111,4 +111,19 @@ public abstract class AbstractCompiler implements ICompiler {
             return TypeConcrete.getTypeConstruction();
         }
     }
+    
+    protected int getPositionParentClose(int initialPosition, String[] fragments) {
+        int contOpen = 0, contClosed = 0;
+
+        for (int i = initialPosition; i < fragments.length; i++) {
+            String fragment = fragments[i];
+            contOpen += countCaracter(fragment, "(");
+            contClosed += countCaracter(fragment, ")");
+            if (contOpen == contClosed) {
+                return i;
+            }
+        }
+
+        return fragments.length;
+    }
 }

@@ -8,12 +8,14 @@ package ai.ScriptsGenerator.CommandInterfaces;
 import ai.abstraction.pathfinding.PathFinding;
 import rts.GameState;
 import rts.PlayerAction;
+import rts.units.Unit;
 import rts.units.UnitTypeTable;
 
 /**
  *
- * @author rubens and julian
+ * @author rubens
  */
-public interface ICommand{
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt);
+public interface IUnitCommand {
+    public Boolean isNecessaryUnit();
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u);
 }
