@@ -55,6 +55,29 @@ public class FunctionGPCompiler extends AbstractCompiler {
 
         return fragments.length;
     }
+    
+    public int getLastPositionForBasicFunctionInFor(int initialPosition, String[] fragments) {
+        boolean removeInitialParen = false;
+        int contOpen = 0, contClosed = 0;
+        //check if starts with (
+        if(fragments[initialPosition].startsWith("(")){
+            removeInitialParen = true;
+        }
+        for (int i = initialPosition; i < fragments.length; i++) {
+            String fragment = fragments[i];
+            if(i == initialPosition && removeInitialParen){
+                fragment = fragment.substring(1);
+            }
+            
+            contOpen += countCaracter(fragment, "(");
+            contClosed += countCaracter(fragment, ")");
+            if (contOpen == contClosed) {
+                return i;
+            }
+        }
+
+        return fragments.length;
+    }
 
     private ICommand buildFunctionByCode(String code, UnitTypeTable utt) {
         if (code.contains("build")) {
@@ -86,6 +109,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand buildCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("build(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
@@ -105,6 +131,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand harvestCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("harvest(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
@@ -119,6 +148,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand attackCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("attack(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
@@ -136,6 +168,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand moveToCoordCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("moveToCoord(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
@@ -152,6 +187,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand moveToUnitCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("moveToUnit(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
@@ -169,6 +207,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand trainCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("train(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
@@ -195,6 +236,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand moveAwayCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("moveaway(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
@@ -209,6 +253,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
     }
 
     private ICommand clusterCommand(String code, UnitTypeTable utt) {
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
         code = code.replace("cluster(", "");
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");

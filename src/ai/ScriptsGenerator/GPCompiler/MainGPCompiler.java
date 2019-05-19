@@ -47,7 +47,7 @@ public class MainGPCompiler extends AbstractCompiler {
             }else if(fragment.contains("for")){
                 int idToCut = forCompiler.getLastPositionForFor(i, fragments);
                 String completeFor = generateString(i, idToCut, fragments);
-                commands.addAll(forCompiler.CompilerCode(code, utt));
+                commands.addAll(forCompiler.CompilerCode(completeFor, utt));
                 i = idToCut;
             }
         }

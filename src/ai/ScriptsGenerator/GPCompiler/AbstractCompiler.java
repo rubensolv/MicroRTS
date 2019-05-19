@@ -24,7 +24,7 @@ import java.util.List;
  */
 public abstract class AbstractCompiler implements ICompiler {
     
-    protected final FunctionsforGrammar fGrammar = new FunctionsforGrammar();
+    protected final FunctionsforGrammar fGrammar = new FunctionsforGrammar();    
 
     public static String generateString(int initialPos, int finalPos, String[] fragments) {
         String fullString = "";
@@ -125,5 +125,21 @@ public abstract class AbstractCompiler implements ICompiler {
         }
 
         return fragments.length;
+    }
+    
+    protected int getLastPositionForFor(int initialPosition, String[] fragments) {
+        //first get the name for(u)
+        if (isForInitialClause(fragments[initialPosition])) {
+            initialPosition++;
+        }
+        //second, we get the full () to complet the for. 
+        return getPositionParentClose(initialPosition, fragments);
+    }
+    
+    private boolean isForInitialClause(String fragment) {
+        if (fragment.contains("for(u)")) {
+            return true;
+        }
+        return false;
     }
 }

@@ -17,12 +17,13 @@ import rts.units.UnitTypeTable;
  * @author rubens
  */
 public class IfGPCompiler extends AbstractCompiler {
+
     protected FunctionGPCompiler functionCompiler = new FunctionGPCompiler();
     protected ConditionalGPCompiler conditionalCompiler = new ConditionalGPCompiler();
 
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
-        IfFunction ifFun = new IfFunction();        
+        IfFunction ifFun = new IfFunction();
 
         List<ICommand> commands = new ArrayList<>();
         String[] fragments = code.split(" ");
@@ -31,9 +32,9 @@ public class IfGPCompiler extends AbstractCompiler {
         if (isIfInitialClause(fragments[pos])) {
             //remove the tags and get the conditional
             String sCond = fragments[pos];
-            if(sCond.startsWith("(if(")){
+            if (sCond.startsWith("(if(")) {
                 sCond = sCond.replace("(if(", "").trim();
-            }else{
+            } else {
                 sCond = sCond.replace("if(", "").trim();
             }
             ifFun.setConditional(conditionalCompiler.getConditionalByCode(sCond));
@@ -68,6 +69,18 @@ public class IfGPCompiler extends AbstractCompiler {
                     newCode = newCode.substring(0, newCode.lastIndexOf(")"));
                 }
                 ifFun.includeFullCommandsThen(functionCompiler.CompilerCode(newCode, utt));
+                i = finalPos;
+            } else if (thenFragments[i].contains("for")) {
+                finalPos = getLastPositionForFor(i, thenFragments);
+                String newCode = MainGPCompiler.generateString(i, finalPos, thenFragments);
+                if (newCode.startsWith("(")) {
+                    newCode = newCode.substring(1, newCode.length());
+                }
+                //if (newCode.endsWith(")")) {
+                //    newCode = newCode.substring(0, newCode.lastIndexOf(")"));
+                //}
+                ifFun.includeFullCommandsThen(ForGPCompiler.CompilerCodeStatic(newCode, utt));
+                i = finalPos;
             }
         }
 
@@ -101,6 +114,18 @@ public class IfGPCompiler extends AbstractCompiler {
                         newCode = newCode.substring(0, newCode.lastIndexOf(")"));
                     }
                     ifFun.includeFullCommandsElse(functionCompiler.CompilerCode(newCode, utt));
+                    i = finalPos;
+                } else if (thenFragments[i].contains("for")) {
+                    finalPos = getLastPositionForFor(i, thenFragments);
+                    String newCode = MainGPCompiler.generateString(i, finalPos, thenFragments);
+                    if (newCode.startsWith("(")) {
+                        newCode = newCode.substring(1, newCode.length());
+                    }
+                    if (newCode.endsWith(")")) {
+                        newCode = newCode.substring(0, newCode.lastIndexOf(")"));
+                    }
+                    ifFun.includeFullCommandsThen(ForGPCompiler.CompilerCodeStatic(code, utt));
+                    i = finalPos;
                 }
             }
         }
