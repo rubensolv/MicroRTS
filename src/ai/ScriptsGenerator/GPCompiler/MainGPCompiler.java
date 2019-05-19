@@ -52,9 +52,9 @@ public class MainGPCompiler extends AbstractCompiler {
             }
         }
 
-        for (ICommand command : commands) {
-            System.out.println(command.toString());
-        }
+        //for (ICommand command : commands) {
+        //    System.out.println(command.toString());
+        //}
         
         return commands;
     }

@@ -115,16 +115,16 @@ public class IfGPCompiler extends AbstractCompiler {
                     }
                     ifFun.includeFullCommandsElse(functionCompiler.CompilerCode(newCode, utt));
                     i = finalPos;
-                } else if (thenFragments[i].contains("for")) {
-                    finalPos = getLastPositionForFor(i, thenFragments);
-                    String newCode = MainGPCompiler.generateString(i, finalPos, thenFragments);
+                } else if (elseFragments[i].contains("for")) {
+                    finalPos = getLastPositionForFor(i, elseFragments);
+                    String newCode = MainGPCompiler.generateString(i, finalPos, elseFragments);
                     if (newCode.startsWith("(")) {
                         newCode = newCode.substring(1, newCode.length());
                     }
                     if (newCode.endsWith(")")) {
                         newCode = newCode.substring(0, newCode.lastIndexOf(")"));
                     }
-                    ifFun.includeFullCommandsThen(ForGPCompiler.CompilerCodeStatic(code, utt));
+                    ifFun.includeFullCommandsThen(ForGPCompiler.CompilerCodeStatic(newCode, utt));
                     i = finalPos;
                 }
             }
