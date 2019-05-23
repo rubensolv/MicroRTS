@@ -92,6 +92,7 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JFrame;
@@ -121,7 +122,9 @@ public class GVS_GP {
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesTwoBarracksWithWalls16x16.xml", utt); 
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesOneBarracksWithWalls16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
@@ -149,7 +152,7 @@ public class GVS_GP {
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
-        AI ai1 = new PassiveAI();
+        //AI ai1 = new PassiveAI();
         //AI ai1 = new POLightRush(utt);
         //AI ai1 = new EconomyRush(utt);        
         //AI ai1 = new RangedDefense(utt);
@@ -189,7 +192,7 @@ public class GVS_GP {
         //AI ai1 = new NSSS(utt);
         //AI ai1 = new NSSSLimit(utt);
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
-        //AI ai1 = new StrategyTactics(utt);
+        AI ai1 = new StrategyTactics(utt);
         
         //AI ai1 = new WorkerRush(utt);
         //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
@@ -253,13 +256,23 @@ public class GVS_GP {
 //        AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag41(utt), "");
 //          AI ai2 = new PassiveAI(utt);
         
-        String gp = "build(All,2) attack(Worker,strongest) if(HaveQtdUnitsHarversting(16)) (if(HaveEnemiesinUnitsRange(Heavy)) (if(HaveEnemiesinUnitsRange(Heavy)) (build(All,2)) (moveToUnit(All,Ally,random))))";
+        String gp = "harvest(1) train(Worker,1,Right)";
+        String gp2 = "attack(All,closest)";
+        String gp3 = "train(Light,2,Up) train(Heavy,2,Up) train(Ranged,2,Up)"; 
+        //String gp4= ""; 
+        //String gp5 = "";
+        
 
         ICompiler compiler = new MainGPCompiler();  
-        List<ICommand> commandsGP = compiler.CompilerCode(gp, utt);
+        List<ICommand> commandsGP = new ArrayList<>();
+        commandsGP.addAll(compiler.CompilerCode(gp, utt));
+        commandsGP.addAll(compiler.CompilerCode(gp2, utt));
+        commandsGP.addAll(compiler.CompilerCode(gp3, utt));
+        //commandsGP.addAll(compiler.CompilerCode(gp4, utt));
+        //commandsGP.addAll(compiler.CompilerCode(gp5, utt));
       
-        List<ICommand> commandsAI1=new ArrayList<>(); 
-        TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
+        //List<ICommand> commandsAI1=new ArrayList<>(); 
+        //TableCommandsGenerator tcg=TableCommandsGenerator.getInstance(utt);
         
         //System.out.println("Table "+(tcg.getCommandByID(5138).toString()));
         //commandsAI1.add(tcg.getCommandByID(5138));;
