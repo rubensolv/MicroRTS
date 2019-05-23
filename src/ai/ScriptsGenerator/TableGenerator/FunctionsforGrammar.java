@@ -15,7 +15,9 @@ public class FunctionsforGrammar {
     List<String> priorityPositionDiscrete;
 
     List<FunctionsforGrammar> basicFunctionsForGrammar;
+    List<FunctionsforGrammar> basicFunctionsForGrammarUnit;
     List<FunctionsforGrammar> conditionalsForGrammar;
+    List<FunctionsforGrammar> conditionalsForGrammarUnit;
 
     public FunctionsforGrammar(String nameFunction, List<Parameter> parameters) {
         this.nameFunction = nameFunction;
@@ -70,6 +72,7 @@ public class FunctionsforGrammar {
 
     public void createTableBasicFunctionsGrammar() {
         basicFunctionsForGrammar = new ArrayList<>();
+        basicFunctionsForGrammarUnit = new ArrayList<>();
 
         //Function AttackBasic
         parameters = new ArrayList<>();
@@ -81,7 +84,7 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("behaviour", null, null, behaviourDiscrete));
         parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("attack_u", parameters));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("attack", parameters));
 
         //Function BuildBasic
         parameters = new ArrayList<>();
@@ -93,7 +96,7 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
         parameters.add(new Parameter("Quantity", 1.0, 3.0, null));
         parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("build_u", parameters));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("build", parameters));
 
         //Function HarvestBasic
         parameters = new ArrayList<>();
@@ -103,7 +106,7 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("Quantity", 1.0, 5.0, null));
         parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("harvest_u", parameters));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("harvest", parameters));
 
         //Function MoveToCoordinatesBasic
         parameters = new ArrayList<>();
@@ -117,7 +120,7 @@ public class FunctionsforGrammar {
         parameters.add((new Parameter("x", 0.0, 7.0, null)));
         parameters.add((new Parameter("y", 0.0, 7.0, null)));
         parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToCoord_u", parameters));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveToCoord", parameters));
 
         //Function MoveToUnitBasic
         parameters = new ArrayList<>();
@@ -131,7 +134,7 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("playerTarget", null, null, playerTargetDiscrete));
         parameters.add(new Parameter("behaviour", null, null, behaviourDiscrete));
         parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToUnit", parameters));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveToUnit", parameters));
 
         //Function TrainBasic
         parameters = new ArrayList<>();
@@ -162,6 +165,7 @@ public class FunctionsforGrammar {
 
     public void createTableConditionalsGrammar() {
         conditionalsForGrammar = new ArrayList<>();
+        conditionalsForGrammarUnit = new ArrayList<>();
 
         //Conditional HaveEnemiesinUnitsRange
         parameters = new ArrayList<>();
@@ -171,7 +175,7 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("u", null, null, null));
-        conditionalsForGrammar.add(new FunctionsforGrammar("HaveEnemiesinUnitsRange_u", parameters));
+        conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveEnemiesinUnitsRange", parameters));
 
         //Conditional HaveQtdEnemiesbyType
         parameters = new ArrayList<>();
@@ -204,7 +208,7 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("u", null, null, null));
-        conditionalsForGrammar.add(new FunctionsforGrammar("HaveUnitsinEnemyRange_u", parameters));
+        conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveUnitsinEnemyRange", parameters));
 
         //Conditional HaveUnitsToDistantToEnemy
         parameters = new ArrayList<>();
@@ -216,7 +220,7 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("Distance", 1.0, 20.0, null));
         parameters.add(new Parameter("u", null, null, null));
-        conditionalsForGrammar.add(new FunctionsforGrammar("HaveUnitsToDistantToEnemy_u", parameters));
+        conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveUnitsToDistantToEnemy", parameters));
         
         //Conditional HaveUnitsStrongest
         parameters = new ArrayList<>();
@@ -226,7 +230,7 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("u", null, null, null));
-        conditionalsForGrammar.add(new FunctionsforGrammar("HaveUnitsStrongest_u", parameters));
+        conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveUnitsStrongest", parameters));
         
         //Conditional HaveEnemiesStrongest
         parameters = new ArrayList<>();
@@ -236,22 +240,25 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("u", null, null, null));
-        conditionalsForGrammar.add(new FunctionsforGrammar("HaveEnemiesStrongest_u", parameters));
+        conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveEnemiesStrongest", parameters));
 
     }
 
-    /**
-     * @return the basicFunctionsForGrammar
-     */
+
     public List<FunctionsforGrammar> getBasicFunctionsForGrammar() {
         return basicFunctionsForGrammar;
     }
 
-    /**
-     * @return the conditionalsForGrammar
-     */
     public List<FunctionsforGrammar> getConditionalsForGrammar() {
         return conditionalsForGrammar;
+    }
+    
+    public List<FunctionsforGrammar> getBasicFunctionsForGrammarUnit() {
+        return basicFunctionsForGrammarUnit;
+    }
+
+    public List<FunctionsforGrammar> getConditionalsForGrammarUnit() {
+        return conditionalsForGrammarUnit;
     }
 
     public String getNameFunction() {
