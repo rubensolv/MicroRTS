@@ -94,7 +94,7 @@ public class FunctionsforGrammar {
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 3.0, null));
+        parameters.add(new Parameter("Quantity", 30.0, 30.0, null));
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("build", parameters));
 
@@ -104,7 +104,7 @@ public class FunctionsforGrammar {
         basicFunctionsForGrammar.add(new FunctionsforGrammar("harvest", parameters));
         //Function HarvestBasic
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 1.0, 5.0, null));
+        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("harvest", parameters));
 
@@ -140,7 +140,7 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 20.0, 20.0, null));
         parameters.add(new Parameter("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("train", parameters));
         
