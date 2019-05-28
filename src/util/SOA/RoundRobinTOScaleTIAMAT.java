@@ -15,6 +15,7 @@ import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.SAB.SABRandom;
 import ai.asymmetric.SAB.SABScriptChoose;
+import ai.asymmetric.SSS.LightSSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
@@ -58,10 +59,10 @@ public class RoundRobinTOScaleTIAMAT {
         log.add("Tupla A2 = " + tupleAi2);
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/24x24/basesWorkers24x24A.xml"
+                //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -112,6 +113,9 @@ public class RoundRobinTOScaleTIAMAT {
         
 //        	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
 //        	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+        
+//    	AI ai1 = new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "SSSR");
+//    	AI ai2 = new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "SSSR");
         
 //        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
@@ -198,7 +202,7 @@ public class RoundRobinTOScaleTIAMAT {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 40));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 200));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
