@@ -65,7 +65,7 @@ public class IfFunction implements ICommand, IUnitCommand {
             }
         } else {
             if (!commandsElse.isEmpty()) {
-                for (ICommand command : commandsThen) {
+                for (ICommand command : commandsElse) {
                     currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
                 }
             }
