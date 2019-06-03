@@ -68,6 +68,7 @@ public class RoundRobinTOScale_GP {
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 "maps/8x8/basesWorkers8x8A.xml"
+        		//"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
@@ -80,22 +81,22 @@ public class RoundRobinTOScale_GP {
         boolean gameover = false;
 
         if (pgs.getHeight() == 8) {
-            MAXCYCLES = 4000;
+            MAXCYCLES = 9000;
         }
         if (pgs.getHeight() == 9) {
-            MAXCYCLES = 4000;
+            MAXCYCLES = 9000;
         }
         if (pgs.getHeight() == 16) {
-            MAXCYCLES = 5000;
+            MAXCYCLES = 10000;
         }
         if (pgs.getHeight() == 24) {
-            MAXCYCLES = 6000;
+            MAXCYCLES = 11000;
         }
         if (pgs.getHeight() == 32) {
-            MAXCYCLES = 7000;
+            MAXCYCLES = 12000;
         }
         if (pgs.getHeight() == 64) {
-            MAXCYCLES = 12000;
+            MAXCYCLES = 17000;
         }
 
         //decompõe a tupla
@@ -210,7 +211,7 @@ public class RoundRobinTOScale_GP {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < 8000));
+        } while (!gameover && (gs.getTime() < MAXCYCLES));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
