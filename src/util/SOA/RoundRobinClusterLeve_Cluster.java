@@ -21,6 +21,7 @@ import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.NGS;
 import ai.core.AI;
+import ai.core.AIWithComputationBudget;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSmRTS;
@@ -96,19 +97,19 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
-                "maps/24x24/basesWorkers24x24A.xml",
-                "maps/24x24/basesWorkers24x24A_Barrack.xml",
-                "maps/32x32/basesWorkers32x32A.xml",
-                "maps/32x32/basesWorkersBarracks32x32.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml"/*,
-                "maps/BroodWar/(4)Fortress.scxA.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml" 
-         */
+//                "maps/8x8/basesWorkers8x8A.xml",
+//                "maps/8x8/FourBasesWorkers8x8.xml",
+//                "maps/16x16/basesWorkers16x16A.xml",
+//                "maps/16x16/TwoBasesBarracks16x16.xml",
+//                "maps/24x24/basesWorkers24x24A.xml"
+//                "maps/24x24/basesWorkers24x24A_Barrack.xml",
+//                "maps/32x32/basesWorkers32x32A.xml"
+//                "maps/32x32/basesWorkersBarracks32x32.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
+//                "maps/BroodWar/(4)BloodBath.scmD.xml"/*,
+//                "maps/BroodWar/(4)Fortress.scxA.xml",
+//                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml" 
+         
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -121,31 +122,42 @@ public class RoundRobinClusterLeve_Cluster {
         boolean gameover = false;
 
         if (pgs.getHeight() == 8) {
-            MAXCYCLES = 4000;
+            MAXCYCLES = 8000;
         } else if (pgs.getHeight() == 16) {
-            MAXCYCLES = 5000;
+            MAXCYCLES = 10000;
         } else if (pgs.getHeight() == 24) {
-            MAXCYCLES = 6000;
-        } else if (pgs.getHeight() == 32) {
-            MAXCYCLES = 7000;
-        } else if (pgs.getHeight() == 64) {
             MAXCYCLES = 12000;
+        } else if (pgs.getHeight() == 32) {
+            MAXCYCLES = 12000;
+        } else if (pgs.getHeight() == 64) {
+            MAXCYCLES = 15000;
         }
 
-        List<AI> ais = new ArrayList<>();        
-        //A3N
-        ais.add(new CmabAssymetricMCTS(100, -1, 50, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;2;3;"), "A3N_50"));
-        ais.add(new CmabAssymetricMCTS(100, -1, 100, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;2;3;"), "A3N_100"));
-        ais.add(new CmabAssymetricMCTS(100, -1, 150, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;2;3;"), "A3N_150"));
-        ais.add(new CmabAssymetricMCTS(100, -1, 200, 6, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, "1;2;3;"), "A3N_200"));
+        List<AI> ais = new ArrayList(Arrays.asList(new AIWithComputationBudget[] { 
+        		
+        		  new AHTNAI(utt), 
+        		  new NaiveMCTS(utt), 
+        		  new PuppetSearchMCTS(utt), 
+        		  new StrategyTactics(utt), 
+        		  new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"),200, "PGS"), 
+        		  new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"),200, "SSS"), 
+        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), 
+        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), 
+        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), 
+        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), 
+        		  new SCVPlus(utt), 
+        		  new LightPGSSCriptChoice(utt, decodeScripts(utt, "281;201;"),200, "GA_PGS"), 
+        		  new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "225;1;"),200, "GA_SSS"), 
+        		  new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"),200, "PGS+"), 
+        		  new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"),200, "SSS+") }));
+        
+
+      
+//    	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
+//    	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+    
+//	AI ai1 = new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "SSSR");
+//	AI ai2 = new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "SSSR");
 
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);
@@ -221,7 +233,7 @@ public class RoundRobinClusterLeve_Cluster {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) && (duracao.toMinutes() < 200));
+        } while (!gameover && (gs.getTime() < MAXCYCLES) );
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
