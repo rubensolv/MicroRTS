@@ -91,7 +91,45 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
         reservedPositions.addAll(currentPlayerAction.getResourceUsage().getPositionsUsed());
         PhysicalGameState pgs = game.getPhysicalGameState();
 
-        int pos = findBuildingPosition(reservedPositions, unit.getX(), unit.getY(), game.getPlayer(player), pgs);
+        List<Unit> bases = new LinkedList<Unit>();
+		for (Unit u2 : pgs.getUnits()) {
+			if (u2.getType().name == "Base"
+					&& u2.getPlayer() == player) {
+				bases.add(u2);
+			}
+		}
+		
+        List<Unit> barracks = new LinkedList<Unit>();
+		for (Unit u2 : pgs.getUnits()) {
+			if (u2.getType().name == "Barracks"
+					&& u2.getPlayer() == player) {
+				bases.add(u2);
+			}
+		}
+		
+		int pos;
+		
+		if(barracks.size()==0 && bases.size()>0)
+		{
+			Unit b = bases.get(0);
+			
+			int xCoord=b.getX();
+			int yCoord=b.getY();
+			
+			if(player==0)
+			{
+				xCoord=b.getX()+2;
+				yCoord=b.getY()+2;
+			}
+
+			pos = findBuildingPosition(reservedPositions, xCoord, yCoord, game.getPlayer(player), pgs);
+		}
+		
+		else
+		{
+			pos = findBuildingPosition(reservedPositions, unit.getX(), unit.getY(), game.getPlayer(player), pgs);
+		}
+        
         //pick the type to be builded
         UnitType unType = getUnitTyppe(a_utt);
 

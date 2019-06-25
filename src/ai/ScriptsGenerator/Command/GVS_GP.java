@@ -120,11 +120,11 @@ public class GVS_GP {
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesTwoBarracksWithWalls16x16.xml", utt); 
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesOneBarracksWithWalls16x16.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesOneBarracksWithWalls16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
@@ -150,10 +150,10 @@ public class GVS_GP {
         //AI ai1 = new RangedRush(utt);
         //AI ai1 = new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6); //RR
         //AI ai1 = new WorkerRush(utt);
-        //AI ai1 = new LightRush(utt);
+        AI ai2 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
         //AI ai1 = new PassiveAI();
-        //AI ai1 = new POLightRush(utt);
+        //AI ai2 = new POLightRush(utt);
         //AI ai1 = new EconomyRush(utt);        
         //AI ai1 = new RangedDefense(utt);
         //AI ai1 = new EconomyRushBurster(utt);        
@@ -192,7 +192,7 @@ public class GVS_GP {
         //AI ai1 = new NSSS(utt);
         //AI ai1 = new NSSSLimit(utt);
         //AI ai1 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, "46;141;273;195;"), "GA_PGSRLim",4,200);
-        AI ai1 = new StrategyTactics(utt);
+        //AI ai1 = new StrategyTactics(utt);
         
         //AI ai1 = new WorkerRush(utt);
         //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
@@ -256,18 +256,24 @@ public class GVS_GP {
 //        AI ai1 = new ChromosomeAI(utt, bag.ChromosomesBag41(utt), "");
 //          AI ai2 = new PassiveAI(utt);
         
-        String gp = "harvest(1) train(Worker,1,Right)";
-        String gp2 = "attack(All,closest)";
-        String gp3 = "train(Light,2,Up) train(Heavy,2,Up) train(Ranged,2,Up)"; 
-        //String gp4= ""; 
-        //String gp5 = "";
+        //Rushes
+        String gp = "train(Worker,100,Down) harvest(1) attack(All,closest)";
+        String gp2 = "train(Worker,1,Down) train(Light,100,Down) build(Barrack,1) harvest(1) attack(All,closest) ";
+        String gp3 = "train(Worker,1,Down) train(Ranged,100,Down) build(Barrack,1) harvest(1) attack(All,closest) ";
+        String gp4 = "train(Worker,1,Down) train(Heavy,100,Down) build(Barrack,1) harvest(1) attack(All,closest) ";
         
-
+        //Defenses
+        String gp6 = "train(Worker,1,Down) train(Light,100,Down) build(Barrack,1) harvest(1) if(HaveEnemiesinUnitsRange(All,u)) (attack(All,closest)) moveToCoord(All,4,4) ";
+        
+        //Economys
+        
+        
+        
         ICompiler compiler = new MainGPCompiler();  
         List<ICommand> commandsGP = new ArrayList<>();
         commandsGP.addAll(compiler.CompilerCode(gp, utt));
-        commandsGP.addAll(compiler.CompilerCode(gp2, utt));
-        commandsGP.addAll(compiler.CompilerCode(gp3, utt));
+//        commandsGP.addAll(compiler.CompilerCode(gp2, utt));
+//        commandsGP.addAll(compiler.CompilerCode(gp3, utt));
         //commandsGP.addAll(compiler.CompilerCode(gp4, utt));
         //commandsGP.addAll(compiler.CompilerCode(gp5, utt));
       
@@ -310,7 +316,7 @@ public class GVS_GP {
         //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGSR", 2, 200);
         
         //AI ai2 = new PGSSCriptChoice(utt, decodeScripts2(utt, iScriptsAi1), "PGSR");
-        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                              0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
                                              new SimpleSqrtEvaluationFunction3(), true, utt, 
                                             "ManagerClosestEnemy", 0, buildCommandsList(utt, commandsGP), "GP"); //A3N
