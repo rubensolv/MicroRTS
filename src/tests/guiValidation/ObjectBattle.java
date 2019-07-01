@@ -44,7 +44,7 @@ public class ObjectBattle {
 
     public void runForOneFrame() throws Exception {
 
-//        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
+//      JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;
         boolean executed = false;
         do {

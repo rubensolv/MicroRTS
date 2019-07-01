@@ -21,9 +21,10 @@ public class SOARoundRobinTOScale_GP {
     private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
 
     public static void main(String args[]) throws Exception {
-        String pathSOA = args[0];
-        String pathLog = args[1];
-
+        //String pathSOA = args[0];
+        //String pathLog = args[1];
+        String pathSOA = "/home/rubens/cluster/DeckEvaluation/configSOA/SOA1/";
+        String pathLog = "/home/rubens/cluster/DeckEvaluation/logs/";
         int qtdMapas = 1;
         //String pathSOA = "/home/rubens/cluster/USP/Test_map8_10script_USP/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/USP/Test_map8_10script_USP/logs/";

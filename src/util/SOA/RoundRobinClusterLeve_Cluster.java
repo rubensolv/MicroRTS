@@ -36,6 +36,7 @@ import ai.cluster.CABA_TDLearning;
 import ai.cluster.CIA_Enemy;
 import ai.cluster.CIA_PlayoutTemporal;
 import ai.cluster.CIA_TDLearning;
+import ai.competition.IzanagiBot.Izanagi;
 import ai.competition.capivara.Capivara;
 import ai.competition.capivara.CmabAssymetricMCTS;
 import ai.competition.tiamat.Tiamat;
@@ -55,6 +56,7 @@ import ai.montecarlo.lsi.LSI;
 import ai.puppet.PuppetSearchMCTS;
 import ai.scv.SCV;
 import ai.scv.SCVPlus;
+import ai.utalca.UTalcaBot;
 import gui.PhysicalGameStatePanel;
 import java.io.File;
 import java.io.FileWriter;
@@ -71,6 +73,7 @@ import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
+import static util.SOA.RoundRobinClusterLeve.decodeScripts;
 
 /**
  *
@@ -97,19 +100,22 @@ public class RoundRobinClusterLeve_Cluster {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-//                "maps/8x8/basesWorkers8x8A.xml",
-//                "maps/8x8/FourBasesWorkers8x8.xml",
-//                "maps/16x16/basesWorkers16x16A.xml",
-//                "maps/16x16/TwoBasesBarracks16x16.xml",
-//                "maps/24x24/basesWorkers24x24A.xml"
-//                "maps/24x24/basesWorkers24x24A_Barrack.xml",
-//                "maps/32x32/basesWorkers32x32A.xml"
-//                "maps/32x32/basesWorkersBarracks32x32.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml"
-//                "maps/BroodWar/(4)BloodBath.scmD.xml"/*,
-//                "maps/BroodWar/(4)Fortress.scxA.xml",
-//                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml" 
-         
+                                "maps/8x8/basesWorkers8x8A.xml",
+                                "maps/8x8/FourBasesWorkers8x8.xml",
+                                "maps/16x16/basesWorkers16x16A.xml",
+                                "maps/16x16/TwoBasesBarracks16x16.xml",
+                //"maps/24x24/basesWorkers24x24A.xml"
+        //                "maps/24x24/basesWorkers24x24A_Barrack.xml",
+                "maps/DoubleGame24x24.xml",
+                "maps/BWDistantResources32x32.xml",
+                "maps/NoWhereToRun9x8.xml"
+                        //"maps/32x32/basesWorkers32x32A.xml"
+        //                "maps/32x32/basesWorkersBarracks32x32.xml",
+        //"maps/BroodWar/(4)BloodBath.scmB.xml"
+        //                "maps/BroodWar/(4)BloodBath.scmD.xml"/*,
+        //                "maps/BroodWar/(4)Fortress.scxA.xml",
+        //                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml" 
+
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -133,32 +139,62 @@ public class RoundRobinClusterLeve_Cluster {
             MAXCYCLES = 15000;
         }
 
-        List<AI> ais = new ArrayList(Arrays.asList(new AIWithComputationBudget[] { 
-        		
-        		  new AHTNAI(utt), 
-        		  new NaiveMCTS(utt), 
-        		  new PuppetSearchMCTS(utt), 
-        		  new StrategyTactics(utt), 
-        		  new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"),200, "PGS"), 
-        		  new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"),200, "SSS"), 
-        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), 
-        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), 
-        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), 
-        		  new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), 
-        		  new SCVPlus(utt), 
-        		  new LightPGSSCriptChoice(utt, decodeScripts(utt, "281;201;"),200, "GA_PGS"), 
-        		  new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "225;1;"),200, "GA_SSS"), 
-        		  new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"),200, "PGS+"), 
-        		  new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"),200, "SSS+") }));
+        /**
+         * new AHTNAI(utt),
+            new NaiveMCTS(utt),
+            new PuppetSearchMCTS(utt),
+            new StrategyTactics(utt),
+            new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS"),
+            new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), 200, "PGS+"),
+            new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "SSS"),
+            new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), 200, "SSS+"),
+            new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                decodeScripts(utt, "1;2;3;"), "A3N"),
+            new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "A3N+"),
+            new GABScriptChoose(utt, 150, 6, 6, // MoreLife
+                        decodeScripts(utt, "0;1;2;3;"), "GAB"),
+            new GABScriptChoose(utt, 150, 6, 6, // MoreLife
+                        decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "GAB+"),
+            new SABScriptChoose(utt, 150, 3, 5, //LessLife
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"),
+            new SABScriptChoose(utt, 150, 3, 5, //LessLife
+                        decodeScripts(utt, "0;1;2;3;100;101;102;103;299;"), "SAB+"),
+            new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4),
+            new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5),
+            new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6),
+            new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3),
+            new SCVPlus(utt),
+            new LightPGSSCriptChoice(utt, decodeScripts(utt, "73;289;257;209;"), 200, "GA_PGS"),
+            new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "81;225;"), 200, "GA_SSS"),
+            new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                decodeScripts(utt, "281;"), "GA_A3N"),
+            new GABScriptChoose(utt, 150, 6, 6, // MoreLife
+                        decodeScripts(utt, "224;0;"), "GA_GAB"),
+            new SABScriptChoose(utt, 150, 3, 5, //LessLife
+                        decodeScripts(utt, "272;"), "GA_SAB")
+         */
         
+        
+        List<AI> ais = new ArrayList(Arrays.asList(new AIWithComputationBudget[]{            
+            new StrategyTactics(utt),
+            new Tiamat(utt),
+            new Capivara(utt),
+            new UTalcaBot(utt),
+            new POLightRush(utt),
+            new SCVPlus(utt),
+            new Izanagi(utt),
+            new POWorkerRush(utt),
+            new NaiveMCTS(utt)
+        }));
 
-      
 //    	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
 //    	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
-    
 //	AI ai1 = new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "SSSR");
 //	AI ai2 = new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "SSSR");
-
         AI ai1 = ais.get(iAi1);
         AI ai2 = ais.get(iAi2);
 
@@ -233,7 +269,7 @@ public class RoundRobinClusterLeve_Cluster {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < MAXCYCLES) );
+        } while (!gameover && (gs.getTime() < MAXCYCLES));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -280,7 +316,7 @@ public class RoundRobinClusterLeve_Cluster {
             e.printStackTrace();
         }
     }
-    
+
     public static List<AI> decodeScripts(UnitTypeTable utt, String sScripts) {
 
         //decompõe a tupla

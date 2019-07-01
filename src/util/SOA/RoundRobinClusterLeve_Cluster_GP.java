@@ -93,7 +93,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
     static AI[] strategies = null;
     private HashMap<BigDecimal, String> scriptsTable;
     String pathTableScripts;
-    ICompiler compiler = new MainGPCompiler(); 
+    ICompiler compiler = new MainGPCompiler();
 
     public RoundRobinClusterLeve_Cluster_GP(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
@@ -117,10 +117,10 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
-                "maps/8x8/basesWorkers8x8A.xml"
+                //"maps/8x8/basesWorkers8x8A.xml"
                 //"maps/16x16/BasesWithWalls16x16.xml"
                 //"maps/16x16/basesWorkers16x16A.xml"
-        //"maps/NoWhereToRun9x8.xml"
+                "maps/NoWhereToRun9x8.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -184,13 +184,37 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
                         decodeScripts2(utt, new ArrayList<>(getListIfInteger("8756;6292;7903;7486;8265;9031;8953;"))), "GA-225")
-                 */
+                 
                 new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, bestGAAAAI), "GAAAAI"),
+                        decodeScripts(utt, bestGAAAAI), "GAAAAI"),*/
                 new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("680;48145;46483;50054;50016;49969;"))), "GPP")
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("254;687;637;664;931;"))), "GA-0"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;4149;2050;4521;4569;3132;3478;3634;2326;4152;2049;4160;3725;2707;2500;3867;4300;4570;4289;4410;4290;3922;3524;3257;"))), "GA-50"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2470;839;7514;7017;6359;7214;5249;6967;7707;2185;6711;6918;4410;2050;7765;6426;7487;7567;"))), "GA-100"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;10414;10804;10031;8651;8038;4410;9051;10081;10165;10307;10483;9976;9784;8563;10545;"))), "GA-150"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;13103;13512;7704;12992;12185;12080;12454;12839;13106;13291;13292;"))), "GA-200"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;12839;13814;13826;14895;14860;9507;15006;15750;15753;15938;15963;14689;15752;15216;15063;15499;15630;15631;"))), "GA-250"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;16647;12839;14895;15963;15006;14689;16509;17916;17917;"))), "GA-300"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;19221;12839;14895;19100;15006;20483;19712;20340;20232;14689;18348;20277;19925;"))), "GA-350"),
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("20738;21331;18149;19100;15006;20844;17307;16780;"))), "GA-400")
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -343,7 +367,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
         for (Integer idSc : iScripts) {
             //System.out.println("tam tab"+scriptsTable.size());
             //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-        	scriptsAI.add(buildCommandsIA(utt, scriptsTable.get(BigDecimal.valueOf(idSc))));
+            scriptsAI.add(buildCommandsIA(utt, scriptsTable.get(BigDecimal.valueOf(idSc))));
         }
 
         return scriptsAI;
@@ -394,10 +418,10 @@ public class RoundRobinClusterLeve_Cluster_GP {
 
         return iScriptsAi1;
     }
-    
+
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1");
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1");
         return aiscript;
     }
 }

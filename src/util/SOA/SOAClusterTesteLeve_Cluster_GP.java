@@ -23,8 +23,8 @@ public class SOAClusterTesteLeve_Cluster_GP {
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
-        //String pathSOA = "/home/rubens/cluster/ExecAIGASOA/configSOA/SOA1/";
-        //String pathLog = "/home/rubens/cluster/ExecAIGASOA/logs/";
+        //String pathSOA = "/home/rubens/cluster/DeckEvaluation/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/cluster/DeckEvaluation/logs/";
 
         System.out.println(pathSOA);
         System.out.println(pathLog);

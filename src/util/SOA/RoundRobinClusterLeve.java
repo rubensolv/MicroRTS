@@ -106,10 +106,10 @@ public class RoundRobinClusterLeve {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                "maps/8x8/basesWorkers8x8A.xml",
-                "maps/8x8/FourBasesWorkers8x8.xml",
-                "maps/16x16/basesWorkers16x16A.xml",
-                "maps/16x16/TwoBasesBarracks16x16.xml",
+                //"maps/8x8/basesWorkers8x8A.xml",
+                //"maps/8x8/FourBasesWorkers8x8.xml",
+                //"maps/16x16/basesWorkers16x16A.xml",
+                //"maps/16x16/TwoBasesBarracks16x16.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
                 "maps/24x24/basesWorkers24x24A_Barrack.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
@@ -159,6 +159,8 @@ public class RoundRobinClusterLeve {
                         decodeScripts(utt, "1;2;"), "A3N_200") 
         ));*/
         List<AI> ais = new ArrayList<>(Arrays.asList(
+                new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS"),
+                new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS"),
                 new AHTNAI(utt),
                 new NaiveMCTS(utt),
                 new PuppetSearchMCTS(utt),
@@ -253,7 +255,7 @@ public class RoundRobinClusterLeve {
                         decodeScripts(utt, "1;2;3;"), "A3N"));
                 ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "SSS"));
                 ais.add(new SABScriptChoose(utt, 150, 1, 5, //lessLife
-                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/32x32/basesWorkers32x32A.xml": //7
                 ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "PGS"));
@@ -267,7 +269,7 @@ public class RoundRobinClusterLeve {
                         decodeScripts(utt, "1;2;3;"), "A3N"));
                 ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 150, "SSS"));
                 ais.add(new SABScriptChoose(utt, 200, 5, 3, //father
-                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/32x32/basesWorkersBarracks32x32.xml": //8
                 ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "PGS"));
@@ -281,7 +283,7 @@ public class RoundRobinClusterLeve {
                         decodeScripts(utt, "1;2;3;"), "A3N"));
                 ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 100, "SSS"));
                 ais.add(new SABScriptChoose(utt, 150, 1, 5, //LessLife
-                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
             case "maps/BroodWar/(4)BloodBath.scmB.xml": //9
                 ais.add(new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS"));
@@ -309,7 +311,7 @@ public class RoundRobinClusterLeve {
                         decodeScripts(utt, "1;2;3;"), "A3N"));
                 ais.add(new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "1;"), 200, "SSS"));
                 ais.add(new SABScriptChoose(utt, 100, 1, 2, //closesEnemy
-                        decodeScripts(utt, "0;1;2;3;"), "SAB"));                
+                        decodeScripts(utt, "0;1;2;3;"), "SAB"));
                 break;
 
             default: //"maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
@@ -349,7 +351,10 @@ public class RoundRobinClusterLeve {
 
                 PlayerAction pa1 = ai1.getAction(0, gs);
                 //dados de tempo ai1
-                timeTemp = (System.currentTimeMillis() - startTime);                
+                timeTemp = (System.currentTimeMillis() - startTime);
+                if (timeTemp > 0) {
+                    log.add("Tempo de execução " + ai1.toString() + " " + timeTemp);
+                }
                 sumAi1 += timeTemp;
                 //coleto tempo mínimo
                 if (ai1TempoMin > timeTemp) {
@@ -363,7 +368,10 @@ public class RoundRobinClusterLeve {
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
                 //dados de tempo ai2
-                timeTemp = (System.currentTimeMillis() - startTime);                
+                timeTemp = (System.currentTimeMillis() - startTime);
+                if (timeTemp > 0) {
+                    log.add("Tempo de execução " + ai2.toString() + " " + timeTemp);
+                }
                 sumAi2 += timeTemp;
                 //coleto tempo mínimo
                 if (ai2TempoMin > timeTemp) {

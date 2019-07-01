@@ -37,30 +37,26 @@ public class HeavyDefense extends AbstractionLayerAI {
     // If we have a base: train worker until we have 1 workers
     // If we have a barracks: train light
     // If we have a worker: do this if needed: build base, build barracks, harvest resources
-
     public HeavyDefense(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
-    
-    
+
     public HeavyDefense(UnitTypeTable a_utt, PathFinding a_pf) {
         super(a_pf);
         reset(a_utt);
     }
 
     public void reset() {
-    	super.reset();
+        super.reset();
     }
-    
-    public void reset(UnitTypeTable a_utt)  
-    {
+
+    public void reset(UnitTypeTable a_utt) {
         utt = a_utt;
         workerType = utt.getUnitType("Worker");
         baseType = utt.getUnitType("Base");
         barracksType = utt.getUnitType("Barracks");
         heavyType = utt.getUnitType("Heavy");
-    }   
-    
+    }
 
     public AI clone() {
         return new HeavyDefense(utt, pf);
@@ -152,17 +148,13 @@ public class HeavyDefense extends AbstractionLayerAI {
                     closestEnemy = u2;
                     closestDistance = d;
                 }
-            }
-        else if(u2.getPlayer()==p.getID() && u2.getType() == baseType)
-            {
+            } else if (u2.getPlayer() == p.getID() && u2.getType() == baseType) {
                 mybase = Math.abs(u2.getX() - u.getX()) + Math.abs(u2.getY() - u.getY());
             }
         }
-        if (closestEnemy!=null && (closestDistance < pgs.getHeight()/2 || mybase < pgs.getHeight()/2)) {
-            attack(u,closestEnemy);
-        }
-        else
-        {
+        if (closestEnemy != null && (closestDistance < pgs.getHeight() / 2 || mybase < pgs.getHeight() / 2)) {
+            attack(u, closestEnemy);
+        } else {
             attack(u, null);
         }
     }
@@ -195,7 +187,7 @@ public class HeavyDefense extends AbstractionLayerAI {
             // build a base:
             if (p.getResources() >= baseType.cost + resourcesUsed) {
                 Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,baseType,u.getX(),u.getY(),reservedPositions,p,pgs);
+                buildIfNotAlreadyBuilding(u, baseType, u.getX(), u.getY(), reservedPositions, p, pgs);
                 resourcesUsed += baseType.cost;
             }
         }
@@ -204,11 +196,10 @@ public class HeavyDefense extends AbstractionLayerAI {
             // build a barracks:
             if (p.getResources() >= barracksType.cost + resourcesUsed && !freeWorkers.isEmpty()) {
                 Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,barracksType,u.getX(),u.getY(),reservedPositions,p,pgs);
+                buildIfNotAlreadyBuilding(u, barracksType, u.getX(), u.getY(), reservedPositions, p, pgs);
                 resourcesUsed += barracksType.cost;
             }
         }
-
 
         // harvest with all the free workers:
         for (Unit u : freeWorkers) {
@@ -226,7 +217,7 @@ public class HeavyDefense extends AbstractionLayerAI {
             }
             closestDistance = 0;
             for (Unit u2 : pgs.getUnits()) {
-                if (u2.getType().isStockpile && u2.getPlayer()==p.getID()) {
+                if (u2.getType().isStockpile && u2.getPlayer() == p.getID()) {
                     int d = Math.abs(u2.getX() - u.getX()) + Math.abs(u2.getY() - u.getY());
                     if (closestBase == null || d < closestDistance) {
                         closestBase = u2;
@@ -237,8 +228,10 @@ public class HeavyDefense extends AbstractionLayerAI {
             if (closestResource != null && closestBase != null) {
                 AbstractAction aa = getAbstractAction(u);
                 if (aa instanceof Harvest) {
-                    Harvest h_aa = (Harvest)aa;
-                    if (h_aa.getTarget() != closestResource || h_aa.getBase()!=closestBase) harvest(u, closestResource, closestBase);
+                    Harvest h_aa = (Harvest) aa;
+                    if (h_aa.getTarget() != closestResource || h_aa.getBase() != closestBase) {
+                        harvest(u, closestResource, closestBase);
+                    }
                 } else {
                     harvest(u, closestResource, closestBase);
                 }
@@ -246,15 +239,13 @@ public class HeavyDefense extends AbstractionLayerAI {
         }
     }
 
-    
     @Override
-    public List<ParameterSpecification> getParameters()
-    {
+    public List<ParameterSpecification> getParameters() {
         List<ParameterSpecification> parameters = new ArrayList<>();
-        
+
         parameters.add(new ParameterSpecification("PathFinding", PathFinding.class, new AStarPathFinding()));
 
         return parameters;
-    }    
-    
+    }
+
 }

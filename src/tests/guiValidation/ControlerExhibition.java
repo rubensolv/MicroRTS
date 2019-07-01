@@ -7,6 +7,7 @@ package tests.guiValidation;
 
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
+import ai.abstraction.WorkerRush;
 import ai.asymmetric.PGS.PGSmRTS;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.core.AI;
@@ -35,7 +36,7 @@ public class ControlerExhibition {
                 option = JOptionPane.showConfirmDialog(null, "Gostaria de pausar?");
             }
             if (option == 0) {
-                option = JOptionPane.showConfirmDialog(null, "Gostaria de pausar 2?");
+                bat.ai1 = new WorkerRush(bat.utt);
                 option = 1;
             }
 
