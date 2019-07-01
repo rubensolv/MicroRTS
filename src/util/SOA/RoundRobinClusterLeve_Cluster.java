@@ -183,7 +183,6 @@ public class RoundRobinClusterLeve_Cluster {
             new StrategyTactics(utt),
             new Tiamat(utt),
             new Capivara(utt),
-            new UTalcaBot(utt),
             new POLightRush(utt),
             new SCVPlus(utt),
             new Izanagi(utt),
