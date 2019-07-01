@@ -6,12 +6,10 @@
 package ai.competition.IzanagiBot;
 
 import ai.RandomBiasedAI;
-import ai.competition.tiamat.*;
 import ai.abstraction.AbstractionLayerAI;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
-import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.SSS.LightSSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
@@ -28,7 +26,6 @@ import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.units.UnitTypeTable;
-import static util.SOA.RoundRobinClusterLeve_Cluster.decodeScripts;
 
 /**
  *
