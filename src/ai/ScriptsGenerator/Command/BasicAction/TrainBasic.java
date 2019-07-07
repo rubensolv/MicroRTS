@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
+import rts.Player;
 import rts.PlayerAction;
 import rts.UnitAction;
 import static rts.UnitAction.DIRECTION_DOWN;
@@ -47,11 +48,11 @@ public class TrainBasic extends AbstractBasicAction {
                 && limitReached(game, player, currentPlayerAction)) {
             //get units basead in type to produce
             List<Unit> unitToBuild = getUnitsToBuild(game, player);
-
+            Player p = game.getPlayer(player);
             //produce the type of unit in param
             for (Unit unit : unitToBuild) {
                 if (game.getActionAssignment(unit) == null) {
-                    UnitAction unTemp = translateUnitAction(game, a_utt, unit);
+                    UnitAction unTemp = translateUnitAction(game, a_utt, unit, p);
                     if (unTemp != null) {
                         currentPlayerAction.addUnitAction(unit, unTemp);
                     }
@@ -87,22 +88,27 @@ public class TrainBasic extends AbstractBasicAction {
         return false;
     }
 
-    private UnitAction translateUnitAction(GameState game, UnitTypeTable a_utt, Unit unit) {
+    private UnitAction translateUnitAction(GameState game, UnitTypeTable a_utt, Unit unit, Player p) {
         List<UnitTypeParam> types = getTypeUnitFromParam();
 
         for (UnitTypeParam type : types) {
             for (EnumTypeUnits en : type.getParamTypes()) {
-                UnitAction uAct = null;
-                //train based in PriorityPosition
-                uAct = trainUnitBasedInPriorityPosition(game, unit, a_utt.getUnitType(en.code()));
-                if (uAct == null) {
-                    AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
-                    uAct = action.execute(game);
-                }
+            	
+            	if(p.getResources() >= a_utt.getUnitType(en.code()).cost)
+            	{
+            		
+            		UnitAction uAct = null;
+            		//train based in PriorityPosition
+            		uAct = trainUnitBasedInPriorityPosition(game, unit, a_utt.getUnitType(en.code()));
+            		if (uAct == null) {
+            			AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
+            			uAct = action.execute(game);
+            		}
 
-                if (uAct != null && uAct.getType() == 4) {
-                    return uAct;
-                }
+            		if (uAct != null && uAct.getType() == 4) {
+            			return uAct;
+            		}
+            	}
             }
         }
 

@@ -52,8 +52,8 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
                 //get base more closest
                 Unit closestBase = getClosestBase(game, player, unit);
                 //get target resource
-                Unit closestResource = getClosestResource(game, unit);
-
+                Unit closestResource = getClosestResource(game, unit,pf,resources);
+                
                 if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null
                         && closestBase != null && closestResource != null) {
 
@@ -100,15 +100,20 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
         }
     }
 
-    private Unit getClosestResource(GameState game, Unit unit) {
+    private Unit getClosestResource(GameState game, Unit unit, PathFinding pf, ResourceUsage ru) {
         Unit closestResource = null;
         int closestDistance = 0;
         for (Unit u2 : game.getUnits()) {
             if (u2.getType().isResource) {
                 int d = Math.abs(u2.getX() - unit.getX()) + Math.abs(u2.getY() - unit.getY());
                 if (closestResource == null || d < closestDistance) {
-                    closestResource = u2;
-                    closestDistance = d;
+                	if(pf.findPathToAdjacentPosition(unit, u2.getX()+u2.getY()*game.getPhysicalGameState().getWidth(), game, ru)!=null || 
+                			unit.getX()==u2.getX()+1 || unit.getX()==u2.getX()-1 || unit.getY()==u2.getY()+1 || unit.getY()==u2.getY()-1)
+                	{
+                		closestResource = u2;
+                        closestDistance = d;
+                	}
+                    
                 }
             }
         }
@@ -191,7 +196,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
                     //get base more closest
                     Unit closestBase = getClosestBase(game, player, unit);
                     //get target resource
-                    Unit closestResource = getClosestResource(game, unit);
+                    Unit closestResource = getClosestResource(game, unit,pf,resources);
 
                     if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null
                             && closestBase != null && closestResource != null) {
