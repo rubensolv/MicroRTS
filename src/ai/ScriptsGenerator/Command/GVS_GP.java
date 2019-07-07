@@ -120,7 +120,7 @@ public class GVS_GP {
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
         //UnitTypeTable utt = new UnitTYpeTableBattle();
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesTwoBarracksWithWalls16x16.xml", utt); 
@@ -131,7 +131,7 @@ public class GVS_GP {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8Obstacle.xml", utt);
@@ -147,12 +147,12 @@ public class GVS_GP {
         Chromosome chrom = new Chromosome(utt);
         
         
-        //AI ai1 = new RangedRush(utt);
+        //AI ai2 = new RangedRush(utt);
         //AI ai1 = new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6); //RR
         //AI ai1 = new WorkerRush(utt);
-        AI ai2 = new LightRush(utt);
+        AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
-        //AI ai1 = new PassiveAI();
+        //AI ai2 = new PassiveAI();
         //AI ai2 = new POLightRush(utt);
         //AI ai1 = new EconomyRush(utt);        
         //AI ai1 = new RangedDefense(utt);
@@ -271,7 +271,7 @@ public class GVS_GP {
         
         ICompiler compiler = new MainGPCompiler();  
         List<ICommand> commandsGP = new ArrayList<>();
-        commandsGP.addAll(compiler.CompilerCode(gp, utt));
+        commandsGP.addAll(compiler.CompilerCode(gp3, utt));
 //        commandsGP.addAll(compiler.CompilerCode(gp2, utt));
 //        commandsGP.addAll(compiler.CompilerCode(gp3, utt));
         //commandsGP.addAll(compiler.CompilerCode(gp4, utt));
@@ -313,13 +313,13 @@ public class GVS_GP {
         
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
-        //AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi2), "PGSR", 2, 200);
+        AI ai2 = new PGSSCriptChoiceRandom(utt, buildCommandsList(utt, commandsGP), "PGSR", 2, 200);
         
-        //AI ai2 = new PGSSCriptChoice(utt, decodeScripts2(utt, iScriptsAi1), "PGSR");
-        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                            "ManagerClosestEnemy", 0, buildCommandsList(utt, commandsGP), "GP"); //A3N
+       //AI ai2 = new PGSSCriptChoice(utt, buildCommandsList(utt, commandsGP), "PGSR");
+//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+//                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+//                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
+//                                            "ManagerClosestEnemy", 0, buildCommandsList(utt, commandsGP), "GP"); //A3N
         
   
         
