@@ -122,7 +122,7 @@ public class GVS_GP {
         //UnitTypeTable utt = new UnitTYpeTableBattle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesTwoBarracksWithWalls16x16.xml", utt); 
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesOneBarracksWithWalls16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
@@ -131,7 +131,7 @@ public class GVS_GP {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8Obstacle.xml", utt);
@@ -147,10 +147,10 @@ public class GVS_GP {
         Chromosome chrom = new Chromosome(utt);
         
         
-        //AI ai2 = new RangedRush(utt);
+        AI ai1 = new RangedRush(utt);
         //AI ai1 = new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6); //RR
         //AI ai1 = new WorkerRush(utt);
-        AI ai1 = new LightRush(utt);
+        //AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
         //AI ai2 = new PassiveAI();
         //AI ai2 = new POLightRush(utt);
@@ -259,7 +259,7 @@ public class GVS_GP {
         //Rushes
         String gp = "train(Worker,100,Down) harvest(1) attack(All,closest)";
         String gp2 = "train(Worker,1,Down) train(Light,100,Down) build(Barrack,1) harvest(1) attack(All,closest) ";
-        String gp3 = "train(Worker,1,Down) train(Ranged,100,Down) build(Barrack,1) harvest(1) attack(All,closest) ";
+        String gp3 = "train(Worker,1,EnemyDir) train(Ranged,100,EnemyDir) build(Barrack,1) harvest(1) ";
         String gp4 = "train(Worker,1,Down) train(Heavy,100,Down) build(Barrack,1) harvest(1) attack(All,closest) ";
         
         //Defenses
@@ -313,17 +313,21 @@ public class GVS_GP {
         
         //AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
         //AI ai2 = new SSSmRTSScriptChoiceRandom(utt, decodeScripts2(utt, iScriptsAi1), "PGSR", 2, 200);
-        AI ai2 = new PGSSCriptChoiceRandom(utt, buildCommandsList(utt, commandsGP), "PGSR", 2, 200);
+        //AI ai2 = new PGSSCriptChoiceRandom(utt, buildCommandsList(utt, commandsGP), "PGSR", 2, 200);
         
-       //AI ai2 = new PGSSCriptChoice(utt, buildCommandsList(utt, commandsGP), "PGSR");
-//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+        //AI ai2= buildCommandsList(utt, commandsGP).get(0);
+        
+        
+        List<AI> test=buildCommandsList(utt, commandsGP);
+        System.out.println("test "+test.size());
+        
+       AI ai2 = new PGSSCriptChoice(utt, buildCommandsList(utt, commandsGP), "PGSR");
+//        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 
 //                                            "ManagerClosestEnemy", 0, buildCommandsList(utt, commandsGP), "GP"); //A3N
         
-  
-        
-        //AI ai1= decodeScripts2(utt, iScriptsAi1).get(0);
+
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());
