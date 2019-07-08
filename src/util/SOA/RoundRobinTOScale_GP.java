@@ -18,6 +18,7 @@ import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -47,15 +48,20 @@ public class RoundRobinTOScale_GP {
     static AI[] strategies = null;
     private HashMap<BigDecimal, String> scriptsTable;
     String pathTableScripts;
+    String pathLogsGrammars;
     ICompiler compiler = new MainGPCompiler(); 
+    String portfolioGrammar0="";
+    String portfolioGrammar1="";
 
-    public RoundRobinTOScale_GP(String pathTableScripts) {
+    public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsGrammars) {
         this.pathTableScripts = pathTableScripts;
+        this.pathLogsGrammars = pathLogsGrammars;
         buildScriptsTable();
     }
 
     public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
         this.pathTableScripts = pathTableScripts;
+        this.pathLogsGrammars = pathLogsGrammars;
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -63,6 +69,10 @@ public class RoundRobinTOScale_GP {
 
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
+        
+        portfolioGrammar0="";
+        portfolioGrammar1="";
+        
 
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
@@ -124,6 +134,9 @@ public class RoundRobinTOScale_GP {
       
 //      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
 //      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+        
+      portfolioGrammar0=buildCompleteGrammar(utt, iScriptsAi1);
+      portfolioGrammar1=buildCompleteGrammar(utt, iScriptsAi2);
       
       AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                            0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
@@ -229,11 +242,25 @@ public class RoundRobinTOScale_GP {
         }
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
+        recordGrammars(Integer.toString(gs.winner()));
         //System.exit(0);
         return true;
     }
 
-    public void updateTableIfnecessary() {
+    private void recordGrammars(String winner) {
+		
+    	try(FileWriter fw = new FileWriter(pathLogsGrammars+"LogsGrammars.txt", true);
+    		    BufferedWriter bw = new BufferedWriter(fw);
+    		    PrintWriter out = new PrintWriter(bw))
+    		{
+    		    out.println(portfolioGrammar0+"/"+portfolioGrammar1+"="+winner);
+    		} catch (IOException e) {
+    		    //exception handling left as an exercise for the reader
+    		}
+		
+	}
+
+	public void updateTableIfnecessary() {
         int currentSizeTable = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "SizeTable.txt"))) {
@@ -266,6 +293,19 @@ public class RoundRobinTOScale_GP {
         }
 
         return scriptsAI;
+    }
+    
+    public String buildCompleteGrammar(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+        List<AI> scriptsAI = new ArrayList<>();
+        String portfolioGrammar="";
+
+        for (Integer idSc : iScripts) {
+            //System.out.println("tam tab"+scriptsTable.size());
+            //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
+        	portfolioGrammar=portfolioGrammar+scriptsTable.get(BigDecimal.valueOf(idSc)+";");
+        }
+
+        return portfolioGrammar;
     }
 
     public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
