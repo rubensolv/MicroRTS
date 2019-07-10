@@ -71,13 +71,17 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 
     private void getUnitsToHarvest(GameState game, int player, PlayerAction currentPlayerAction) {
     	
-    	//unitsID.clear();
+    	unitsID.clear();
     	//Remove units that arent of the player
+    	System.out.println("crazyMama "+player);
     	HashSet<Long> otherPlayerUnits = new HashSet<>();
         for (Long unID : unitsID) {
-            if (game.getUnit(unID).getPlayer() != player) {
-            	otherPlayerUnits.add(unID);
-            }
+        	if(game.getUnit(unID) != null)
+        	{
+        		if (game.getUnit(unID).getPlayer() != player) {
+        			otherPlayerUnits.add(unID);
+        		}
+        	}
         }  
         //if there is units to remove, remove
         if (!otherPlayerUnits.isEmpty()) {
