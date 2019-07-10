@@ -77,8 +77,8 @@ public class RoundRobinTOScale_GP {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                "maps/8x8/basesWorkers8x8A.xml"
-        		//"maps/NoWhereToRun9x8.xml"
+                //"maps/8x8/basesWorkers8x8A.xml"
+        		"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
@@ -137,6 +137,8 @@ public class RoundRobinTOScale_GP {
         
       portfolioGrammar0=buildCompleteGrammar(utt, iScriptsAi1);
       portfolioGrammar1=buildCompleteGrammar(utt, iScriptsAi2);
+      portfolioGrammar0=portfolioGrammar0.substring(0, portfolioGrammar0.length() - 1);
+      portfolioGrammar1=portfolioGrammar1.substring(0, portfolioGrammar1.length() - 1);
       
       AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
                                            0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
@@ -302,7 +304,7 @@ public class RoundRobinTOScale_GP {
         for (Integer idSc : iScripts) {
             //System.out.println("tam tab"+scriptsTable.size());
             //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-        	portfolioGrammar=portfolioGrammar+scriptsTable.get(BigDecimal.valueOf(idSc)+";");
+        	portfolioGrammar=portfolioGrammar+scriptsTable.get(BigDecimal.valueOf(idSc))+";";
         }
 
         return portfolioGrammar;
