@@ -153,11 +153,9 @@ public class PGSSCriptChoice extends AIWithComputationBudget implements Interrup
 
     @Override
     public PlayerAction getBestActionSoFar() throws Exception {
-
         //pego o melhor script do portfolio para ser a semente
         AI seedPlayer = getSeedPlayer(playerForThisComputation);
-        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);
-
+        AI seedEnemy = getSeedPlayer(1 - playerForThisComputation);        
         defaultScript = seedPlayer;
 
         UnitScriptData currentScriptData = new UnitScriptData(playerForThisComputation);
