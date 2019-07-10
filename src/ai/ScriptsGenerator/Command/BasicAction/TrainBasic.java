@@ -44,7 +44,7 @@ public class TrainBasic extends AbstractBasicAction {
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
         int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
-        if ((game.getPlayer(player).getResources() - resourcesUsed) > 0
+        if ((game.getPlayer(player).getResources() - resourcesUsed) >= valueOfUnitsToBuild(game, player)
                 && limitReached(game, player, currentPlayerAction)) {
             //get units basead in type to produce
             List<Unit> unitToBuild = getUnitsToBuild(game, player);
@@ -59,6 +59,7 @@ public class TrainBasic extends AbstractBasicAction {
                 }
             }
         }
+
         return currentPlayerAction;
     }
 
@@ -286,6 +287,16 @@ public class TrainBasic extends AbstractBasicAction {
         listParam += "}";
 
         return "{TrainBasic:{" + listParam + "}}";
+    }
+
+    private int valueOfUnitsToBuild(GameState game, int player) {
+        int v = 0;
+        List<Unit> unitToBuild = getUnitsToBuild(game, player);
+        for (Unit unit : unitToBuild) {
+            v += unit.getCost();
+        }
+        
+        return v;
     }
 
 }
