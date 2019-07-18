@@ -14,6 +14,7 @@ import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 import ai.core.AI;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
+import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
 
@@ -80,8 +81,8 @@ public class RoundRobinTOScale_GP {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
-        		"maps/NoWhereToRun9x8.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
+        		//"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
@@ -135,23 +136,23 @@ public class RoundRobinTOScale_GP {
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
       
-//      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
-//      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
+      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
         
       portfolioGrammar0=buildCompleteGrammar(utt, iScriptsAi1);
       portfolioGrammar1=buildCompleteGrammar(utt, iScriptsAi2);
       portfolioGrammar0=portfolioGrammar0.substring(0, portfolioGrammar0.length() - 1);
       portfolioGrammar1=portfolioGrammar1.substring(0, portfolioGrammar1.length() - 1);
       
-      AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
-      
-      AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
-                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
-                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
-                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
+//      AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+//                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+//                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
+//                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
+//      
+//      AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+//                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+//                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
+//                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
       
 //      AI ai1 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GAB");
 //      AI ai2 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "GAB");

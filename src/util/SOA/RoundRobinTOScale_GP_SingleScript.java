@@ -2,25 +2,21 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.ScriptsGenerator.Command;
+package util.SOA;
 
-import util.SOA.*;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
-import ai.abstraction.LightRush;
-import ai.abstraction.RangedRush;
-import ai.abstraction.WorkerRush;
+
 import ai.core.AI;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
-import gui.PhysicalGameStatePanel;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.JFrame;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
@@ -48,22 +43,29 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class GVS_RunBattle {
+public class RoundRobinTOScale_GP_SingleScript {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
     private HashMap<BigDecimal, String> scriptsTable;
     String pathTableScripts;
-    ICompiler compiler = new MainGPCompiler();
-    String portfolioGrammar0 = "";
-    String portfolioGrammar1 = "";
+    String pathLogsGrammars;
+    ICompiler compiler = new MainGPCompiler(); 
+    String portfolioGrammar0="";
+    String portfolioGrammar1="";
+    int maxLinesFileRecord=5064;
+    int counterlinesRecorded=0;
+    
 
-    public GVS_RunBattle(String pathTableScripts) {
+    public RoundRobinTOScale_GP_SingleScript(String pathTableScripts, String pathLogsGrammars) {
         this.pathTableScripts = pathTableScripts;
+        this.pathLogsGrammars = pathLogsGrammars;
         buildScriptsTable();
     }
 
-    public boolean run(String tupleAi1, String tupleAi2, int iMap) throws Exception {
+    public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
+        this.pathTableScripts = pathTableScripts;
+        this.pathLogsGrammars = pathLogsGrammars;
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -71,15 +73,16 @@ public class GVS_RunBattle {
 
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
-
-        portfolioGrammar0 = "";
-        portfolioGrammar1 = "";
+        
+        portfolioGrammar0="";
+        portfolioGrammar1="";
+        
 
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
-                "maps/NoWhereToRun9x8.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
+        		//"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
@@ -127,30 +130,33 @@ public class GVS_RunBattle {
 
         //check for possible updates in scriptsTable
         updateTableIfnecessary();
-        
-        AI ai2= new RangedRush(utt);
 
         //pgs 
         //pgs 
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-      	//AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
-      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
-        portfolioGrammar0 = buildCompleteGrammar(utt, iScriptsAi1);
-        portfolioGrammar1 = buildCompleteGrammar(utt, iScriptsAi2);
-        portfolioGrammar0 = portfolioGrammar0.substring(0, portfolioGrammar0.length() - 1);
-        portfolioGrammar1 = portfolioGrammar1.substring(0, portfolioGrammar1.length() - 1);
-
-//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
-//                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-//                new SimpleSqrtEvaluationFunction3(), true, utt,
-//                "ManagerClosestEnemy", 1, decodeScripts(utt, iScriptsAi1));
-//
-//        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
-//                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-//                new SimpleSqrtEvaluationFunction3(), true, utt,
-//                "ManagerClosestEnemy", 1, decodeScripts(utt, iScriptsAi2));
-
+      
+//      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
+//      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+      	
+      	AI ai1=decodeScripts(utt, iScriptsAi1).get(0);
+      	AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
+        
+      portfolioGrammar0=buildCompleteGrammar(utt, iScriptsAi1);
+      portfolioGrammar1=buildCompleteGrammar(utt, iScriptsAi2);
+      portfolioGrammar0=portfolioGrammar0.substring(0, portfolioGrammar0.length() - 1);
+      portfolioGrammar1=portfolioGrammar1.substring(0, portfolioGrammar1.length() - 1);
+      
+//      AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+//                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+//                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
+//                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi1));
+//      
+//      AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
+//                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
+//                                           new SimpleSqrtEvaluationFunction3(), true, utt, 
+//                                          "ManagerClosestEnemy", 1,decodeScripts(utt, iScriptsAi2));
+      
 //      AI ai1 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GAB");
 //      AI ai2 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "GAB");
 //      AI ai1 = new SABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "SAB");
@@ -172,7 +178,7 @@ public class GVS_RunBattle {
         log.add("Mapa= " + maps.get(iMap) + "\n");
 
         //método para fazer a troca dos players
-        JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
+        //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
         long startTime;
         long timeTemp;
@@ -215,7 +221,7 @@ public class GVS_RunBattle {
 
                 // simulate:
                 gameover = gs.cycle();
-                w.repaint();
+                //w.repaint();
                 nextTimeToUpdate += PERIOD;
             } else {
                 try {
@@ -243,11 +249,33 @@ public class GVS_RunBattle {
         if (gs.winner() == -1) {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
+        String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
+        gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
+        
+        if(counterlinesRecorded<maxLinesFileRecord)
+        {
+        	counterlinesRecorded=counterlinesRecorded+1;
+        	recordGrammars(Integer.toString(gs.winner()));
+        }
+        
         //System.exit(0);
         return true;
     }
-    
-    public void updateTableIfnecessary() {
+
+    private void recordGrammars(String winner) {
+		
+    	try(FileWriter fw = new FileWriter(pathLogsGrammars+"LogsGrammars.txt", true);
+    		    BufferedWriter bw = new BufferedWriter(fw);
+    		    PrintWriter out = new PrintWriter(bw))
+    		{
+    		    out.println(portfolioGrammar0+"/"+portfolioGrammar1+"="+winner);
+    		} catch (IOException e) {
+    		    //exception handling left as an exercise for the reader
+    		}
+		
+	}
+
+	public void updateTableIfnecessary() {
         int currentSizeTable = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "SizeTable.txt"))) {
@@ -281,15 +309,15 @@ public class GVS_RunBattle {
 
         return scriptsAI;
     }
-
+    
     public String buildCompleteGrammar(UnitTypeTable utt, ArrayList<Integer> iScripts) {
         List<AI> scriptsAI = new ArrayList<>();
-        String portfolioGrammar = "";
+        String portfolioGrammar="";
 
         for (Integer idSc : iScripts) {
             //System.out.println("tam tab"+scriptsTable.size());
             //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-            portfolioGrammar = portfolioGrammar + scriptsTable.get(BigDecimal.valueOf(idSc)) + ";";
+        	portfolioGrammar=portfolioGrammar+scriptsTable.get(BigDecimal.valueOf(idSc))+";";
         }
 
         return portfolioGrammar;
@@ -330,9 +358,35 @@ public class GVS_RunBattle {
         return scriptsTable;
     }
 
+    private void gravarLog(ArrayList<String> log, String tupleAi1, String tupleAi2, String IDMatch, Integer Generation, String pathLog) throws IOException {
+        if (!pathLog.endsWith("/")) {
+            pathLog += "/";
+        }
+        String nameArquivo = pathLog + "Eval_" + tupleAi1 + "_" + tupleAi2 + "_" + IDMatch + "_" + Generation + ".txt";
+        File arqLog = new File(nameArquivo);
+        if (!arqLog.exists()) {
+            arqLog.createNewFile();
+        }
+        //abre o arquivo e grava o log
+        try {
+            FileWriter arq = new FileWriter(arqLog, false);
+            PrintWriter gravarArq = new PrintWriter(arq);
+            for (String l : log) {
+                gravarArq.println(l);
+            }
+
+            gravarArq.flush();
+            gravarArq.close();
+            arq.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1");
+        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1");
         return aiscript;
     }
 }
