@@ -249,11 +249,11 @@ public class RoundRobinTOScale_GP {
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         
-        if(counterlinesRecorded<maxLinesFileRecord)
-        {
-        	counterlinesRecorded=counterlinesRecorded+1;
-        	recordGrammars(Integer.toString(gs.winner()));
-        }
+//        if(counterlinesRecorded<maxLinesFileRecord)
+//        {
+//        	counterlinesRecorded=counterlinesRecorded+1;
+//        	recordGrammars(Integer.toString(gs.winner()));
+//        }
         
         //System.exit(0);
         return true;
