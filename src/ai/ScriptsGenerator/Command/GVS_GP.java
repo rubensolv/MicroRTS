@@ -147,12 +147,12 @@ public class GVS_GP {
         Chromosome chrom = new Chromosome(utt);
         
         
-        AI ai1 = new RangedRush(utt);
+        //AI ai1 = new RangedRush(utt);
         //AI ai1 = new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6); //RR
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new LightRush(utt);
         //AI ai1 = new HeavyRush(utt);
-        //AI ai2 = new PassiveAI();
+        AI ai1 = new PassiveAI();
         //AI ai2 = new POLightRush(utt);
         //AI ai1 = new EconomyRush(utt);        
         //AI ai1 = new RangedDefense(utt);
@@ -257,6 +257,7 @@ public class GVS_GP {
 //          AI ai2 = new PassiveAI(utt);
         
         //Rushes
+        String gpT = "train(Worker,100,Down) harvest(1) attack(All,closest)";
         String gp = "train(Worker,100,Down) harvest(1) attack(All,closest)";
         String gp2 = "train(Worker,1,Down) train(Light,100,Down) build(Barrack,1) harvest(1) attack(All,closest) ";
         String gp3 = "train(Worker,1,EnemyDir) train(Ranged,100,EnemyDir) build(Barrack,1) harvest(1) ";
@@ -265,13 +266,17 @@ public class GVS_GP {
         //Defenses
         String gp6 = "train(Worker,1,Down) train(Light,100,Down) build(Barrack,1) harvest(1) if(HaveEnemiesinUnitsRange(All,u)) (attack(All,closest)) moveToCoord(All,4,4) ";
         
+        
+        String gpT0 = "train(Worker,4,Down) harvest(1) build(Barrack,1)";
+        String gpT1 = "train(Worker,4,Down) harvest(1) if(HaveQtdUnitsbyType(Worker,4)) (attack(All,closest))";
+        String gpT2 = "train(Worker,4,Down) harvest(1) if(HaveQtdUnitsbyType(Worker,3)) (build(Barrack,1))";
         //Economys
         
         
         
         ICompiler compiler = new MainGPCompiler();  
         List<ICommand> commandsGP = new ArrayList<>();
-        commandsGP.addAll(compiler.CompilerCode(gp3, utt));
+        commandsGP.addAll(compiler.CompilerCode(gpT, utt));
 //        commandsGP.addAll(compiler.CompilerCode(gp2, utt));
 //        commandsGP.addAll(compiler.CompilerCode(gp3, utt));
         //commandsGP.addAll(compiler.CompilerCode(gp4, utt));
@@ -321,7 +326,9 @@ public class GVS_GP {
         List<AI> test=buildCommandsList(utt, commandsGP);
         System.out.println("test "+test.size());
         
-       AI ai2 = new PGSSCriptChoice(utt, buildCommandsList(utt, commandsGP), "PGSR");
+        //AI ai2= buildCommandsList(utt, commandsGP).get(0);
+       AI ai2=new LightPGSSCriptChoice(utt, buildCommandsList(utt, commandsGP), 200, "GPP");
+         // AI ai2 = new PGSSCriptChoice(utt, buildCommandsList(utt, commandsGP), "PGSR");
 //        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                             0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
 //                                             new SimpleSqrtEvaluationFunction3(), true, utt, 

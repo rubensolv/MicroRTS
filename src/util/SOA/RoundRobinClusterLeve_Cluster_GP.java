@@ -133,22 +133,25 @@ public class RoundRobinClusterLeve_Cluster_GP {
         boolean gameover = false;
 
         if (pgs.getHeight() == 8) {
-            MAXCYCLES = 4000;
+            MAXCYCLES = 9000;
+        }
+        if (pgs.getHeight() == 9) {
+            MAXCYCLES = 9000;
         }
         if (pgs.getHeight() == 16) {
-            MAXCYCLES = 5000;
+            MAXCYCLES = 10000;
         }
         if (pgs.getHeight() == 24) {
-            MAXCYCLES = 6000;
+            MAXCYCLES = 11000;
         }
         if (pgs.getHeight() == 32) {
-            MAXCYCLES = 7000;
-        }
-        if (pgs.getHeight() == 64) {
             MAXCYCLES = 12000;
         }
+        if (pgs.getHeight() == 64) {
+            MAXCYCLES = 17000;
+        }
         //BEST AAAI for 8x8
-        String bestGAAAAI = "198;272;100;168;78;86;27;120;279;93;";
+        String bestGAAAAI = "274;199;46;122;91;";
         List<AI> ais;
         ais = new ArrayList<>(Arrays.asList(
                 new AHTNAI(utt),
@@ -161,16 +164,18 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
+                new LightPGSSCriptChoice(utt, decodeScripts(utt, bestGAAAAI), 200, "GAAAAI"),
+                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2440;5852;2957;4429;3213;5556;5679;5680;2446;3184;5306;3339;4974;5558;5307;"))), 200, "GPP")
                 //new SCVPlus(utt),
                 //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
                 //        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
                 //        decodeScripts(utt, bestGAAAAI), "A3N_GA-3AI"), //12
-                /*
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15187;15781;15914;14726;11902;15767;14569;14658;"))), "GA-run2-400") /*,
-                
-                 */
+//                /*
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15187;15781;15914;14726;11902;15767;14569;14658;"))), "GA-run2-400") /*,
+//                
+//                 */
                 //bg1
                 //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
                 //new SSSmRTSScriptChoiceRandom(utt, decodeScripts(utt, GA_SSS), "GA_SSS",2,200),
@@ -188,33 +193,33 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
                         decodeScripts(utt, bestGAAAAI), "GAAAAI"),*/
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("254;687;637;664;931;"))), "GA-0"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;4149;2050;4521;4569;3132;3478;3634;2326;4152;2049;4160;3725;2707;2500;3867;4300;4570;4289;4410;4290;3922;3524;3257;"))), "GA-50"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2470;839;7514;7017;6359;7214;5249;6967;7707;2185;6711;6918;4410;2050;7765;6426;7487;7567;"))), "GA-100"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;10414;10804;10031;8651;8038;4410;9051;10081;10165;10307;10483;9976;9784;8563;10545;"))), "GA-150"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;13103;13512;7704;12992;12185;12080;12454;12839;13106;13291;13292;"))), "GA-200"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;12839;13814;13826;14895;14860;9507;15006;15750;15753;15938;15963;14689;15752;15216;15063;15499;15630;15631;"))), "GA-250"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;16647;12839;14895;15963;15006;14689;16509;17916;17917;"))), "GA-300"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;19221;12839;14895;19100;15006;20483;19712;20340;20232;14689;18348;20277;19925;"))), "GA-350"),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("20738;21331;18149;19100;15006;20844;17307;16780;"))), "GA-400")
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("254;687;637;664;931;"))), "GA-0"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;4149;2050;4521;4569;3132;3478;3634;2326;4152;2049;4160;3725;2707;2500;3867;4300;4570;4289;4410;4290;3922;3524;3257;"))), "GA-50"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2470;839;7514;7017;6359;7214;5249;6967;7707;2185;6711;6918;4410;2050;7765;6426;7487;7567;"))), "GA-100"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;10414;10804;10031;8651;8038;4410;9051;10081;10165;10307;10483;9976;9784;8563;10545;"))), "GA-150"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("839;13103;13512;7704;12992;12185;12080;12454;12839;13106;13291;13292;"))), "GA-200"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;12839;13814;13826;14895;14860;9507;15006;15750;15753;15938;15963;14689;15752;15216;15063;15499;15630;15631;"))), "GA-250"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;16647;12839;14895;15963;15006;14689;16509;17916;17917;"))), "GA-300"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15166;19221;12839;14895;19100;15006;20483;19712;20340;20232;14689;18348;20277;19925;"))), "GA-350"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("20738;21331;18149;19100;15006;20844;17307;16780;"))), "GA-400")
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -291,7 +296,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < 5000) && (duracao.toMinutes() < 7));
+        } while (!gameover && (gs.getTime() < MAXCYCLES));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 

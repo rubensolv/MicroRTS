@@ -43,7 +43,7 @@ import rts.units.UnitTypeTable;
  * @author rubens Classe responsável por rodar os confrontos entre duas IA's.
  * Ambiente totalmente observável.
  */
-public class RoundRobinTOScale_GP {
+public class RoundRobinTOScale_GP_SingleScript {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
@@ -57,7 +57,7 @@ public class RoundRobinTOScale_GP {
     int counterlinesRecorded=0;
     
 
-    public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsGrammars) {
+    public RoundRobinTOScale_GP_SingleScript(String pathTableScripts, String pathLogsGrammars) {
         this.pathTableScripts = pathTableScripts;
         this.pathLogsGrammars = pathLogsGrammars;
         buildScriptsTable();
@@ -136,8 +136,11 @@ public class RoundRobinTOScale_GP {
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
       
-      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
-      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+//      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
+//      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+      	
+      	AI ai1=decodeScripts(utt, iScriptsAi1).get(0);
+      	AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
         
       portfolioGrammar0=buildCompleteGrammar(utt, iScriptsAi1);
       portfolioGrammar1=buildCompleteGrammar(utt, iScriptsAi2);
@@ -249,11 +252,11 @@ public class RoundRobinTOScale_GP {
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         
-//        if(counterlinesRecorded<maxLinesFileRecord)
-//        {
-//        	counterlinesRecorded=counterlinesRecorded+1;
-//        	recordGrammars(Integer.toString(gs.winner()));
-//        }
+        if(counterlinesRecorded<maxLinesFileRecord)
+        {
+        	counterlinesRecorded=counterlinesRecorded+1;
+        	recordGrammars(Integer.toString(gs.winner()));
+        }
         
         //System.exit(0);
         return true;
