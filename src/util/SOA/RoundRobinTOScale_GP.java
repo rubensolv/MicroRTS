@@ -51,9 +51,6 @@ public class RoundRobinTOScale_GP {
     String pathTableScripts;
     String pathLogsGrammars;
     ICompiler compiler = new MainGPCompiler(); 
-    String portfolioGrammar0="";
-    String portfolioGrammar1="";
-    int maxLinesFileRecord=5064;
     int counterlinesRecorded=0;
     
 
@@ -64,8 +61,6 @@ public class RoundRobinTOScale_GP {
     }
 
     public boolean run(String tupleAi1, String tupleAi2, Integer IDMatch, Integer Generation, String pathLog, int iMap) throws Exception {
-        this.pathTableScripts = pathTableScripts;
-        this.pathLogsGrammars = pathLogsGrammars;
         ArrayList<String> log = new ArrayList<>();
         //controle de tempo
         Instant timeInicial = Instant.now();
@@ -73,9 +68,6 @@ public class RoundRobinTOScale_GP {
 
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
-        
-        portfolioGrammar0="";
-        portfolioGrammar1="";
         
 
         List<String> maps = new ArrayList<>(Arrays.asList(
@@ -139,10 +131,6 @@ public class RoundRobinTOScale_GP {
       	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
       	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
         
-      portfolioGrammar0=buildCompleteGrammar(utt, iScriptsAi1);
-      portfolioGrammar1=buildCompleteGrammar(utt, iScriptsAi2);
-      portfolioGrammar0=portfolioGrammar0.substring(0, portfolioGrammar0.length() - 1);
-      portfolioGrammar1=portfolioGrammar1.substring(0, portfolioGrammar1.length() - 1);
       
 //      AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
 //                                           0.0f, 0.4f, 0, new RandomBiasedAI(utt), 
@@ -249,28 +237,9 @@ public class RoundRobinTOScale_GP {
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         
-//        if(counterlinesRecorded<maxLinesFileRecord)
-//        {
-//        	counterlinesRecorded=counterlinesRecorded+1;
-//        	recordGrammars(Integer.toString(gs.winner()));
-//        }
-        
         //System.exit(0);
         return true;
     }
-
-    private void recordGrammars(String winner) {
-		
-    	try(FileWriter fw = new FileWriter(pathLogsGrammars+"LogsGrammars.txt", true);
-    		    BufferedWriter bw = new BufferedWriter(fw);
-    		    PrintWriter out = new PrintWriter(bw))
-    		{
-    		    out.println(portfolioGrammar0+"/"+portfolioGrammar1+"="+winner);
-    		} catch (IOException e) {
-    		    //exception handling left as an exercise for the reader
-    		}
-		
-	}
 
 	public void updateTableIfnecessary() {
         int currentSizeTable = 0;
