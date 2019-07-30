@@ -13,6 +13,8 @@ import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.ICompiler;
+import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.CoordinatesParam;
 import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
@@ -44,16 +46,19 @@ public class ChromosomeAI extends AI{
     List<ICommand> commands = new ArrayList<>();
     UnitTypeTable utt;
     String name;
+    String originalGrammar;
+    ICompiler compiler = new MainGPCompiler();
 
     public ChromosomeAI(UnitTypeTable utt) {
         this.utt = utt;
 
     }
     
-    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name) {
+    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar) {
         this.utt = utt;
         this.commands = commands;
         this.name = name;
+        this.originalGrammar=originalGrammar;
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -74,7 +79,13 @@ public class ChromosomeAI extends AI{
 
     @Override
     public AI clone() {
-        return this;
+        return buildCommandsIA(utt, this.originalGrammar);
+    }
+    
+    private AI buildCommandsIA(UnitTypeTable utt, String code) {
+        List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code);
+        return aiscript;
     }
 
     @Override

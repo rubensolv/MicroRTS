@@ -301,7 +301,7 @@ public class RoundRobinTOScale_GP {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "");
 
         return aiscript;
     }
@@ -355,7 +355,7 @@ public class RoundRobinTOScale_GP {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1");
+        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1", code);
         return aiscript;
     }
 }

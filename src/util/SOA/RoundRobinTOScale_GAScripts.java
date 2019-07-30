@@ -287,7 +287,7 @@ public class RoundRobinTOScale_GAScripts {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1","");
 
         return aiscript;
     }

@@ -461,7 +461,7 @@ public class GameVisualSimulationTest {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","");
 
         return aiscript;
     }
@@ -475,7 +475,7 @@ public class GameVisualSimulationTest {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","");
         List<AI> scriptsAI = new ArrayList<>();
         scriptsAI.add(aiscript);
         return scriptsAI;
