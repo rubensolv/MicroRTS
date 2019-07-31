@@ -5,6 +5,7 @@
 package ai.ScriptsGenerator.Command;
 
 import util.SOA.*;
+import ai.PassiveAI;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
@@ -55,8 +56,6 @@ public class GVS_RunBattle {
     private HashMap<BigDecimal, String> scriptsTable;
     String pathTableScripts;
     ICompiler compiler = new MainGPCompiler();
-    String portfolioGrammar0 = "";
-    String portfolioGrammar1 = "";
 
     public GVS_RunBattle(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
@@ -72,15 +71,13 @@ public class GVS_RunBattle {
         log.add("Tupla A1 = " + tupleAi1);
         log.add("Tupla A2 = " + tupleAi2);
 
-        portfolioGrammar0 = "";
-        portfolioGrammar1 = "";
-
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
-                "maps/NoWhereToRun9x8.xml"
+                //"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
+        		"maps/16x16/basesWorkers16x16A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -128,18 +125,16 @@ public class GVS_RunBattle {
         //check for possible updates in scriptsTable
         updateTableIfnecessary();
         
-        AI ai2= new RangedRush(utt);
+        AI ai1= new PassiveAI(utt);
 
         //pgs 
         //pgs 
+        
+        AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
       	//AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
-      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
-        portfolioGrammar0 = buildCompleteGrammar(utt, iScriptsAi1);
-        portfolioGrammar1 = buildCompleteGrammar(utt, iScriptsAi2);
-        portfolioGrammar0 = portfolioGrammar0.substring(0, portfolioGrammar0.length() - 1);
-        portfolioGrammar1 = portfolioGrammar1.substring(0, portfolioGrammar1.length() - 1);
+//      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
 
 //        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
 //                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
@@ -304,7 +299,7 @@ public class GVS_RunBattle {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "");
 
         return aiscript;
     }
@@ -332,7 +327,7 @@ public class GVS_RunBattle {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1");
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code);
         return aiscript;
     }
 }

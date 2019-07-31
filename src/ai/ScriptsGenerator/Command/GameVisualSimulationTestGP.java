@@ -455,7 +455,7 @@ public class GameVisualSimulationTestGP {
     
     private static AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1");
+        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1",code);
         return aiscript;
     }
     
@@ -469,7 +469,7 @@ public class GameVisualSimulationTestGP {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","");
 
         return aiscript;
     }
@@ -483,7 +483,7 @@ public class GameVisualSimulationTestGP {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1");
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","");
         List<AI> scriptsAI = new ArrayList<>();
         scriptsAI.add(aiscript);
         return scriptsAI;
