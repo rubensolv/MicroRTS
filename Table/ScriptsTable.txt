@@ -1,6 +1,2 @@
-0 train(Worker,1,Down) build(Base,1) 
-1 train(Worker,5,Down) harvest(2) if(HaveQtdUnitsbyType(Worker,5)) (moveaway(Worker)) attack(All,farthest) 
-2 train(Worker,100,EnemyDir) harvest(1) attack(All,closest)
-3 train(Worker,2,EnemyDir) harvest(1) build(Barrack,3) build(Base,1) if(HaveQtdUnitsbyType(Barrack,3)) (train(Ranged,100,EnemyDir))
-4 train(Worker,1,EnemyDir) train(Ranged,100,EnemyDir) build(Barrack,1) harvest(1) attack(Ranged,closest) 
-5 train(Worker,1,EnemyDir) train(Heavy,100,EnemyDir) build(Barrack,1) harvest(1) attack(Heavy,closest) 
+0 train(Worker,2,Down) harvest(1) build(Barrack,1) moveToUnit(All,Enemy,mostHealthy) if(HaveEnemiesinUnitsRange(Worker)) (train(Ranged,2,EnemyDir)) (train(Light,1,EnemyDir))
+1 train(Worker,2,Down) harvest(1) build(Barrack,1) moveToUnit(Light,Enemy,mostHealthy) if(HaveEnemiesinUnitsRange(Light)) (train(Ranged,2,EnemyDir)) (train(Light,1,EnemyDir))
