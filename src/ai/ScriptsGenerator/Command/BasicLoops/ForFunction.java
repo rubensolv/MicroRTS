@@ -43,7 +43,7 @@ public class ForFunction implements ICommand{
     }
 
     public void setCommandsFor(List<ICommand> commandsFor) {
-        this.commandsFor = commandsFor;
+        this.commandsFor.addAll(commandsFor);
     }
 
     private Iterable<Unit> getAllyUnits(GameState game, int player) {

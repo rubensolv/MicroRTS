@@ -63,7 +63,7 @@ public class ChromosomeAI extends AI{
 
     public PlayerAction getAction(int player, GameState gs) {
         PlayerAction currentActions = new PlayerAction();
-        PathFinding pf = new AStarPathFinding();
+        PathFinding pf = new AStarPathFinding();        
 
         for (ICommand command : commands) {
             currentActions = command.getAction(gs, player, currentActions, pf, utt);

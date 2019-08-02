@@ -15,7 +15,7 @@ public class GVS_MultiScripts {
         GVS_RunBattle run = new GVS_RunBattle(pathTableScripts);
         
         String tupleAi1 = "2;";
-        String tupleAi2 = "1;";
+        String tupleAi2 = "2;";
         int iMap = 0;
         run.run(tupleAi1, tupleAi2, iMap);
     }

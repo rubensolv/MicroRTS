@@ -91,6 +91,9 @@ public class MoveToCoordinatesBasic extends AbstractBasicAction implements IUnit
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly) {
+        if(unAlly != null && currentPlayerAction.getAction(unAlly) != null){
+            return currentPlayerAction ;
+        }
         ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
