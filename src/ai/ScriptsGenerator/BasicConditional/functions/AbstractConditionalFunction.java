@@ -36,6 +36,17 @@ public abstract class AbstractConditionalFunction implements IConditionalFunctio
         }
         return unitAllys;
     }
+    
+    protected Iterable<Unit> getPotentialUnitsSimpleWay(GameState game, PlayerAction currentPlayerAction, int player) {
+        ArrayList<Unit> unitAllys = new ArrayList<>();
+        for (Unit u : game.getUnits()) {
+            if(u.getPlayer() == player && isUnitControlledByParam(u)){
+                unitAllys.add(u);
+            }
+        }
+        return unitAllys;
+    }
+    
     protected boolean isUnitControlledByParam(Unit u) {
         List<UnitTypeParam> unType = getTypeUnitFromParam();
         for (UnitTypeParam unitTypeParam : unType) {
