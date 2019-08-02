@@ -5,8 +5,10 @@
  */
 package ai.ScriptsGenerator.BasicConditional.functions;
 
+import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -36,12 +38,14 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
     }
 
      protected ArrayList<Unit> getAllyUnitsHarvesting(GameState game, PlayerAction currentPlayerAction, int player) {
-        ArrayList<Unit> unitAllys = new ArrayList<>();
+    	 HarvestBasic hb =new HarvestBasic(); 
+    	 HashSet<Long> unitsID = hb.unitsID;
+    	ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player && currentPlayerAction.getAction(u)!=null){
-            	if(currentPlayerAction.getAction(u).getType()==2 || currentPlayerAction.getAction(u).getType()==3 )
+            //if(u.getPlayer() == player && currentPlayerAction.getAction(u)!=null){
+            	if(unitsID.contains(u.getID()))
             		unitAllys.add(u);
-            }
+            //}
         }
         return unitAllys;
     }

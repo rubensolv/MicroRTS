@@ -1,2 +1,2 @@
-0 train(Worker,2,Down) harvest(1) build(Barrack,1) moveToUnit(All,Enemy,mostHealthy) if(HaveEnemiesinUnitsRange(Worker)) (train(Ranged,2,EnemyDir)) (train(Light,1,EnemyDir))
-1 train(Worker,2,Down) harvest(1) build(Barrack,1) moveToUnit(Light,Enemy,mostHealthy) if(HaveEnemiesinUnitsRange(Light)) (train(Ranged,2,EnemyDir)) (train(Light,1,EnemyDir))
+0 train(Worker,2,Down) train(Light,100,EnemyDir) harvest(1) build(Barrack,1) for(u) (moveToUnit(All,Enemy,mostHealthy,u) if(HaveEnemiesinUnitsRange(Light,u)) (attack(Light,weakest))
+1 train(Worker,2,Down) train(Light,100,EnemyDir) harvest(1) build(Barrack,1) for(u) (moveToUnit(All,Enemy,mostHealthy,u)) 

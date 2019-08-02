@@ -53,8 +53,8 @@ public class HaveUnitsStrongest extends AbstractConditionalFunction {
         PhysicalGameState pgs = game.getPhysicalGameState();
 
         //now whe iterate for all ally units in order to discover wich one satisfy the condition
-        for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
-            if (currentPlayerAction.getAction(unAlly) == null) {
+        for (Unit unAlly : getPotentialUnitsSimpleWay(game, currentPlayerAction, player)) {
+           // if (currentPlayerAction.getAction(unAlly) == null) {
 
                 for (Unit u2 : pgs.getUnits()) {
 
@@ -70,7 +70,7 @@ public class HaveUnitsStrongest extends AbstractConditionalFunction {
                     }
 
                 }
-            }
+           // }
         }
 
         return false;
@@ -80,7 +80,7 @@ public class HaveUnitsStrongest extends AbstractConditionalFunction {
         PhysicalGameState pgs = game.getPhysicalGameState();
 
         //now whe iterate for all ally units in order to discover wich one satisfy the condition
-        if (currentPlayerAction.getAction(unAlly) == null) {
+        //if (currentPlayerAction.getAction(unAlly) == null) {
 
             for (Unit u2 : pgs.getUnits()) {
 
@@ -96,7 +96,7 @@ public class HaveUnitsStrongest extends AbstractConditionalFunction {
                 }
 
             }
-        }
+        //}
 
         return false;
     }
