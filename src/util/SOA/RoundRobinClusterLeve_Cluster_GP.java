@@ -73,6 +73,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -387,7 +388,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>());
 
         return aiscript;
     }
@@ -426,7 +427,8 @@ public class RoundRobinClusterLeve_Cluster_GP {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code);
+        HashSet<String> usedCommands=new HashSet<String> ();
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
         return aiscript;
     }
 }

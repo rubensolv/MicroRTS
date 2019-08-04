@@ -20,6 +20,7 @@ import ai.abstraction.AbstractAction;
 import ai.abstraction.Attack;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import rts.GameState;
@@ -42,7 +43,7 @@ public class NAllyUnitsAttacking extends AbstractBooleanAction {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt,HashSet<String> usedCommands) {
         utt = a_utt;
         ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
@@ -52,7 +53,7 @@ public class NAllyUnitsAttacking extends AbstractBooleanAction {
 
         //here we validate if there are x ally units of type t in the map
         if (getAllyUnitsAttacking(game, currentPlayerAction, player).size() >= getQuantityFromParam().getQuantity()) {
-            currentPlayerAction = appendCommands(player, game, currentPlayerAction);
+            currentPlayerAction = appendCommands(player, game, currentPlayerAction,usedCommands);
         }
 
         return currentPlayerAction;

@@ -12,7 +12,8 @@ public class GVS_MultiScripts {
 
     public static void main(String args[]) throws Exception {
         String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
-        GVS_RunBattle run = new GVS_RunBattle(pathTableScripts);
+        String pathLogsUsedCommands = System.getProperty("user.dir").concat("/LogsUsedCommands/");
+        GVS_RunBattle run = new GVS_RunBattle(pathTableScripts,pathLogsUsedCommands);
         
         String tupleAi1 = "2;";
         String tupleAi2 = "2;";

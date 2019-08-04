@@ -5,6 +5,9 @@
  */
 package ai.ScriptsGenerator.CommandInterfaces;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 import ai.abstraction.pathfinding.PathFinding;
 import rts.GameState;
 import rts.PlayerAction;
@@ -15,5 +18,5 @@ import rts.units.UnitTypeTable;
  * @author rubens and julian
  */
 public interface ICommand{
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt);
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> commandsUsed);
 }

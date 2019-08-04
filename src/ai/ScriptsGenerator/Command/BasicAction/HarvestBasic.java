@@ -31,10 +31,12 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 
     public static final HashSet<Long> unitsID = new HashSet<>();
     boolean needUnit = false;
+    String originalPieceGrammar;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-        ResourceUsage resources = new ResourceUsage();
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt,HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar());
+    	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst
         if (!hasResources(game)) {
@@ -194,8 +196,9 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u) {
-        ResourceUsage resources = new ResourceUsage();
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar()+")");
+    	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst
         if (!hasResources(game)) {
@@ -231,5 +234,19 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
         }
         return currentPlayerAction;
     }
+    
+	/**
+	 * @return the originalPieceGrammar
+	 */
+	public String getOriginalPieceGrammar() {
+		return originalPieceGrammar;
+	}
+
+	/**
+	 * @param originalPieceGrammar the originalPieceGrammar to set
+	 */
+	public void setOriginalPieceGrammar(String originalPieceGrammar) {
+		this.originalPieceGrammar = originalPieceGrammar;
+	}
 
 }

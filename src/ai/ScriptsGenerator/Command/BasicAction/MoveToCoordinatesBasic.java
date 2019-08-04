@@ -16,6 +16,7 @@ import ai.abstraction.Attack;
 import ai.abstraction.Move;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import rts.GameState;
@@ -33,10 +34,12 @@ import rts.units.UnitTypeTable;
 public class MoveToCoordinatesBasic extends AbstractBasicAction implements IUnitCommand {
 
     boolean needUnit = false;
+    String originalPieceGrammar;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-        ResourceUsage resources = new ResourceUsage();
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar());
+    	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
@@ -90,8 +93,9 @@ public class MoveToCoordinatesBasic extends AbstractBasicAction implements IUnit
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly) {
-        if(unAlly != null && currentPlayerAction.getAction(unAlly) != null){
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly, HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar()+")");
+    	if(unAlly != null && currentPlayerAction.getAction(unAlly) != null){
             return currentPlayerAction ;
         }
         ResourceUsage resources = new ResourceUsage();
@@ -118,5 +122,19 @@ public class MoveToCoordinatesBasic extends AbstractBasicAction implements IUnit
         }
         return currentPlayerAction;
     }
+    
+	/**
+	 * @return the originalPieceGrammar
+	 */
+	public String getOriginalPieceGrammar() {
+		return originalPieceGrammar;
+	}
+
+	/**
+	 * @param originalPieceGrammar the originalPieceGrammar to set
+	 */
+	public void setOriginalPieceGrammar(String originalPieceGrammar) {
+		this.originalPieceGrammar = originalPieceGrammar;
+	}
 
 }

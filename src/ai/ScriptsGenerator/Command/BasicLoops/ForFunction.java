@@ -9,6 +9,7 @@ import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.CommandInterfaces.IUnitCommand;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -24,14 +25,14 @@ public class ForFunction implements ICommand{
     protected List<ICommand> commandsFor = new ArrayList<>();
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
         for(Unit u : getAllyUnits(game, player)){
             for (ICommand commandFor : commandsFor) {
                 if(commandFor instanceof IUnitCommand && ((IUnitCommand)commandFor).isNecessaryUnit()){
                     IUnitCommand commandWithUnit = (IUnitCommand)commandFor;
-                    currentPlayerAction = commandWithUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                    currentPlayerAction = commandWithUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u, usedCommands);
                 }else{
-                    currentPlayerAction = commandFor.getAction(game, player, currentPlayerAction, pf, a_utt);
+                    currentPlayerAction = commandFor.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
                 }
             }
         }

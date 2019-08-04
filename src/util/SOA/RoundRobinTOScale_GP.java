@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
 import rts.PhysicalGameState;
@@ -49,14 +50,15 @@ public class RoundRobinTOScale_GP {
     static AI[] strategies = null;
     private HashMap<BigDecimal, String> scriptsTable;
     String pathTableScripts;
-    String pathLogsGrammars;
+    String pathLogsUsedCommands;
     ICompiler compiler = new MainGPCompiler(); 
     int counterlinesRecorded=0;
+    HashSet<String> usedCommands;
     
 
-    public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsGrammars) {
+    public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsUsedCommands) {
         this.pathTableScripts = pathTableScripts;
-        this.pathLogsGrammars = pathLogsGrammars;
+        this.pathLogsUsedCommands = pathLogsUsedCommands;
         buildScriptsTable();
     }
 
@@ -128,8 +130,10 @@ public class RoundRobinTOScale_GP {
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
       
-      	AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
-      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+        List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi1);
+        List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi2);
+      	AI ai1 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
+      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun2,200, "PGSR");
       	
 //      	AI ai1=decodeScripts(utt, iScriptsAi1).get(0);
 //      	AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
@@ -241,6 +245,8 @@ public class RoundRobinTOScale_GP {
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         
         //System.exit(0);
+        recordGrammars(scriptsRun1);
+        recordGrammars(scriptsRun2);
         return true;
     }
 
@@ -301,7 +307,7 @@ public class RoundRobinTOScale_GP {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>());
 
         return aiscript;
     }
@@ -355,7 +361,27 @@ public class RoundRobinTOScale_GP {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1", code);
+        usedCommands=new HashSet<String> ();
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
         return aiscript;
     }
+    
+    private void recordGrammars(List<AI> scriptsRun) {
+		
+    	try(FileWriter fw = new FileWriter(pathLogsUsedCommands+"LogsGrammars.txt", true);
+    		    BufferedWriter bw = new BufferedWriter(fw);
+    			PrintWriter out = new PrintWriter(bw))
+    		{	
+    		for (AI s : scriptsRun) {
+    			for(String str :((ChromosomeAI)s).usedCommands)
+    			{
+    				out.println(str);
+    			}
+    		}
+	   
+    		} catch (IOException e) {
+    		    //exception handling left as an exercise for the reader
+    		}
+		
+	}
 }

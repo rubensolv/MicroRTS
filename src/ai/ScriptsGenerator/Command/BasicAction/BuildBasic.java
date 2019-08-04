@@ -47,10 +47,12 @@ import util.Pair;
 public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
     
     boolean needUnit = false;
+    String originalPieceGrammar;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-        //get the unit that it will be builded 
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar());
+    	//get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
             //verify if the limit of units are reached
@@ -378,8 +380,9 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit workToBuild) {
-        //get the unit that it will be builded 
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit workToBuild, HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar()+")");
+    	//get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
             //verify if the limit of units are reached
@@ -401,4 +404,18 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
         }
         return currentPlayerAction;
     }
+
+	/**
+	 * @return the originalPieceGrammar
+	 */
+	public String getOriginalPieceGrammar() {
+		return originalPieceGrammar;
+	}
+
+	/**
+	 * @param originalPieceGrammar the originalPieceGrammar to set
+	 */
+	public void setOriginalPieceGrammar(String originalPieceGrammar) {
+		this.originalPieceGrammar = originalPieceGrammar;
+	}
 }
