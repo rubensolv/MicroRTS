@@ -134,11 +134,14 @@ public class GVS_RunBattle {
         //pgs 
         //pgs 
         
-        List<AI> scriptsRun=decodeScripts(utt, iScriptsAi2);
-        AI ai2=scriptsRun.get(0);
+        List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi2);
+        //AI ai2=scriptsRun1.get(0);
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-      	//AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
+        //List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi1);
+        //List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi2);
+      	//AI ai1 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
+      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
         
 //      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun,200, "PGSR");
 
@@ -230,7 +233,7 @@ public class GVS_RunBattle {
 
         } while (!gameover && (gs.getTime() < MAXCYCLES));
 
-        usedCommands.forEach(System.out::println);
+        
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
         log.add("Tempos de AI 1 = " + ai1.toString());
@@ -245,7 +248,8 @@ public class GVS_RunBattle {
         if (gs.winner() == -1) {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
-        recordGrammars(scriptsRun);
+        recordGrammars(scriptsRun1);
+        //recordGrammars(scriptsRun2);
         //System.exit(0);
         return true;
     }
@@ -344,9 +348,15 @@ public class GVS_RunBattle {
 		
     	try(FileWriter fw = new FileWriter(pathLogsUsedCommands+"LogsGrammars.txt", true);
     		    BufferedWriter bw = new BufferedWriter(fw);
-    		    PrintWriter out = new PrintWriter(bw))
-    		{
-    		    out.println(scriptsRun);
+    			PrintWriter out = new PrintWriter(bw))
+    		{	
+    		for (AI s : scriptsRun) {
+    			for(String str :((ChromosomeAI)s).usedCommands)
+    			{
+    				out.println(str);
+    			}
+    		}
+	   
     		} catch (IOException e) {
     		    //exception handling left as an exercise for the reader
     		}
