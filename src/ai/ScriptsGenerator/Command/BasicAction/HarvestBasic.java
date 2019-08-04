@@ -29,7 +29,7 @@ import util.Pair;
  */
 public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 
-    public static final HashSet<Long> unitsID = new HashSet<>();
+    public final HashSet<Long> unitsID = new HashSet<>();
     boolean needUnit = false;
     String originalPieceGrammar;
 
