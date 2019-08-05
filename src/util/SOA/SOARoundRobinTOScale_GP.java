@@ -20,11 +20,12 @@ public class SOARoundRobinTOScale_GP {
 
     private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
     private static final String pathLogsGrammars = System.getProperty("user.dir").concat("/LogsGrammars/");
-    private static final String pathLogsUsedCommands = System.getProperty("user.dir").concat("/LogsUsedCommands/");
+    private static String pathLogsUsedCommands="";
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
+        pathLogsUsedCommands = args[2];
         //String pathSOA = "/home/rubens/cluster/DeckEvaluation/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/DeckEvaluation/logs/";
         int qtdMapas = 1;

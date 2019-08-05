@@ -350,12 +350,17 @@ public class GVS_RunBattle {
     		    BufferedWriter bw = new BufferedWriter(fw);
     			PrintWriter out = new PrintWriter(bw))
     		{	
+    		HashSet<String> completeSet=new HashSet<String>();
+    		
     		for (AI s : scriptsRun) {
-    			for(String str :((ChromosomeAI)s).usedCommands)
-    			{
-    				out.println(str);
-    			}
+    			completeSet.addAll(((ChromosomeAI)s).usedCommands);
     		}
+
+    		for(String str :completeSet)
+    		{
+    			out.println(str);
+    		}
+
 	   
     		} catch (IOException e) {
     		    //exception handling left as an exercise for the reader

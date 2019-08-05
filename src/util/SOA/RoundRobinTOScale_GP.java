@@ -245,8 +245,7 @@ public class RoundRobinTOScale_GP {
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         
         //System.exit(0);
-        recordGrammars(scriptsRun1);
-        recordGrammars(scriptsRun2);
+        recordGrammars(joinGrammars(scriptsRun1,scriptsRun2));
         return true;
     }
 
@@ -366,18 +365,38 @@ public class RoundRobinTOScale_GP {
         return aiscript;
     }
     
-    private void recordGrammars(List<AI> scriptsRun) {
+    private HashSet<String> joinGrammars(List<AI> scriptsRun1, List<AI> scriptsRun2)
+    {
+    	HashSet<String> completeSet=new HashSet<String>();
 		
+		for (AI s : scriptsRun1) {
+			completeSet.addAll(((ChromosomeAI)s).usedCommands);
+		}
+		
+		for (AI s : scriptsRun2) {
+			completeSet.addAll(((ChromosomeAI)s).usedCommands);
+		}
+		
+		return completeSet;
+    }
+    
+    private void recordGrammars(HashSet<String> completeSet) {
+    	File pathCommandsUsed = new File(pathLogsUsedCommands);
+    	System.out.println("abeced "+pathCommandsUsed);
+        if (!pathCommandsUsed.exists()) {
+        	pathCommandsUsed.mkdir();
+        }
+        
     	try(FileWriter fw = new FileWriter(pathLogsUsedCommands+"LogsGrammars.txt", true);
     		    BufferedWriter bw = new BufferedWriter(fw);
     			PrintWriter out = new PrintWriter(bw))
     		{	
-    		for (AI s : scriptsRun) {
-    			for(String str :((ChromosomeAI)s).usedCommands)
-    			{
-    				out.println(str);
-    			}
+
+    		for(String str :completeSet)
+    		{
+    			out.println(str);
     		}
+
 	   
     		} catch (IOException e) {
     		    //exception handling left as an exercise for the reader
