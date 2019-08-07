@@ -6,6 +6,8 @@
 package ai.ScriptsGenerator.BasicConditional.functions;
 
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
+
+import java.util.ArrayList;
 import java.util.List;
 import rts.GameState;
 import rts.PhysicalGameState;
@@ -81,7 +83,10 @@ public class HaveUnitsStrongest extends AbstractConditionalFunction {
 
         //now whe iterate for all ally units in order to discover wich one satisfy the condition
         //if (currentPlayerAction.getAction(unAlly) == null) {
-
+        List<Unit> unitscurrent=new ArrayList<Unit>();
+        getPotentialUnitsSimpleWay(game, currentPlayerAction, player).forEach(unitscurrent::add);
+        if(unitscurrent.contains(unAlly))
+        {
             for (Unit u2 : pgs.getUnits()) {
 
                 if (u2.getPlayer() >= 0 && u2.getPlayer() != player) {
@@ -96,7 +101,7 @@ public class HaveUnitsStrongest extends AbstractConditionalFunction {
                 }
 
             }
-        //}
+        }
 
         return false;
     }

@@ -156,10 +156,10 @@ public class FunctionsforGrammar {
         basicFunctionsForGrammar.add(new FunctionsforGrammar("moveaway", parameters));
         
         //Function ClusterBasic
-        parameters = new ArrayList<>();
-        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("cluster", parameters));
+//        parameters = new ArrayList<>();
+//        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+//        //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
+//        basicFunctionsForGrammar.add(new FunctionsforGrammar("cluster", parameters));
 
     }
 

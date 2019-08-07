@@ -245,7 +245,8 @@ public class RoundRobinTOScale_GP {
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         
         //System.exit(0);
-        recordGrammars(joinGrammars(scriptsRun1,scriptsRun2));
+        recordGrammars(createFullString(scriptsRun1, iScriptsAi1));
+        recordGrammars(createFullString(scriptsRun2, iScriptsAi2));
         return true;
     }
 
@@ -365,24 +366,27 @@ public class RoundRobinTOScale_GP {
         return aiscript;
     }
     
-    private HashSet<String> joinGrammars(List<AI> scriptsRun1, List<AI> scriptsRun2)
+    private List<String> createFullString(List<AI> scriptsRun, ArrayList<Integer> iScriptsAi)
     {
-    	HashSet<String> completeSet=new HashSet<String>();
-		
-		for (AI s : scriptsRun1) {
-			completeSet.addAll(((ChromosomeAI)s).usedCommands);
+    	List<String> listOfCompleteStrings=new ArrayList<String>();
+    	String newComplete="";
+		for (int i=0; i<scriptsRun.size();i++) {
+			newComplete="";
+			newComplete=newComplete+String.valueOf(iScriptsAi.get(i))+" ";
+			for(String str :((ChromosomeAI)((scriptsRun).get(i))).usedCommands)
+    		{
+				newComplete=newComplete+str+" ";
+    		}
+			
+			listOfCompleteStrings.add(newComplete);
+
 		}
 		
-		for (AI s : scriptsRun2) {
-			completeSet.addAll(((ChromosomeAI)s).usedCommands);
-		}
-		
-		return completeSet;
+		return listOfCompleteStrings;
     }
     
-    private void recordGrammars(HashSet<String> completeSet) {
+    private void recordGrammars(List<String> listOfCompleteStrings) {
     	File pathCommandsUsed = new File(pathLogsUsedCommands);
-    	System.out.println("abeced "+pathCommandsUsed);
         if (!pathCommandsUsed.exists()) {
         	pathCommandsUsed.mkdir();
         }
@@ -392,7 +396,7 @@ public class RoundRobinTOScale_GP {
     			PrintWriter out = new PrintWriter(bw))
     		{	
 
-    		for(String str :completeSet)
+    		for(String str :listOfCompleteStrings)
     		{
     			out.println(str);
     		}
