@@ -40,10 +40,13 @@ import util.Pair;
  * @author rubens
  */
 public class TrainBasic extends AbstractBasicAction {
+	
+	String originalPieceGrammar;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-        int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar());
+    	int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
         if ((game.getPlayer(player).getResources() - resourcesUsed) >= valueOfUnitsToBuild(game, player, a_utt)
                 && limitReached(game, player, currentPlayerAction)) {
             //get units basead in type to produce
@@ -305,5 +308,19 @@ public class TrainBasic extends AbstractBasicAction {
         
         return v;
     }
+    
+	/**
+	 * @return the originalPieceGrammar
+	 */
+	public String getOriginalPieceGrammar() {
+		return originalPieceGrammar;
+	}
+
+	/**
+	 * @param originalPieceGrammar the originalPieceGrammar to set
+	 */
+	public void setOriginalPieceGrammar(String originalPieceGrammar) {
+		this.originalPieceGrammar = originalPieceGrammar;
+	}
 
 }

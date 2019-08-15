@@ -12,10 +12,11 @@ public class GVS_MultiScripts {
 
     public static void main(String args[]) throws Exception {
         String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
-        GVS_RunBattle run = new GVS_RunBattle(pathTableScripts);
+        String pathLogsUsedCommands = System.getProperty("user.dir").concat("/LogsUsedCommands/");
+        GVS_RunBattle run = new GVS_RunBattle(pathTableScripts,pathLogsUsedCommands);
         
         String tupleAi1 = "2;";
-        String tupleAi2 = "2;";
+        String tupleAi2 = "1066;452;430;";
         int iMap = 0;
         run.run(tupleAi1, tupleAi2, iMap);
     }

@@ -29,6 +29,7 @@ import ai.ScriptsGenerator.ParametersConcrete.WeakestEnemy;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -115,7 +116,7 @@ public class Chromosome {
 
         //simulate one WR
         for (ICommand command : commands) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt);
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>());
         }
 
         return currentActions;

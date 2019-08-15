@@ -20,6 +20,7 @@ import ai.abstraction.AbstractAction;
 import ai.abstraction.Attack;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import rts.GameState;
@@ -42,7 +43,7 @@ public class AllyRange extends AbstractBooleanAction {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
         utt = a_utt;
         ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
@@ -80,7 +81,7 @@ public class AllyRange extends AbstractBooleanAction {
         //here we set with wait the units that dont satisfy the condition
         temporalWaitActions(game, player, unitstoApplyWait, currentPlayerAction);
         //here we apply the action just over the units that satisfy the condition
-        currentPlayerAction = appendCommands(player, game, currentPlayerAction);
+        currentPlayerAction = appendCommands(player, game, currentPlayerAction,usedCommands);
         //here we remove the wait action f the other units and the flow continues
         restoreOriginalActions(game, player, unitstoApplyWait, currentPlayerAction);
         return currentPlayerAction;

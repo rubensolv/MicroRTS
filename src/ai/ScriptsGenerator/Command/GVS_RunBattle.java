@@ -37,6 +37,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -55,9 +56,12 @@ public class GVS_RunBattle {
     static AI[] strategies = null;
     private HashMap<BigDecimal, String> scriptsTable;
     String pathTableScripts;
+    String pathLogsUsedCommands;
     ICompiler compiler = new MainGPCompiler();
+    HashSet<String> usedCommands;
 
-    public GVS_RunBattle(String pathTableScripts) {
+    public GVS_RunBattle(String pathTableScripts, String pathLogsUsedCommands) {
+    	this.pathLogsUsedCommands=pathLogsUsedCommands;
         this.pathTableScripts = pathTableScripts;
         buildScriptsTable();
     }
@@ -74,10 +78,10 @@ public class GVS_RunBattle {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
                 //"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		"maps/16x16/basesWorkers16x16A.xml"
+        		//"maps/16x16/basesWorkers16x16A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -126,15 +130,21 @@ public class GVS_RunBattle {
         updateTableIfnecessary();
         
         AI ai1= new PassiveAI(utt);
+        //AI ai1=new WorkerRush(utt);
 
         //pgs 
         //pgs 
         
-        AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
+        List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi2);
+        //AI ai2=scriptsRun1.get(0);
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
 //      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
-      	//AI ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1),200, "PGSR");
-//      	AI ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2),200, "PGSR");
+        //List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi1);
+        //List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi2);
+      	//AI ai1 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
+      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
+        
+//      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun,200, "PGSR");
 
 //        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
 //                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
@@ -224,6 +234,7 @@ public class GVS_RunBattle {
 
         } while (!gameover && (gs.getTime() < MAXCYCLES));
 
+        
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
         log.add("Tempos de AI 1 = " + ai1.toString());
@@ -238,6 +249,8 @@ public class GVS_RunBattle {
         if (gs.winner() == -1) {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
+        recordGrammars(scriptsRun1);
+        //recordGrammars(scriptsRun2);
         //System.exit(0);
         return true;
     }
@@ -299,7 +312,7 @@ public class GVS_RunBattle {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>());
 
         return aiscript;
     }
@@ -326,8 +339,33 @@ public class GVS_RunBattle {
     }
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
+    	usedCommands=new HashSet<String> ();
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code);
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
         return aiscript;
     }
+    
+    private void recordGrammars(List<AI> scriptsRun) {
+		
+    	try(FileWriter fw = new FileWriter(pathLogsUsedCommands+"LogsGrammars.txt", true);
+    		    BufferedWriter bw = new BufferedWriter(fw);
+    			PrintWriter out = new PrintWriter(bw))
+    		{	
+    		HashSet<String> completeSet=new HashSet<String>();
+    		
+    		for (AI s : scriptsRun) {
+    			completeSet.addAll(((ChromosomeAI)s).usedCommands);
+    		}
+
+    		for(String str :completeSet)
+    		{
+    			out.println(str);
+    		}
+
+	   
+    		} catch (IOException e) {
+    		    //exception handling left as an exercise for the reader
+    		}
+		
+	}
 }

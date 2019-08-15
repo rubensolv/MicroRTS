@@ -15,6 +15,7 @@ import ai.abstraction.Attack;
 import ai.abstraction.Move;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import rts.GameState;
@@ -33,9 +34,11 @@ public class ClusterBasic extends AbstractBasicAction {
 
 	int _cenX=0;
 	int _cenY=0;
+	String originalPieceGrammar;
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
-        ResourceUsage resources = new ResourceUsage();
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    	usedCommands.add(getOriginalPieceGrammar());
+    	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
@@ -92,5 +95,19 @@ public class ClusterBasic extends AbstractBasicAction {
         _cenX = x;
         _cenY = y;
     }
+    
+	/**
+	 * @return the originalPieceGrammar
+	 */
+	public String getOriginalPieceGrammar() {
+		return originalPieceGrammar;
+	}
+
+	/**
+	 * @param originalPieceGrammar the originalPieceGrammar to set
+	 */
+	public void setOriginalPieceGrammar(String originalPieceGrammar) {
+		this.originalPieceGrammar = originalPieceGrammar;
+	}
 
 }

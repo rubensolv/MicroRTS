@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -326,7 +327,7 @@ public class FixedAIMatch {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1","");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1","", new HashSet<String>());
 
         return aiscript;
     }

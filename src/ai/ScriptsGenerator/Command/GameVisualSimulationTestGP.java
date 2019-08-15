@@ -93,6 +93,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -455,7 +456,7 @@ public class GameVisualSimulationTestGP {
     
     private static AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1",code);
+        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1",code, new HashSet<String>());
         return aiscript;
     }
     
@@ -469,7 +470,7 @@ public class GameVisualSimulationTestGP {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1","");
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","", new HashSet<String>());
 
         return aiscript;
     }
@@ -483,7 +484,7 @@ public class GameVisualSimulationTestGP {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1","");
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","", new HashSet<String>());
         List<AI> scriptsAI = new ArrayList<>();
         scriptsAI.add(aiscript);
         return scriptsAI;

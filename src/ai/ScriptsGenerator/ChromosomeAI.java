@@ -31,6 +31,7 @@ import ai.abstraction.pathfinding.PathFinding;
 import ai.core.AI;
 import ai.core.ParameterSpecification;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import rts.GameState;
@@ -48,17 +49,19 @@ public class ChromosomeAI extends AI{
     String name;
     String originalGrammar;
     ICompiler compiler = new MainGPCompiler();
+    public HashSet<String> usedCommands;
 
     public ChromosomeAI(UnitTypeTable utt) {
         this.utt = utt;
 
     }
     
-    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar) {
+    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar, HashSet<String> usedCommands) {
         this.utt = utt;
         this.commands = commands;
         this.name = name;
         this.originalGrammar=originalGrammar;
+        this.usedCommands=usedCommands;
     }
 
     public PlayerAction getAction(int player, GameState gs) {
@@ -66,7 +69,7 @@ public class ChromosomeAI extends AI{
         PathFinding pf = new AStarPathFinding();        
 
         for (ICommand command : commands) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt);
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands);
         }
         currentActions = fillWithWait(currentActions, player, gs, utt);
         return currentActions;
@@ -84,7 +87,7 @@ public class ChromosomeAI extends AI{
     
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code);
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code, usedCommands);
         return aiscript;
     }
 

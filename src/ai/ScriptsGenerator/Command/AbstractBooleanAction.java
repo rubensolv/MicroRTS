@@ -6,6 +6,7 @@
 package ai.ScriptsGenerator.Command;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
@@ -43,11 +44,11 @@ public abstract class AbstractBooleanAction extends AbstractCommand {
 	 protected List<ICommand> commandsBoolean = new ArrayList<>();
 	 protected UnitTypeTable utt;
 	
-    public PlayerAction appendCommands(int player, GameState gs, PlayerAction currentActions) {
+    public PlayerAction appendCommands(int player, GameState gs, PlayerAction currentActions, HashSet<String> usedCommands) {
         PathFinding pf = new AStarPathFinding();
         //simulate one WR
         for (ICommand command : commandsBoolean) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt);
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands);
         }
         
         return currentActions;

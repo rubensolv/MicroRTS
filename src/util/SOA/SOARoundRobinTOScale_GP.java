@@ -20,10 +20,12 @@ public class SOARoundRobinTOScale_GP {
 
     private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
     private static final String pathLogsGrammars = System.getProperty("user.dir").concat("/LogsGrammars/");
+    private static String pathLogsUsedCommands="";
 
     public static void main(String args[]) throws Exception {
         String pathSOA = args[0];
         String pathLog = args[1];
+        pathLogsUsedCommands = args[2];
         //String pathSOA = "/home/rubens/cluster/DeckEvaluation/configSOA/SOA1/";
         //String pathLog = "/home/rubens/cluster/DeckEvaluation/logs/";
         int qtdMapas = 1;
@@ -77,7 +79,7 @@ public class SOARoundRobinTOScale_GP {
         String config = getLinha(arquivo);
         String[] itens = config.split("#");
 
-        RoundRobinTOScale_GP control = new RoundRobinTOScale_GP(pathTableScripts,pathLogsGrammars);
+        RoundRobinTOScale_GP control = new RoundRobinTOScale_GP(pathTableScripts,pathLogsUsedCommands);
         try {
             return control.run(itens[0].trim(),
                     itens[1].trim(),

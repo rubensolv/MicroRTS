@@ -69,6 +69,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
 import rts.GameState;
@@ -349,7 +350,7 @@ public class RoundRobinClusterLeve_Cluster_SG {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "");
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>());
 
         return aiscript;
     }

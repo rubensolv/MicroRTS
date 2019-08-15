@@ -13,6 +13,7 @@ import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -58,15 +59,15 @@ public class IfFunction implements ICommand, IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
         if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt)) {
             for (ICommand command : commandsThen) {
-                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
             }
         } else {
             if (!commandsElse.isEmpty()) {
                 for (ICommand command : commandsElse) {
-                    currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                    currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt,usedCommands);
                 }
             }
         }
@@ -127,7 +128,7 @@ public class IfFunction implements ICommand, IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands) {
 
         if (conditional.isNecessaryUnit()) {
             if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt, u)) {
@@ -136,12 +137,12 @@ public class IfFunction implements ICommand, IUnitCommand {
                     if (command instanceof IUnitCommand) {
                         IUnitCommand tempUnit = (IUnitCommand) command;
                         if (tempUnit.isNecessaryUnit()) {
-                            currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                            currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u, usedCommands);
                         } else {
-                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt,usedCommands);
                         }
                     } else {
-                        currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                        currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt,usedCommands);
                     }
                 }
             } else {
@@ -150,12 +151,12 @@ public class IfFunction implements ICommand, IUnitCommand {
                         if (command instanceof IUnitCommand) {
                             IUnitCommand tempUnit = (IUnitCommand) command;
                             if (tempUnit.isNecessaryUnit()) {
-                                currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                                currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u, usedCommands);
                             } else {
-                                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
                             }
                         } else {
-                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
                         }
 
                     }
@@ -168,12 +169,12 @@ public class IfFunction implements ICommand, IUnitCommand {
                     if (command instanceof IUnitCommand) {
                         IUnitCommand tempUnit = (IUnitCommand) command;
                         if (tempUnit.isNecessaryUnit()) {
-                            currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                            currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u, usedCommands);
                         } else {
-                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
                         }
                     } else {
-                        currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                        currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
                     }
                 }
             } else {
@@ -182,12 +183,12 @@ public class IfFunction implements ICommand, IUnitCommand {
                         if (command instanceof IUnitCommand) {
                             IUnitCommand tempUnit = (IUnitCommand) command;
                             if (tempUnit.isNecessaryUnit()) {
-                                currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u);
+                                currentPlayerAction = tempUnit.getAction(game, player, currentPlayerAction, pf, a_utt, u, usedCommands);
                             } else {
-                                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                                currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
                             }
                         } else {
-                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
+                            currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands);
                         }
 
                     }
