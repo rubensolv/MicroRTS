@@ -54,15 +54,16 @@ public class RoundRobinTOMatchDummy {
         boolean gameover = false;
 
         //decompõe a tupla
+        /*
         ArrayList<Integer> iScriptsAi1 = new ArrayList<>();
-        String[] itens = tupleAi1.split(";");
+        String[] itens = tupleAi1.replace("(", "").replace(")", "").split(";");
 
         for (String element : itens) {
             iScriptsAi1.add(Integer.decode(element));
         }
 
         ArrayList<Integer> iScriptsAi2 = new ArrayList<>();
-        itens = tupleAi2.split(";");
+        itens = tupleAi2.replace("(", "").replace(")", "").split(";");
 
         for (String element : itens) {
             iScriptsAi2.add(Integer.decode(element));
@@ -71,9 +72,6 @@ public class RoundRobinTOMatchDummy {
         AI ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi1), tupleAi1);
         AI ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, iScriptsAi2), tupleAi2);
 
-        /*
-            Variáveis para coleta de tempo
-         */
         double ai1TempoMin = 9999, ai1TempoMax = -9999;
         double ai2TempoMin = 9999, ai2TempoMax = -9999;
         double sumAi1 = 0, sumAi2 = 0;
@@ -82,7 +80,7 @@ public class RoundRobinTOMatchDummy {
         log.add("---------AIs---------");
         log.add("AI 1 = " + ai1.toString());
         log.add("AI 2 = " + ai2.toString() + "\n");
-
+        */
         log.add("---------Mapa---------");
         log.add("Mapa= " + map + "\n");
 
@@ -97,13 +95,13 @@ public class RoundRobinTOMatchDummy {
         //gs.issueSafe(pa2);
         
 
-        log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
+        //log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
-        log.add("Tempos de AI 1 = " + ai1.toString());
-        log.add("Tempo minimo= " + ai1TempoMin + " Tempo maximo= " + ai1TempoMax + " Tempo medio= " + (sumAi1 / (long) totalAction));
+        //log.add("Tempos de AI 1 = " + ai1.toString());
+        //log.add("Tempo minimo= " + ai1TempoMin + " Tempo maximo= " + ai1TempoMax + " Tempo medio= " + (sumAi1 / (long) totalAction));
 
-        log.add("Tempos de AI 2 = " + ai2.toString());
-        log.add("Tempo minimo= " + ai2TempoMin + " Tempo maximo= " + ai2TempoMax + " Tempo medio= " + (sumAi2 / (long) totalAction) + "\n");
+        //log.add("Tempos de AI 2 = " + ai2.toString());
+        //log.add("Tempo minimo= " + ai2TempoMin + " Tempo maximo= " + ai2TempoMax + " Tempo medio= " + (sumAi2 / (long) totalAction) + "\n");
 
         //comando randomico para escolher um vencedor
         Random rand = new Random();
