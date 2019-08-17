@@ -21,6 +21,7 @@ import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
+import ai.mcts.naivemcts.NaiveMCTS;
 import gui.PhysicalGameStatePanel;
 
 import java.io.BufferedReader;
@@ -234,7 +235,6 @@ public class GVS_RunBattle {
 
         } while (!gameover && (gs.getTime() < MAXCYCLES));
 
-        
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
         log.add("Tempos de AI 1 = " + ai1.toString());
@@ -249,8 +249,6 @@ public class GVS_RunBattle {
         if (gs.winner() == -1) {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
-        recordGrammars(scriptsRun1);
-        //recordGrammars(scriptsRun2);
         //System.exit(0);
         return true;
     }
@@ -319,8 +317,8 @@ public class GVS_RunBattle {
 
     public HashMap<BigDecimal, String> buildScriptsTable() {
         scriptsTable = new HashMap<>();
+        String line="";
         try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable.txt"))) {
-            String line;
             while ((line = br.readLine()) != null) {
                 String code = line.substring(line.indexOf(" "), line.length());
                 String[] strArray = line.split(" ");
@@ -328,11 +326,14 @@ public class GVS_RunBattle {
                 scriptsTable.put(BigDecimal.valueOf(idScript), code);
             }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
+            // TODO Auto-generated catch block            
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch(Exception e){
+            System.out.println(line);
+            System.out.println(e);
         }
 
         return scriptsTable;

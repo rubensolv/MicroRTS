@@ -134,7 +134,19 @@ public class IfGPCompiler extends AbstractCompiler {
     }
 
     public int getPositionFinalIF(int initialPosition, String[] fragments, boolean getElse) {
-
+        //validate complex IF's
+        if(getElse == false){
+            //check if it is a if inside of a if
+            if(fragments[initialPosition].startsWith("(if(")){
+                int post_teste = getPositionParentClose(initialPosition, fragments);
+                String newIF = MainGPCompiler.generateString(initialPosition, post_teste, fragments);
+                newIF = newIF.substring(1, newIF.length());
+                newIF = newIF.substring(0, newIF.lastIndexOf(")"));
+                String[] newfragments = newIF.split(" ");
+                post_teste = getPositionFinalIF(0, newfragments, true);                
+                return initialPosition + post_teste;
+            }
+        }
         //first get the if + conditional
         if (isIfInitialClause(fragments[initialPosition])) {
             initialPosition++;

@@ -27,7 +27,7 @@ public class MainGPCompiler extends AbstractCompiler {
 
     private List<ICommand> buildCommands(String code, UnitTypeTable utt) {
         List<ICommand> commands = new ArrayList<>();
-        String[] fragments = code.split(" ");
+        String[] fragments = code.trim().split(" ");
 
         for (int i = 0; i < fragments.length; i++) {
             String fragment = fragments[i];
