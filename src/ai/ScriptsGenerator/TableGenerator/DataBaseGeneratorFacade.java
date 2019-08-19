@@ -11,9 +11,11 @@ import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.core.AI;
+import java.math.BigDecimal;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import rts.units.UnitTypeTable;
@@ -35,7 +37,7 @@ public class DataBaseGeneratorFacade {
     private ICompiler compiler = new MainGPCompiler();
     private UnitTypeTable utt = new UnitTypeTable();
     
-    public List getDataBaseByType(EnumTypeUnits type){
+    public HashMap<Integer, HashMap<AI, BigDecimal>> getDataBaseByType(EnumTypeUnits type){
         if (type == EnumTypeUnits.Barracks) {
             return getListOfBarracks();
         }else if (type == EnumTypeUnits.Base) {
@@ -49,49 +51,49 @@ public class DataBaseGeneratorFacade {
         } else if (type == EnumTypeUnits.Worker) {
             return getListOfWorker();
         } 
-        return Collections.EMPTY_LIST;
+        return new HashMap();
     }
 
-    private List getListOfBarracks() {
+    private HashMap<Integer, HashMap<AI, BigDecimal>> getListOfBarracks() {
         List<AI> actions = new ArrayList();
         actions.add(buildCommandsIA(utt, "train(Light,20,Up)"));
         actions.add(buildCommandsIA(utt, "train(Ranged,20,Left)"));
-        return actions;
+        return transformListToMap(actions);
     }
 
-    private List getListOfBase() {
+    private HashMap<Integer, HashMap<AI, BigDecimal>> getListOfBase() {
         List<AI> actions = new ArrayList();
         actions.add(buildCommandsIA(utt, "train(Worker,1,EnemyDir)"));
         actions.add(buildCommandsIA(utt, "train(Worker,2,EnemyDir)"));
-        return actions;
+        return transformListToMap(actions);
     }
 
-    private List getListOfHeavy() {
+    private HashMap<Integer, HashMap<AI, BigDecimal>> getListOfHeavy() {
         List<AI> actions = new ArrayList();
         actions.add(buildCommandsIA(utt, "attack(Heavy,closest)"));
         actions.add(buildCommandsIA(utt, "attack(Heavy,mostHealthy)"));
-        return actions;
+        return transformListToMap(actions);
     }
 
-    private List getListOfLight() {
+    private HashMap<Integer, HashMap<AI, BigDecimal>> getListOfLight() {
         List<AI> actions = new ArrayList();
         actions.add(buildCommandsIA(utt, "attack(Light,closest)"));
         actions.add(buildCommandsIA(utt, "attack(Light,mostHealthy)"));
-        return actions;
+        return transformListToMap(actions);
     }
 
-    private List getListOfRanged() {
+    private HashMap<Integer, HashMap<AI, BigDecimal>> getListOfRanged() {        
         List<AI> actions = new ArrayList();
         actions.add(buildCommandsIA(utt, "attack(Ranged,closest)"));
         actions.add(buildCommandsIA(utt, "attack(Ranged,mostHealthy)"));
-        return actions;
+        return transformListToMap(actions);
     }
 
-    private List getListOfWorker() {
+    private HashMap<Integer, HashMap<AI, BigDecimal>> getListOfWorker() {
         List<AI> actions = new ArrayList();
         actions.add(buildCommandsIA(utt, "harvest(1)"));
         actions.add(buildCommandsIA(utt, "harvest(2)"));
-        return actions;
+        return transformListToMap(actions);
     }
     
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
@@ -99,5 +101,22 @@ public class DataBaseGeneratorFacade {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
         return aiscript;
+    }
+    /**
+     * This method return a HashMap<Id, HashMap<Object_AI, Weight>>
+     * @param actions
+     * @return 
+     */
+    private HashMap<Integer, HashMap<AI, BigDecimal>> transformListToMap(List<AI> actions) {
+        int cont = 0;
+        HashMap<Integer, HashMap<AI, BigDecimal>> map = new HashMap();
+        for (AI action : actions) {
+            HashMap<AI, BigDecimal> temp = new HashMap<>();
+            temp.put(action, BigDecimal.ZERO);
+            map.put(cont, temp);
+            cont++;
+        }
+        
+        return map;
     }
 }
