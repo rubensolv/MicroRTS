@@ -254,7 +254,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
               //  System.out.println(aux.size());
             //	s.getAction(player, gs2, aux, actions);
             	for(int j = 0;j < grupos2.size();j++) {
-            		//System.out.println("será "+ j);
+            		
             		if(teste_grupo == j ) {
             			try {
 							scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux,inf2, actions);

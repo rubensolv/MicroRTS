@@ -6,6 +6,7 @@ package ai.ScriptsGenerator.professionalScripts;
 
 import ai.CMAB.*;
 import ai.PassiveAI;
+import ai.RandomBiasedAI;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
@@ -34,9 +35,9 @@ public class Testador {
 
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
-        PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)EmpireoftheSun.scmB.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
        
         
         GameState gs = new GameState(pgs, utt);
@@ -44,14 +45,7 @@ public class Testador {
         int PERIOD = 20;
         boolean gameover = false;
 
-        
-        
-        //AI ai1 = new RangedRush(utt);
-        //AI ai1 = new WorkerRush(utt);
-        //AI ai1 = new LightRush(utt);
-        //AI ai1 = new HeavyRush(utt);
-        AI ai1 = new PassiveAI();
-        
+        AI ai1 = new RandomBiasedAI(utt);
         AI ai2 = new Script_Template(utt);
              
         

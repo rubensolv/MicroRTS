@@ -15,8 +15,8 @@ public class GVS_MultiScripts {
         String pathLogsUsedCommands = System.getProperty("user.dir").concat("/LogsUsedCommands/");
         GVS_RunBattle run = new GVS_RunBattle(pathTableScripts,pathLogsUsedCommands);
         
-        String tupleAi1 = "2;";
-        String tupleAi2 = "1066;452;430;";
+        String tupleAi1 = "2462;3879;";
+        String tupleAi2 = "2462;3879;";
         int iMap = 0;
         run.run(tupleAi1, tupleAi2, iMap);
     }

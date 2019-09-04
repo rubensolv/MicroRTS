@@ -37,6 +37,7 @@ import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.GAB.SandBox.GABRandom;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
+import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.asymmetric.PGS.PGSSelection;
@@ -45,6 +46,11 @@ import ai.asymmetric.SAB.SAB;
 import ai.asymmetric.SAB.SABRandom;
 import ai.asymmetric.SAB.SABScriptChoose;
 import ai.asymmetric.SAB.SAB_oldVersion;
+import ai.asymmetric.SSSDavid.SSSDavid;
+import ai.competition.IzanagiBot.Izanagi;
+import ai.competition.capivara.Capivara;
+import ai.competition.capivara.CmabAssymetricMCTS;
+import ai.competition.tiamat.Tiamat;
 import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.configurablescript.POBasicExpandedConfigurableScript;
 import ai.configurablescript.POScriptsCreator;
@@ -78,6 +84,7 @@ import rts.PlayerAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
 import static util.SOA.RoundRobinClusterLeve.decodeScripts;
+import static util.SOA.RoundRobinClusterLeve_Cluster_GP.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -219,13 +226,11 @@ public class ClusterTesteLeve {
                 "maps/16x16/basesWorkers16x16A.xml",
                 "maps/16x16/TwoBasesBarracks16x16.xml",
                 "maps/24x24/basesWorkers24x24A.xml",
-                "maps/24x24/basesWorkers24x24A_Barrack.xml",
+                "maps/DoubleGame24x24.xml",
+                "maps/BWDistantResources32x32.xml",
+                "maps/NoWhereToRun9x8.xml",
                 "maps/32x32/basesWorkers32x32A.xml",
-                "maps/32x32/basesWorkersBarracks32x32.xml",
-                "maps/BroodWar/(4)BloodBath.scmB.xml",
-                "maps/BroodWar/(4)BloodBath.scmD.xml",
-                "maps/BroodWar/(4)Fortress.scxA.xml",
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -253,18 +258,25 @@ public class ClusterTesteLeve {
         }
 
         List<AI> ais = new ArrayList<>(Arrays.asList(
-                new CmabNaiveMCTS(100, -1, 50, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
-                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_50"),
-                new CmabNaiveMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
-                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_100"),
-                new CmabNaiveMCTS(100, -1, 150, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
-                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_150"),
-                new CmabNaiveMCTS(100, -1, 200, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt), 
-                        new SimpleSqrtEvaluationFunction3(), true, "CmabCombinatorialGenerator", utt, 
-                        ClusterTesteLeve.decodeScripts(utt, "1;"), "A1N_200")
+                new AHTNAI(utt),
+                new NaiveMCTS(utt),
+                new PuppetSearchMCTS(utt),
+                new StrategyTactics(utt),
+                new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;"), 200, "PGSR_LIGHT"),
+                new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;"), 200, "SSSR_LIGHT"),
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), //lr
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
+                new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR                
+                new Tiamat(utt),
+                new Capivara(utt),
+                new Izanagi(utt),
+                new CmabAssymetricMCTS(100, -1, 100, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+                new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                decodeScripts(utt, "0;1;"), "A3N"),
+                new SSSDavid(utt, 1),
+                new SSSDavid(utt, 3),
+                new SSSDavid(utt, 5)
         ));
 
         AI ai1 = ais.get(iAi1);
@@ -390,6 +402,7 @@ public class ClusterTesteLeve {
         iScriptsAi1.forEach((idSc) -> {
             scriptsAI.add(scriptsCompleteSet.get(idSc));
         });
+        scriptsAI.add(new EconomyRush(utt));
 
         return scriptsAI;
     }

@@ -82,7 +82,7 @@ public class GVS_RunBattle {
                 "maps/8x8/basesWorkers8x8A.xml"
                 //"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		//"maps/16x16/basesWorkers16x16A.xml"
+        	//"maps/16x16/basesWorkers16x16A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -130,8 +130,9 @@ public class GVS_RunBattle {
         //check for possible updates in scriptsTable
         updateTableIfnecessary();
         
-        AI ai1= new PassiveAI(utt);
-        //AI ai1=new WorkerRush(utt);
+        //AI ai1= new PassiveAI(utt);
+        AI ai1=new WorkerRush(utt);
+        //AI ai1=new LightRush(utt);
 
         //pgs 
         //pgs 
@@ -147,10 +148,10 @@ public class GVS_RunBattle {
         
 //      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun,200, "PGSR");
 
-//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
-//                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-//                new SimpleSqrtEvaluationFunction3(), true, utt,
-//                "ManagerClosestEnemy", 1, decodeScripts(utt, iScriptsAi1));
+        //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
+        //        0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+        //        new SimpleSqrtEvaluationFunction3(), true, utt,
+        //        "ManagerClosestEnemy", 1, scriptsRun1);
 //
 //        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
 //                0.0f, 0.4f, 0, new RandomBiasedAI(utt),

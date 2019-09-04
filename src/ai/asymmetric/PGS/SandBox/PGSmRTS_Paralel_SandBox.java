@@ -170,7 +170,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
         double bestEval = -9999;
         AI enemyAI = new POLightRush(utt);
         //vou iterar para todos os scripts do portfolio
-        
+        /*
         for (AI script : scripts) {
             t1.initialInf(player, script.clone(), scripts.get(1).clone(), gs_to_start_from.clone(), LOOKAHEAD, evaluation);
             //double tEval = eval(player, gs_to_start_from, script, enemyAI);
@@ -187,8 +187,8 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
                 seed = script;
             }
         }
-       
-        /*
+        */
+        
         double[] values = new double[scripts.size()];
         Loop.withIndex(0, scripts.size(), new Loop.Each() {
             public void run(int i) {                    
@@ -211,7 +211,7 @@ public class PGSmRTS_Paralel_SandBox extends AIWithComputationBudget implements 
             
         }
         seed = scripts.get(id);
-        */
+       
          
         return seed;
     }

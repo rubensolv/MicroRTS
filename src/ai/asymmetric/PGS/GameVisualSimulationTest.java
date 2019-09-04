@@ -50,6 +50,7 @@ import ai.asymmetric.SSS.SSSResponseMRTSRandom;
 import ai.asymmetric.SSS.SSSmRTS;
 import ai.asymmetric.SSS.SSSmRTSScriptChoice;
 import ai.asymmetric.SSS.SSSmRTSScriptChoiceRandom;
+import ai.asymmetric.SSSDavid.SSSDavid;
 import ai.cluster.CABA;
 import ai.cluster.CABA_Enemy;
 import ai.cluster.CIA;
@@ -183,11 +184,14 @@ public class GameVisualSimulationTest {
         //AI ai1 = new WorkerRush(utt);
         //AI ai1 = new GABScriptChoose(utt, 150, 6, 6, // MoreLife
         //                decodeScriptsFull(utt, "0;1;2;3;"), "GAB");
-        AI ai1 = new Izanagi(utt);
+        //AI ai1 = new Izanagi(utt);
+        //AI ai1 = new PGSmRTS_Paralel_JulianTest(utt);
+        //AI ai1 = new PGSmRTS_Paralel_SandBox(utt);
+        AI ai1 = new SSSDavid(utt, 1);
 
         AI ai2 = new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScriptsFull(utt, "1;2;3;"), "A3N");
+                        decodeScriptsFull(utt, "0;1;"), "A3N");
         
         //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
         //                                     0.0f, 0.4f, 0, new RandomBiasedAI(utt), 

@@ -92,13 +92,20 @@ public class RoundRobinClusterLeve_Cluster_GP {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
-    private HashMap<BigDecimal, String> scriptsTable;
+    private HashMap<BigDecimal, String> scriptsTable1;
+    private HashMap<BigDecimal, String> scriptsTable2;
+    
     String pathTableScripts;
     ICompiler compiler = new MainGPCompiler();
+    
+    public static void main(String args[]) throws Exception {
+    
+    }
 
     public RoundRobinClusterLeve_Cluster_GP(String pathTableScripts) {
         this.pathTableScripts = pathTableScripts;
-        buildScriptsTable();
+        scriptsTable1 = buildScriptsTable(scriptsTable1, "isolated");
+        scriptsTable2 = buildScriptsTable(scriptsTable2, "lstm");
 
     }
 
@@ -118,10 +125,10 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
                 //"maps/16x16/BasesWithWalls16x16.xml"
                 //"maps/16x16/basesWorkers16x16A.xml"
-                "maps/NoWhereToRun9x8.xml"
+                //"maps/NoWhereToRun9x8.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -152,7 +159,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
             MAXCYCLES = 17000;
         }
         //BEST AAAI for 8x8
-        String bestGAAAAI = "274;199;46;122;91;";
+        String bestGAAAAI = "198;272;100;168;78;86;27;120;279;93;";
         List<AI> ais;
         ais = new ArrayList<>(Arrays.asList(
                 new AHTNAI(utt),
@@ -165,17 +172,24 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
-                new LightPGSSCriptChoice(utt, decodeScripts(utt, bestGAAAAI), 200, "GAAAAI"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2440;5852;2957;4429;3213;5556;5679;5680;2446;3184;5306;3339;4974;5558;5307;"))), 200, "GPP")
+                new LightPGSSCriptChoice(utt, decodeScripts(utt, bestGAAAAI), 200, "GAAAAI_PGS"),
+                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2797;1394;3010;")),scriptsTable1), 200, "GPP_PGS_ISO"),
+                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1432;1682;1212;3155;")),scriptsTable2), 200, "GPP_PGS_LST"),
+                
+                
                 //new SCVPlus(utt),
-                //new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                //        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                //        decodeScripts(utt, bestGAAAAI), "A3N_GA-3AI"), //12
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts(utt, bestGAAAAI), "GAAAAI_A3N"), //12
 //                /*
-//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("15187;15781;15914;14726;11902;15767;14569;14658;"))), "GA-run2-400") /*,
-//                
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2797;1394;3010;")),scriptsTable1), "GPP_A3N_ISO"), 
+                        
+                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("1432;1682;1212;3155;")),scriptsTable2), "GPP_A3N_LST")                        
+                
 //                 */
                 //bg1
                 //new PGSSCriptChoiceRandom(utt, decodeScripts(utt, GA_PGS), "GA_PGS",2,200),
@@ -367,13 +381,15 @@ public class RoundRobinClusterLeve_Cluster_GP {
         return scriptsAI;
     }
 
-    public List<AI> decodeScripts2(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+    public List<AI> decodeScripts2(UnitTypeTable utt, ArrayList<Integer> iScripts,HashMap<BigDecimal, String> table) {
         List<AI> scriptsAI = new ArrayList<>();
-
+        System.out.println("size "+table.size());
         for (Integer idSc : iScripts) {
-            //System.out.println("tam tab"+scriptsTable.size());
-            //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-            scriptsAI.add(buildCommandsIA(utt, scriptsTable.get(BigDecimal.valueOf(idSc))));
+            System.out.println("tam tab"+scriptsTable1.size());
+            System.out.println("tam tab"+scriptsTable2.size());
+            System.out.println("id "+idSc+" Elems "+scriptsTable1.get(BigDecimal.valueOf(idSc)));
+            System.out.println("id "+idSc+" Elems "+scriptsTable2.get(BigDecimal.valueOf(idSc)));
+            scriptsAI.add(buildCommandsIA(utt, table.get(BigDecimal.valueOf(idSc))));
         }
 
         return scriptsAI;
@@ -393,15 +409,15 @@ public class RoundRobinClusterLeve_Cluster_GP {
         return aiscript;
     }
 
-    public HashMap<BigDecimal, String> buildScriptsTable() {
-        scriptsTable = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable.txt"))) {
+    public HashMap<BigDecimal, String> buildScriptsTable(HashMap<BigDecimal, String> tabl, String complement) {
+    	tabl = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable_"+complement+".txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String code = line.substring(line.indexOf(" "), line.length());
                 String[] strArray = line.split(" ");
                 int idScript = Integer.decode(strArray[0]);
-                scriptsTable.put(BigDecimal.valueOf(idScript), code);
+                tabl.put(BigDecimal.valueOf(idScript), code);
             }
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -411,7 +427,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
             e.printStackTrace();
         }
 
-        return scriptsTable;
+        return tabl;
     }
 
     public ArrayList<Integer> getListIfInteger(String conf) {

@@ -21,7 +21,9 @@ import ai.ScriptsGenerator.Chromosome;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.ChromosomesBag;
 import ai.ScriptsGenerator.Command.BasicAction.AttackBasic;
+import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.TableGenerator.DataBaseGeneratorFacade;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
@@ -141,6 +143,8 @@ public class GameVisualSimulationTest {
         boolean gameover = false;
 
         Chromosome chrom = new Chromosome(utt);
+        DataBaseGeneratorFacade db = new DataBaseGeneratorFacade();
+        db.getDataBaseByType(EnumTypeUnits.Base);
         
         
         //AI ai1 = new RangedRush(utt);

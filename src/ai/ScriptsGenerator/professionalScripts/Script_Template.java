@@ -5,37 +5,48 @@
  */
 package ai.ScriptsGenerator.professionalScripts;
 
+import ai.ScriptsGenerator.ChromosomeAI;
+import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.ICompiler;
+import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.abstraction.AbstractionLayerAI;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import ai.core.AI;
 import ai.core.ParameterSpecification;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
+import rts.PhysicalGameState;
+import rts.Player;
 import rts.PlayerAction;
+import rts.units.Unit;
 import rts.units.UnitTypeTable;
 
 /**
  *
  * @author rubens e julian
  */
-public class Script_Template extends AbstractionLayerAI{
-    
+public class Script_Template extends AbstractionLayerAI {
+
     protected UnitTypeTable utt;
+    HashSet<String> usedCommands = new HashSet<>();
+    ICompiler compiler = new MainGPCompiler();
 
     public Script_Template(UnitTypeTable t_utt) {
         this(t_utt, new AStarPathFinding());
     }
-    
+
     public Script_Template(UnitTypeTable t_utt, PathFinding a_pf) {
         super(a_pf);
+        this.utt = t_utt;
     }
-    
+
     public void reset() {
         super.reset();
     }
-    
+
     public void reset(UnitTypeTable a_utt) {
         utt = a_utt;
     }
@@ -51,10 +62,19 @@ public class Script_Template extends AbstractionLayerAI{
         parameters.add(new ParameterSpecification("PathFinding", PathFinding.class, new AStarPathFinding()));
         return parameters;
     }
-    
+
     @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PlayerAction pa = new PlayerAction();        
+        pa = runCode(pa,"train(Light,20,Left)", player, gs);        
+              
+        return pa;
     }
-    
+
+    private PlayerAction runCode(PlayerAction pa, String code, int player, GameState gs) throws Exception {
+        List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
+        AI script = new ChromosomeAI(utt, commandsGP, "", code, usedCommands);
+        return pa.merge(script.getAction(player, gs));
+    }
+
 }
