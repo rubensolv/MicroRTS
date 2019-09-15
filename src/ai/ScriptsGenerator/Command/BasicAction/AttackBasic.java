@@ -5,6 +5,7 @@
  */
 package ai.ScriptsGenerator.Command.BasicAction;
 
+
 import ai.ScriptsGenerator.Command.AbstractBasicAction;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
@@ -41,7 +42,7 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar());
+    	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
@@ -67,6 +68,7 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
                 UnitAction uAct = action.execute(game, resources);
 
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
+                	usedCommands.add(getOriginalPieceGrammar());
                     currentPlayerAction.addUnitAction(unAlly, uAct);
                     resources.merge(uAct.resourceUsage(unAlly, pgs));
                 }
@@ -103,7 +105,7 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar()+")");
+    	//usedCommands.add(getOriginalPieceGrammar()+")");
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
@@ -121,13 +123,15 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
 
         //pick one enemy unit to set the action
         Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);
+   
 
-        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
+        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null && hasInPotentialUnits(game, currentPlayerAction, unAlly)) {
             AbstractAction action = new Attack(unAlly, targetEnemy, pf);
 
             UnitAction uAct = action.execute(game, resources);
 
             if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
+            	usedCommands.add(getOriginalPieceGrammar());
                 currentPlayerAction.addUnitAction(unAlly, uAct);
                 resources.merge(uAct.resourceUsage(unAlly, pgs));
             }

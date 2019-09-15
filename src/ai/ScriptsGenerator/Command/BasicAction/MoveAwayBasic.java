@@ -40,7 +40,7 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar());
+    	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
@@ -58,6 +58,7 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
                 uAct = move;
 
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
+                	usedCommands.add(getOriginalPieceGrammar());
                     currentPlayerAction.addUnitAction(unAlly, uAct);
                     resources.merge(uAct.resourceUsage(unAlly, pgs));
                 }
@@ -118,7 +119,7 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar()+")");
+    	//usedCommands.add(getOriginalPieceGrammar()+")");
     	if(unAlly != null && currentPlayerAction.getAction(unAlly) != null){
             return currentPlayerAction ;
         }
@@ -130,7 +131,7 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
         //pick one enemy unit to set the action
         Unit targetEnemy = farthestAllyBase(pgs, player, unAlly);
 
-        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null) {
+        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null && hasInPotentialUnits(game, currentPlayerAction, unAlly)) {
 
             UnitAction uAct = null;
             UnitAction move = pf.findPathToPositionInRange(unAlly, targetEnemy.getX() + targetEnemy.getY() * pgs.getWidth(), unAlly.getAttackRange(), game, resources);
@@ -138,6 +139,7 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
             uAct = move;
 
             if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
+            	usedCommands.add(getOriginalPieceGrammar());
                 currentPlayerAction.addUnitAction(unAlly, uAct);
                 resources.merge(uAct.resourceUsage(unAlly, pgs));
             }

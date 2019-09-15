@@ -143,6 +143,16 @@ public abstract class AbstractCommand implements ICommand{
         return unitAllys;
     }
     
+    protected boolean hasInPotentialUnits(GameState game, PlayerAction currentPlayerAction, Unit uAlly) {
+        if(isUnitControlledByParam(uAlly))
+        {
+        	return true;
+        }
+        else
+        {
+        	return false;
+        }
+    }
     
     protected ArrayList<Unit> getUnitsOfType(GameState game, PlayerAction currentPlayerAction, int player) {
         ArrayList<Unit> unitAllys = new ArrayList<>();

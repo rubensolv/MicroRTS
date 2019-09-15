@@ -7,6 +7,7 @@ package util.SOA;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.FunctionGPCompiler;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
@@ -365,6 +366,7 @@ public class RoundRobinTOScale_GP {
     }
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
+    	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         usedCommands=new HashSet<String> ();
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);

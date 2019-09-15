@@ -35,7 +35,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt,HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar());
+    	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst
@@ -62,6 +62,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
                     AbstractAction action = new Harvest(unit, closestResource, closestBase, pf);
                     UnitAction uAct = action.execute(game, resources);
                     if (uAct != null) {
+                    	usedCommands.add(getOriginalPieceGrammar());
                         currentPlayerAction.addUnitAction(unit, uAct);
                         resources.merge(uAct.resourceUsage(unit, pgs));
                     }
@@ -197,7 +198,8 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar()+")");
+    	//usedCommands.add(getOriginalPieceGrammar()+")");
+    	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst
@@ -225,6 +227,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
                         AbstractAction action = new Harvest(unit, closestResource, closestBase, pf);
                         UnitAction uAct = action.execute(game, resources);
                         if (uAct != null) {
+                        	usedCommands.add(getOriginalPieceGrammar());
                             currentPlayerAction.addUnitAction(unit, uAct);
                             resources.merge(uAct.resourceUsage(unit, pgs));
                         }

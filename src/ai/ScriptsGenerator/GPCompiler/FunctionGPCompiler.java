@@ -31,10 +31,10 @@ import rts.units.UnitTypeTable;
  */
 public class FunctionGPCompiler extends AbstractCompiler {
 
+	static public int counterCommands=0;
     @Override
     public List<ICommand> CompilerCode(String code, UnitTypeTable utt) {
         List<ICommand> commands = new ArrayList<>();
-
         ICommand tFunction = buildFunctionByCode(code, utt);
 
         commands.add(tFunction);
@@ -117,7 +117,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
         BuildBasic build = new BuildBasic();
-        build.setOriginalPieceGrammar(originalCode);
+        build.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         if (params[0].equals("Base")) {
             build.addParameter(TypeConcrete.getTypeBase()); //add unit construct type
         } else if (params[0].equals("Barrack")) {
@@ -141,7 +141,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
         HarvestBasic harverst = new HarvestBasic();
-        harverst.setOriginalPieceGrammar(originalCode);
+        harverst.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         harverst.addParameter(TypeConcrete.getTypeWorker()); //add unit type
         harverst.addParameter(new QuantityParam(Integer.decode(params[0]))); //add qtd unit
 
@@ -160,7 +160,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         code = code.replace(")", "").replace(",", " ");
         String[] params = code.split(" ");
         AttackBasic attack = new AttackBasic();
-        attack.setOriginalPieceGrammar(originalCode);
+        attack.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         attack.addParameter(getTypeUnitByString(params[0])); //add unit type
         PlayerTargetParam pt = new PlayerTargetParam();
         pt.addPlayer(EnumPlayerTarget.Enemy);
@@ -183,7 +183,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         String[] params = code.split(" ");
 
         MoveToCoordinatesBasic moveToCoordinates = new MoveToCoordinatesBasic();
-        moveToCoordinates.setOriginalPieceGrammar(originalCode);
+        moveToCoordinates.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         int x = Integer.decode(params[1]);
         int y = Integer.decode(params[2]);
         moveToCoordinates.addParameter(new CoordinatesParam(x, y));
@@ -204,7 +204,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         String[] params = code.split(" ");
 
         MoveToUnitBasic moveToUnit = new MoveToUnitBasic();
-        moveToUnit.setOriginalPieceGrammar(originalCode);
+        moveToUnit.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         moveToUnit.addParameter(getTypeUnitByString(params[0])); //add unit type
         PlayerTargetParam pt = new PlayerTargetParam();
         pt.addPlayer(getPlayerTargetByNumber(params[1]));
@@ -226,7 +226,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         String[] params = code.split(" ");
 
         TrainBasic train = new TrainBasic();
-        train.setOriginalPieceGrammar(originalCode);
+        train.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         //train.addParameter(getTypeConstructByName(params[1])); //add unit construct type
         if (params[0].equals("All")) {
             train.addParameter(getTypeConstructByName("All"));
@@ -257,7 +257,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         String[] params = code.split(" ");
 
         MoveAwayBasic moveAway = new MoveAwayBasic();
-        moveAway.setOriginalPieceGrammar(originalCode);
+        moveAway.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         moveAway.addParameter(getTypeUnitByString(params[0]));
         if (params.length > 1) {
             moveAway.setUnitIsNecessary();
@@ -276,7 +276,7 @@ public class FunctionGPCompiler extends AbstractCompiler {
         String[] params = code.split(" ");
 
         ClusterBasic cluster = new ClusterBasic();
-        cluster.setOriginalPieceGrammar(originalCode);
+        cluster.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
         cluster.addParameter(getTypeUnitByString(params[0]));
 
         return cluster;

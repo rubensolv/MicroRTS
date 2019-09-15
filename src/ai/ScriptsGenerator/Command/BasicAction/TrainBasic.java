@@ -45,7 +45,7 @@ public class TrainBasic extends AbstractBasicAction {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar());
+    	
     	int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
         if ((game.getPlayer(player).getResources() - resourcesUsed) >= valueOfUnitsToBuild(game, player, a_utt)
                 && limitReached(game, player, currentPlayerAction)) {
@@ -57,6 +57,7 @@ public class TrainBasic extends AbstractBasicAction {
                 if (game.getActionAssignment(unit) == null) {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit, p);
                     if (unTemp != null) {
+                    	usedCommands.add(getOriginalPieceGrammar());
                         currentPlayerAction.addUnitAction(unit, unTemp);
                     }
                 }

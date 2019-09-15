@@ -9,6 +9,7 @@ import ai.PassiveAI;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.FunctionGPCompiler;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
@@ -250,6 +251,7 @@ public class GVS_RunBattle {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
         //System.exit(0);
+        recordGrammars(createFullString(scriptsRun1, iScriptsAi2));
         return true;
     }
     
@@ -341,24 +343,46 @@ public class GVS_RunBattle {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
     	usedCommands=new HashSet<String> ();
+    	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
         return aiscript;
     }
     
-    private void recordGrammars(List<AI> scriptsRun) {
+    private List<String> createFullString(List<AI> scriptsRun, ArrayList<Integer> iScriptsAi)
+    {
+    	
+    	List<String> listOfCompleteStrings=new ArrayList<String>();
+    	String newComplete="";
+		for (int i=0; i<scriptsRun.size();i++) {
+			newComplete="";
+			newComplete=newComplete+String.valueOf(iScriptsAi.get(i))+" ";
+			for(String str :((ChromosomeAI)((scriptsRun).get(i))).usedCommands)
+    		{
+				newComplete=newComplete+str+" ";
+    		}
+			
+			listOfCompleteStrings.add(newComplete);
+
+		}
 		
+		return listOfCompleteStrings;
+    }
+    
+    private void recordGrammars(List<String> listOfCompleteStrings) {
+		
+    	
+    	File pathCommandsUsed = new File(pathLogsUsedCommands);
+        if (!pathCommandsUsed.exists()) {
+        	pathCommandsUsed.mkdir();
+        }
+        
     	try(FileWriter fw = new FileWriter(pathLogsUsedCommands+"LogsGrammars.txt", true);
     		    BufferedWriter bw = new BufferedWriter(fw);
     			PrintWriter out = new PrintWriter(bw))
     		{	
-    		HashSet<String> completeSet=new HashSet<String>();
-    		
-    		for (AI s : scriptsRun) {
-    			completeSet.addAll(((ChromosomeAI)s).usedCommands);
-    		}
 
-    		for(String str :completeSet)
+    		for(String str :listOfCompleteStrings)
     		{
     			out.println(str);
     		}

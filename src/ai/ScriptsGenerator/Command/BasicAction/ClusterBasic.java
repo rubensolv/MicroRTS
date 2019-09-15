@@ -37,7 +37,7 @@ public class ClusterBasic extends AbstractBasicAction {
 	String originalPieceGrammar;
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar());
+    	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources
@@ -63,6 +63,7 @@ public class ClusterBasic extends AbstractBasicAction {
                 	uAct = move;
 
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
+                	usedCommands.add(getOriginalPieceGrammar());
                     currentPlayerAction.addUnitAction(unAlly, uAct);
                     resources.merge(uAct.resourceUsage(unAlly, pgs));
                 }
