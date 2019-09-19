@@ -79,11 +79,11 @@ public class GVS_RunBattle {
 
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
-                //"maps/32x32/basesWorkers32x32A.xml"
+                "maps/32x32/basesWorkers32x32A.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
                 //"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		"maps/16x16/basesWorkers16x16A.xml"
+        		//"maps/16x16/basesWorkers16x16A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -132,7 +132,8 @@ public class GVS_RunBattle {
         updateTableIfnecessary();
         
         //AI ai1= new PassiveAI(utt);
-        AI ai1=new WorkerRush(utt);
+        //AI ai1=new WorkerRush(utt);
+        AI ai1=new LightRush(utt);
 
         //pgs 
         //pgs 
@@ -140,7 +141,7 @@ public class GVS_RunBattle {
         List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi2);
         //AI ai2=scriptsRun1.get(0);
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
-//      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+      //AI ai2 = new PGSSCriptChoiceRandom(utt, scriptsRun1, "PGSR", 1, 200);
         //List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi1);
         //List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi2);
       	//AI ai1 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
