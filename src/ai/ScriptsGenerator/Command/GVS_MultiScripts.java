@@ -16,7 +16,7 @@ public class GVS_MultiScripts {
         GVS_RunBattle run = new GVS_RunBattle(pathTableScripts,pathLogsUsedCommands);
         
         String tupleAi1 = "0;";
-        String tupleAi2 = "2963;2964;2965;2966;2967;";
+        String tupleAi2 = "1090;3598;3321;";
         //1128;1526;1785;1602;2037;
         //2378;1192;1995;1700;1637;1164;2578
         
