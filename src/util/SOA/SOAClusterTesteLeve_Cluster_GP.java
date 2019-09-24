@@ -21,10 +21,10 @@ public class SOAClusterTesteLeve_Cluster_GP {
 	private static final String pathTableScripts = System.getProperty("user.dir").concat("/Table/");
 
     public static void main(String args[]) throws Exception {
-        //String pathSOA = args[0];
-        //String pathLog = args[1];
-        String pathSOA = "/home/rubens/MicroRTS/configSOA/SOA1/";
-        String pathLog = "/home/rubens/MicroRTS/logs/";
+        String pathSOA = args[0];
+        String pathLog = args[1];
+        //String pathSOA = "/home/rubens/MicroRTS/configSOA/SOA1/";
+        //String pathLog = "/home/rubens/MicroRTS/logs/";
 
         System.out.println(pathSOA);
         System.out.println(pathLog);

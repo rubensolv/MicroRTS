@@ -358,7 +358,7 @@ public class LightPGSSCriptChoice extends AIWithComputationBudget implements Int
 
     private UnitScriptData doPortfolioSearch(int player, UnitScriptData currentScriptData, AI seedEnemy) throws Exception {
         int enemy = 1 - player;
-
+        
         UnitScriptData bestScriptData = currentScriptData.clone();
         double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);

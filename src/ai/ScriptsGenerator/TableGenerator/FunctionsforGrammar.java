@@ -111,14 +111,14 @@ public class FunctionsforGrammar {
         //Function MoveToCoordinatesBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add((new Parameter("x", 0.0, 7.0, null)));
-        parameters.add((new Parameter("y", 0.0, 7.0, null)));        
+        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+        parameters.add((new Parameter("y", 0.0, 15.0, null)));        
         basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToCoord", parameters));
         //Function MoveToCoordinatesBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add((new Parameter("x", 0.0, 7.0, null)));
-        parameters.add((new Parameter("y", 0.0, 7.0, null)));
+        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+        parameters.add((new Parameter("y", 0.0, 15.0, null)));
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveToCoord", parameters));
 
@@ -153,7 +153,7 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveaway", parameters));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveaway", parameters));
         
         //Function ClusterBasic
 //        parameters = new ArrayList<>();

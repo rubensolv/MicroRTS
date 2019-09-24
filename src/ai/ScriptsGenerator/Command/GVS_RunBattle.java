@@ -9,6 +9,7 @@ import ai.PassiveAI;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.FunctionGPCompiler;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
@@ -79,10 +80,10 @@ public class GVS_RunBattle {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                "maps/8x8/basesWorkers8x8A.xml"
+                //"maps/8x8/basesWorkers8x8A.xml"
                 //"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        	//"maps/16x16/basesWorkers16x16A.xml"
+        		"maps/16x16/basesWorkers16x16A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -140,7 +141,7 @@ public class GVS_RunBattle {
         List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi2);
         //AI ai2=scriptsRun1.get(0);
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
-//      AI ai2 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi2), "PGSR", 2, 200);
+      //AI ai2 = new PGSSCriptChoiceRandom(utt, scriptsRun1, "PGSR", 1, 200);
         //List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi1);
         //List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi2);
       	//AI ai1 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
@@ -148,15 +149,15 @@ public class GVS_RunBattle {
         
 //      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun,200, "PGSR");
 
-        //AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
-        //        0.0f, 0.4f, 0, new RandomBiasedAI(utt),
-        //        new SimpleSqrtEvaluationFunction3(), true, utt,
-        //        "ManagerClosestEnemy", 1, scriptsRun1);
+//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
+//                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+//                new SimpleSqrtEvaluationFunction3(), true, utt,
+//                "ManagerClosestEnemy", 1, decodeScripts(utt, iScriptsAi1));
 //
 //        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
 //                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
 //                new SimpleSqrtEvaluationFunction3(), true, utt,
-//                "ManagerClosestEnemy", 1, decodeScripts(utt, iScriptsAi2));
+//                "ManagerClosestEnemy", 1, scriptsRun1);
 
 //      AI ai1 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GAB");
 //      AI ai2 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "GAB");
@@ -251,6 +252,7 @@ public class GVS_RunBattle {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
         //System.exit(0);
+        recordGrammars(createFullString(scriptsRun1, iScriptsAi2));
         return true;
     }
     
@@ -342,24 +344,46 @@ public class GVS_RunBattle {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
     	usedCommands=new HashSet<String> ();
+    	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
         return aiscript;
     }
     
-    private void recordGrammars(List<AI> scriptsRun) {
+    private List<String> createFullString(List<AI> scriptsRun, ArrayList<Integer> iScriptsAi)
+    {
+    	
+    	List<String> listOfCompleteStrings=new ArrayList<String>();
+    	String newComplete="";
+		for (int i=0; i<scriptsRun.size();i++) {
+			newComplete="";
+			newComplete=newComplete+String.valueOf(iScriptsAi.get(i))+" ";
+			for(String str :((ChromosomeAI)((scriptsRun).get(i))).usedCommands)
+    		{
+				newComplete=newComplete+str+" ";
+    		}
+			
+			listOfCompleteStrings.add(newComplete);
+
+		}
 		
+		return listOfCompleteStrings;
+    }
+    
+    private void recordGrammars(List<String> listOfCompleteStrings) {
+		
+    	
+    	File pathCommandsUsed = new File(pathLogsUsedCommands);
+        if (!pathCommandsUsed.exists()) {
+        	pathCommandsUsed.mkdir();
+        }
+        
     	try(FileWriter fw = new FileWriter(pathLogsUsedCommands+"LogsGrammars.txt", true);
     		    BufferedWriter bw = new BufferedWriter(fw);
     			PrintWriter out = new PrintWriter(bw))
     		{	
-    		HashSet<String> completeSet=new HashSet<String>();
-    		
-    		for (AI s : scriptsRun) {
-    			completeSet.addAll(((ChromosomeAI)s).usedCommands);
-    		}
 
-    		for(String str :completeSet)
+    		for(String str :listOfCompleteStrings)
     		{
     			out.println(str);
     		}

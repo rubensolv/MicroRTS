@@ -13,6 +13,7 @@ import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.FunctionGPCompiler;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
@@ -86,7 +87,9 @@ public class ChromosomeAI extends AI{
     }
     
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
+    	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
+        HashSet<String> usedCommands=new HashSet<String>();
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code, usedCommands);
         return aiscript;
     }

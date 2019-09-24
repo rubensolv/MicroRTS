@@ -7,6 +7,7 @@ package util.SOA;
 import ai.RandomBiasedAI;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
+import ai.ScriptsGenerator.GPCompiler.FunctionGPCompiler;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
@@ -76,17 +77,17 @@ public class RoundRobinTOScale_GP {
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
-                //"maps/16x16/basesWorkers16x16A.xml"
-        	"maps/NoWhereToRun9x8.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
-                //"maps/BroodWar/(4)EmpireoftheSun.scmB.xml"
+        		//"maps/NoWhereToRun9x8.xml"
+        //"maps/BroodWar/(4)BloodBath.scmB.xml"
+        		"maps/16x16/basesWorkers16x16A.xml"
+        		//"maps/BroodWar/(4)EmpireoftheSun.scmB.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
         PhysicalGameState pgs = PhysicalGameState.load(maps.get(iMap), utt);
 
         GameState gs = new GameState(pgs, utt);
-        int MAXCYCLES = 17000;
+        int MAXCYCLES = 20000;
         int PERIOD = 20;
         boolean gameover = false;
 
@@ -106,6 +107,9 @@ public class RoundRobinTOScale_GP {
             MAXCYCLES = 12000;
         }
         if (pgs.getHeight() == 64) {
+            MAXCYCLES = 17000;
+        }
+        if (pgs.getHeight() == 128) {
             MAXCYCLES = 17000;
         }
 
@@ -362,6 +366,7 @@ public class RoundRobinTOScale_GP {
     }
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
+    	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         usedCommands=new HashSet<String> ();
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);

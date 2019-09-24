@@ -51,7 +51,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar());
+    	
     	//get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
@@ -65,6 +65,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
                         //execute the build action
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
+                        	usedCommands.add(getOriginalPieceGrammar());
                             currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
                         }
 
@@ -381,7 +382,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit workToBuild, HashSet<String> usedCommands) {
-    	usedCommands.add(getOriginalPieceGrammar()+")");
+    	//usedCommands.add(getOriginalPieceGrammar()+")");
     	//get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
@@ -395,6 +396,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
                         //execute the build action
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
+                        	usedCommands.add(getOriginalPieceGrammar());
                             currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
                         }
 
