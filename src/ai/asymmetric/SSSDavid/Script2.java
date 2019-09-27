@@ -223,6 +223,7 @@ public class Script2 extends AbstractionLayerAID {
 
     public void workersBehavior(List<Unit> workers, Player p, GameState gs,Information inf) {
     	PhysicalGameState pgs = gs.getPhysicalGameState();
+        	//inf.contruindo_base=inf.contruindo_barraca=0;
         int nbases =  inf.contruindo_base;
         int nbarracks = inf.contruindo_barraca;;
        
@@ -235,25 +236,24 @@ public class Script2 extends AbstractionLayerAID {
             return;
         }
        
-      int sobra = 20;
+      
         int basex=-1;
         int basey=-1;
         for (Unit u2 : pgs.getUnits()) {
             if (u2.getType() == baseType
                     && u2.getPlayer() == p.getID()) {
                 nbases++;
-                basex = u2.getX();
-                basey= u2.getY();
+                if(basex==-1) {
+	                basex = u2.getX();
+	                basey= u2.getY();
+                }
             }
             if (u2.getType() == barracksType
                     && u2.getPlayer() == p.getID()) {
                 nbarracks++;
             }
         }
-       if(nbases - inf.contruindo_base > 1)sobra=5;
-       else if(inf.contruindo_base>0 && gs.getTime() > 300)sobra=10;
-        if (p.getResources()>sobra  )nbarracks--;;
-        
+       
         List<Integer> reservedPositions = new LinkedList<Integer>();
         if (nbases == 0 && !freeWorkers.isEmpty()) {
             // build a base:
@@ -270,7 +270,10 @@ public class Script2 extends AbstractionLayerAID {
             // build a barracks:
             if (p.getResources() >= barracksType.cost + resourcesUsed && !freeWorkers.isEmpty()) {
                 Unit u = freeWorkers.remove(0);
-                if(basex!=-1)  buildIfNotAlreadyBuilding(u,barracksType,basex+2-4*u.getPlayer(),basey+2-4*u.getPlayer(),reservedPositions,p,pgs);
+                if(basex!=-1) {
+                	if(u.getPlayer()==0)buildIfNotAlreadyBuilding(u,barracksType,basex+1,basey+1,reservedPositions,p,pgs);
+                	else buildIfNotAlreadyBuilding(u,barracksType,basex-1,basey-1,reservedPositions,p,pgs);
+                }
                 else buildIfNotAlreadyBuilding(u,barracksType,u.getX(),u.getY(),reservedPositions,p,pgs);
                 resourcesUsed += barracksType.cost;
                 inf.contruindo_barraca++;

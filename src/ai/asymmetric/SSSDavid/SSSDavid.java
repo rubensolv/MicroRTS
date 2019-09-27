@@ -46,12 +46,14 @@ import java.util.HashMap;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.Scanner;
 
 
 public class SSSDavid extends AbstractionLayerAI  {
 	Script4 s ;
 	int num_tipo;
+	int rep=1;
 	Information inf;
 	Information inf2;
 	float tempo_incial;
@@ -78,6 +80,34 @@ public class SSSDavid extends AbstractionLayerAI  {
     FileWriter arq ;
     PrintWriter gravarArq;
 	
+    public SSSDavid configuracao1() {
+    	rep=2;
+    	for(Playout play : playouts ) {
+    		play.setAI(new RandomBiasedAI(utt));
+    		play.setTempoSimulacao(50);
+    	}
+    	return this;
+    }
+    
+    public SSSDavid configuracao2() {
+    	rep=2;
+    	for(Playout play : playouts ) {
+    		play.setAI(new RandomBiasedAI(utt));
+    		play.setTempoSimulacao(10000);
+    		play.setProfSimulacao(200);
+    	}
+    	return this;
+    }
+    public SSSDavid configuracao3() {
+    	for(Playout play : playouts ) {
+    		play.setAI(new RandomBiasedAI(utt));
+    		play.setTempoSimulacao(-1);
+    	
+    	}
+    	return this;
+    }
+    
+    
 	public SSSDavid(UnitTypeTable a_utt, int numGrupos) throws IOException {
 		
 		   super( new AStarPathFinding());
@@ -124,10 +154,10 @@ public class SSSDavid extends AbstractionLayerAI  {
 		       sepa.add(0);
 	       }
 	       
-	    //   arq = new FileWriter("C:\\Users\\barba\\Desktop\\testesss\\resultado.txt",true);
-	   //    gravarArq = new PrintWriter(arq);
-		//	gravarArq.append("ticks eval_atual eval_futura S0 S1 S2 TS0 TS1 TS2 Atualisa_grupo n_unidades\n" );
-			//arq.close();
+	     //arq = new FileWriter("C:\\Users\\barba\\Desktop\\testesss\\resultado.txt",true);
+	    // gravarArq = new PrintWriter(arq);
+		//gravarArq.append("ticks eval_atual eval_futura S0 S1 S2 TS0 TS1 TS2 Atualisa_grupo n_unidades\n" );
+		//arq.close();
 		     
 			
 	       
@@ -137,7 +167,7 @@ public class SSSDavid extends AbstractionLayerAI  {
 	protected void buildPortfolio() {
 		 
 		this.scripts.add(new Script4(utt));
-		 this.scripts.add(new Script2(utt));
+		// this.scripts.add(new Script2(utt));
 	//	this.scripts.add(new LightDefenseD(utt));
 	//	this.scripts.add(new EconomyRushBursterD(utt));
  //   this.scripts.add(new EconomyMiliratyRushD(utt));
@@ -424,35 +454,39 @@ public class SSSDavid extends AbstractionLayerAI  {
     		atual.set(k , melhor.get(k));
     	}
 		int i = gs.getTime() % grupos.size();
+		ArrayList<Double> pont= new ArrayList<>();
+		for(int j=0;j<playouts.size();j++)	pont.add((double) 0);
+		for(int r =0;r<rep;r++) {
 			for(int j=0;j<scripts.size();j++) {
-			inf.inicio_playout =System.currentTimeMillis();
+				inf.inicio_playout =System.currentTimeMillis();
+				
+				atual.set(i, j);
+				
+				playouts.get(j).configura(player, gs, actions, i, inf, atual,link);
+				
+				
+				//playout.run();
+						//playout(player,gs,i);
+				//System.out.println(e);
+			}
+				
+			for(int t =0 ; t<threads.size();t++) {
+				threads.set(t, new Thread(playouts.get(t)));
+				threads.get(t).start();
+			}
+				
 			
-			atual.set(i, j);
-			
-			playouts.get(j).configura(player, gs, actions, i, inf, atual,link);
-			
-			
-			//playout.run();
-					//playout(player,gs,i);
-			//System.out.println(e);
-		}
-			
-		for(int t =0 ; t<threads.size();t++) {
-			threads.set(t, new Thread(playouts.get(t)));
-			threads.get(t).start();
-		}
-			
+			for(int t =0 ; t<threads.size();t++) {
+				
+				threads.get(t).join();
+			}
+			for(int t =0; t<playouts.size();t++) pont.set(t, pont.get(t) +playouts.get(t).resultado);
 		
-		for(int t =0 ; t<threads.size();t++) {
-			
-			threads.get(t).join();
 		}
-		
-	
 			
 			double e_m= -11111;
 			for(int t =0; t<playouts.size();t++) {
-				double e = playouts.get(t).resultado;
+				double e = pont.get(t);
 				if(t==0 && gs.getTime()>10000)e= - 1111;
 				if(e_m<e) {
 					
@@ -460,6 +494,7 @@ public class SSSDavid extends AbstractionLayerAI  {
 					e_m=e;
 				}
 		}
+			
 		 sepa.set(melhor.get(i),sepa.get(melhor.get(i)) + 1);
 			
 			

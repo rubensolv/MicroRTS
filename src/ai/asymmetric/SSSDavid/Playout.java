@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import ai.RandomBiasedAI;
 import ai.abstraction.AbstractAction;
 import ai.abstraction.Build;
 import ai.abstraction.LightRush;
@@ -36,7 +37,10 @@ public class Playout extends AbstractionLayerAID implements Runnable{
 	EvaluationFunction evaluation = new SimpleSqrtEvaluationFunction3();
 	List<List<Unit>> grupos2;
 	HashMap<Unit, AbstractAction> action2;
+	double tempo_de_simulacao= 100;
+	double prof_de_simulacao=10000;
 	int num_tipo;
+	AI ai4;
 	List<Unit> aux =new LinkedList<Unit>();
 	List<Unit> aux2 =new LinkedList<Unit>();
 	ArrayList<Integer> atual;
@@ -48,7 +52,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
     UnitType heavyType;
     UnitType rangedType;
     Player p;
-
+    Random gerador = new Random();
     
     public void analisa(GameState gs) {
 		int w1=0;
@@ -132,13 +136,23 @@ public class Playout extends AbstractionLayerAID implements Runnable{
 		 
 		 
 	}
-   
+  
+    public void setAI(AI AI_inimigo) {
+    	ai4 = AI_inimigo;	
+    }
+    public void setTempoSimulacao(double tempo) {
+    	tempo_de_simulacao = tempo;
+    }
+    public void setProfSimulacao(double prof) {
+    	prof_de_simulacao = prof;
+    }
     
-    public Playout(UnitTypeTable a_utt,int num_g,ArrayList<AbstractionLayerAID> scripts2) {
+    
+     public Playout(UnitTypeTable a_utt,int num_g,ArrayList<AbstractionLayerAID> scripts2) {
 		   super( new AStarPathFinding());	 
 		   link = new HashMap<Long, Integer>();
 		   inf2 = new Information();
-		   
+		   ai4 = new LightRush(a_utt);
 		   atual = new ArrayList<>();
 		   scripts = new ArrayList<>();
 		   for(AbstractionLayerAID  s : scripts2) {
@@ -202,7 +216,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
 		
 		double inicio_playout =System.currentTimeMillis();
    
-        int timeLimit =  400;
+      
         
         boolean gameover = false;
        
@@ -211,9 +225,9 @@ public class Playout extends AbstractionLayerAID implements Runnable{
        
         
         
-        for(; !gameover && 90 > System.currentTimeMillis() - inicio_playout && prof < 500000 ;prof++) {
+        for(; !gameover && tempo_de_simulacao > System.currentTimeMillis() - inicio_playout && prof < prof_de_simulacao ;prof++) {
            
-        	if (gs2.isComplete()|| prof%10!=0) {
+        	if (gs2.isComplete()) {
                 gameover = gs2.cycle();
         	} 	
             	aux.clear();
@@ -277,7 +291,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
         		}
             	
            gs2.issue( translateActions(player, gs2));
-            	AI ai4 = new LightRush(utt);
+            	
             			//new WorkerRush(utt);//
             			
             			//new LightRush(utt);// ;
@@ -294,7 +308,9 @@ public class Playout extends AbstractionLayerAID implements Runnable{
      // analisa(gs2);
        
         resultado =  evaluation.evaluate(player, 1 - player, gs2);
-        
+        if(tempo_de_simulacao == -1) {
+        	resultado = gerador.nextInt(100);
+        }
     //  System.out.println(prof);
         return;
     }
