@@ -13,6 +13,7 @@ public class FunctionsforGrammar {
     List<String> behaviourDiscrete;
     List<String> playerTargetDiscrete;
     List<String> priorityPositionDiscrete;
+    List<String> priorityPositionDiscreteLimited;
 
     List<FunctionsforGrammar> basicFunctionsForGrammar;
     List<FunctionsforGrammar> basicFunctionsForGrammarUnit;
@@ -67,6 +68,14 @@ public class FunctionsforGrammar {
         priorityPositionDiscrete.add("Right");
         priorityPositionDiscrete.add("Left");
         priorityPositionDiscrete.add("EnemyDir");
+        
+        //Parameter PriorityPositionLimited
+        priorityPositionDiscreteLimited = new ArrayList<>();
+        priorityPositionDiscreteLimited.add("Up");
+        priorityPositionDiscreteLimited.add("Down");
+        priorityPositionDiscreteLimited.add("Right");
+        priorityPositionDiscreteLimited.add("Left");
+
 
     }
 
@@ -90,11 +99,13 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
         parameters.add(new Parameter("Quantity", 1.0, 3.0, null));
+        parameters.add(new Parameter("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("build", parameters));
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
         parameters.add(new Parameter("Quantity", 30.0, 30.0, null));
+        parameters.add(new Parameter("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("build", parameters));
 
@@ -108,19 +119,19 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("harvest", parameters));
 
-        //Function MoveToCoordinatesBasic
-        parameters = new ArrayList<>();
-        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add((new Parameter("x", 0.0, 15.0, null)));
-        parameters.add((new Parameter("y", 0.0, 15.0, null)));        
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToCoord", parameters));
-        //Function MoveToCoordinatesBasic
-        parameters = new ArrayList<>();
-        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add((new Parameter("x", 0.0, 15.0, null)));
-        parameters.add((new Parameter("y", 0.0, 15.0, null)));
-        parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveToCoord", parameters));
+//        //Function MoveToCoordinatesBasic
+//        parameters = new ArrayList<>();
+//        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+//        parameters.add((new Parameter("x", 0.0, 0.0, null)));
+//        parameters.add((new Parameter("y", 0.0, 0.0, null)));        
+//        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToCoord", parameters));
+//        //Function MoveToCoordinatesBasic
+//        parameters = new ArrayList<>();
+//        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+//        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+//        parameters.add((new Parameter("y", 0.0, 15.0, null)));
+//        parameters.add(new Parameter("u", null, null, null));
+//        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveToCoord", parameters));
 
         //Function MoveToUnitBasic
         parameters = new ArrayList<>();
