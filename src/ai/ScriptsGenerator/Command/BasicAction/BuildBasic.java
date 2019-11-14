@@ -44,15 +44,15 @@ import util.Pair;
  *
  * @author rubens
  */
-public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
-    
+public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
+
     boolean needUnit = false;
     String originalPieceGrammar;
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
-    	
-    	//get the unit that it will be builded 
+
+        //get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
             //verify if the limit of units are reached
@@ -65,7 +65,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
                         //execute the build action
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
-                        	usedCommands.add(getOriginalPieceGrammar());
+                            usedCommands.add(getOriginalPieceGrammar());
                             currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
                         }
 
@@ -93,46 +93,127 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
         reservedPositions.addAll(game.getResourceUsage().getPositionsUsed());
         reservedPositions.addAll(currentPlayerAction.getResourceUsage().getPositionsUsed());
         PhysicalGameState pgs = game.getPhysicalGameState();
-
+        /*
         List<Unit> bases = new LinkedList<Unit>();
-		for (Unit u2 : pgs.getUnits()) {
-			if (u2.getType().name == "Base"
-					&& u2.getPlayer() == player) {
-				bases.add(u2);
-			}
-		}
-		
-        List<Unit> barracks = new LinkedList<Unit>();
-		for (Unit u2 : pgs.getUnits()) {
-			if (u2.getType().name == "Barracks"
-					&& u2.getPlayer() == player) {
-				bases.add(u2);
-			}
-		}
-		
-		int pos;
-		
-		if(barracks.size()==0 && bases.size()>0)
-		{
-			Unit b = bases.get(0);
-			
-			int xCoord=b.getX();
-			int yCoord=b.getY();
-			
-			if(player==0)
-			{
-				xCoord=b.getX()+2;
-				yCoord=b.getY()+2;
-			}
+        for (Unit u2 : pgs.getUnits()) {
+            if (u2.getType().name == "Base"
+                    && u2.getPlayer() == player) {
+                bases.add(u2);
+            }
+        }
 
-			pos = findBuildingPosition(reservedPositions, xCoord, yCoord, game.getPlayer(player), pgs);
-		}
-		
-		else
-		{
-			pos = findBuildingPosition(reservedPositions, unit.getX(), unit.getY(), game.getPlayer(player), pgs);
-		}
+        List<Unit> barracks = new LinkedList<Unit>();
+        for (Unit u2 : pgs.getUnits()) {
+            if (u2.getType().name == "Barracks"
+                    && u2.getPlayer() == player) {
+                bases.add(u2);
+            }
+        }
+
         
+        this method returns the build to the old version.
+        return buildWithRelativePosition(barracks, bases, player, reservedPositions, pgs, a_utt, unit, currentPlayerAction, game, pf);
+         */
+        return buildConsideringPosition(player, reservedPositions, pgs, a_utt, unit, currentPlayerAction, game, pf);
+    }
+
+    private UnitAction buildConsideringPosition(int player, List<Integer> reservedPositions, PhysicalGameState pgs, UnitTypeTable a_utt, Unit unit, PlayerAction currentPlayerAction, GameState game, PathFinding pf) {
+        PriorityPositionParam order = getPriorityParam();
+        UnitAction ua = null;
+        //pick the type to be builded
+        UnitType unitType = getUnitTyppe(a_utt);
+        
+        for (EnumPositionType enumPositionType : order.getSelectedPosition()) {
+            if (enumPositionType.code() == 4) {
+                for (int enumCodePosition : getDirectionByEnemy(game, unit)) {
+                    ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumCodePosition, unitType);
+                    if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) {
+                        return ua;
+                    }
+                }
+            } else {
+                ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumPositionType.code(), unitType);
+            }
+            if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) {
+                return ua;
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    private List<Integer> getDirectionByEnemy(GameState game, Unit unit) {
+        int player = unit.getPlayer();
+        int enemy = (1 - player);
+        ArrayList<Integer> directions = new ArrayList<>();
+
+        //get (following the order) base, barrack or enemy.
+        Unit enUnit = getOrderedUnit(enemy, game);
+        //check if the enemy is left or right
+        if (enUnit.getX() >= unit.getX()) {
+            directions.add(DIRECTION_RIGHT);
+        } else {
+            directions.add(DIRECTION_LEFT);
+        }
+        //check if the enemy is up or bottom
+        if (enUnit.getY() >= unit.getY()) {
+            directions.add(DIRECTION_DOWN);
+        } else {
+            directions.add(DIRECTION_UP);
+        }
+
+        //return all possible positions
+        return directions;
+    }
+    
+    private Unit getOrderedUnit(int enemy, GameState game) {
+        Unit base = null;
+        Unit barrack = null;
+        Unit other = null;
+
+        for (Unit unit : game.getUnits()) {
+            if (unit.getPlayer() == enemy) {
+                if (base == null && unit.getType().ID == 1) {
+                    base = unit;
+                } else if (barrack == null && unit.getType().ID == 2) {
+                    barrack = unit;
+                } else if (other == null) {
+                    other = unit;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (base != null) {
+            return base;
+        } else if (barrack != null) {
+            return barrack;
+        }
+        return other;
+    }
+
+    //old code
+    private UnitAction buildWithRelativePosition(List<Unit> barracks, List<Unit> bases, int player, List<Integer> reservedPositions, PhysicalGameState pgs, UnitTypeTable a_utt, Unit unit, PlayerAction currentPlayerAction, GameState game, PathFinding pf) {
+        int pos;
+
+        if (barracks.isEmpty() && bases.size() > 0) {
+            Unit b = bases.get(0);
+
+            int xCoord = b.getX();
+            int yCoord = b.getY();
+
+            if (player == 0) {
+                xCoord = b.getX() + 2;
+                yCoord = b.getY() + 2;
+            }
+
+            pos = findBuildingPosition(reservedPositions, xCoord, yCoord, game.getPlayer(player), pgs);
+        } else {
+            pos = findBuildingPosition(reservedPositions, unit.getX(), unit.getY(), game.getPlayer(player), pgs);
+        }
+
         //pick the type to be builded
         UnitType unType = getUnitTyppe(a_utt);
 
@@ -366,7 +447,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
 
         return "{BuildBasic:{" + listParam + "}}";
     }
-    
+
     public void setUnitIsNecessary() {
         this.needUnit = true;
     }
@@ -382,8 +463,8 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit workToBuild, HashSet<String> usedCommands) {
-    	//usedCommands.add(getOriginalPieceGrammar()+")");
-    	//get the unit that it will be builded 
+        //usedCommands.add(getOriginalPieceGrammar()+")");
+        //get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
             //verify if the limit of units are reached
@@ -396,7 +477,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
                         //execute the build action
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
-                        	usedCommands.add(getOriginalPieceGrammar());
+                            usedCommands.add(getOriginalPieceGrammar());
                             currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
                         }
 
@@ -407,17 +488,18 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand{
         return currentPlayerAction;
     }
 
-	/**
-	 * @return the originalPieceGrammar
-	 */
-	public String getOriginalPieceGrammar() {
-		return originalPieceGrammar;
-	}
+    /**
+     * @return the originalPieceGrammar
+     */
+    public String getOriginalPieceGrammar() {
+        return originalPieceGrammar;
+    }
 
-	/**
-	 * @param originalPieceGrammar the originalPieceGrammar to set
-	 */
-	public void setOriginalPieceGrammar(String originalPieceGrammar) {
-		this.originalPieceGrammar = originalPieceGrammar;
-	}
+    /**
+     * @param originalPieceGrammar the originalPieceGrammar to set
+     */
+    public void setOriginalPieceGrammar(String originalPieceGrammar) {
+        this.originalPieceGrammar = originalPieceGrammar;
+    }
+
 }

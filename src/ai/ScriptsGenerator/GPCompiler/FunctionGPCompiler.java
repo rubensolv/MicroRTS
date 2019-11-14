@@ -126,7 +126,12 @@ public class FunctionGPCompiler extends AbstractCompiler {
             build.addParameter(TypeConcrete.getTypeConstruction());
         }
         build.addParameter(new QuantityParam(Integer.decode(params[1]))); //add qtd unit
-        if (params.length > 2) {
+        //add position
+        PriorityPositionParam pos = new PriorityPositionParam();
+        pos.addPosition(EnumPositionType.byName(params[2]));
+        build.addParameter(pos);
+        //If there are more than 3 parameters, we need a unit
+        if (params.length > 3) {
             build.setUnitIsNecessary();
         }
         return build;
