@@ -54,7 +54,7 @@ public class TrainBasic extends AbstractBasicAction {
             Player p = game.getPlayer(player);
             //produce the type of unit in param
             for (Unit unit : unitToBuild) {
-                if (game.getActionAssignment(unit) == null) {
+            	 if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null) {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit, p);
                     if (unTemp != null) {
                     	usedCommands.add(getOriginalPieceGrammar());
