@@ -1,5 +1,9 @@
 package ai.asymmetric.SSSDavid;
 
+
+
+
+
 import ai.PassiveAI;
 import ai.RandomBiasedAI;
 import ai.abstraction.AbstractAction;
@@ -165,13 +169,13 @@ public class SSSDavid extends AbstractionLayerAI  {
 	}
 	
 	protected void buildPortfolio() {
-		 
-		this.scripts.add(new Script4(utt));
+		 this.scripts.add(new MoonWalker(utt));
+		//this.scripts.add(new Script4(utt));
 		// this.scripts.add(new Script2(utt));
 	//	this.scripts.add(new LightDefenseD(utt));
 	//	this.scripts.add(new EconomyRushBursterD(utt));
  //   this.scripts.add(new EconomyMiliratyRushD(utt));
- this.scripts.add(new EconomyRushD(utt));
+ //this.scripts.add(new EconomyRushD(utt));
 // this.scripts.add(new Script1(utt));
     // this.scripts.add(new LightDefenseD(utt));
  //this.scripts.add(new Script4(utt));
@@ -367,6 +371,16 @@ public class SSSDavid extends AbstractionLayerAI  {
 	
 	@Override
 	public PlayerAction getAction(int player, GameState gs) throws Exception {
+		
+		if(gs.getTime()==100) {
+			;
+			//COM.test(player, gs, utt);
+			
+		}
+		
+		
+		
+		
 		PhysicalGameState pgs = gs.getPhysicalGameState();
 		Player p = gs.getPlayer(player);
 		   inf.contruindo_base =0;

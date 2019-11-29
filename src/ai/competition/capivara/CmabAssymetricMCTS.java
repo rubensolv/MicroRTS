@@ -5,6 +5,10 @@
 package ai.competition.capivara;
 
 import ai.CMAB.*;
+import ai.abstraction.EconomyRush;
+import ai.abstraction.LightRush;
+import ai.abstraction.RangedRush;
+import ai.abstraction.WorkerRush;
 import ai.*;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
@@ -185,7 +189,11 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         this.utt = utt;
         this.behavior = behavior;
         this.qtdUnits = qtdUnits;
-        this.scripts = abstraction;
+        //this.scripts = abstraction;
+        this.scripts.add(new RangedRush(utt));
+       // this.scripts.add(new EconomyRush(utt));
+       
+       
     }     
     
     public CmabAssymetricMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, 
@@ -207,7 +215,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
         this.utt = utt;
         this.behavior = behavior;
         this.qtdUnits = qtdUnits;
-        this.scripts = abstraction;
+      //  this.scripts = abstraction;
         this.name = name;
     }   
     

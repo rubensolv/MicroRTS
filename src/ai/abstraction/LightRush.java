@@ -81,6 +81,8 @@ public class LightRush extends AbstractionLayerAI {
 
         // behavior of bases:
         for (Unit u : pgs.getUnits()) {
+        
+        	
             if (u.getType() == baseType
                     && u.getPlayer() == player
                     && gs.getActionAssignment(u) == null) {
