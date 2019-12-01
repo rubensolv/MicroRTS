@@ -51,7 +51,6 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
-
         //get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {

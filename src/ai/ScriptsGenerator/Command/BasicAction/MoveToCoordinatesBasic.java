@@ -110,7 +110,7 @@ public class MoveToCoordinatesBasic extends AbstractBasicAction implements IUnit
         int pY = getCoordinatesFromParam().getY();
 
         //pick the positions
-        if (game.getActionAssignment(unAlly) == null && unAlly != null && hasInPotentialUnits(game, currentPlayerAction, unAlly)) {
+        if (game.getActionAssignment(unAlly) == null && unAlly != null && hasInPotentialUnits(game, currentPlayerAction, unAlly, player)) {
 
             UnitAction uAct = null;
             UnitAction move = pf.findPathToAdjacentPosition(unAlly, pX + pY * pgs.getWidth(), game, resources);

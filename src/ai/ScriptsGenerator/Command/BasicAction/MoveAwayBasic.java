@@ -131,7 +131,7 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
         //pick one enemy unit to set the action
         Unit targetEnemy = farthestAllyBase(pgs, player, unAlly);
 
-        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null && hasInPotentialUnits(game, currentPlayerAction, unAlly)) {
+        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null && hasInPotentialUnits(game, currentPlayerAction, unAlly,player)) {
 
             UnitAction uAct = null;
             UnitAction move = pf.findPathToPositionInRange(unAlly, targetEnemy.getX() + targetEnemy.getY() * pgs.getWidth(), unAlly.getAttackRange(), game, resources);

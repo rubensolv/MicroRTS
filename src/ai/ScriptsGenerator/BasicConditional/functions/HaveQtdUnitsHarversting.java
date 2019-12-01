@@ -23,6 +23,7 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
     public boolean runFunction(List lParam1) {
+    	
         GameState game = (GameState) lParam1.get(0);
         int player = (int) lParam1.get(1);
         PlayerAction currentPlayerAction = (PlayerAction) lParam1.get(2);
@@ -42,10 +43,11 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
     	 HashSet<Long> unitsID = hb.unitsID;
     	ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {
-            //if(u.getPlayer() == player && currentPlayerAction.getAction(u)!=null){
-            	if(unitsID.contains(u.getID()))
+            if(u.getPlayer() == player){
+            	//if(currentPlayerAction.getAction(u).getType()==2 || currentPlayerAction.getAction(u).getType()==3 || u.getResources()>0)
+            	if(unitsID.contains(u.getID())) 
             		unitAllys.add(u);
-            //}
+            }
         }
         return unitAllys;
     }

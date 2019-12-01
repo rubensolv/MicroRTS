@@ -36,8 +36,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import rts.GameState;
+import rts.PhysicalGameState;
 import rts.PlayerAction;
+import rts.UnitAction;
+import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import util.Pair;
 
 /**
  *
@@ -73,6 +77,22 @@ public class ChromosomeAI extends AI{
             currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands);
         }
         currentActions = fillWithWait(currentActions, player, gs, utt);
+        return currentActions;
+    }
+    
+    public PlayerAction getActionSingleUnit(int player, GameState gs, Unit u) {
+        PlayerAction currentActions = new PlayerAction();
+        PathFinding pf = new AStarPathFinding();        
+        currentActions = fillWithWait(currentActions, player, gs, utt);
+        currentActions.removeUnitAction(u,  currentActions.getAction(u));
+        System.out.println("Idunit "+u.getID());
+        //System.out.println("player1"+currentActions.getActions().toString());
+        for (ICommand command : commands) {
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands);
+        }
+        //System.out.println("player2"+currentActions.getActions().toString());
+        currentActions = fillWithWait(currentActions, player, gs, utt);
+        System.out.println("player3"+currentActions.getActions().toString());
         return currentActions;
     }
 

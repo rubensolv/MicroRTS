@@ -31,7 +31,6 @@ public class HaveQtdUnitsbyType extends AbstractConditionalFunction{
         QuantityParam qtd = (QuantityParam) lParam1.get(5);
         UnitTypeParam unitType = (UnitTypeParam) lParam1.get(6);
         parameters.add(unitType);
-        
         if (getUnitsOfType(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
             return true;
         }

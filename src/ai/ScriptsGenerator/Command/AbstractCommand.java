@@ -143,8 +143,10 @@ public abstract class AbstractCommand implements ICommand{
         return unitAllys;
     }
     
-    protected boolean hasInPotentialUnits(GameState game, PlayerAction currentPlayerAction, Unit uAlly) {
-        if(isUnitControlledByParam(uAlly))
+    protected boolean hasInPotentialUnits(GameState game, PlayerAction currentPlayerAction, Unit uAlly, int player) {
+        if(uAlly.getPlayer() == player && currentPlayerAction.getAction(uAlly) == null 
+                && game.getActionAssignment(uAlly) == null && uAlly.getResources() == 0
+                && isUnitControlledByParam(uAlly))
         {
         	return true;
         }
