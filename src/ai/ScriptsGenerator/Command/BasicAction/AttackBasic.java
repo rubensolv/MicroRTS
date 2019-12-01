@@ -57,6 +57,7 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
         if (pt == "Enemy") {
             playerTarget = 1 - player;
         }
+        
         for (Unit unAlly : getPotentialUnits(game, currentPlayerAction, player)) {
 
             //pick one enemy unit to set the action
@@ -66,7 +67,7 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
                 AbstractAction action = new Attack(unAlly, targetEnemy, pf);
 
                 UnitAction uAct = action.execute(game, resources);
-
+                
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
                 	usedCommands.add(getOriginalPieceGrammar());
                     currentPlayerAction.addUnitAction(unAlly, uAct);
@@ -125,7 +126,7 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
         Unit targetEnemy = getTargetEnemyUnit(game, currentPlayerAction, playerTarget, unAlly);
    
 
-        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null && hasInPotentialUnits(game, currentPlayerAction, unAlly)) {
+        if (game.getActionAssignment(unAlly) == null && unAlly != null && targetEnemy != null && hasInPotentialUnits(game, currentPlayerAction, unAlly, player)) {
             AbstractAction action = new Attack(unAlly, targetEnemy, pf);
 
             UnitAction uAct = action.execute(game, resources);

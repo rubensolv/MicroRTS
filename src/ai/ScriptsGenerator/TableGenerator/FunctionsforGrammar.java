@@ -255,9 +255,19 @@ public class FunctionsforGrammar {
 
     }
 
+    public void printFunctions(List<FunctionsforGrammar> functionstoPrint)
+    {
+    	for(FunctionsforGrammar f: functionstoPrint)
+    	{
+    		System.out.println(f.nameFunction);
+    	}
+    }
 
     public List<FunctionsforGrammar> getBasicFunctionsForGrammar() {
         return basicFunctionsForGrammar;
+    }
+    public void setBasicFunctionsForGrammar(List<FunctionsforGrammar> newList) {
+    	basicFunctionsForGrammar=newList;
     }
 
     public List<FunctionsforGrammar> getConditionalsForGrammar() {
@@ -279,7 +289,5 @@ public class FunctionsforGrammar {
     public List<Parameter> getParameters() {
         return parameters;
     }
-    
-    
 
 }
