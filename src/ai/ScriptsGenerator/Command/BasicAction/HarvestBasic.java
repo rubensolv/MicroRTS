@@ -13,6 +13,8 @@ import ai.abstraction.AbstractAction;
 import ai.abstraction.Harvest;
 import ai.abstraction.Train;
 import ai.abstraction.pathfinding.PathFinding;
+
+import java.util.HashMap;
 import java.util.HashSet;
 import rts.GameState;
 import rts.PhysicalGameState;
@@ -32,9 +34,10 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
     public final HashSet<Long> unitsID = new HashSet<>();
     boolean needUnit = false;
     String originalPieceGrammar;
+    String originalPieceGrammarWord;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt,HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt,HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
     	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
@@ -63,6 +66,14 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
                     UnitAction uAct = action.execute(game, resources);
                     if (uAct != null) {
                     	usedCommands.add(getOriginalPieceGrammar());
+                    	if(counterByFunction.containsKey("harvest"))
+                    	{
+                    		counterByFunction.put("harvest", counterByFunction.get("harvest")+1);
+                    	}
+                    	else
+                    	{
+                    		counterByFunction.put("harvest", 1);
+                    	}
                         currentPlayerAction.addUnitAction(unit, uAct);
                         resources.merge(uAct.resourceUsage(unit, pgs));
                     }
@@ -197,7 +208,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
     	//usedCommands.add(getOriginalPieceGrammar()+")");
     	
     	ResourceUsage resources = new ResourceUsage();
@@ -228,6 +239,14 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
                         UnitAction uAct = action.execute(game, resources);
                         if (uAct != null) {
                         	usedCommands.add(getOriginalPieceGrammar());
+                        	if(counterByFunction.containsKey("harvest"))
+                        	{
+                        		counterByFunction.put("harvest", counterByFunction.get("harvest")+1);
+                        	}
+                        	else
+                        	{
+                        		counterByFunction.put("harvest", 1);
+                        	}
                             currentPlayerAction.addUnitAction(unit, uAct);
                             resources.merge(uAct.resourceUsage(unit, pgs));
                         }
@@ -250,6 +269,14 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 	 */
 	public void setOriginalPieceGrammar(String originalPieceGrammar) {
 		this.originalPieceGrammar = originalPieceGrammar;
+	}
+	
+	public String getOriginalPieceGrammarWord() {
+		return originalPieceGrammarWord;
+	}
+
+	public void setOriginalPieceGrammarWord(String originalPieceGrammarWord) {
+		this.originalPieceGrammarWord = originalPieceGrammarWord;
 	}
 
 }

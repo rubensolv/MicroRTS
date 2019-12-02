@@ -327,7 +327,7 @@ public class FixedAIMatch {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1","", new HashSet<String>());
+        AI aiscript = new ChromosomeAI(utt, commands, "P1","", new HashSet<String>(),new HashMap<String, Integer>());
 
         return aiscript;
     }

@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
@@ -237,7 +238,7 @@ public class RoundRobinTOScaleChromoScripts {
         	
         	commands.add(tcg.getCommandByID(idSc));;
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1", "", new HashSet<String>());
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1", "", new HashSet<String>(),new HashMap<String, Integer>());
 
         return aiscript;
     }

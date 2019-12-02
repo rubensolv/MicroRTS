@@ -38,6 +38,7 @@ import ai.ScriptsGenerator.ParametersConcrete.WeakestEnemy;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
@@ -2343,7 +2344,7 @@ public class ChromosomesBag {
 
         //simulate one WR
         for (ICommand command : commands2) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>());
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>(), new HashMap<String, Integer>());
         }
         System.out.println("currentActions " + currentActions.toString());
         return currentActions;

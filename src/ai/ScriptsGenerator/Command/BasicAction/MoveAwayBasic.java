@@ -18,6 +18,7 @@ import ai.abstraction.Attack;
 import ai.abstraction.Move;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -37,9 +38,10 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
 
     boolean needUnit = false;
     String originalPieceGrammar;
+    String originalPieceGrammarWord;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
     	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
@@ -59,6 +61,14 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
 
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
                 	usedCommands.add(getOriginalPieceGrammar());
+                	if(counterByFunction.containsKey("moveAway"))
+                	{
+                		counterByFunction.put("moveAway", counterByFunction.get("moveAway")+1);
+                	}
+                	else
+                	{
+                		counterByFunction.put("moveAway", 1);
+                	}
                     currentPlayerAction.addUnitAction(unAlly, uAct);
                     resources.merge(uAct.resourceUsage(unAlly, pgs));
                 }
@@ -118,7 +128,7 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly, HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
     	//usedCommands.add(getOriginalPieceGrammar()+")");
     	if(unAlly != null && currentPlayerAction.getAction(unAlly) != null){
             return currentPlayerAction ;
@@ -140,6 +150,14 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
 
             if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
             	usedCommands.add(getOriginalPieceGrammar());
+            	if(counterByFunction.containsKey("moveAway"))
+            	{
+            		counterByFunction.put("moveAway", counterByFunction.get("moveAway")+1);
+            	}
+            	else
+            	{
+            		counterByFunction.put("moveAway", 1);
+            	}
                 currentPlayerAction.addUnitAction(unAlly, uAct);
                 resources.merge(uAct.resourceUsage(unAlly, pgs));
             }
@@ -167,4 +185,11 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
 		this.originalPieceGrammar = originalPieceGrammar;
 	}
 
+	public String getOriginalPieceGrammarWord() {
+		return originalPieceGrammarWord;
+	}
+
+	public void setOriginalPieceGrammarWord(String originalPieceGrammarWord) {
+		this.originalPieceGrammarWord = originalPieceGrammarWord;
+	}
 }

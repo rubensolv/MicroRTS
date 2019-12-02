@@ -72,7 +72,7 @@ public class ChromosomeAI_UCB extends AI{
             //evaluate if the currentActions was changed
             String oldCurrent = currentActions.toString();
             
-            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>());
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>(), new HashMap<String, Integer>());
             
             // if the currentActions was changed, I will log the information
             if(!currentActions.toString().equals(oldCurrent)){

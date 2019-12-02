@@ -117,8 +117,8 @@ public class RemoteReport {
         Duration duracao;
 
         List<String> maps = new ArrayList<>(Arrays.asList(
-                //"maps/16x16/basesWorkers16x16A.xml"
-                "maps/NoWhereToRun9x8.xml"
+                "maps/16x16/basesWorkers16x16A.xml"
+                //"maps/NoWhereToRun9x8.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -321,7 +321,8 @@ public class RemoteReport {
     private static AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         HashSet<String> usedCommands=new HashSet<String> ();
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
+        HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;
     }
     

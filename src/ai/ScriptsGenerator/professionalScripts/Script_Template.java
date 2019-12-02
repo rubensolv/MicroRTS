@@ -15,6 +15,7 @@ import ai.abstraction.pathfinding.PathFinding;
 import ai.core.AI;
 import ai.core.ParameterSpecification;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
@@ -32,6 +33,7 @@ public class Script_Template extends AbstractionLayerAI {
 
     protected UnitTypeTable utt;
     HashSet<String> usedCommands = new HashSet<>();
+    HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
     ICompiler compiler = new MainGPCompiler();
 
     public Script_Template(UnitTypeTable t_utt) {
@@ -73,7 +75,7 @@ public class Script_Template extends AbstractionLayerAI {
 
     private PlayerAction runCode(PlayerAction pa, String code, int player, GameState gs) throws Exception {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI script = new ChromosomeAI(utt, commandsGP, "", code, usedCommands);
+        AI script = new ChromosomeAI(utt, commandsGP, "", code, usedCommands,counterByFunction);
         return pa.merge(script.getAction(player, gs));
     }
 

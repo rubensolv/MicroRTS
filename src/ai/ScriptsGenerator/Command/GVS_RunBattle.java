@@ -7,22 +7,28 @@ package ai.ScriptsGenerator.Command;
 import util.SOA.*;
 import ai.PassiveAI;
 import ai.RandomBiasedAI;
+import ai.CMAB.A3NWithinNoWait;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.GPCompiler.FunctionGPCompiler;
 import ai.ScriptsGenerator.GPCompiler.ICompiler;
 import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
+import ai.abstraction.HeavyRush;
 import ai.abstraction.LightRush;
 import ai.abstraction.RangedRush;
 import ai.abstraction.WorkerRush;
+import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.core.AI;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
+import ai.asymmetric.PGS.LightPGSSCriptChoiceNoWaits;
 import ai.asymmetric.PGS.PGSSCriptChoiceRandom;
 import ai.competition.capivara.CmabAssymetricMCTS;
+import ai.configurablescript.BasicExpandedConfigurableScript;
 import ai.mcts.naivemcts.NaiveMCTS;
+import ai.puppet.PuppetSearchMCTS;
 import gui.PhysicalGameStatePanel;
 
 import java.io.BufferedReader;
@@ -42,6 +48,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import javax.swing.JFrame;
+
+import Standard.StrategyTactics;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
@@ -61,6 +69,7 @@ public class GVS_RunBattle {
     String pathLogsUsedCommands;
     ICompiler compiler = new MainGPCompiler();
     HashSet<String> usedCommands;
+    HashMap<String, Integer> counterByFunction;
 
     public GVS_RunBattle(String pathTableScripts, String pathLogsUsedCommands) {
     	this.pathLogsUsedCommands=pathLogsUsedCommands;
@@ -80,10 +89,10 @@ public class GVS_RunBattle {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml"
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
                 //"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		"maps/16x16/basesWorkers16x16A.xml"
+        		//"maps/16x16/basesWorkers16x16A.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -132,20 +141,27 @@ public class GVS_RunBattle {
         updateTableIfnecessary();
         
         //AI ai1= new PassiveAI(utt);
-        AI ai1=new WorkerRush(utt);
-        //AI ai1=new LightRush(utt);
-
+        AI ai1=new RangedRush(utt);
+        //AI ai2=new RangedRush(utt);
+        //AI ai2=new WorkerRush(utt);
+       // AI ai1=new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3); //WR
+        //AI ai2=new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3); //WR
+        //AI ai1=new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4); //lr
         //pgs 
         //pgs 
         
         List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi2);
-        //AI ai2=scriptsRun1.get(0);
+        List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi1);
+        AI ai2=scriptsRun1.get(0);
 //      AI ai1 = new PGSSCriptChoiceRandom(utt, decodeScripts(utt, iScriptsAi1), "PGSR", 2, 200);
       //AI ai2 = new PGSSCriptChoiceRandom(utt, scriptsRun1, "PGSR", 1, 200);
         //List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi1);
         //List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi2);
       	//AI ai1 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
-      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
+        //AI ai1 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun1,200, "PGSR");
+        //AI ai2 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun1,200, "PGSR");
+      	//AI ai1 = new LightPGSSCriptChoice(utt, scriptsRun1,200, "PGSR");
+      	//AI ai2=new PuppetSearchMCTS(utt);
         
 //      	AI ai2 = new LightPGSSCriptChoice(utt, scriptsRun,200, "PGSR");
 
@@ -157,7 +173,22 @@ public class GVS_RunBattle {
 //        AI ai2 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
 //                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
 //                new SimpleSqrtEvaluationFunction3(), true, utt,
-//                "ManagerClosestEnemy", 1, scriptsRun1);
+//                "ManagerClosestEnemy", 3, scriptsRun1);
+//        
+//        AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
+//                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+//                new SimpleSqrtEvaluationFunction3(), true, utt,
+//                "ManagerClosestEnemy", 3, scriptsRun1);
+        
+//      	AI ai1 = new A3NWithinNoWait(100, -1, 100, 1, 0.3f,
+//                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+//                new SimpleSqrtEvaluationFunction3(), true, utt,
+//                "ManagerRandom", 1, scriptsRun1);
+//      	
+//      	AI ai2 = new A3NWithinNoWait(100, -1, 100, 1, 0.3f,
+//                0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+//                new SimpleSqrtEvaluationFunction3(), true, utt,
+//                "ManagerRandom", 1, scriptsRun1);
 
 //      AI ai1 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi1), "GAB");
 //      AI ai2 = new GABScriptChoose(utt, 1, 2, decodeScripts(utt, iScriptsAi2), "GAB");
@@ -180,7 +211,7 @@ public class GVS_RunBattle {
         log.add("Mapa= " + maps.get(iMap) + "\n");
 
         //método para fazer a troca dos players
-        JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
+        JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 740, 740, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
         long startTime;
         long timeTemp;
@@ -313,7 +344,7 @@ public class GVS_RunBattle {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>());
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(),new HashMap<String, Integer>() );
 
         return aiscript;
     }
@@ -344,9 +375,10 @@ public class GVS_RunBattle {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
     	usedCommands=new HashSet<String> ();
+    	counterByFunction=new HashMap<String, Integer>();
     	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands, counterByFunction);
         return aiscript;
     }
     
@@ -372,7 +404,6 @@ public class GVS_RunBattle {
     
     private void recordGrammars(List<String> listOfCompleteStrings) {
 		
-    	
     	File pathCommandsUsed = new File(pathLogsUsedCommands);
         if (!pathCommandsUsed.exists()) {
         	pathCommandsUsed.mkdir();

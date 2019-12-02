@@ -32,9 +32,12 @@ import ai.abstraction.pathfinding.PathFinding;
 import ai.core.AI;
 import ai.core.ParameterSpecification;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
@@ -55,26 +58,41 @@ public class ChromosomeAI extends AI{
     String originalGrammar;
     ICompiler compiler = new MainGPCompiler();
     public HashSet<String> usedCommands;
+    public HashMap<String, Integer> counterByFunction;
 
     public ChromosomeAI(UnitTypeTable utt) {
         this.utt = utt;
 
     }
     
-    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar, HashSet<String> usedCommands) {
+    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
         this.utt = utt;
         this.commands = commands;
         this.name = name;
         this.originalGrammar=originalGrammar;
         this.usedCommands=usedCommands;
+        this.counterByFunction=counterByFunction;
+        initializeCounterByFunction();
     }
 
-    public PlayerAction getAction(int player, GameState gs) {
+    private void initializeCounterByFunction() {
+        counterByFunction.put("attack", 0);
+        counterByFunction.put("build", 0);
+        counterByFunction.put("cluster", 0);
+        counterByFunction.put("harvest", 0);
+        counterByFunction.put("moveAway", 0);
+        counterByFunction.put("moveToCoordenates", 0);
+        counterByFunction.put("moveToUnit", 0);
+        counterByFunction.put("train", 0);
+		
+	}
+
+	public PlayerAction getAction(int player, GameState gs) {
         PlayerAction currentActions = new PlayerAction();
         PathFinding pf = new AStarPathFinding();        
 
         for (ICommand command : commands) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands);
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands,counterByFunction);
         }
         currentActions = fillWithWait(currentActions, player, gs, utt);
         return currentActions;
@@ -88,7 +106,7 @@ public class ChromosomeAI extends AI{
         System.out.println("Idunit "+u.getID());
         //System.out.println("player1"+currentActions.getActions().toString());
         for (ICommand command : commands) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands);
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands,counterByFunction);
         }
         //System.out.println("player2"+currentActions.getActions().toString());
         currentActions = fillWithWait(currentActions, player, gs, utt);
@@ -110,7 +128,8 @@ public class ChromosomeAI extends AI{
     	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         HashSet<String> usedCommands=new HashSet<String>();
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code, usedCommands);
+        HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code, usedCommands,counterByFunction);
         return aiscript;
     }
 

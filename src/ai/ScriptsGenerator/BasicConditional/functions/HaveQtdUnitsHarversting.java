@@ -8,6 +8,7 @@ package ai.ScriptsGenerator.BasicConditional.functions;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
@@ -22,7 +23,7 @@ import rts.units.Unit;
 public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
-    public boolean runFunction(List lParam1) {
+    public boolean runFunction(List lParam1, HashMap<String, Integer> counterByFunction) {
     	
         GameState game = (GameState) lParam1.get(0);
         int player = (int) lParam1.get(1);
@@ -31,7 +32,7 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
         QuantityParam qtd = (QuantityParam) lParam1.get(5);
         
-        if (getAllyUnitsHarvesting(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
+        if (counterByFunction.get("harvest") >= qtd.getQuantity()){
             return true;
         }
         
