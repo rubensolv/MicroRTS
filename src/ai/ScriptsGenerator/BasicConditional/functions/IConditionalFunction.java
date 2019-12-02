@@ -5,6 +5,7 @@
  */
 package ai.ScriptsGenerator.BasicConditional.functions;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -17,6 +18,6 @@ public interface IConditionalFunction {
      * @param lParam1 = GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt
      * @return 
      */
-    public boolean runFunction(List lParam1);
+    public boolean runFunction(List lParam1, HashMap<String, Integer> counterByFunction);
     
 }

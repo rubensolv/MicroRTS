@@ -8,6 +8,7 @@ package ai.ScriptsGenerator.BasicConditional;
 import ai.ScriptsGenerator.BasicConditional.functions.IConditionalFunction;
 import ai.abstraction.pathfinding.PathFinding;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +59,7 @@ public class ConditionalBiggerThen extends AbstractConditional {
 
     @Override
     public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, 
-                                        PathFinding pf, UnitTypeTable a_utt) {
+                                        PathFinding pf, UnitTypeTable a_utt, HashMap<String, Integer> counterByFunction) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -9,6 +9,7 @@ import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -22,7 +23,7 @@ import rts.units.Unit;
 public class HaveQtdEnemiesbyType extends AbstractConditionalFunction{
 
     @Override
-    public boolean runFunction(List lParam1) {
+    public boolean runFunction(List lParam1,HashMap<String, Integer> counterByFunction) {
         GameState game = (GameState) lParam1.get(0);
         int player = (int) lParam1.get(1);
         PlayerAction currentPlayerAction = (PlayerAction) lParam1.get(2);

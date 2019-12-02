@@ -8,6 +8,7 @@ package ai.ScriptsGenerator.BasicConditional;
 import ai.ScriptsGenerator.BasicConditional.functions.IConditionalFunction;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +28,7 @@ public class SimpleConditional extends AbstractConditional implements IUnitCondi
     }
 
     @Override
-    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt) {
+    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashMap<String, Integer> counterByFunction) {
         List param = new ArrayList();
         param.add(game);
         param.add(player);
@@ -37,7 +38,7 @@ public class SimpleConditional extends AbstractConditional implements IUnitCondi
         param.addAll(lParam1);
         try {
             IConditionalFunction fcond = (IConditionalFunction) Class.forName("ai.ScriptsGenerator.BasicConditional.functions." + function).newInstance();
-            return fcond.runFunction(param);
+            return fcond.runFunction(param,counterByFunction);
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
             Logger.getLogger(ConditionalBiggerThen.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -51,7 +52,7 @@ public class SimpleConditional extends AbstractConditional implements IUnitCondi
     }
 
     @Override
-    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit un) {
+    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit un,HashMap<String, Integer> counterByFunction) {
         List param = new ArrayList();
         param.add(game);
         param.add(player);
@@ -62,7 +63,7 @@ public class SimpleConditional extends AbstractConditional implements IUnitCondi
         param.add(un);
         try {
             IConditionalFunction fcond = (IConditionalFunction) Class.forName("ai.ScriptsGenerator.BasicConditional.functions." + function).newInstance();
-            return fcond.runFunction(param);
+            return fcond.runFunction(param,counterByFunction);
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
             Logger.getLogger(ConditionalBiggerThen.class.getName()).log(Level.SEVERE, null, ex);
         }

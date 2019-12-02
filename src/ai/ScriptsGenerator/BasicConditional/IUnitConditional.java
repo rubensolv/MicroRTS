@@ -5,6 +5,8 @@
  */
 package ai.ScriptsGenerator.BasicConditional;
 
+import java.util.HashMap;
+
 import ai.abstraction.pathfinding.PathFinding;
 import rts.GameState;
 import rts.PlayerAction;
@@ -18,6 +20,6 @@ import rts.units.UnitTypeTable;
 public interface IUnitConditional {
     public Boolean isNecessaryUnit();
     public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, 
-                                        PathFinding pf, UnitTypeTable a_utt, Unit un);
+                                        PathFinding pf, UnitTypeTable a_utt, Unit un,HashMap<String, Integer> counterByFunction);
     
 }

@@ -9,6 +9,7 @@ import ai.ScriptsGenerator.ParametersConcrete.QuantityParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -22,7 +23,7 @@ import rts.units.Unit;
 public class HaveQtdUnitsAttacking extends AbstractConditionalFunction{
 
     @Override
-    public boolean runFunction(List lParam1) {
+    public boolean runFunction(List lParam1,HashMap<String, Integer> counterByFunction) {
         GameState game = (GameState) lParam1.get(0);
         int player = (int) lParam1.get(1);
         PlayerAction currentPlayerAction = (PlayerAction) lParam1.get(2);
@@ -32,8 +33,9 @@ public class HaveQtdUnitsAttacking extends AbstractConditionalFunction{
         UnitTypeParam unitType = (UnitTypeParam) lParam1.get(6);
         parameters.add(unitType);
         
-        if (getAllyUnitsAttacking(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
-            return true;
+        //if (getAllyUnitsAttacking(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
+        if (counterByFunction.get("attack") >= qtd.getQuantity()){
+        	return true;
         }
         
         return false;

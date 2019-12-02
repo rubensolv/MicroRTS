@@ -15,6 +15,7 @@ import ai.abstraction.Attack;
 import ai.abstraction.Move;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -35,8 +36,9 @@ public class ClusterBasic extends AbstractBasicAction {
 	int _cenX=0;
 	int _cenY=0;
 	String originalPieceGrammar;
+	String originalPieceGrammarWord;
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
     	
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
@@ -64,6 +66,14 @@ public class ClusterBasic extends AbstractBasicAction {
 
                 if (uAct != null && (uAct.getType() == 5 || uAct.getType() == 1)) {
                 	usedCommands.add(getOriginalPieceGrammar());
+                	if(counterByFunction.containsKey("cluster"))
+                	{
+                		counterByFunction.put("cluster", counterByFunction.get("cluster")+1);
+                	}
+                	else
+                	{
+                		counterByFunction.put("cluster", 1);
+                	}
                     currentPlayerAction.addUnitAction(unAlly, uAct);
                     resources.merge(uAct.resourceUsage(unAlly, pgs));
                 }
@@ -111,4 +121,12 @@ public class ClusterBasic extends AbstractBasicAction {
 		this.originalPieceGrammar = originalPieceGrammar;
 	}
 
+	public String getOriginalPieceGrammarWord() {
+		return originalPieceGrammarWord;
+	}
+
+	public void setOriginalPieceGrammarWord(String originalPieceGrammarWord) {
+		this.originalPieceGrammarWord = originalPieceGrammarWord;
+	}
+	
 }

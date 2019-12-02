@@ -20,6 +20,7 @@ import ai.abstraction.AbstractAction;
 import ai.abstraction.Train;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import rts.GameState;
@@ -42,9 +43,10 @@ import util.Pair;
 public class TrainBasic extends AbstractBasicAction {
 	
 	String originalPieceGrammar;
+	String originalPieceGrammarWord;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
     	
     	int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
         if ((game.getPlayer(player).getResources() - resourcesUsed) >= valueOfUnitsToBuild(game, player, a_utt)
@@ -58,6 +60,14 @@ public class TrainBasic extends AbstractBasicAction {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit, p);
                     if (unTemp != null) {
                     	usedCommands.add(getOriginalPieceGrammar());
+                    	if(counterByFunction.containsKey("train"))
+                    	{
+                    		counterByFunction.put("train", counterByFunction.get("train")+1);
+                    	}
+                    	else
+                    	{
+                    		counterByFunction.put("train", 1);
+                    	}
                         currentPlayerAction.addUnitAction(unit, unTemp);
                     }
                 }
@@ -322,6 +332,14 @@ public class TrainBasic extends AbstractBasicAction {
 	 */
 	public void setOriginalPieceGrammar(String originalPieceGrammar) {
 		this.originalPieceGrammar = originalPieceGrammar;
+	}
+	
+	public String getOriginalPieceGrammarWord() {
+		return originalPieceGrammarWord;
+	}
+
+	public void setOriginalPieceGrammarWord(String originalPieceGrammarWord) {
+		this.originalPieceGrammarWord = originalPieceGrammarWord;
 	}
 
 }

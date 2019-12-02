@@ -22,6 +22,7 @@ import ai.abstraction.Build;
 import ai.abstraction.Train;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,9 +49,10 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
 
     boolean needUnit = false;
     String originalPieceGrammar;
+    String originalPieceGrammarWord;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
         //get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
@@ -65,6 +67,14 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
                             usedCommands.add(getOriginalPieceGrammar());
+                        	if(counterByFunction.containsKey("build"))
+                        	{
+                        		counterByFunction.put("build", counterByFunction.get("build")+1);
+                        	}
+                        	else
+                        	{
+                        		counterByFunction.put("build", 1);
+                        	}
                             currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
                         }
 
@@ -467,7 +477,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit workToBuild, HashSet<String> usedCommands) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit workToBuild, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
         //usedCommands.add(getOriginalPieceGrammar()+")");
         //get the unit that it will be builded 
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
@@ -483,6 +493,14 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
                             usedCommands.add(getOriginalPieceGrammar());
+                        	if(counterByFunction.containsKey("build"))
+                        	{
+                        		counterByFunction.put("build", counterByFunction.get("build")+1);
+                        	}
+                        	else
+                        	{
+                        		counterByFunction.put("build", 1);
+                        	}
                             currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
                         }
 
@@ -506,5 +524,13 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
     public void setOriginalPieceGrammar(String originalPieceGrammar) {
         this.originalPieceGrammar = originalPieceGrammar;
     }
+    
+	public String getOriginalPieceGrammarWord() {
+		return originalPieceGrammarWord;
+	}
+
+	public void setOriginalPieceGrammarWord(String originalPieceGrammarWord) {
+		this.originalPieceGrammarWord = originalPieceGrammarWord;
+	}
 
 }
