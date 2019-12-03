@@ -124,7 +124,7 @@ public class IfGPCompiler extends AbstractCompiler {
                     if (newCode.endsWith(")")) {
                         newCode = newCode.substring(0, newCode.lastIndexOf(")"));
                     }
-                    ifFun.includeFullCommandsThen(ForGPCompiler.CompilerCodeStatic(newCode, utt));
+                    ifFun.includeFullCommandsElse(ForGPCompiler.CompilerCodeStatic(newCode, utt));
                     i = finalPos;
                 }
             }
