@@ -1,3 +1,4 @@
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -24,6 +25,7 @@ import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.ahtn.AHTNAI;
 import ai.aiSelection.AlphaBetaSearch.AlphaBetaSearch;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
+import ai.asymmetric.PGS.LightPGSSCriptChoiceNoWaits;
 import ai.asymmetric.PGS.NGS;
 import ai.core.AI;
 import ai.asymmetric.PGS.PGSSCriptChoice;
@@ -127,8 +129,8 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
                 //"maps/16x16/BasesWithWalls16x16.xml"
-                "maps/16x16/basesWorkers16x16A.xml"
-                //"maps/NoWhereToRun9x8.xml"
+                //"maps/16x16/basesWorkers16x16A.xml"
+                "maps/NoWhereToRun9x8.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -173,21 +175,23 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
-                new LightPGSSCriptChoice(utt, decodeScripts(utt, bestGAAAAI), 200, "GAAAAI_PGS"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1327;1328;1329;")),scriptsTable1), 200, "GPP_PGS_ISO_0"),
+                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts(utt, bestGAAAAI), 200, "GAAAAI_PGS"),
+                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1020;1021;1022;1023;1024;1008;")),scriptsTable1), 200, "GPP_PGS_ISO_0"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1249;1250;1206;1251;1327;1328;1329;")),scriptsTable1), 200, "GPP_PGS_ISO_1"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2377;1423;2291;2529;1328;")),scriptsTable1), 200, "GPP_PGS_ISO_50"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("3280;2681;2291;1551;2892;3101;2510;")),scriptsTable1), 200, "GPP_PGS_ISO_100"),
+                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1286;1044;1149;1589;1445;")),scriptsTable1), 200, "GPP_PGS_ISO_100"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;2749;4275;3894;3257;")),scriptsTable1), 200, "GPP_PGS_ISO_150"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("5036;3524;4978;4523;")),scriptsTable1), 200, "GPP_PGS_ISO_200"),
+                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1044;1149;1286;1368;1445;1039;")),scriptsTable1), 200, "GPP_PGS_ISO_200"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;5610;5769;2749;3640;")),scriptsTable1), 200, "GPP_PGS_ISO_250"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("5637;5826;4523;5248;5166;5654;5470;6171;")),scriptsTable1), 200, "GPP_PGS_ISO_300"),
+                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1044;1149;1445;1155;1039;1286;")),scriptsTable1), 200, "GPP_PGS_ISO_300")
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2749;7135;2286;7088;5256;")),scriptsTable1), 200, "GPP_PGS_ISO_350"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("6417;7047;6454;")),scriptsTable1), 200, "GPP_PGS_ISO_400"),
-//                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;6700;")),scriptsTable1), 200, "GPP_PGS_ISO_400"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("8681;8000;7995;7047;")),scriptsTable1), 200, "GPP_PGS_ISO_500"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("8621;8074;9075;9514;7988;9475;9447;")),scriptsTable1), 200, "GPP_PGS_ISO_600"),
-                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("10554;5878;10955;")),scriptsTable1), 200, "GPP_PGS_ISO_700"),
+//                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("3923;1296;3517;1874;")),scriptsTable1), 200, "GPP_PGS_ISO_400"),
+////                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;6700;")),scriptsTable1), 200, "GPP_PGS_ISO_400"),
+//                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1296;2444;1353;3923;")),scriptsTable1), 200, "GPP_PGS_ISO_500"),
+//                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2790;1296;6971;")),scriptsTable1), 200, "GPP_PGS_ISO_600"),
+//                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("3639;1296;5106;2444;")),scriptsTable1), 200, "GPP_PGS_ISO_700"),
+//                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("4654;1296;3517;")),scriptsTable1), 200, "GPP_PGS_ISO_800"),
+//                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1296;2769;1042;3517;")),scriptsTable1), 200, "GPP_PGS_ISO_900")
                 
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1137;1138;1139;1140;1141;1142;1042;")),scriptsTable2), 200, "GPP_PGS_LST_0"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1137;1138;1139;1140;1141;1142;1042;")),scriptsTable2), 200, "GPP_PGS_LST_1"),
@@ -195,61 +199,69 @@ public class RoundRobinClusterLeve_Cluster_GP {
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("5194;6642;3726;1497;2931;5195;5801;5830;5868;")),scriptsTable2), 200, "GPP_PGS_LST_100"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2687;3789;11022;11089;3434;9073")),scriptsTable2), 200, "GPP_PGS_LST_FLA"),                 
                 //new SCVPlus(utt),
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts(utt, bestGAAAAI), "GAAAAI_A3N"), //12
-//                /*
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("1327;1328;1329;")),scriptsTable1), "GPP_A3N_ISO_0"),     
-                
-//              new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-//              new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("1249;1250;1206;1251;1327;1328;1329;")),scriptsTable1), "GPP_A3N_ISO_1"), 
-//// 
 //                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
 //                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2377;1423;2291;2529;1328;")),scriptsTable1), "GPP_A3N_ISO_50"), 
+//                        decodeScripts(utt, bestGAAAAI), "GAAAAI_A3N"), //12
+////                /*
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("1062;1063;1064;1065;1066;1067;")),scriptsTable1), "GPP_A3N_ISO_0"),     
+//                
+////              new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+////              new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+////              decodeScripts2(utt, new ArrayList<>(getListIfInteger("1249;1250;1206;1251;1327;1328;1329;")),scriptsTable1), "GPP_A3N_ISO_1"), 
+////// 
+////                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+////                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+////                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2377;1423;2291;2529;1328;")),scriptsTable1), "GPP_A3N_ISO_50"), 
+//////                
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("3280;2681;2291;1551;2892;3101;2510;")),scriptsTable1), "GPP_A3N_ISO_100"), 
 ////                
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("3280;2681;2291;1551;2892;3101;2510;")),scriptsTable1), "GPP_A3N_ISO_100"), 
+////                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+////                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+////                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;2749;4275;3894;3257;")),scriptsTable1), "GPP_A3N_ISO_150"), 
+////                
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("5036;3524;4978;4523;")),scriptsTable1), "GPP_A3N_ISO_200"), 
+////                
+////                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+////                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+////                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;5610;5769;2749;3640;")),scriptsTable1), "GPP_A3N_ISO_250"), 
+////                
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("5637;5826;4523;5248;5166;5654;5470;6171;")),scriptsTable1), "GPP_A3N_ISO_300"), 
+//                
+////                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+////                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+////                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2749;7135;2286;7088;5256;;")),scriptsTable1), "GPP_A3N_ISO_350"), 
+////                
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("6417;7047;6454;")),scriptsTable1), "GPP_A3N_ISO_400"), 
 //                
 //                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
 //                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;2749;4275;3894;3257;")),scriptsTable1), "GPP_A3N_ISO_150"), 
-//                
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("5036;3524;4978;4523;")),scriptsTable1), "GPP_A3N_ISO_200"), 
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("8681;8000;7995;7047;")),scriptsTable1), "GPP_A3N_ISO_500"),
 //                
 //                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
 //                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;5610;5769;2749;3640;")),scriptsTable1), "GPP_A3N_ISO_250"), 
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("8621;8074;9075;9514;7988;9475;9447;")),scriptsTable1), "GPP_A3N_ISO_600"),
 //                
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("5637;5826;4523;5248;5166;5654;5470;6171;")),scriptsTable1), "GPP_A3N_ISO_300"), 
-                
 //                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
 //                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("2749;7135;2286;7088;5256;;")),scriptsTable1), "GPP_A3N_ISO_350"), 
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("10554;5878;10955;")),scriptsTable1), "GPP_A3N_ISO_700"), 
 //                
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("6417;7047;6454;")),scriptsTable1), "GPP_A3N_ISO_400"), 
-                
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("8681;8000;7995;7047;")),scriptsTable1), "GPP_A3N_ISO_500"),
-                
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("8621;8074;9075;9514;7988;9475;9447;")),scriptsTable1), "GPP_A3N_ISO_600"),
-                
-                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
-                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
-                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("10554;5878;10955;")),scriptsTable1), "GPP_A3N_ISO_700") 
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("10554;5878;10955;")),scriptsTable1), "GPP_A3N_ISO_800"), 
+//                
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+//                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+//                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("10554;5878;10955;")),scriptsTable1), "GPP_A3N_ISO_900") 
 
                 //************************
 
@@ -491,7 +503,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>());
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(),new HashMap<String, Integer>());
 
         return aiscript;
     }
@@ -531,7 +543,8 @@ public class RoundRobinClusterLeve_Cluster_GP {
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         HashSet<String> usedCommands=new HashSet<String> ();
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands);
+        HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;
     }
 }

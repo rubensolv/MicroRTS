@@ -26,6 +26,7 @@ import rts.PlayerAction;
 import rts.ResourceUsage;
 import rts.UnitAction;
 import rts.units.Unit;
+import rts.units.UnitTypeTable;
 import util.Pair;
 
 /**
@@ -148,6 +149,20 @@ public abstract class AbstractCommand implements ICommand{
                 && game.getActionAssignment(uAlly) == null && uAlly.getResources() == 0
                 && isUnitControlledByParam(uAlly))
         {
+        	return true;
+        }
+        else
+        {
+        	return false;
+        }
+    }
+    
+    protected boolean hasInPotentialUnitsWorkers(GameState game, PlayerAction currentPlayerAction, Unit uAlly, int player, UnitTypeTable a_utt) {
+    	if(uAlly.getPlayer() == player && currentPlayerAction.getAction(uAlly) == null 
+                && game.getActionAssignment(uAlly) == null && uAlly.getResources() == 0 && uAlly.getType() == a_utt.getUnitType("Worker")
+                )
+        {
+    		
         	return true;
         }
         else
