@@ -53,7 +53,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
-        //get the unit that it will be builded 
+        //get the unit that it will be builded     	
         ConstructionTypeParam unitToBeBuilded = getUnitToBuild();
         if (unitToBeBuilded != null) {
             //verify if the limit of units are reached
@@ -144,7 +144,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                 ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumPositionType.code(), unitType);
             }
             if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) {
-                return ua;
+            	return ua;
             }
         }
         
@@ -488,8 +488,8 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                 if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)) {
                     //pick one work to build
                     //Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt);
-                    if (workToBuild != null) {
-                        //execute the build action
+                    if (workToBuild != null && hasInPotentialUnitsWorkers(game, currentPlayerAction, workToBuild, player,a_utt)) {
+                        //execute the build action                    	
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
                             usedCommands.add(getOriginalPieceGrammar());
@@ -502,6 +502,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                         		counterByFunction.put("build", 1);
                         	}
                             currentPlayerAction.addUnitAction(workToBuild, unAcTemp);
+                            
                         }
 
                     }
