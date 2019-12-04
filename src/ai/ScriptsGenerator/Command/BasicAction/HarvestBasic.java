@@ -107,7 +107,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
             for (Unit unit : game.getUnits()) {
                 if (unit.getPlayer() == player && game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null
                         && unitsID.size() < getQuantityFromParam().getQuantity() && unit.getType().ID == 3) {
-                    unitsID.add(unit.getID());
+                	unitsID.add(unit.getID());
                 }
             }
         } else {
@@ -126,7 +126,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
             for (Unit unit : game.getUnits()) {
                 if (unit.getPlayer() == player && game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null
                         && unitsID.size() < getQuantityFromParam().getQuantity() && unit.getType().ID == 3) {
-                    unitsID.add(unit.getID());
+                	unitsID.add(unit.getID());
                 }
             }
         }
