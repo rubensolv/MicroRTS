@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import ai.ScriptsGenerator.Command.BasicAction.BuildBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.IParameters.IBehavior;
@@ -20,6 +21,7 @@ import ai.ScriptsGenerator.IParameters.IQuantity;
 import ai.ScriptsGenerator.ParametersConcrete.ConstructionTypeParam;
 import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
+import ai.abstraction.pathfinding.PathFinding;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
@@ -149,20 +151,6 @@ public abstract class AbstractCommand implements ICommand{
                 && game.getActionAssignment(uAlly) == null && uAlly.getResources() == 0
                 && isUnitControlledByParam(uAlly))
         {
-        	return true;
-        }
-        else
-        {
-        	return false;
-        }
-    }
-    
-    protected boolean hasInPotentialUnitsWorkers(GameState game, PlayerAction currentPlayerAction, Unit uAlly, int player, UnitTypeTable a_utt) {
-    	if(uAlly.getPlayer() == player && currentPlayerAction.getAction(uAlly) == null 
-                && game.getActionAssignment(uAlly) == null && uAlly.getResources() == 0 && uAlly.getType() == a_utt.getUnitType("Worker")
-                )
-        {
-    		
         	return true;
         }
         else

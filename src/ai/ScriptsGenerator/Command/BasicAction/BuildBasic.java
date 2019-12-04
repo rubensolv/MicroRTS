@@ -61,7 +61,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                 //check if we have resources
                 if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)) {
                     //pick one work to build
-                    Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt);
+                    Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt, pf);
                     if (workToBuild != null) {
                         //execute the build action
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
@@ -85,16 +85,29 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
         return currentPlayerAction;
     }
 
-    private Unit getWorkToBuild(int player, GameState game, PlayerAction currentPlayerAction, UnitTypeTable a_utt) {
+    private Unit getWorkToBuild(int player, GameState game, PlayerAction currentPlayerAction, UnitTypeTable a_utt, PathFinding pf) {
         for (Unit unit : game.getUnits()) {
-            //verify if the unit is free
+        	//verify if the unit is free
             if (unit.getPlayer() == player && unit.getType() == a_utt.getUnitType("Worker")
-                    && game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null) {
-                return unit;
+                    && game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null && translateUnitAction(game, a_utt, unit, currentPlayerAction, player, pf)!= null) {
+            	return unit;
             }
         }
 
         return null;
+    }
+    
+    protected boolean hasInPotentialUnitsWorkers(GameState game, PlayerAction currentPlayerAction, Unit uAlly, int player, UnitTypeTable a_utt, PathFinding pf) {
+    	if(uAlly.getPlayer() == player && currentPlayerAction.getAction(uAlly) == null 
+                && game.getActionAssignment(uAlly) == null && uAlly.getResources() == 0 && uAlly.getType() == a_utt.getUnitType("Worker") && translateUnitAction(game, a_utt, uAlly, currentPlayerAction, player, pf)!= null)
+        {
+    		
+        	return true;
+        }
+        else
+        {
+        	return false;
+        }
     }
 
     private UnitAction translateUnitAction(GameState game, UnitTypeTable a_utt, Unit unit, PlayerAction currentPlayerAction, int player, PathFinding pf) {
@@ -137,7 +150,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                 for (int enumCodePosition : getDirectionByEnemy(game, unit)) {
                     ua = new UnitAction(UnitAction.TYPE_PRODUCE, enumCodePosition, unitType);
                     if (game.isUnitActionAllowed(unit, ua) && isPositionFree(game, ua, unit)) {
-                        return ua;
+                    	return ua;
                     }
                 }
             } else {
@@ -147,7 +160,6 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
             	return ua;
             }
         }
-        
         return null;
     }
     
@@ -488,7 +500,7 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
                 if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)) {
                     //pick one work to build
                     //Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt);
-                    if (workToBuild != null && hasInPotentialUnitsWorkers(game, currentPlayerAction, workToBuild, player,a_utt)) {
+                    if (workToBuild != null && hasInPotentialUnitsWorkers(game, currentPlayerAction, workToBuild, player,a_utt,pf)) {
                         //execute the build action                    	
                         UnitAction unAcTemp = translateUnitAction(game, a_utt, workToBuild, currentPlayerAction, player, pf);
                         if (unAcTemp != null) {
