@@ -20,6 +20,6 @@ import rts.units.UnitTypeTable;
 public interface IUnitConditional {
     public Boolean isNecessaryUnit();
     public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, 
-                                        PathFinding pf, UnitTypeTable a_utt, Unit un,HashMap<String, Integer> counterByFunction);
+                                        PathFinding pf, UnitTypeTable a_utt, Unit un,HashMap<Long, String> counterByFunction);
     
 }

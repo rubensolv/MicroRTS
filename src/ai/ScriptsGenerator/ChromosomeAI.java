@@ -58,34 +58,21 @@ public class ChromosomeAI extends AI{
     String originalGrammar;
     ICompiler compiler = new MainGPCompiler();
     public HashSet<String> usedCommands;
-    public HashMap<String, Integer> counterByFunction;
+    public HashMap<Long, String> counterByFunction;
 
     public ChromosomeAI(UnitTypeTable utt) {
         this.utt = utt;
 
     }
     
-    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
+    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
         this.utt = utt;
         this.commands = commands;
         this.name = name;
         this.originalGrammar=originalGrammar;
         this.usedCommands=usedCommands;
         this.counterByFunction=counterByFunction;
-        initializeCounterByFunction();
     }
-
-    private void initializeCounterByFunction() {
-        counterByFunction.put("attack", 0);
-        counterByFunction.put("build", 0);
-        counterByFunction.put("cluster", 0);
-        counterByFunction.put("harvest", 0);
-        counterByFunction.put("moveAway", 0);
-        counterByFunction.put("moveToCoordenates", 0);
-        counterByFunction.put("moveToUnit", 0);
-        counterByFunction.put("train", 0);
-		
-	}
 
 	public PlayerAction getAction(int player, GameState gs) {
         PlayerAction currentActions = new PlayerAction();
@@ -93,7 +80,7 @@ public class ChromosomeAI extends AI{
 
         for (ICommand command : commands) {
             currentActions = command.getAction(gs, player, currentActions, pf, utt, usedCommands,counterByFunction);
-        }
+        }        
         currentActions = fillWithWait(currentActions, player, gs, utt);
         return currentActions;
     }
@@ -128,8 +115,8 @@ public class ChromosomeAI extends AI{
     	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         HashSet<String> usedCommands=new HashSet<String>();
-        HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code, usedCommands,counterByFunction);
+        HashMap<Long, String> counterByFunctionNew = new HashMap<Long,String>(counterByFunction);
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1",code, usedCommands,counterByFunctionNew);
         return aiscript;
     }
 

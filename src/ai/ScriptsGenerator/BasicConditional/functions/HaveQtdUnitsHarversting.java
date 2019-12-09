@@ -23,7 +23,7 @@ import rts.units.Unit;
 public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
 
     @Override
-    public boolean runFunction(List lParam1, HashMap<String, Integer> counterByFunction) {
+    public boolean runFunction(List lParam1, HashMap<Long, String> counterByFunction) {
     	
         GameState game = (GameState) lParam1.get(0);
         int player = (int) lParam1.get(1);
@@ -31,11 +31,10 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
         //PathFinding pf = (PathFinding) lParam1.get(3);
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
         QuantityParam qtd = (QuantityParam) lParam1.get(5);
-        
-        if (counterByFunction.get("harvest") >= qtd.getQuantity()){
+        if (getNumberUnitsDoingAction("harvest",counterByFunction,game,currentPlayerAction) >= qtd.getQuantity()){
+        	
             return true;
         }
-        
         return false;
     }
 

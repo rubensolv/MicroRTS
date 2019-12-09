@@ -503,7 +503,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(),new HashMap<String, Integer>());
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(),new HashMap<Long, String>());
 
         return aiscript;
     }
@@ -543,7 +543,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         HashSet<String> usedCommands=new HashSet<String> ();
-        HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
+        HashMap<Long, String> counterByFunction=new HashMap<Long, String>();
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;
     }

@@ -456,7 +456,7 @@ public class GameVisualSimulationTestGP {
     
     private static AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1",code, new HashSet<String>(), new HashMap<String, Integer>());
+        AI aiscript = new ChromosomeAI(utt, commandsGP , "P1",code, new HashSet<String>(), new HashMap<Long, String>());
         return aiscript;
     }
     
@@ -470,7 +470,7 @@ public class GameVisualSimulationTestGP {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1","", new HashSet<String>(),new HashMap<String, Integer>());
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","", new HashSet<String>(),new HashMap<Long, String>());
 
         return aiscript;
     }
@@ -484,7 +484,7 @@ public class GameVisualSimulationTestGP {
         	commands.add(tcg.getCommandByID(idSc));;
         	System.out.println(tcg.getCommandByID(idSc).toString());
         }   	
-    	AI aiscript = new ChromosomeAI(utt,commands , "P1","", new HashSet<String>(),new HashMap<String, Integer>());
+    	AI aiscript = new ChromosomeAI(utt,commands , "P1","", new HashSet<String>(),new HashMap<Long, String>());
         List<AI> scriptsAI = new ArrayList<>();
         scriptsAI.add(aiscript);
         return scriptsAI;

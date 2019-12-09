@@ -28,7 +28,7 @@ public class SimpleConditional extends AbstractConditional implements IUnitCondi
     }
 
     @Override
-    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashMap<String, Integer> counterByFunction) {
+    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashMap<Long, String> counterByFunction) {
         List param = new ArrayList();
         param.add(game);
         param.add(player);
@@ -52,7 +52,7 @@ public class SimpleConditional extends AbstractConditional implements IUnitCondi
     }
 
     @Override
-    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit un,HashMap<String, Integer> counterByFunction) {
+    public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit un,HashMap<Long, String> counterByFunction) {
         List param = new ArrayList();
         param.add(game);
         param.add(player);
@@ -61,7 +61,7 @@ public class SimpleConditional extends AbstractConditional implements IUnitCondi
         param.add(a_utt);
         param.addAll(lParam1);
         param.add(un);
-        try {
+        try {        	
             IConditionalFunction fcond = (IConditionalFunction) Class.forName("ai.ScriptsGenerator.BasicConditional.functions." + function).newInstance();
             return fcond.runFunction(param,counterByFunction);
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {

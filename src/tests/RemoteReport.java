@@ -321,7 +321,7 @@ public class RemoteReport {
     private static AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         HashSet<String> usedCommands=new HashSet<String> ();
-        HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
+        HashMap<Long, String> counterByFunction=new HashMap<Long, String>();
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;
     }

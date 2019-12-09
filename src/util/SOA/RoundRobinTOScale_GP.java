@@ -56,7 +56,7 @@ public class RoundRobinTOScale_GP {
     ICompiler compiler = new MainGPCompiler(); 
     int counterlinesRecorded=0;
     HashSet<String> usedCommands;
-    HashMap<String, Integer> counterByFunction;
+    HashMap<Long, String> counterByFunction;
     
 
     public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsUsedCommands) {
@@ -315,7 +315,7 @@ public class RoundRobinTOScale_GP {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(), new HashMap<String, Integer>());
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(), new HashMap<Long, String>());
 
         return aiscript;
     }
@@ -371,7 +371,7 @@ public class RoundRobinTOScale_GP {
     	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         usedCommands=new HashSet<String> ();
-        counterByFunction=new HashMap<String, Integer>();
+        counterByFunction=new HashMap<Long, String>();
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;
     }

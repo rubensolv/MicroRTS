@@ -33,7 +33,7 @@ public class Script_Template extends AbstractionLayerAI {
 
     protected UnitTypeTable utt;
     HashSet<String> usedCommands = new HashSet<>();
-    HashMap<String, Integer> counterByFunction=new HashMap<String, Integer>();
+    HashMap<Long, String> counterByFunction=new HashMap<Long, String>();
     ICompiler compiler = new MainGPCompiler();
 
     public Script_Template(UnitTypeTable t_utt) {

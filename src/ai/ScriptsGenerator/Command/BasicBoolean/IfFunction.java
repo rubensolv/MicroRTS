@@ -34,6 +34,10 @@ public class IfFunction implements ICommand, IUnitCommand {
     public void setConditional(SimpleConditional conditional) {
         this.conditional = conditional;
     }
+    
+    public SimpleConditional getConditional() {
+        return this.conditional;
+    }
 
     public void setCommandsThen(List<ICommand> commandsThen) {
         this.commandsThen = commandsThen;
@@ -60,14 +64,15 @@ public class IfFunction implements ICommand, IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
         if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt,counterByFunction)) {
             for (ICommand command : commandsThen) {
+            	
                 currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt, usedCommands,counterByFunction);
             }
         } else {
             if (!commandsElse.isEmpty()) {
-                for (ICommand command : commandsElse) {
+                for (ICommand command : commandsElse) {                	
                     currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt,usedCommands,counterByFunction);
                 }
             }
@@ -129,8 +134,7 @@ public class IfFunction implements ICommand, IUnitCommand {
     }
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
-
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
         if (conditional.isNecessaryUnit()) {
             if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt, u, counterByFunction)) {
                 for (ICommand command : commandsThen) {
@@ -146,9 +150,9 @@ public class IfFunction implements ICommand, IUnitCommand {
                         currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt,usedCommands,counterByFunction);
                     }
                 }
-            } else {
+            } else {            	
                 if (!commandsElse.isEmpty()) {
-                    for (ICommand command : commandsThen) {
+                    for (ICommand command : commandsElse) {
                         if (command instanceof IUnitCommand) {
                             IUnitCommand tempUnit = (IUnitCommand) command;
                             if (tempUnit.isNecessaryUnit()) {
@@ -163,8 +167,8 @@ public class IfFunction implements ICommand, IUnitCommand {
                     }
                 }
             }
-        } else {
-            if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt, counterByFunction)) {
+        } else {        	
+            if (conditional.runConditional(game, player, currentPlayerAction, pf, a_utt, counterByFunction)) {            	
                 for (ICommand command : commandsThen) {
                     //currentPlayerAction = command.getAction(game, player, currentPlayerAction, pf, a_utt);
                     if (command instanceof IUnitCommand) {
@@ -180,7 +184,7 @@ public class IfFunction implements ICommand, IUnitCommand {
                 }
             } else {
                 if (!commandsElse.isEmpty()) {
-                    for (ICommand command : commandsThen) {
+                    for (ICommand command : commandsElse) {
                         if (command instanceof IUnitCommand) {
                             IUnitCommand tempUnit = (IUnitCommand) command;
                             if (tempUnit.isNecessaryUnit()) {

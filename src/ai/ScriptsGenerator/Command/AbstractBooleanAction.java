@@ -45,7 +45,7 @@ public abstract class AbstractBooleanAction extends AbstractCommand {
 	 protected List<ICommand> commandsBoolean = new ArrayList<>();
 	 protected UnitTypeTable utt;
 	
-    public PlayerAction appendCommands(int player, GameState gs, PlayerAction currentActions, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
+    public PlayerAction appendCommands(int player, GameState gs, PlayerAction currentActions, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
         PathFinding pf = new AStarPathFinding();
         //simulate one WR
         for (ICommand command : commandsBoolean) {

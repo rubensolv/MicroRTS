@@ -18,6 +18,6 @@ public interface IConditionalFunction {
      * @param lParam1 = GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt
      * @return 
      */
-    public boolean runFunction(List lParam1, HashMap<String, Integer> counterByFunction);
+    public boolean runFunction(List lParam1, HashMap<Long, String> counterByFunction);
     
 }
