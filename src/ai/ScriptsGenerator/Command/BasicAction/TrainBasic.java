@@ -46,7 +46,7 @@ public class TrainBasic extends AbstractBasicAction {
 	String originalPieceGrammarWord;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
     	
     	int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
         if ((game.getPlayer(player).getResources() - resourcesUsed) >= valueOfUnitsToBuild(game, player, a_utt)
@@ -60,13 +60,14 @@ public class TrainBasic extends AbstractBasicAction {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit, p);
                     if (unTemp != null) {
                     	usedCommands.add(getOriginalPieceGrammar());
-                    	if(counterByFunction.containsKey("train"))
+                    	if(counterByFunction.containsKey(unit.getID()))
                     	{
-                    		counterByFunction.put("train", counterByFunction.get("train")+1);
+                    		if(!counterByFunction.get(unit.getID()).equals("train"))
+                    			counterByFunction.put(unit.getID(), "train");
                     	}
                     	else
                     	{
-                    		counterByFunction.put("train", 1);
+                    		counterByFunction.put(unit.getID(), "train");
                     	}
                         currentPlayerAction.addUnitAction(unit, unTemp);
                     }

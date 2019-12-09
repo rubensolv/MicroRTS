@@ -2344,7 +2344,7 @@ public class ChromosomesBag {
 
         //simulate one WR
         for (ICommand command : commands2) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>(), new HashMap<String, Integer>());
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>(), new HashMap<Long, String>());
         }
         System.out.println("currentActions " + currentActions.toString());
         return currentActions;

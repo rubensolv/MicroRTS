@@ -24,7 +24,7 @@ import rts.units.Unit;
 public class HaveEnemiesStrongest extends AbstractConditionalFunction {
 
     @Override
-    public boolean runFunction(List lParam1,HashMap<String, Integer> counterByFunction) {
+    public boolean runFunction(List lParam1,HashMap<Long, String> counterByFunction) {
         GameState game = (GameState) lParam1.get(0);
         int player = (int) lParam1.get(1);
         PlayerAction currentPlayerAction = (PlayerAction) lParam1.get(2);

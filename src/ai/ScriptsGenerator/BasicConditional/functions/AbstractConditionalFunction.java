@@ -9,7 +9,11 @@ import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import rts.GameState;
 import rts.PlayerAction;
 import rts.units.Unit;
@@ -88,5 +92,36 @@ public abstract class AbstractConditionalFunction implements IConditionalFunctio
         }
         
         return null;
+    }
+    
+    protected int getNumberUnitsDoingAction(String action, HashMap<Long, String> counterByFunction, GameState game, PlayerAction currentPlayerAction) {
+    	int counterUnits=0;
+    	HashMap<Long, String> counterByFunctionNew = new HashMap<Long,String>(counterByFunction);
+    	Iterator it = counterByFunction.entrySet().iterator();
+    	while (it.hasNext()) {
+    		Map.Entry pair = (Map.Entry)it.next();
+    		if(pair.getValue().equals(action))
+    		{
+    			if(getUnitById(game, currentPlayerAction, (Long)pair.getKey(), counterByFunction))
+    					counterUnits++;
+    		}
+    		else
+    		{
+    			counterByFunctionNew.remove((Long)pair.getKey());
+    		}
+    	}
+    	counterByFunction=counterByFunctionNew;
+    	return counterUnits;
+    }
+    
+    protected boolean getUnitById(GameState game, PlayerAction currentPlayerAction, Long idUnit, HashMap<Long, String> counterByFunction)
+    {
+        for (Unit u : game.getUnits()) {
+            if(currentPlayerAction.getAction(u) == null && game.getActionAssignment(u) == null 
+            		 && u.getID()==idUnit){            	
+                return false;
+            }
+        }
+        return true;
     }
 }

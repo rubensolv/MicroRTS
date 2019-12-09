@@ -26,7 +26,7 @@ public class ForFunction implements ICommand{
     protected List<ICommand> commandsFor = new ArrayList<>();
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction) {
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
         for(Unit u : getAllyUnits(game, player)){
             for (ICommand commandFor : commandsFor) {
                 if(commandFor instanceof IUnitCommand && ((IUnitCommand)commandFor).isNecessaryUnit()){

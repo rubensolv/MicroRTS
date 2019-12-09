@@ -59,7 +59,7 @@ public class ConditionalBiggerThen extends AbstractConditional {
 
     @Override
     public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, 
-                                        PathFinding pf, UnitTypeTable a_utt, HashMap<String, Integer> counterByFunction) {
+                                        PathFinding pf, UnitTypeTable a_utt, HashMap<Long, String> counterByFunction) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

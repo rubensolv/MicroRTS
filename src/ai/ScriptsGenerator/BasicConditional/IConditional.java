@@ -19,6 +19,6 @@ import rts.units.UnitTypeTable;
 public interface IConditional {
     
     public boolean runConditional(GameState game, int player, PlayerAction currentPlayerAction, 
-                                        PathFinding pf, UnitTypeTable a_utt, HashMap<String, Integer> counterByFunction);
+                                        PathFinding pf, UnitTypeTable a_utt, HashMap<Long, String> counterByFunction);
     
 }

@@ -20,5 +20,5 @@ import rts.units.UnitTypeTable;
  */
 public interface IUnitCommand {
     public Boolean isNecessaryUnit();
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands, HashMap<String, Integer> counterByFunction);
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction);
 }

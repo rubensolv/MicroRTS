@@ -69,7 +69,7 @@ public class GVS_RunBattle {
     String pathLogsUsedCommands;
     ICompiler compiler = new MainGPCompiler();
     HashSet<String> usedCommands;
-    HashMap<String, Integer> counterByFunction;
+    HashMap<Long, String> counterByFunction;
 
     public GVS_RunBattle(String pathTableScripts, String pathLogsUsedCommands) {
     	this.pathLogsUsedCommands=pathLogsUsedCommands;
@@ -344,7 +344,7 @@ public class GVS_RunBattle {
             //System.out.println("idSc "+idSc);
             commands.add(tcg.getCommandByID(idSc));;
         }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(),new HashMap<String, Integer>() );
+        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(),new HashMap<Long, String>() );
 
         return aiscript;
     }
@@ -375,7 +375,7 @@ public class GVS_RunBattle {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
     	usedCommands=new HashSet<String> ();
-    	counterByFunction=new HashMap<String, Integer>();
+    	counterByFunction=new HashMap<Long, String>();
     	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands, counterByFunction);

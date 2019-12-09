@@ -18,5 +18,5 @@ import rts.units.UnitTypeTable;
  * @author rubens and julian
  */
 public interface ICommand{
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> commandsUsed, HashMap<String, Integer> counterByFunction);
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> commandsUsed, HashMap<Long, String> counterByFunction);
 }

@@ -117,7 +117,7 @@ public class Chromosome {
 
         //simulate one WR
         for (ICommand command : commands) {
-            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>(), new HashMap<String, Integer>());
+            currentActions = command.getAction(gs, player, currentActions, pf, utt, new HashSet<String>(), new HashMap<Long, String>());
         }
 
         return currentActions;

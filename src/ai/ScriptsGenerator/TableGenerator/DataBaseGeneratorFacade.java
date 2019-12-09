@@ -34,7 +34,7 @@ public class DataBaseGeneratorFacade {
     
     //
     private HashSet<String> usedCommands;
-    private HashMap<String, Integer> counterByFunction;
+    private HashMap<Long, String> counterByFunction;
     private ICompiler compiler = new MainGPCompiler();
     private UnitTypeTable utt = new UnitTypeTable();
     
@@ -99,7 +99,7 @@ public class DataBaseGeneratorFacade {
     
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
     	usedCommands=new HashSet<> ();
-    	counterByFunction=new HashMap<String, Integer>();
+    	counterByFunction=new HashMap<Long, String>();
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;
