@@ -99,7 +99,6 @@ public class DataBaseGeneratorFacade {
     
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
     	usedCommands=new HashSet<> ();
-    	counterByFunction=new HashMap<Long, String>();
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;

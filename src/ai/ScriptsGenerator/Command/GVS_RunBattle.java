@@ -375,7 +375,6 @@ public class GVS_RunBattle {
 
     private AI buildCommandsIA(UnitTypeTable utt, String code) {
     	usedCommands=new HashSet<String> ();
-    	counterByFunction=new HashMap<Long, String>();
     	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands, counterByFunction);
