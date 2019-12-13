@@ -111,7 +111,7 @@ public class SSSteste extends AbstractionLayerAI  {
     	for(Playout play : playouts ) {
     	
     		play.setTempoSimulacao(10000);
-    		play.setProfSimulacao(310);
+    		play.setProfSimulacao(800);
     	}
     	return this;
     }
@@ -211,10 +211,11 @@ public class SSSteste extends AbstractionLayerAI  {
 	}
 	
 	protected void buildPortfolio() {
+		//this.scripts.add(new Script4(utt));
 		 this.scripts.add(new Ataca(utt));
 		 this.scripts.add(new MoonWalker(utt));
 		
-		//this.scripts.add(new Script4(utt));
+		
 		// this.scripts.add(new Script2(utt));
 	//	this.scripts.add(new LightDefenseD(utt));
 	//	this.scripts.add(new EconomyRushBursterD(utt));
@@ -423,9 +424,21 @@ public class SSSteste extends AbstractionLayerAI  {
 		 for(Unit un : gs.getUnits()) {
 			 	if(un.getPlayer()==player) {
 					int g =(int) un.getID();
-				
-					grupos.get(mapea2.get(g)).add(un);
-					link.put(un.getID(), mapea2.get(g));
+					if(mapea2.get(g)!=null) {
+						grupos.get(mapea2.get(g)).add(un);
+						link.put(un.getID(), mapea2.get(g));
+					}
+					else {
+						int gg = gerador.nextInt(100);
+						if(gg<50) {
+							grupos.get(0).add(un);
+							link.put(un.getID(), 0);
+						}
+						else {
+							grupos.get(1).add(un);
+							link.put(un.getID(), 1);
+						}
+					}
 			}
 		 }	
 		
@@ -502,7 +515,7 @@ public class SSSteste extends AbstractionLayerAI  {
 		}*/
 		
 		
-		 int simulacao =10;
+		 int simulacao =5;
 		 double mg=-1111;
 		 int num_unt=-1;
 		 HashMap<Integer,Integer> mapea2 = (HashMap<Integer, Integer>) mapea.clone();
@@ -516,7 +529,7 @@ public class SSSteste extends AbstractionLayerAI  {
 				if(!this.treinando&&player==0)System.out.println(mapea2);
 				
 			}
-			// agrupaem canonica, O menor id sempre estará no grupo 0
+			/* agrupaem canonica, O menor id sempre estará no grupo 0
 			Integer menor_id =11111;
 			for (Iterator<Integer> iterator = mapea2.keySet().iterator(); iterator.hasNext();) {
 				Integer i = iterator.next();
@@ -532,13 +545,14 @@ public class SSSteste extends AbstractionLayerAI  {
 					mapea2.put(i,  (troca+1)%2);
 				}
 			}
-		
+			*/
 			
 			double e_m = simula(player,gs,mapea2);
-	
+			gerador = new Random();
+			
 				if(e_m>=mg) {
 					if(e_m==1) {
-						if(num_unt<gs.getUnits().size()) {
+						if(num_unt<=gs.getUnits().size()) {
 							mapea=(HashMap<Integer, Integer>) mapea2.clone();
 							mg=e_m;
 							num_unt = gs.getUnits().size();
@@ -556,9 +570,10 @@ public class SSSteste extends AbstractionLayerAI  {
 			 double e_m = simula(player,gs,mapea);
 			
 		
-			if(e_m>0.8&&mapea.size()>2&&gs.getTime()%intervalo_amostragem==0) {
+			if(e_m>0.8&&mapea.size()>2&&gs.getTime()%10==0) {
 				//	System.out.println(mapea);
 					if(treinando)rna.grava(player, gs, utt,mapea);
+					if(gs.getTime()==0)System.out.println(mapea);
 				}
 		
 		

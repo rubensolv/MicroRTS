@@ -10,7 +10,8 @@ package ai.ScriptsGenerator.Command;
 import ai.core.AI;
 import gui.PhysicalGameStatePanel;
 import ai.abstraction.HeavyRush;
-
+import ai.abstraction.WorkerRush;
+import ai.PassiveAI;
 //import ai.ScriptsGenerator.BasicConditional.ConditionalBiggerThen;
 import ai.ScriptsGenerator.Chromosome;
 import ai.asymmetric.SSSDavid.COM;
@@ -37,23 +38,24 @@ import rts.units.UnitTypeTable;
 
 /**
  *
- * @author santi
+ * @author david
  */
 public class davidteste {
 
 	static SSSteste ai1; 
 	static SSSteste ai3;
 	static AI ai2;  //IA de teste
-	//static JFrame w;
+	static JFrame w;
 	static UnitTypeTable utt;
+	static COM rna;
 	
-	public static int partida(int num_partida, boolean exibe) throws JDOMException, IOException, Exception {
+	public static double partida(int num_partida, boolean exibe) throws JDOMException, IOException, Exception {
 
-		int cont =0; // conta numero de vitoria
+		double cont =0; // conta numero de vitoria
 		for(int ii =0; ii<num_partida;ii++) {
 			System.out.println("partida "+ ii);
         //UnitTypeTable utt = new UnitTYpeTableBattle();
-       PhysicalGameState pgs = PhysicalGameState.load("maps/mapadavid.xml", utt);
+       PhysicalGameState pgs = PhysicalGameState.load("maps/mapadavid2.xml", utt);
       // PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
       //  PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
      //  PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
@@ -67,7 +69,7 @@ public class davidteste {
       //  PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
       //  PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8Obstacle.xml", utt);
-     //   PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
+//        PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
         //testes 
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         
@@ -80,7 +82,8 @@ public class davidteste {
           
         
         //mÃ©todo para fazer a troca dos players
-  //   if(exibe) w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
+   if(exibe) 
+       w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_WHITE); 
         long startTime = System.currentTimeMillis();
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;
@@ -112,7 +115,7 @@ public class davidteste {
                 
                 // simulate:
                 gameover = gs.cycle();
-            //   w.repaint();
+             w.repaint();
                 nextTimeToUpdate += PERIOD;
             } else {
                 try {
@@ -122,9 +125,10 @@ public class davidteste {
                 }
             }
           
-        } while (!gameover && gs.getTime() < 400);
-      if(gs.winner()==0)cont++;
-
+        } while (!gameover && gs.getTime() < 3000);
+      if(gs.winner()==0)cont+=1;
+      if(gs.winner()==-1)cont+=0.01;
+     rna.seleciona_exemplo_vencedor(gs.winner());
     	}
 		return cont;
 	}
@@ -133,47 +137,52 @@ public class davidteste {
     public static void main(String args[]) throws Exception {
     	
     
-    	boolean selfplay;
-    	if(args[0].equals("0"))selfplay=true;
-    	else selfplay=false;
+    	boolean selfplay = true;
+    	//if(args[0].equals("0"))selfplay=true;
+    	//else selfplay=false;
     	
-    	int buffer=1;
-    	if(args[1].equals("0"))buffer=1;
-    	if(args[1].equals("1"))buffer=3;
-    	if(args[1].equals("2"))buffer=5;
+    	int buffer=3;
+    	//if(args[1].equals("0"))buffer=1;
+    	//if(args[1].equals("1"))buffer=3;
+    	//if(args[1].equals("2"))buffer=5;
     	
-    	int epoca=1;
-    	if(args[2].equals("0"))epoca=1;
-    	if(args[2].equals("1"))epoca=3;
-    	if(args[2].equals("2"))epoca=5;
-    	if(args[2].equals("3"))epoca=10;
+    	int epoca=20;
+    	//if(args[2].equals("0"))epoca=1;
+    	//if/(args[2].equals("1"))epoca=3;
+    	//if(args[2].equals("2"))epoca=5;
+    	//if(args[2].equals("3"))epoca=10;
     	
-    	int num_partida=1;
-    	if(args[3].equals("0"))num_partida=1;
-    	if(args[3].equals("1"))num_partida=5;
-    	if(args[3].equals("2"))num_partida=10;
-    	if(args[3].equals("3"))num_partida=20;
+    	int num_partida=2;
+    	//if(args[3].equals("0"))num_partida=1;
+    	//if(args[3].equals("1"))num_partida=5;
+    	//if(args[3].equals("2"))num_partida=10;
+    	//if(args[3].equals("3"))num_partida=20;
     	
     	int intervalo_amostragem=10;
-    	if(args[4].equals("0"))intervalo_amostragem=10;
-    	if(args[4].equals("1"))intervalo_amostragem=30;
-    	if(args[4].equals("2"))intervalo_amostragem=50;
-    	if(args[4].equals("3"))intervalo_amostragem=100;
+    	if(args[2].equals("0"))intervalo_amostragem=10;
+    	if(args[2].equals("1"))intervalo_amostragem=30;
+    	if(args[2].equals("2"))intervalo_amostragem=50;
+    	if(args[2].equals("3"))intervalo_amostragem=100;
+    	if(args[2].equals("4"))intervalo_amostragem=150;
+    	if(args[2].equals("5"))intervalo_amostragem=400;
     	
+    	String iteracao = args[0];
+    	String rnaopcao = args[1];
+    
     	
     	System.out.println("treinamento: "+selfplay+" "+ buffer+" "+epoca+" "+num_partida+" "+intervalo_amostragem);
     	
     	 utt = new UnitTypeTable();
     	ai1 = new SSSteste(utt,2).configuracao2(intervalo_amostragem); // SSS com 2 grupos,
-    	ai2 = new HeavyRush(utt);
+    	ai2 = new WorkerRush(utt);//PassiveAI(utt);//SSSDavid(utt,2).configuracao2();
     	ai3 = new SSSteste(utt,2).configuracao2(intervalo_amostragem);
-    	ArrayList<Integer> vitoria_treinamento;
-    	ArrayList<Integer> vitoria_teste;
+    	ArrayList<Double> vitoria_treinamento;
+    	ArrayList<Double> vitoria_teste;
     	vitoria_teste = new ArrayList<>();;
     	vitoria_treinamento= new ArrayList<>();
-    	int resultado;
-    	COM rna = new COM(buffer,epoca); // a RNA é a mesma para todas IAs, salvando os exemplos em si msm.
-    	COM rna2 = new COM(buffer,epoca);
+    	double resultado;
+    	 rna = new COM(utt,buffer,epoca,rnaopcao,18,8,8,2); // a RNA é a mesma para todas IAs, salvando os exemplos em si msm.
+    	COM rna2 = new COM(utt,buffer,epoca,rnaopcao,18,8,8,2);
     	ai1.setRNA(rna); 
     	if(selfplay)ai3.setRNA(rna);
     	else ai3.setRNA(rna2);
@@ -181,10 +190,10 @@ public class davidteste {
     	ai3.estado_treinamento(true);// se esta treinando ou n
     	resultado = partida(1,true);
     	vitoria_teste.add(resultado);
-    	vitoria_treinamento.add(-1);
+    	vitoria_treinamento.add(-1.0);
     	System.out.println("Resultado treinamento: "+ vitoria_treinamento);
     	System.out.println("Resultado teste: "+ vitoria_teste);
-    	for(int i=0;i<100;i++ ) {
+    	for(int i=0;i<50;i++ ) {
     		System.out.println("Ciclo: "+ i);
     		ai1.estado_treinamento(true);
     		resultado = partida(num_partida,false);
@@ -196,11 +205,11 @@ public class davidteste {
     		vitoria_teste.add(resultado);
     		System.out.println("Resultado treinamento: "+ vitoria_treinamento);
         	System.out.println("Resultado teste:       "+ vitoria_teste);
-    		
+        	
     		
     	}
     	
-    	
+    	rna.salverna("_"+args[0]+"_"+args[1]+"_"+args[2] ); 
     	System.out.println("FIM");
     }
     	

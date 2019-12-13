@@ -87,7 +87,7 @@ public class SSSDavid extends AbstractionLayerAI  {
     public SSSDavid configuracao1() {
     	rep=2;
     	for(Playout play : playouts ) {
-    		play.setAI(new RandomBiasedAI(utt));
+    		//play.setAI(new RandomBiasedAI(utt));
     		play.setTempoSimulacao(50);
     	}
     	return this;
@@ -98,7 +98,7 @@ public class SSSDavid extends AbstractionLayerAI  {
     	for(Playout play : playouts ) {
     		play.setAI(new RandomBiasedAI(utt));
     		play.setTempoSimulacao(10000);
-    		play.setProfSimulacao(200);
+    		play.setProfSimulacao(400);
     	}
     	return this;
     }
@@ -169,6 +169,8 @@ public class SSSDavid extends AbstractionLayerAI  {
 	}
 	
 	protected void buildPortfolio() {
+		
+	 this.scripts.add(new Ataca(utt));
 		 this.scripts.add(new MoonWalker(utt));
 		//this.scripts.add(new Script4(utt));
 		// this.scripts.add(new Script2(utt));
@@ -367,194 +369,165 @@ public class SSSDavid extends AbstractionLayerAI  {
 	
 	
 	
-	
-	
-	@Override
-	public PlayerAction getAction(int player, GameState gs) throws Exception {
-		
-		if(gs.getTime()==100) {
-			;
-			//COM.test(player, gs, utt);
-			
-		}
-		
-		
-		
-		
-		PhysicalGameState pgs = gs.getPhysicalGameState();
-		Player p = gs.getPlayer(player);
-		   inf.contruindo_base =0;
-	        inf.contruindo_barraca= 0;
-		int g;
-		boolean atualizou =false;
-		if(inf.cont > grupos.size() *2) {
-			atualizou = true;
-			link.clear();
-			for(int i = 0;i < grupos.size();i++) grupos.get(i).clear();
-			for (Unit un :  pgs.getUnits()) {
-				if (un.getPlayer() == player )  {
-				 AbstractAction action = getAbstractAction(un);
-				 if (action instanceof Build ) {
-			        	
-			        	if (((Build) action).type == baseType) {
-			        		
-			        		if(p.getResources() >= baseType.cost) {
-			        			
-			        			inf.contruindo_base++;
-			        			continue;
-			        		}
-			        	}
-			        	else if (((Build) action).type == barracksType) {
-			        		if(p.getResources() >= barracksType.cost) {
-			        			inf.contruindo_barraca++;
-			        			continue;
-			        		}
-			        	
-			        	}
-				
-				 }
-	            	g = gerador.nextInt(num_tipo);
-	            	
-	            	
-	            	link.put(un.getID(), g);
-	            	grupos.get(g).add(un);
-	                
-	            }
-	        }
-		}
-		else {
-			for(int i = 0;i < grupos.size();i++) grupos.get(i).clear();
-			for (Unit un :  pgs.getUnits()) {
-				if (un.getPlayer() == player )  {
-				 AbstractAction action = getAbstractAction(un);
-				 if (action instanceof Build ) {
-			        	
-			        	if (((Build) action).type == baseType) {
-			        		
-			        		if(p.getResources() >= baseType.cost) {
-			        			
-			        			inf.contruindo_base++;
-			        			continue;
-			        		}
-			        	}
-			        	else if (((Build) action).type == barracksType) {
-			        		if(p.getResources() >= barracksType.cost) {
-			        			inf.contruindo_barraca++;
-			        			continue;
-			        		}
-			        	
-			        	}
-				 }
-	            	if( link.containsKey(un.getID())) {
-	            			g=link.get(un.getID());
-	            	grupos.get(g).add(un);
-	            	}
-	            	else {
-	            		g= gs.getTime() % grupos.size();
-		            	link.put(un.getID(), g);
-		            	grupos.get(g).add(un);
-	            	}
-	            }
-			}
-		}
-	
-	//	System.out.println("xxxxxxxxxxxxxxx");
-		//System.out.println(inf.contruindo_barraca);
-		
-		//System.out.println("false! " + gs.getTime() );
-		//System.out.println("verum! " + inf.barraca_tempo );
-		
-		for(int k =0 ; k<melhor.size();k++) {
-    		atual.set(k , melhor.get(k));
-    	}
-		int i = gs.getTime() % grupos.size();
-		ArrayList<Double> pont= new ArrayList<>();
-		for(int j=0;j<playouts.size();j++)	pont.add((double) 0);
-		for(int r =0;r<rep;r++) {
-			for(int j=0;j<scripts.size();j++) {
-				inf.inicio_playout =System.currentTimeMillis();
-				
-				atual.set(i, j);
-				
-				playouts.get(j).configura(player, gs, actions, i, inf, atual,link);
-				
-				
-				//playout.run();
-						//playout(player,gs,i);
-				//System.out.println(e);
-			}
-				
-			for(int t =0 ; t<threads.size();t++) {
-				threads.set(t, new Thread(playouts.get(t)));
-				threads.get(t).start();
-			}
-				
-			
-			for(int t =0 ; t<threads.size();t++) {
-				
-				threads.get(t).join();
-			}
-			for(int t =0; t<playouts.size();t++) pont.set(t, pont.get(t) +playouts.get(t).resultado);
-		
-		}
-			
-			double e_m= -11111;
-			for(int t =0; t<playouts.size();t++) {
-				double e = pont.get(t);
-				if(t==0 && gs.getTime()>10000)e= - 1111;
-				if(e_m<e) {
-					
-					melhor.set(i, t);
-					e_m=e;
-				}
-		}
-			
-		 sepa.set(melhor.get(i),sepa.get(melhor.get(i)) + 1);
-			
-			
-			//System.out.println(melhor.get(0));
-		List<Unit> Units_aux = new ArrayList<>();
-		for(int j = 0;j < grupos.size();j++) {
-			scripts.get(melhor.get(j)).getAction(player, gs, grupos.get(j), Units_aux, inf,actions);
-		}
-	//	System.out.println("vrrwre! " + inf.contruindo_barraca);
-	//	System.out.println("vrrwre! " + inf.contruindo_base);
-		if(e_m < -0.3) {
-			inf.cont++;
-		}
-		else {
-			inf.cont = 0;
-		}
-		/*
-		arq = new FileWriter("C:\\Users\\barba\\Desktop\\testesss\\resultado.txt",true);
-		gravarArq = new PrintWriter(arq);
-		gravarArq.append(gs.getTime()+" "+evaluation.evaluate(player, 1 - player, gs)+" "+e_m );
-		if(melhor.get(i)==0) {
-			gravarArq.append(" 1 0 0 " );
-		}
-		else if(melhor.get(i)==1) {
-			gravarArq.append(" 0 1 0 " );
-		}
-		else {
-			if(melhor.get(i)==2) {
-				gravarArq.append(" 0 0 1 " );
-			}
-		}
-		gravarArq.append(playouts.get(0).prof + " " +playouts.get(1).prof + " " +playouts.get(2).prof + " ");
-		if(atualizou)gravarArq.append("1 ");
-		else gravarArq.append("0 ");
-		gravarArq.append(gs.getUnits().size() + "\n");
-		arq.close();
-		*/
-		
-	//	for(int pa =0; pa<scripts.size();pa++) {
-	//		System.out.println(sepa.get(pa));
-	//}
-	
-		return translateActions(player, gs);
-	}
+public PlayerAction getAction(int player, GameState gs) throws Exception {
+	PhysicalGameState pgs = gs.getPhysicalGameState();
+    Player p = gs.getPlayer(player);
+    inf.contruindo_base = 0;
+    inf.contruindo_barraca = 0;
+    int g;
+    boolean atualizou = false;
+    if (inf.cont > grupos.size() || gs.getTime()==0) {
+        atualizou = true;
+        link.clear();
+        for (int i = 0; i < grupos.size(); i++) {
+            grupos.get(i).clear();
+        }
+        for (Unit un : pgs.getUnits()) {
+            if (un.getPlayer() == player) {
+                AbstractAction action = getAbstractAction(un);
+                if (action instanceof Build) {
 
-	
+                    if (((Build) action).type == baseType) {
+
+                        if (p.getResources() >= baseType.cost) {
+
+                            inf.contruindo_base++;
+                            continue;
+                        }
+                    } else if (((Build) action).type == barracksType) {
+                        if (p.getResources() >= barracksType.cost) {
+                            inf.contruindo_barraca++;
+                            continue;
+                        }
+
+                    }
+
+                }
+                g = gerador.nextInt(num_tipo);
+
+                link.put(un.getID(), g);
+                grupos.get(g).add(un);
+
+            }
+        }
+    } else {
+        for (int i = 0; i < grupos.size(); i++) {
+            grupos.get(i).clear();
+        }
+        for (Unit un : pgs.getUnits()) {
+            if (un.getPlayer() == player) {
+                AbstractAction action = getAbstractAction(un);
+                if (action instanceof Build) {
+
+                    if (((Build) action).type == baseType) {
+
+                        if (p.getResources() >= baseType.cost) {
+
+                            inf.contruindo_base++;
+                            continue;
+                        }
+                    } else if (((Build) action).type == barracksType) {
+                        if (p.getResources() >= barracksType.cost) {
+                            inf.contruindo_barraca++;
+                            continue;
+                        }
+
+                    }
+                }
+                if (link.containsKey(un.getID())) {
+                    g = link.get(un.getID());
+                    grupos.get(g).add(un);
+                } else {
+                    g = gs.getTime() % grupos.size();
+                    link.put(un.getID(), g);
+                    grupos.get(g).add(un);
+                }
+            }
+        }
+    }
+
+    //	System.out.println("xxxxxxxxxxxxxxx");
+    //System.out.println(inf.contruindo_barraca);
+    //System.out.println("false! " + gs.getTime() );
+    //System.out.println("verum! " + inf.barraca_tempo );
+    for (int k = 0; k < melhor.size(); k++) {
+        atual.set(k, melhor.get(k));
+    }
+    int i = gs.getTime() % grupos.size();
+    for (int j = 0; j < scripts.size(); j++) {
+        inf.inicio_playout = System.currentTimeMillis();
+
+        atual.set(i, j);
+
+        playouts.get(j).configura(player, gs, actions, i, inf, atual, link);
+
+        //playout.run();
+        //playout(player,gs,i);
+        //System.out.println(e);
+    }
+
+    for (int t = 0; t < threads.size(); t++) {
+        threads.set(t, new Thread(playouts.get(t)));
+        threads.get(t).start();
+    }
+
+    for (int t = 0; t < threads.size(); t++) {
+
+        threads.get(t).join();
+    }
+
+    double e_m = -11111;
+   
+    for (int t = 0; t < playouts.size(); t++) {
+        double e = playouts.get(t).resultado;
+      
+        if (e_m < e) {
+
+            melhor.set(i, t);
+            e_m = e;
+        }
+    }
+    sepa.set(melhor.get(i), sepa.get(melhor.get(i)) + 1);
+
+  
+    List<Unit> Units_aux = new ArrayList<>();
+    for (int j = 0; j < grupos.size(); j++) {
+        scripts.get(melhor.get(j)).getAction(player, gs, grupos.get(j), Units_aux, inf, actions);
+    }
+    //	System.out.println("vrrwre! " + inf.contruindo_barraca);
+    //	System.out.println("vrrwre! " + inf.contruindo_base);
+    if (e_m < -0.3) {
+        inf.cont++;
+    } else {
+        inf.cont = 0;
+    }
+    /*
+	arq = new FileWriter("C:\\Users\\barba\\Desktop\\testesss\\resultado.txt",true);
+	gravarArq = new PrintWriter(arq);
+	gravarArq.append(gs.getTime()+" "+evaluation.evaluate(player, 1 - player, gs)+" "+e_m );
+	if(melhor.get(i)==0) {
+		gravarArq.append(" 1 0 0 " );
+	}
+	else if(melhor.get(i)==1) {
+		gravarArq.append(" 0 1 0 " );
+	}
+	else {
+		if(melhor.get(i)==2) {
+			gravarArq.append(" 0 0 1 " );
+		}
+	}
+	gravarArq.append(playouts.get(0).prof + " " +playouts.get(1).prof + " " +playouts.get(2).prof + " ");
+	if(atualizou)gravarArq.append("1 ");
+	else gravarArq.append("0 ");
+	gravarArq.append(gs.getUnits().size() + "\n");
+	arq.close();
+     */
+
+    //	for(int pa =0; pa<scripts.size();pa++) {
+    //		System.out.println(sepa.get(pa));
+    //}
+    return translateActions(player, gs);
+}
 	
 	
 	@Override

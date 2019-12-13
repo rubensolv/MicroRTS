@@ -58,27 +58,80 @@ public class COM {
 	ComputationGraph model;
 	List<INDArray> inp; // recolhe entrada da rna
 	List<INDArray> out; //saida 
+	List<INDArray> inp_play0; // recolhe entrada da rna
+	List<INDArray> out_play0; //saida 
+	List<INDArray> inp_play1; // recolhe entrada da rna
+	List<INDArray> out_play1; //saida 
 	List<MultiDataSet> db; // salva os buffer de dados
 	int n;// numero de treino ja feito 
 	int tam_bufferRNA = 1;
 	int epoca;
+	HashMap<UnitType, Integer> mapea;
 
+	int largura, altura,camadas, num_grupos;
 	
 	
+	public void salverna(String s) throws IOException {
+		String path = "rna/rna_"+s+".zip";
+		File locationToSave = new File(path); 
+		model.save(locationToSave,false);
+	}
 	
-	public COM(int buffer,int epoc) throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException {
-		//ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath*:app-context.xml");
+	public COM( UnitTypeTable utt, int buffer,int epoc, String rnaopcao, int largura, int altura, int camadas, int num_grupos) throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException {
+		
 		tam_bufferRNA = buffer;
 		epoca=epoc;
-		File arq = new File("resources/simple_mlp.h5");
+		
+		// entrada
+		this.largura=largura;
+		this.altura = altura;
+		this.camadas = camadas;
+		this.num_grupos = num_grupos;
+		
+		workerType = utt.getUnitType("Worker");
+	       baseType = utt.getUnitType("Base");
+	       barracksType = utt.getUnitType("Barracks");
+	       rangedType = utt.getUnitType("Ranged");
+	       heavyType = utt.getUnitType("Heavy");
+	       lightType = utt.getUnitType("Light");
+		 recurso = utt.getUnitType("Resource");
+		
+		  mapea =new HashMap<UnitType, Integer>();
+	//	 mapea.put(workerType, 0);
+		// mapea.put(barracksType, 1);
+	//	mapea.put(baseType, 1);
+	//	 mapea.put(lightType, 3);
+		 mapea.put(heavyType, 0);
+		 mapea.put(rangedType, 1);
+		// mapea.put(recurso, 6);
+		
+		
+		
+		File arq = new File("resources/simple_mlp"+rnaopcao+".h5");
 		 String simpleMlp = arq.getPath();
 				
 				//new ClassPathResource("simple_mlp.h5").getFile().getPath();
 		model =  KerasModelImport.importKerasModelAndWeights(simpleMlp);
+		
+		
 		 inp=new ArrayList<>();
-		 inp.add(Nd4j.create(0,8,8,18));
+		 inp.add(Nd4j.create(0,camadas,altura,largura));
 		 out=new ArrayList<>();
-		 for(int tt=0;tt<144;tt++)out.add( Nd4j.create(0,3));
+		 
+		 inp_play0=new ArrayList<>();
+		 inp_play0.add(Nd4j.create(0,camadas,altura,largura));
+		 out_play0=new ArrayList<>();
+		 
+		 inp_play1=new ArrayList<>();
+		 inp_play1.add(Nd4j.create(0,camadas,altura,largura));
+		 out_play1=new ArrayList<>();
+		 
+		 
+		 for(int tt=0;tt<altura*largura;tt++) {
+			 out_play0.add( Nd4j.create(0,num_grupos+1));
+			 out.add( Nd4j.create(0,num_grupos+1));
+			 out_play1.add( Nd4j.create(0,num_grupos+1));
+			 }
 		 
 		 db = new ArrayList<>();
 		 for(int i =0 ; i < tam_bufferRNA;i++) {
@@ -99,18 +152,25 @@ public class COM {
 	inp.toArray(x);
 	INDArray[] y = new INDArray[out.size()];
 	out.toArray(y);
+	
 	 db.set(n, new MultiDataSet(x,y));	
 	for(int j =0;j<epoca;j++)
 		for(int i=0; i< tam_bufferRNA;i++) {
-			if(db.get(i).numLabelsArrays()==0)continue;
+			
+			if(db.get(i).numFeatureArrays()==0)continue;
+			try {
 			db.get(i).shuffle();
 			model.fit(db.get(i));
+			}catch (Exception e) {
+				 ;
+			}
+			
 		}
 	
 	 inp=new ArrayList<>();
-	 inp.add(Nd4j.create(0,8,8,18));
+	 inp.add(Nd4j.create(0,camadas,altura,largura));
 	 out=new ArrayList<>();
-	 for(int tt=0;tt<144;tt++)out.add( Nd4j.create(0,3));
+	 for(int tt=0;tt<altura*largura;tt++)out.add( Nd4j.create(0,num_grupos + 1));
 	 
 	n= (n+1) % tam_bufferRNA;
 	}
@@ -118,34 +178,13 @@ public class COM {
 	
 	public void  agrupa(int player, GameState gs,UnitTypeTable utt,HashMap<Integer, Integer> agrup) {
 		//pega o agrupamendo gerado pela rna
-		int linha = 8;
-		int coluna= 18;
-		int camadas = 8;
-		INDArray estado = Nd4j.zeros(camadas, linha,coluna);
+	
+		INDArray estado = Nd4j.zeros(camadas, altura,largura);
 		
 
 		agrup.clear();
 		
-			workerType = utt.getUnitType("Worker");
-	       baseType = utt.getUnitType("Base");
-	       barracksType = utt.getUnitType("Barracks");
-	       rangedType = utt.getUnitType("Ranged");
-	       heavyType = utt.getUnitType("Heavy");
-	       lightType = utt.getUnitType("Light");
-		 recurso = utt.getUnitType("Resource");
-		
-		 HashMap<UnitType, Integer> mapea =new HashMap<UnitType, Integer>();
-		// mapea.put(workerType, 0);
-		// mapea.put(barracksType, 1);
-		// mapea.put(baseType, 2);
-	//	 mapea.put(lightType, 3);
-		 mapea.put(heavyType, 0);
-		 mapea.put(rangedType, 1);
-		// mapea.put(recurso, 6);
-		 
-		
-		
-		
+
 		
 		for(Unit u : gs.getUnits()) {
 			if(u.getPlayer()==player) {
@@ -153,7 +192,8 @@ public class COM {
 				estado.putScalar(2+mapea.get(u.getType()),u.getY(),u.getX(), 1);
 				
 			}
-			else {
+			else if (u.getPlayer()== 1 - player){
+			
 				estado.putScalar(4+mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
 				estado.putScalar(6+mapea.get(u.getType()),u.getY(),u.getX(), 1);
 			
@@ -161,14 +201,15 @@ public class COM {
 			
 		}
 		
-		INDArray aux= Nd4j.create(1,8,8,18);
+		INDArray aux= Nd4j.create(1,camadas,altura,largura);
 		aux.putRow(0, estado);
 		INDArray[] aux2= model.output(aux);
 		
 		for(Unit u : gs.getUnits()) {
 			if(u.getPlayer()==player) {
-				INDArray ind= aux2[u.getX()+18*u.getY()];
-				//System.out.print(ind);
+				INDArray ind= aux2[u.getX()+largura*u.getY()];
+				if(gs.getTime()==0)System.out.println(ind);
+				
 				if(ind.getDouble(0,0)>ind.getDouble(0,1)) {
 					agrup.put((int) u.getID(), 0);
 				}
@@ -189,43 +230,22 @@ public class COM {
     
 
 	public void grava(int player, GameState gs, UnitTypeTable utt, HashMap<Integer, Integer> agrup) { // salva o estado
-		int linha = 8;
-		int coluna= 18;
-		int camadas =8;
-		INDArray estado = Nd4j.zeros(camadas, linha,coluna);// estado
 		
-		INDArray s1 = Nd4j.ones( 18*8,1);
+		INDArray estado = Nd4j.zeros(camadas, altura,largura);// estado
 		
-		INDArray saida4 = Nd4j.zeros( 18*8,2);
+	// monta a saida
+		INDArray s1 = Nd4j.zeros( largura*altura,1);
+		INDArray saida4 = Nd4j.zeros( largura*altura,num_grupos);
 		saida4=Nd4j.concat(1,saida4,s1);//saida do estado
 		
 		
-		INDArray estado2 = Nd4j.zeros(camadas, linha,coluna);// estado espelhado
+		// monta estado espelhado
+		INDArray estado2 = Nd4j.zeros(camadas, altura,largura);// estado espelhado
 		
-		INDArray s12 = Nd4j.ones( 18*8,1);
+		INDArray s12 = Nd4j.zeros( largura*altura,1);
 		
-		INDArray saida42 = Nd4j.zeros( 18*8,2);
+		INDArray saida42 = Nd4j.zeros( largura*altura,num_grupos);
 		saida42=Nd4j.concat(1,saida42,s12); //saida do estado espelhada 
-		
-		
-		
-			workerType = utt.getUnitType("Worker");
-	       baseType = utt.getUnitType("Base");
-	       barracksType = utt.getUnitType("Barracks");
-	       rangedType = utt.getUnitType("Ranged");
-	       heavyType = utt.getUnitType("Heavy");
-	       lightType = utt.getUnitType("Light");
-		 recurso = utt.getUnitType("Resource");
-		
-		 HashMap<UnitType, Integer> mapea =new HashMap<UnitType, Integer>();
-		// mapea.put(workerType, 0);
-		// mapea.put(barracksType, 1);
-		// mapea.put(baseType, 2);
-	//	 mapea.put(lightType, 3);
-		 mapea.put(heavyType, 0);
-		 mapea.put(rangedType, 1);
-		// mapea.put(recurso, 6);
-		 
 		
 		
 		
@@ -237,25 +257,25 @@ public class COM {
 				
 				estado.putScalar(mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4.0);
 				estado.putScalar(mapea.get(u.getType())+2,u.getY(),u.getX(), 1);
-				saida4.putScalar(u.getY()*18+u.getX(),2, 0);
-				saida4.putScalar(u.getY()*18+u.getX(),agrup.get((int)u.getID()), 1);
-				saida4.putScalar(u.getY()*18+u.getX(),1-agrup.get((int)u.getID()), 0);
+				saida4.putScalar(u.getY()*altura+u.getX(),2, 0);
+				saida4.putScalar(u.getY()*altura+u.getX(),agrup.get((int)u.getID()), 1);
+				saida4.putScalar(u.getY()*altura+u.getX(),1-agrup.get((int)u.getID()), 0);
 
 				//vira o mapa
-				estado2.putScalar(mapea.get(u.getType()),u.getY(),(coluna-u.getX()-1), (1.0*u.getHitPoints())/4.0);
-				estado2.putScalar(mapea.get(u.getType())+2,u.getY(),(coluna-u.getX()-1), 1);
-				saida42.putScalar(u.getY()*18+(coluna-u.getX()-1),2, 0);
-				saida42.putScalar(u.getY()*18+(coluna-u.getX()-1),agrup.get((int)u.getID()), 1);
-				saida42.putScalar(u.getY()*18+(coluna-u.getX()-1),1-agrup.get((int)u.getID()), 0);
+				estado2.putScalar(mapea.get(u.getType()),u.getY(),(largura-u.getX()-1), (1.0*u.getHitPoints())/4.0);
+				estado2.putScalar(mapea.get(u.getType())+2,u.getY(),(largura-u.getX()-1), 1);
+				saida42.putScalar(u.getY()*altura+(largura-u.getX()-1),2, 0);
+				saida42.putScalar(u.getY()*altura+(largura-u.getX()-1),agrup.get((int)u.getID()), 1);
+				saida42.putScalar(u.getY()*altura+(largura-u.getX()-1),1-agrup.get((int)u.getID()), 0);
 	
 				
 			}
-			else {
-				estado.putScalar(4+mapea.get(u.getType()),u.getY(),(coluna-u.getX()-1), (1.0*u.getHitPoints())/4.0);
-				estado.putScalar(6+mapea.get(u.getType()),u.getY(),(coluna-u.getX()-1),1);
+			else if (u.getPlayer()==1-player){
+				estado.putScalar(4+mapea.get(u.getType()),u.getY(),(largura-u.getX()-1), (1.0*u.getHitPoints())/4.0);
+				estado.putScalar(6+mapea.get(u.getType()),u.getY(),(largura-u.getX()-1),1);
 				//vira o mapa
-				estado2.putScalar(4+mapea.get(u.getType()),u.getY(),coluna-u.getX()-1, (1.0*u.getHitPoints())/4.0);
-				estado2.putScalar(6+mapea.get(u.getType()),u.getY(),coluna-u.getX()-1, 1);
+				estado2.putScalar(4+mapea.get(u.getType()),u.getY(),largura-u.getX()-1, (1.0*u.getHitPoints())/4.0);
+				estado2.putScalar(6+mapea.get(u.getType()),u.getY(),largura-u.getX()-1, 1);
 				
 				
 			}
@@ -263,71 +283,86 @@ public class COM {
 		}
 		
 		// salva o mapa e a saida
-		INDArray aux= Nd4j.create(1,8,8,18);
+		INDArray aux= Nd4j.create(1,camadas,altura,largura);
 		aux.putRow(0, estado);
 		
-		inp.set(0, Nd4j.concat(0, aux,inp.get(0)));
-
-		for(int tt=0;tt<144;tt++) {
-			aux = Nd4j.create(1,3);
+		if(player==0)inp_play0.set(0, Nd4j.concat(0, aux,inp_play0.get(0)));
+		else inp_play1.set(0, Nd4j.concat(0, aux,inp_play1.get(0)));
+		
+		for(int tt=0;tt<largura*altura;tt++) {
+			aux = Nd4j.create(1,num_grupos + 1);
 			aux.putRow(0,saida4.getRow(tt));
-			out.set(tt, Nd4j.concat(0, aux,out.get(tt)));
+			if(player==0) out_play0.set(tt, Nd4j.concat(0, aux,out_play0.get(tt)));
+			else out_play1.set(tt, Nd4j.concat(0, aux,out_play1.get(tt)));
 		}
 		
 		// salva o mapa espelhado e a saida
-		INDArray aux2= Nd4j.create(1,8,8,18);
+		INDArray aux2= Nd4j.create(1,camadas,altura,largura);
 		aux2.putRow(0, estado);
 		
-		inp.set(0, Nd4j.concat(0, aux2,inp.get(0)));
+		if(player==0) inp_play0.set(0, Nd4j.concat(0, aux2,inp_play0.get(0)));
+		else inp_play1.set(0, Nd4j.concat(0, aux2,inp_play1.get(0)));
 
-		for(int tt=0;tt<144;tt++) {
-			aux2 = Nd4j.create(1,3);
+		for(int tt=0;tt<largura*altura;tt++) {
+			aux2 = Nd4j.create(1,num_grupos + 1);
 			aux2.putRow(0,saida42.getRow(tt));
-			out.set(tt, Nd4j.concat(0, aux2,out.get(tt)));
+			if(player==0)  out_play0.set(tt, Nd4j.concat(0, aux2,out_play0.get(tt)));
+			else out_play1.set(tt, Nd4j.concat(0, aux2,out_play1.get(tt)));
 		}
-		
 		
 		
 		
 	}
 
+	public void seleciona_exemplo_vencedor(int vencedor) {
+	
+		if(vencedor==0) {
+			inp.set(0, Nd4j.concat(0, inp.get(0),inp_play0.get(0)));
+			for(int tt=0;tt<largura*altura;tt++) {
+				out.set(tt, Nd4j.concat(0, out.get(tt),out_play0.get(tt)));
+			}
+		}
+		
+		if(vencedor==1) {
+			inp.set(0, Nd4j.concat(0, inp.get(0),inp_play1.get(0)));
+			for(int tt=0;tt<altura*largura;tt++) {
+				out.set(tt, Nd4j.concat(0, out.get(tt),out_play1.get(tt)));
+			}
+		}
+		
+		
+		 inp_play0=new ArrayList<>();
+		 inp_play0.add(Nd4j.create(0,camadas,altura,largura));
+		 out_play0=new ArrayList<>();
+		 for(int tt=0;tt<altura*largura;tt++)out_play0.add( Nd4j.create(0,num_grupos +1));
+		 
+		 inp_play1=new ArrayList<>();
+		 inp_play1.add(Nd4j.create(0,camadas,altura,largura));
+		 out_play1=new ArrayList<>();
+		 for(int tt=0;tt<altura*largura;tt++)out_play1.add( Nd4j.create(0,num_grupos + 1));
+		
+	}
+	
+	
 	public void amostra(int player, GameState gs, UnitTypeTable utt, HashMap<Integer, Integer> agrup) {
-		int linha = 8;
-		int coluna= 18;
-		int camadas = 8;
-		INDArray estado = Nd4j.zeros(camadas, linha,coluna);// canal
+		
+		INDArray estado = Nd4j.zeros(camadas, altura,largura);// canal
 		
 
 		agrup.clear();
 		
-			workerType = utt.getUnitType("Worker");
-	       baseType = utt.getUnitType("Base");
-	       barracksType = utt.getUnitType("Barracks");
-	       rangedType = utt.getUnitType("Ranged");
-	       heavyType = utt.getUnitType("Heavy");
-	       lightType = utt.getUnitType("Light");
-		 recurso = utt.getUnitType("Resource");
-		
-		 HashMap<UnitType, Integer> mapea =new HashMap<UnitType, Integer>();
-		// mapea.put(workerType, 0);
-		// mapea.put(barracksType, 1);
-		// mapea.put(baseType, 2);
-	//	 mapea.put(lightType, 3);
-		 mapea.put(heavyType, 0);
-		 mapea.put(rangedType, 1);
-		// mapea.put(recurso, 6);
-		 
-		
+			
 		
 		
 		// constroi o estado
 		for(Unit u : gs.getUnits()) {
 			if(u.getPlayer()==player) {
+				
 				estado.putScalar(mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
 				estado.putScalar(mapea.get(u.getType())+2,u.getY(),u.getX(), 1);
 				
 			}
-			else {
+			else if(u.getPlayer()==1-player){
 				estado.putScalar(4+mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
 				estado.putScalar(6+mapea.get(u.getType()),u.getY(),u.getX(), 1);
 			
@@ -336,13 +371,13 @@ public class COM {
 		}
 		
 		// encapsula para passar pela rna
-		INDArray aux= Nd4j.create(1,8,8,18);
+		INDArray aux= Nd4j.create(1,camadas,altura,largura);
 		aux.putRow(0, estado);
 		INDArray[] aux2= model.output(aux); // saida da rede neural
 		
 		for(Unit u : gs.getUnits()) { // amostra os grupos com relação a saida da RNA, 
 			if(u.getPlayer()==player) {
-				INDArray ind= aux2[u.getX()+18*u.getY()];
+				INDArray ind= aux2[u.getX()+largura*u.getY()];
 				//System.out.print(ind);
 				Random gerador;
 				 gerador = new Random();
@@ -352,11 +387,24 @@ public class COM {
 				 g =gerador.nextInt(g); // sorteia um numeno aleatorio e define qual grupo a unidade vai pertencer 
 				if(ind.getDouble(0,0)*100>g) {
 					
-					agrup.put((int) u.getID(), 0);
+					
+					g =gerador.nextInt(100);
+					if(g<5) {
+						agrup.put((int) u.getID(), 1);
+					}
+					else {
+						agrup.put((int) u.getID(), 0);
+					}
 				
 				}
 				else {
-					agrup.put((int) u.getID(), 1);
+					g =gerador.nextInt(100);
+					if(g<5) {
+						agrup.put((int) u.getID(), 0);
+					}
+					else {
+						agrup.put((int) u.getID(), 1);
+					}
 				
 					
 				}

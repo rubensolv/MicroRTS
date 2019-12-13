@@ -227,9 +227,9 @@ public class Playout extends AbstractionLayerAID implements Runnable{
         
         for(; !gameover && tempo_de_simulacao > System.currentTimeMillis() - inicio_playout && prof < prof_de_simulacao ;prof++) {
            
-        	if (gs2.isComplete()) {
-                gameover = gs2.cycle();
-        	} 	
+        	
+              
+        	
             	aux.clear();
            
             	
@@ -269,7 +269,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
             //	s.getAction(player, gs2, aux, actions);
             	for(int j = 0;j < grupos2.size();j++) {
             		//System.out.println("será "+ j);
-            		int mj=50;
+            		int mj=35;
             		if(teste_grupo == j ) {
             			try {
 							if(prof<mj)scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux,inf2, actions);
@@ -297,7 +297,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
             	
             			//new WorkerRush(utt);//
             			
-            			//new LightRush(utt);// ;
+            		ai4=new LightRush(utt);// ;
                 try {
 					gs2.issue(ai4.getAction(1 - player, gs2));
 				} catch (Exception e) {
@@ -305,11 +305,11 @@ public class Playout extends AbstractionLayerAID implements Runnable{
 					e.printStackTrace();
 				}
                
-                //gameover = gs2.cycle();
+                gameover = gs2.cycle();
         }
 
-     // analisa(gs2);
-       
+   //  analisa(gs2);
+   // System.out.println(gs2.getTime());
         resultado =  evaluation.evaluate(player, 1 - player, gs2);
 
         if(tempo_de_simulacao == -1) {

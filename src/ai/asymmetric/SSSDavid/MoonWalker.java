@@ -124,7 +124,7 @@ public class MoonWalker extends AbstractionLayerAID  {
    
 
     public void meleeUnitBehavior(Unit u, Player p, GameState gs) {
-    	int y = (int) (u.getID()%10);
+    	int y = (int) (u.getY());
     	boolean[][] free = gs.getPhysicalGameState().getAllFree();
     	if(p.getID()==0) {
     			if(u.getX()==0) {

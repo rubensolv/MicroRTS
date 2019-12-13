@@ -124,11 +124,11 @@ public class GameVisualSimulationTest {
     public static void main(String args[]) throws Exception {
     	int cont = 0;
     	UnitTypeTable utt = new UnitTypeTable();
-    	SSSteste ai1 = new SSSteste(utt,2).configuracao2();
+    	AI ai1 = new SSSDavid(utt,2).configuracao2();
     	for(int ii=0;ii<100;ii++) {
         
         //UnitTypeTable utt = new UnitTYpeTableBattle();
-       PhysicalGameState pgs = PhysicalGameState.load("maps/mapadavid.xml", utt);
+       PhysicalGameState pgs = PhysicalGameState.load("maps/mapadavid2.xml", utt);
       // PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
       //  PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
      //  PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
@@ -375,7 +375,7 @@ public class GameVisualSimulationTest {
         System.out.println("AI 2 = "+ai2.toString()+"\n");        
         
         //método para fazer a troca dos players
-    //   JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
+      JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 720, 720, false, PhysicalGameStatePanel.COLORSCHEME_WHITE); 
         long startTime = System.currentTimeMillis();
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;
@@ -405,7 +405,7 @@ public class GameVisualSimulationTest {
                 
                 // simulate:
                 gameover = gs.cycle();
-           //    w.repaint();
+              w.repaint();
                 nextTimeToUpdate += PERIOD;
             } else {
                 try {
@@ -430,8 +430,8 @@ public class GameVisualSimulationTest {
         System.out.println("Winner " + Integer.toString(gs.winner()));
         System.out.println("Game Over");
         System.out.println("foiii " + ii);
-       if(ii%10==0)ai1.treina(gs.winner()==0);
-       if(ii>70&&gs.winner()==0)cont++;
+     //  if(ii%10==0)ai1.treina(gs.winner()==0);
+       if(gs.winner()==0)cont++;
     	}
     	System.out.println("vitorias " + cont);
     }
