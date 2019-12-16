@@ -48,6 +48,7 @@ public class davidteste {
 	static JFrame w;
 	static UnitTypeTable utt;
 	static COM rna;
+	static String pafh_mapa;
 	
 	public static double partida(int num_partida, boolean exibe) throws JDOMException, IOException, Exception {
 
@@ -55,7 +56,7 @@ public class davidteste {
 		for(int ii =0; ii<num_partida;ii++) {
 			System.out.println("partida "+ ii);
         //UnitTypeTable utt = new UnitTYpeTableBattle();
-       PhysicalGameState pgs = PhysicalGameState.load("maps/mapadavid2.xml", utt);
+       PhysicalGameState pgs = PhysicalGameState.load(pafh_mapa, utt);
       // PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
       //  PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/BasesWithWalls16x16.xml", utt);
      //  PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
@@ -136,7 +137,14 @@ public class davidteste {
 
     public static void main(String args[]) throws Exception {
     	
-    
+    	pafh_mapa="maps/8x8/basesWorkers8x8A.xml";//"maps/mapadavid2.xml";
+    	int num_grupos=2;
+    	int tipo_mapa;
+    	tipo_mapa=0;// mapas david
+    	tipo_mapa=1;// mapa 8x8
+    	
+    	
+    	
     	boolean selfplay = true;
     	//if(args[0].equals("0"))selfplay=true;
     	//else selfplay=false;
@@ -146,7 +154,7 @@ public class davidteste {
     	//if(args[1].equals("1"))buffer=3;
     	//if(args[1].equals("2"))buffer=5;
     	
-    	int epoca=20;
+    	int epoca=12;
     	//if(args[2].equals("0"))epoca=1;
     	//if/(args[2].equals("1"))epoca=3;
     	//if(args[2].equals("2"))epoca=5;
@@ -165,24 +173,32 @@ public class davidteste {
     	if(args[2].equals("3"))intervalo_amostragem=100;
     	if(args[2].equals("4"))intervalo_amostragem=150;
     	if(args[2].equals("5"))intervalo_amostragem=400;
+   
+    
     	
     	String iteracao = args[0];
     	String rnaopcao = args[1];
     
     	
+    	
     	System.out.println("treinamento: "+selfplay+" "+ buffer+" "+epoca+" "+num_partida+" "+intervalo_amostragem);
     	
+    	
     	 utt = new UnitTypeTable();
-    	ai1 = new SSSteste(utt,2).configuracao2(intervalo_amostragem); // SSS com 2 grupos,
+    	ai1 = new SSSteste(utt,num_grupos).configuracao2(intervalo_amostragem); // SSS com 2 grupos,
     	ai2 = new WorkerRush(utt);//PassiveAI(utt);//SSSDavid(utt,2).configuracao2();
-    	ai3 = new SSSteste(utt,2).configuracao2(intervalo_amostragem);
+    	ai3 = new SSSteste(utt,num_grupos).configuracao2(intervalo_amostragem);
     	ArrayList<Double> vitoria_treinamento;
     	ArrayList<Double> vitoria_teste;
     	vitoria_teste = new ArrayList<>();;
     	vitoria_treinamento= new ArrayList<>();
     	double resultado;
-    	 rna = new COM(utt,buffer,epoca,rnaopcao,18,8,8,2); // a RNA é a mesma para todas IAs, salvando os exemplos em si msm.
-    	COM rna2 = new COM(utt,buffer,epoca,rnaopcao,18,8,8,2);
+    	
+    	PhysicalGameState pgs = PhysicalGameState.load(pafh_mapa, utt);
+    	
+    	
+    	 rna = new COM(utt,buffer,epoca,rnaopcao,pgs.getWidth(),pgs.getHeight(),num_grupos,tipo_mapa); // a RNA é a mesma para todas IAs, salvando os exemplos em si msm.
+    	COM rna2 = new COM(utt,buffer,epoca,rnaopcao,pgs.getWidth(),pgs.getHeight(),num_grupos,tipo_mapa);
     	ai1.setRNA(rna); 
     	if(selfplay)ai3.setRNA(rna);
     	else ai3.setRNA(rna2);
