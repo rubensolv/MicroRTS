@@ -211,8 +211,8 @@ public class SSSteste extends AbstractionLayerAI  {
 	}
 	
 	protected void buildPortfolio() {
-		//this.scripts.add(new Script4(utt));
-		 this.scripts.add(new Ataca(utt));
+		this.scripts.add(new Script4(utt));
+		 //this.scripts.add(new Ataca(utt));
 		 this.scripts.add(new MoonWalker(utt));
 		
 		
