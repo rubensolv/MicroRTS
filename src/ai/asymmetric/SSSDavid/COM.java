@@ -6,46 +6,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
+import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.deeplearning4j.nn.conf.ComputationGraphConfiguration.GraphBuilder;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration.Builder;
+import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
-
+import org.deeplearning4j.nn.weights.WeightInit;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.MultiDataSet;
-
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.indexing.NDArrayIndex;
+import org.nd4j.linalg.learning.config.Nesterovs;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.deeplearning4j.nn.conf.inputs.InputType;
+
 import rts.GameState;
 import rts.units.Unit;
 import rts.units.UnitType;
-import rts.units.UnitTypeTable;
+import rts.units.UnitTypeTable;;
 
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.Random;
-
-
-/**A Simple Multi Layered Perceptron (MLP) applied to digit classification for
- * the MNIST Dataset (http://yann.lecun.com/exdb/mnist/).
- *
- * This file builds one input layer and one hidden layer.
- *
- * The input layer has input dimension of numRows*numColumns where these variables indicate the
- * number of vertical and horizontal pixels in the image. This layer uses a rectified linear unit
- * (relu) activation function. The weights for this layer are initialized by using Xavier initialization
- * (https://prateekvjoshi.com/2016/03/29/understanding-xavier-initialization-in-deep-neural-networks/)
- * to avoid having a steep learning curve. This layer will have 1000 output signals to the hidden layer.
- *
- * The hidden layer has input dimensions of 1000. These are fed from the input layer. The weights
- * for this layer is also initialized using Xavier initialization. The activation function for this
- * layer is a softmax, which normalizes all the 10 outputs such that the normalized sums
- * add up to 1. The highest of these normalized values is picked as the predicted class.
- *
- */
 public class COM {
    
 	 UnitType workerType;
@@ -68,7 +53,7 @@ public class COM {
 	int epoca;
 	HashMap<UnitType, Integer> mapea;
 
-	int largura, altura,camadas, num_grupos;
+	int largura, altura,camadas, num_grupos,tipo_mapa;
 	
 	
 	public void salverna(String s) throws IOException {
@@ -77,7 +62,40 @@ public class COM {
 		model.save(locationToSave,false);
 	}
 	
-	public COM( UnitTypeTable utt, int buffer,int epoc, String rnaopcao, int largura, int altura, int camadas, int num_grupos) throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException {
+	
+	public void  carrega_modelo_python(String rnatipo_mapa) throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException {
+		File arq = new File("resources/simple_mlp"+rnatipo_mapa+".h5");
+		 String simpleMlp = arq.getPath();
+				
+				//new ClassPathResource("simple_mlp.h5").getFile().getPath();
+		model =  KerasModelImport.importKerasModelAndWeights(simpleMlp);
+	}
+	
+public void  carrega_modelo_java() {
+		
+		List<String> outs= new ArrayList<>();
+		
+		// olhe https://deeplearning4j.org/tutorials/01-multilayernetwork-and-computationgraph
+		GraphBuilder graph = new Builder().seed(123).optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).updater(new Nesterovs(0.9))
+				.graphBuilder()
+				.addInputs("input");
+		
+		for(int i =0 ; i < largura*altura;i++) {
+			outs.add("out"+i);
+			graph.addLayer("out"+i, new OutputLayer.Builder().nIn(camadas*altura*altura).nOut(num_grupos+1)
+					.weightInit(WeightInit.XAVIER)
+					.activation(Activation.SOFTMAX).lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD).build()// n achei categorical_crossentropy
+					, "input");
+		}
+		graph.setInputTypes(InputType.convolutionalFlat(altura, largura, camadas)).setNetworkOutputs(outs);
+	
+	
+		model = new ComputationGraph( graph.build());
+				
+	}
+	
+	//learningRate(0.1).iterations(1).optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).updater(new Nesterovs(0.9))
+	public COM( UnitTypeTable utt, int buffer,int epoc, String rnatipo_mapa, int largura, int altura,  int num_grupos,int tipo_mapa) throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException {
 		
 		tam_bufferRNA = buffer;
 		epoca=epoc;
@@ -85,8 +103,9 @@ public class COM {
 		// entrada
 		this.largura=largura;
 		this.altura = altura;
-		this.camadas = camadas;
+		
 		this.num_grupos = num_grupos;
+		this.tipo_mapa=tipo_mapa;
 		
 		workerType = utt.getUnitType("Worker");
 	       baseType = utt.getUnitType("Base");
@@ -97,21 +116,50 @@ public class COM {
 		 recurso = utt.getUnitType("Resource");
 		
 		  mapea =new HashMap<UnitType, Integer>();
-	//	 mapea.put(workerType, 0);
-		// mapea.put(barracksType, 1);
-	//	mapea.put(baseType, 1);
-	//	 mapea.put(lightType, 3);
-		 mapea.put(heavyType, 0);
-		 mapea.put(rangedType, 1);
-		// mapea.put(recurso, 6);
+		  if(tipo_mapa==0) {
+			  this.camadas = 8;
+			  /*
+			   camada 0 = hp heavy
+			   camada 2 = se tem heavy
+			   camada 1 = hp range
+			   camada 3 = se tem range
+			   camdada 4-7 = idem para o outro
+			   */
+			  
+			//	 mapea.put(workerType, 0);
+				// mapea.put(barracksType, 1);
+			//	mapea.put(baseType, 1);
+			//	 mapea.put(lightType, 3);
+				 mapea.put(heavyType, 0);
+				 mapea.put(rangedType, 1);
+				// mapea.put(recurso, 6);
 		
+		  }
+		  else if(tipo_mapa==1) {
+			  camadas=7;
+			  /*
+			   camada 0 = hp base
+			   camada 1 = se tem worker
+			   camada 2 = se o worker esta com recurso
+			   camdada 3-6 = idem para o outro
+			   camada 7 = hp do recurso
+			   */
+			  
+				 mapea.put(workerType, 1);
+				// mapea.put(barracksType, 1);
+			mapea.put(baseType, 0);
+			//	 mapea.put(lightType, 3);
+				// mapea.put(heavyType, 0);
+				 //mapea.put(rangedType, 1);
+				mapea.put(recurso, 2);
 		
+		  }  
+		  
+		  
+		carrega_modelo_python(rnatipo_mapa);
 		
-		File arq = new File("resources/simple_mlp"+rnaopcao+".h5");
-		 String simpleMlp = arq.getPath();
-				
-				//new ClassPathResource("simple_mlp.h5").getFile().getPath();
-		model =  KerasModelImport.importKerasModelAndWeights(simpleMlp);
+		  //carrega_modelo_java();
+		
 		
 		
 		 inp=new ArrayList<>();
@@ -179,27 +227,12 @@ public class COM {
 	public void  agrupa(int player, GameState gs,UnitTypeTable utt,HashMap<Integer, Integer> agrup) {
 		//pega o agrupamendo gerado pela rna
 	
-		INDArray estado = Nd4j.zeros(camadas, altura,largura);
+		INDArray estado = montar_entrada(player,gs,false);
+		
 		
 
 		agrup.clear();
 		
-
-		
-		for(Unit u : gs.getUnits()) {
-			if(u.getPlayer()==player) {
-				estado.putScalar(mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
-				estado.putScalar(2+mapea.get(u.getType()),u.getY(),u.getX(), 1);
-				
-			}
-			else if (u.getPlayer()== 1 - player){
-			
-				estado.putScalar(4+mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
-				estado.putScalar(6+mapea.get(u.getType()),u.getY(),u.getX(), 1);
-			
-			}
-			
-		}
 		
 		INDArray aux= Nd4j.create(1,camadas,altura,largura);
 		aux.putRow(0, estado);
@@ -207,15 +240,22 @@ public class COM {
 		
 		for(Unit u : gs.getUnits()) {
 			if(u.getPlayer()==player) {
+				double maior=-1;
+				int index=-1;
 				INDArray ind= aux2[u.getX()+largura*u.getY()];
-				if(gs.getTime()==0)System.out.println(ind);
+				//if(gs.getTime()==0)System.out.println(ind);
 				
-				if(ind.getDouble(0,0)>ind.getDouble(0,1)) {
-					agrup.put((int) u.getID(), 0);
+				for(int i=0;i<num_grupos;i++) {
+					if(maior<ind.getDouble(0,i)) {
+						maior = ind.getDouble(0,i);
+						index=i;
+					
+					}
+					
 				}
-				else {
-					agrup.put((int) u.getID(), 1);
-				}
+				
+				agrup.put((int) u.getID(), index);
+				
 				
 			}
 		
@@ -225,62 +265,154 @@ public class COM {
 	
 		
 	}
-	
-	
-    
 
-	public void grava(int player, GameState gs, UnitTypeTable utt, HashMap<Integer, Integer> agrup) { // salva o estado
-		
+	public INDArray montar_entrada(int player,GameState gs,boolean espelhado) {
 		INDArray estado = Nd4j.zeros(camadas, altura,largura);// estado
 		
-	// monta a saida
-		INDArray s1 = Nd4j.zeros( largura*altura,1);
-		INDArray saida4 = Nd4j.zeros( largura*altura,num_grupos);
-		saida4=Nd4j.concat(1,saida4,s1);//saida do estado
 		
-		
-		// monta estado espelhado
-		INDArray estado2 = Nd4j.zeros(camadas, altura,largura);// estado espelhado
-		
-		INDArray s12 = Nd4j.zeros( largura*altura,1);
-		
-		INDArray saida42 = Nd4j.zeros( largura*altura,num_grupos);
-		saida42=Nd4j.concat(1,saida42,s12); //saida do estado espelhada 
-		
-		
-		
-		
-		for(Unit u : gs.getUnits()) {
-			if(u.getPlayer()==player) {
-				//System.out.println(grup);
-				
-				
-				estado.putScalar(mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4.0);
-				estado.putScalar(mapea.get(u.getType())+2,u.getY(),u.getX(), 1);
-				saida4.putScalar(u.getY()*altura+u.getX(),2, 0);
-				saida4.putScalar(u.getY()*altura+u.getX(),agrup.get((int)u.getID()), 1);
-				saida4.putScalar(u.getY()*altura+u.getX(),1-agrup.get((int)u.getID()), 0);
-
-				//vira o mapa
-				estado2.putScalar(mapea.get(u.getType()),u.getY(),(largura-u.getX()-1), (1.0*u.getHitPoints())/4.0);
-				estado2.putScalar(mapea.get(u.getType())+2,u.getY(),(largura-u.getX()-1), 1);
-				saida42.putScalar(u.getY()*altura+(largura-u.getX()-1),2, 0);
-				saida42.putScalar(u.getY()*altura+(largura-u.getX()-1),agrup.get((int)u.getID()), 1);
-				saida42.putScalar(u.getY()*altura+(largura-u.getX()-1),1-agrup.get((int)u.getID()), 0);
-	
-				
-			}
-			else if (u.getPlayer()==1-player){
-				estado.putScalar(4+mapea.get(u.getType()),u.getY(),(largura-u.getX()-1), (1.0*u.getHitPoints())/4.0);
-				estado.putScalar(6+mapea.get(u.getType()),u.getY(),(largura-u.getX()-1),1);
-				//vira o mapa
-				estado2.putScalar(4+mapea.get(u.getType()),u.getY(),largura-u.getX()-1, (1.0*u.getHitPoints())/4.0);
-				estado2.putScalar(6+mapea.get(u.getType()),u.getY(),largura-u.getX()-1, 1);
-				
-				
+		if(tipo_mapa==0) { // para os mapas david
+			for(Unit u : gs.getUnits()) {
+				if(u.getPlayer()==player) {
+					if(espelhado==false) {
+						estado.putScalar(mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
+						estado.putScalar(2+mapea.get(u.getType()),u.getY(),u.getX(), 1);
+					}
+					else {
+						estado.putScalar(mapea.get(u.getType()),u.getY(),(largura-u.getX()-1), (1.0*u.getHitPoints())/4.0);
+						estado.putScalar(mapea.get(u.getType())+2,u.getY(),(largura-u.getX()-1), 1);
+					}
+					
+				}
+				else if (u.getPlayer()== 1 - player){
+					if(espelhado==false) {
+						estado.putScalar(4+mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
+						estado.putScalar(6+mapea.get(u.getType()),u.getY(),u.getX(), 1);
+					}
+					else {
+						estado.putScalar(4+mapea.get(u.getType()),u.getY(),largura-u.getX()-1, (1.0*u.getHitPoints())/4.0);
+						estado.putScalar(6+mapea.get(u.getType()),u.getY(),largura-u.getX()-1, 1);
+					}
+				}
 			}
 			
 		}
+		
+		
+		if(tipo_mapa==1) { // para os mapas david
+			for(Unit u : gs.getUnits()) {
+				if(u.getPlayer()==player) {
+					if(espelhado==false) {
+						estado.putScalar(mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints()));
+						if(u.getType()==workerType) {
+							estado.putScalar(2,u.getY(),u.getX(), u.getHarvestAmount());
+						}
+						
+					}
+					else {
+						estado.putScalar(mapea.get(u.getType()),altura - u.getY()-1,(largura-u.getX()-1), (1.0*u.getHitPoints()));
+						if(u.getType()==workerType) {
+							estado.putScalar(2,altura - u.getY()-1,(largura-u.getX()-1), u.getHarvestAmount());
+						}
+					}
+					
+				}
+				else if (u.getPlayer()== 1 - player){
+					if(espelhado==false) {
+						estado.putScalar(3+mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints()));
+						if(u.getType()==workerType) {
+							estado.putScalar(5,u.getY(),u.getX(), u.getHarvestAmount());
+						}
+					}
+					else {
+						estado.putScalar(3+mapea.get(u.getType()),altura - u.getY()-1,(largura-u.getX()-1), (1.0*u.getHitPoints()));
+						if(u.getType()==workerType) {
+							estado.putScalar(5,altura - u.getY()-1,(largura-u.getX()-1), u.getHarvestAmount());
+						}
+					}
+				}
+			}
+			
+		}
+		
+		
+		return estado;
+		
+		
+	}
+	
+    public INDArray montar_saida(int player,GameState gs,boolean espelhado,HashMap<Integer, Integer> agrup) {
+    	INDArray s1 = Nd4j.zeros( largura*altura,1);
+		INDArray saida = Nd4j.zeros( largura*altura,num_grupos);
+		saida=Nd4j.concat(1,saida,s1);//saida do estado
+		
+		if(tipo_mapa==0) {
+			for(Unit u : gs.getUnits()) {
+				if(u.getPlayer()==player) {
+					//System.out.println(grup);
+					
+					
+					if(espelhado==false) {
+						saida.putScalar(u.getY()*largura+u.getX(),num_grupos, 0);
+						saida.putScalar(u.getY()*largura+u.getX(),agrup.get((int)u.getID()), 1);
+					
+					}
+					//vira o mapa
+					else {
+						saida.putScalar(u.getY()*largura+(largura-u.getX()-1),num_grupos, 0);
+						saida.putScalar(u.getY()*largura+(largura-u.getX()-1),agrup.get((int)u.getID()), 1);
+						
+					}
+					
+				}
+			}
+		}
+		
+		if(tipo_mapa==0) {
+			for(Unit u : gs.getUnits()) {
+				if(u.getPlayer()==player) {
+					//System.out.println(grup);
+					
+					
+					if(espelhado==false) {
+						saida.putScalar(u.getY()*largura+u.getX(),num_grupos, 0);
+						saida.putScalar(u.getY()*largura+u.getX(),agrup.get((int)u.getID()), 1);
+						
+					}
+					//vira o mapa
+					else { 
+						int x = (largura-u.getX()-1);
+						int y = altura-u.getY()-1;
+						int index = y*largura+x;
+						saida.putScalar(index,num_grupos, 0);
+						
+						saida.putScalar(index,agrup.get((int)u.getID()), 1);
+						
+					}
+					
+				}
+			}
+		}
+		
+		return saida;
+    	
+    }
+
+ 	public void grava(int player, GameState gs, UnitTypeTable utt, HashMap<Integer, Integer> agrup) { // salva o estado
+		
+		INDArray estado = montar_entrada(player,gs,false);
+	// monta a saida
+		
+		INDArray saida4 = montar_saida(player,gs,false,agrup);
+	
+		
+		
+		// monta estado espelhado
+		INDArray estado2 = montar_entrada(player,gs,true);
+		
+		INDArray s12 = Nd4j.zeros( largura*altura,1);
+		
+		INDArray saida42 = montar_saida(player,gs,true,agrup);
+		
 		
 		// salva o mapa e a saida
 		INDArray aux= Nd4j.create(1,camadas,altura,largura);
@@ -346,29 +478,11 @@ public class COM {
 	
 	public void amostra(int player, GameState gs, UnitTypeTable utt, HashMap<Integer, Integer> agrup) {
 		
-		INDArray estado = Nd4j.zeros(camadas, altura,largura);// canal
+		INDArray estado = montar_entrada(player,gs,false);
 		
 
 		agrup.clear();
 		
-			
-		
-		
-		// constroi o estado
-		for(Unit u : gs.getUnits()) {
-			if(u.getPlayer()==player) {
-				
-				estado.putScalar(mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
-				estado.putScalar(mapea.get(u.getType())+2,u.getY(),u.getX(), 1);
-				
-			}
-			else if(u.getPlayer()==1-player){
-				estado.putScalar(4+mapea.get(u.getType()),u.getY(),u.getX(), (1.0*u.getHitPoints())/4);
-				estado.putScalar(6+mapea.get(u.getType()),u.getY(),u.getX(), 1);
-			
-			}
-			
-		}
 		
 		// encapsula para passar pela rna
 		INDArray aux= Nd4j.create(1,camadas,altura,largura);
@@ -381,33 +495,32 @@ public class COM {
 				//System.out.print(ind);
 				Random gerador;
 				 gerador = new Random();
-				 int g = (int) (100*(ind.getDouble(0,0)+ind.getDouble(0,1))); // a probabiliade da unidade esta no grupo 1 ou 2
+				 int g = 0;
+				 for(int i =0;i<num_grupos;i++) {
+					 g+= (int) (10000*ind.getDouble(0,i)); // a probabiliade da unidade esta no grupo 1 ou 2
+				 } 
 				 if(g==0)g=1;
 		
 				 g =gerador.nextInt(g); // sorteia um numeno aleatorio e define qual grupo a unidade vai pertencer 
-				if(ind.getDouble(0,0)*100>g) {
-					
-					
-					g =gerador.nextInt(100);
-					if(g<5) {
-						agrup.put((int) u.getID(), 1);
-					}
-					else {
-						agrup.put((int) u.getID(), 0);
-					}
-				
+			
+				 
+				 int index=0;
+				 
+				 double sum =0;
+				 for(int i =0;i<num_grupos;i++) {
+					 sum+=(int) (10000*ind.getDouble(0,i));
+					 if(sum>g) {
+						 index=i;
+						 break;
+					 }
+				 }
+				 g =gerador.nextInt(100);// epsilon guloso;
+				 
+				if(g<5) {
+					index=g =gerador.nextInt(1000)%num_grupos;
 				}
-				else {
-					g =gerador.nextInt(100);
-					if(g<5) {
-						agrup.put((int) u.getID(), 0);
-					}
-					else {
-						agrup.put((int) u.getID(), 1);
-					}
 				
-					
-				}
+				agrup.put((int) u.getID(), index);
 				
 			}
 		
