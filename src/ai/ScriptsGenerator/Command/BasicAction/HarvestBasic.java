@@ -102,7 +102,17 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
         if (!otherPlayerUnits.isEmpty()) {
             unitsID.removeAll(otherPlayerUnits);
         }
-    	
+    	//check if there is an unit collecting in the game
+        /*
+        for (Unit unit : game.getUnits()) {
+            if (unit.getPlayer() == player && game.getActionAssignment(unit) != null){
+                if(game.getActionAssignment(unit).action.getType() == 2){
+                    unitsID.add(unit.getID());
+                }
+                
+            }
+        }
+        */
         //if the collection is empty
         if (unitsID.isEmpty()) {
             for (Unit unit : game.getUnits()) {
