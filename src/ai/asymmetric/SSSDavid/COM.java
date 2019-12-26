@@ -25,10 +25,19 @@ import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.deeplearning4j.nn.conf.inputs.InputType;
 
+import org.deeplearning4j.nn.modelimport.keras.KerasLayer;
+import org.deeplearning4j.nn.modelimport.keras.KerasModel;
+import org.nd4j.autodiff.samediff.SDVariable;
+import org.nd4j.autodiff.samediff.SameDiff;
+
+
 import rts.GameState;
 import rts.units.Unit;
 import rts.units.UnitType;
-import rts.units.UnitTypeTable;;
+import rts.units.UnitTypeTable;
+
+
+import org.deeplearning4j.nn.conf.layers.samediff.SameDiffLambdaLayer;
 
 
 public class COM {
@@ -37,9 +46,9 @@ public class COM {
 	 UnitType baseType;
 	 UnitType barracksType;
 	 UnitType lightType;
- UnitType heavyType;
+	 UnitType heavyType;
 	 UnitType rangedType;
- UnitType recurso;
+	 UnitType recurso;
 	ComputationGraph model;
 	List<INDArray> inp; // recolhe entrada da rna
 	List<INDArray> out; //saida 
@@ -63,12 +72,21 @@ public class COM {
 	}
 	
 	
+	
 	public void  carrega_modelo_python(String rnatipo_mapa) throws IOException, UnsupportedKerasConfigurationException, InvalidKerasConfigurationException {
+		for(int i =1209;i<largura*altura+1209;i++) {
+		 KerasLayer.registerLambdaLayer("lambda_"+i, new ExponentialLambda());
+		}
+		
 		File arq = new File("resources/simple_mlp"+rnatipo_mapa+".h5");
 		 String simpleMlp = arq.getPath();
 				
 				//new ClassPathResource("simple_mlp.h5").getFile().getPath();
-		model =  KerasModelImport.importKerasModelAndWeights(simpleMlp);
+		model =  new KerasModel().modelBuilder().modelHdf5Filename(simpleMlp).enforceTrainingConfig(false).buildModel().getComputationGraph();
+				//KerasModelImport.importKerasModelAndWeights(simpleMlp);
+		
+		
+		
 	}
 	
 public void  carrega_modelo_java() {
@@ -190,7 +208,21 @@ public void  carrega_modelo_java() {
 	
 	}
 	
-	
+	public class ExponentialLambda extends SameDiffLambdaLayer {
+        @Override
+        public SDVariable defineLayer(SameDiff sd, SDVariable x) { return x.mul(x); }
+
+        @Override
+        public InputType getOutputType(int layerIndex, InputType inputType) { return inputType; }
+    }
+
+    public class TimesThreeLambda extends SameDiffLambdaLayer {
+        @Override
+        public SDVariable defineLayer(SameDiff sd, SDVariable x) { return x.mul(3); }
+
+        @Override
+        public InputType getOutputType(int layerIndex, InputType inputType) { return inputType; }
+    }
 	
 	
 	public void treina(boolean b) {
@@ -227,23 +259,29 @@ public void  carrega_modelo_java() {
 	public void  agrupa(int player, GameState gs,UnitTypeTable utt,HashMap<Integer, Integer> agrup) {
 		//pega o agrupamendo gerado pela rna
 	
-		INDArray estado = montar_entrada(player,gs,false);
-		
-		
-
 		agrup.clear();
 		
 		
+		INDArray estado = montar_entrada(player,gs,false);
+		
+		INDArray estado2= montar_entrada2(player,gs,false);
+ 
+		
+	
+		
+		
 		INDArray aux= Nd4j.create(1,camadas,altura,largura);
+		INDArray aux3= Nd4j.create(1,1,8,18);
 		aux.putRow(0, estado);
-		INDArray[] aux2= model.output(aux);
+		aux3.putRow(0,estado2);
+		INDArray[] aux2= model.output(aux,aux3);
 		
 		for(Unit u : gs.getUnits()) {
 			if(u.getPlayer()==player) {
 				double maior=-1;
 				int index=-1;
 				INDArray ind= aux2[u.getX()+largura*u.getY()];
-				//if(gs.getTime()==0)System.out.println(ind);
+				if(gs.getTime()==0)System.out.println(ind.shapeInfoToString());
 				
 				for(int i=0;i<num_grupos;i++) {
 					if(maior<ind.getDouble(0,i)) {
@@ -261,10 +299,9 @@ public void  carrega_modelo_java() {
 		
 		}
 		
-		
-	
-		
+			
 	}
+	
 
 	public INDArray montar_entrada(int player,GameState gs,boolean espelhado) {
 		INDArray estado = Nd4j.zeros(camadas, altura,largura);// estado
@@ -340,6 +377,18 @@ public void  carrega_modelo_java() {
 		
 	}
 	
+	public INDArray montar_entrada2(int player,GameState gs,boolean espelhado) {
+		INDArray posicao = Nd4j.ones(1,altura,largura);
+		for(int i =0;i<altura;i++) {
+			for(int j =0 ; j<largura;j++)
+				posicao.putScalar(0,i,j, 10000.0);
+		}
+		
+		
+		return posicao;
+	}
+	
+	
     public INDArray montar_saida(int player,GameState gs,boolean espelhado,HashMap<Integer, Integer> agrup) {
     	INDArray s1 = Nd4j.zeros( largura*altura,1);
 		INDArray saida = Nd4j.zeros( largura*altura,num_grupos);
@@ -367,7 +416,7 @@ public void  carrega_modelo_java() {
 			}
 		}
 		
-		if(tipo_mapa==0) {
+		if(tipo_mapa==1) {
 			for(Unit u : gs.getUnits()) {
 				if(u.getPlayer()==player) {
 					//System.out.println(grup);

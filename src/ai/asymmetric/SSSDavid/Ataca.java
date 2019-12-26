@@ -28,10 +28,9 @@ public class Ataca extends AbstractionLayerAID  {
     UnitType barracksType;
     UnitType rangedType;
 
-    // If we have any "light": send it to attack to the nearest enemy unit
-    // If we have a base: train worker until we have 1 workers
-    // If we have a barracks: train light
-    // If we have a worker: do this if needed: build base, build barracks, harvest resources
+    
+    
+    
     public Ataca(UnitTypeTable a_utt) {
         this(a_utt, new AStarPathFinding());
     }
@@ -66,7 +65,7 @@ public class Ataca extends AbstractionLayerAID  {
         // behavior of bases:
         for (Unit u : pgs.getUnits()) {
             
-            if (u.getType().canAttack && !u.getType().canHarvest
+            if (u.getType().canAttack 
                     && u.getPlayer() == player
                     ) {
                 meleeUnitBehavior(u, p, gs);
@@ -74,7 +73,6 @@ public class Ataca extends AbstractionLayerAID  {
         
            
         }
-    //    workersBehavior(workers, p, gs,inf);
 
         return translateActions(player, gs);
     }
@@ -86,10 +84,10 @@ public class Ataca extends AbstractionLayerAID  {
         Player p = gs.getPlayer(player);
         actions = act;
 //        System.out.println("LightRushAI for player " + player + " (cycle " + gs.getTime() + ")");
-        List<Unit> workers = new LinkedList<Unit>();
+      
         // behavior of bases:
         for (Unit u : Units) {
-           if (u.getType().canAttack && !u.getType().canHarvest
+           if (u.getType().canAttack 
                     && u.getPlayer() == player
                     && gs.getActionAssignment(u) == null) {
                 meleeUnitBehavior(u, p, gs);
@@ -103,7 +101,7 @@ public class Ataca extends AbstractionLayerAID  {
         // behavior of melee units:
      
            if (u.getType().canAttack 
-                    && u.getPlayer() == player
+                    && u.getPlayer() == player&&gs.getActionAssignment(u) == null
                  ) {
                 meleeUnitBehavior(u, p, gs);
             }
@@ -119,24 +117,8 @@ public class Ataca extends AbstractionLayerAID  {
         return null;
     }
 
-    public void baseBehavior(Unit u, Player p, PhysicalGameState pgs) {
-        int nworkers = 0;
-        for (Unit u2 : pgs.getUnits()) {
-            if (u2.getType() == workerType
-                    && u2.getPlayer() == p.getID()) {
-                nworkers++;
-            }
-        }
-        if ((nworkers < 3 || p.getResources()> 20) && p.getResources() >= workerType.cost) {
-            train(u, workerType);
-        }
-    }
-
-    public void barracksBehavior(Unit u, Player p, PhysicalGameState pgs) {
-        if (p.getResources() >= rangedType.cost) {
-            train(u, rangedType);
-        }
-    }
+  
+    
 
     public void meleeUnitBehavior(Unit u, Player p, GameState gs) {
         PhysicalGameState pgs = gs.getPhysicalGameState();
@@ -155,99 +137,6 @@ public class Ataca extends AbstractionLayerAID  {
 //            System.out.println("LightRushAI.meleeUnitBehavior: " + u + " attacks " + closestEnemy);
             attack(u, closestEnemy);
         }
-    }
-
-    public void workersBehavior(List<Unit> workers,Player p, GameState gs,Information inf) {
-        PhysicalGameState pgs = gs.getPhysicalGameState();
-        int nbases =  inf.contruindo_base;
-        int nbarracks = inf.contruindo_barraca;;
-      
-        int resourcesUsed = 0;
-        List<Unit> freeWorkers = new LinkedList<Unit>();
-        freeWorkers.addAll(workers);
-        
-
-        if (workers.isEmpty()) {
-            return;
-        }
-
-
-        
-        for (Unit u2 : pgs.getUnits()) {
-            if (u2.getType() == baseType
-                    && u2.getPlayer() == p.getID()) {
-                nbases++;
-            }
-            if (u2.getType() == barracksType
-                    && u2.getPlayer() == p.getID()) {
-                nbarracks++;
-            }
-        }
-
-        List<Integer> reservedPositions = new LinkedList<Integer>();
-        if (nbases == 0 && !freeWorkers.isEmpty()) {
-            // build a base:
-            if (p.getResources() >= baseType.cost + resourcesUsed) {
-                Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,baseType,u.getX(),u.getY(),reservedPositions,p,pgs);
-                resourcesUsed += baseType.cost;
-                inf.contruindo_base++;
-            }
-        }
-
-        if (nbarracks <= 0 && !freeWorkers.isEmpty()) {
-            // build a barracks:
-            if (p.getResources() >= barracksType.cost + resourcesUsed) {
-                Unit u = freeWorkers.remove(0);
-                buildIfNotAlreadyBuilding(u,barracksType,u.getX(),u.getY(),reservedPositions,p,pgs);
-                resourcesUsed += barracksType.cost;
-                inf.contruindo_barraca++;
-              
-            }
-        }
-for(int i=0; i <5;i++) {
-        Unit harvestWorker = null;
-        
-if (freeWorkers.size()>0) harvestWorker = freeWorkers.remove(0);
-        
-        // harvest with the harvest worker:
-        if (harvestWorker!=null) {
-            Unit closestBase = null;
-            Unit closestResource = null;
-            int closestDistance = 0;
-            for(Unit u2:pgs.getUnits()) {
-                if (u2.getType().isResource) { 
-                    int d = Math.abs(u2.getX() - harvestWorker.getX()) + Math.abs(u2.getY() - harvestWorker.getY());
-                    if (closestResource==null || d<closestDistance) {
-                        closestResource = u2;
-                        closestDistance = d;
-                    }
-                }
-            }
-            closestDistance = 0;
-            for(Unit u2:pgs.getUnits()) {
-                if (u2.getType().isStockpile && u2.getPlayer()==p.getID()) { 
-                    int d = Math.abs(u2.getX() - harvestWorker.getX()) + Math.abs(u2.getY() - harvestWorker.getY());
-                    if (closestBase==null || d<closestDistance) {
-                        closestBase = u2;
-                        closestDistance = d;
-                    }
-                }
-            }
-            if (closestResource!=null && closestBase!=null) {
-                AbstractAction aa = getAbstractAction(harvestWorker);
-                if (aa instanceof Harvest) {
-                    Harvest h_aa = (Harvest)aa;
-                    if (h_aa.getTarget() != closestResource || h_aa.getBase()!=closestBase) harvest(harvestWorker, closestResource, closestBase);
-                } else {
-                    harvest(harvestWorker, closestResource, closestBase);
-                }
-            }
-        }
-}
-        for(Unit u:freeWorkers) meleeUnitBehavior(u, p, gs);
-        
-        
     }
 
    
