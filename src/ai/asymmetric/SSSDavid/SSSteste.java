@@ -57,10 +57,11 @@ import java.util.Scanner;
 
 import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
+import org.jdom.JDOMException;
 
 
 public class SSSteste extends AbstractionLayerAI  {
-	COM rna;
+	RNA rna;
 	boolean treinando =false;
 	int intervalo_amostragem=30;
 	
@@ -107,11 +108,11 @@ public class SSSteste extends AbstractionLayerAI  {
     
     public SSSteste configuracao2(int intervaloAmostragem) {
     	intervalo_amostragem= intervaloAmostragem;
-    	rep=1;
+    	rep=5;
     	for(Playout play : playouts ) {
     	
     		play.setTempoSimulacao(10000);
-    		play.setProfSimulacao(800);
+    		play.setProfSimulacao(150);
     	}
     	return this;
     }
@@ -128,16 +129,17 @@ public class SSSteste extends AbstractionLayerAI  {
     	treinando = b;
     }
     
-    public void setRNA(COM rna) {
+    public void setRNA(RNA rna) {
     	this.rna= rna;
     }
     
     
-	public SSSteste(UnitTypeTable a_utt, int numGrupos) throws IOException, InvalidKerasConfigurationException, UnsupportedKerasConfigurationException {
+	public SSSteste(UnitTypeTable a_utt, int numGrupos) throws JDOMException, Exception {
 		
 		   super( new AStarPathFinding());
 		   s= new Script4(a_utt);
 		   num_tipo = numGrupos;
+		
 		   
 		  
 	 mapea=new HashMap<Integer, Integer>();
@@ -211,9 +213,16 @@ public class SSSteste extends AbstractionLayerAI  {
 	}
 	
 	protected void buildPortfolio() {
-		this.scripts.add(new Script4(utt));
+		this.scripts.add(new Ataca(utt));
+		this.scripts.add(new Coleta(utt));
+		this.scripts.add(new ConstroiWorker(utt));
+		
+		//this.scripts.add(new Coleta(utt));
+		
+		
+		//this.scripts.add(new Script4(utt));
 		 //this.scripts.add(new Ataca(utt));
-		 this.scripts.add(new MoonWalker(utt));
+		 //this.scripts.add(new MoonWalker(utt));
 		
 		
 		// this.scripts.add(new Script2(utt));
@@ -337,7 +346,7 @@ public class SSSteste extends AbstractionLayerAI  {
         GameState gs2 = gs.clone();
        
         inf2.copia(inf);
-        int timeLimit =  400;
+        int timeLimit =  1000;
         List<Unit> aux =new LinkedList<Unit>();
         boolean gameover = false;
         List<Unit> aux2 =new LinkedList<Unit>();
@@ -411,7 +420,7 @@ public class SSSteste extends AbstractionLayerAI  {
 	
 	
 	public void treina(boolean b) {
-		rna.treina(b);
+		rna.treina();
 		conttreino++;
 	}
 	
@@ -429,15 +438,12 @@ public class SSSteste extends AbstractionLayerAI  {
 						link.put(un.getID(), mapea2.get(g));
 					}
 					else {
-						int gg = gerador.nextInt(100);
-						if(gg<50) {
-							grupos.get(0).add(un);
-							link.put(un.getID(), 0);
-						}
-						else {
-							grupos.get(1).add(un);
-							link.put(un.getID(), 1);
-						}
+						int gg = gerador.nextInt(100)%grupos.size();
+					
+							grupos.get(gg).add(un);
+							link.put(un.getID(), gg);
+							mapea2.put((int) un.getID(), gg);
+						
 					}
 			}
 		 }	
@@ -450,7 +456,7 @@ public class SSSteste extends AbstractionLayerAI  {
 		int i = gs.getTime() % grupos.size();
 		ArrayList<Double> pont= new ArrayList<>();
 		for(int j=0;j<playouts.size();j++)	pont.add((double) 0);
-		for(int r =0;r<1;r++) {
+		for(int r =0;r<rep;r++) {
 			for(int j=0;j<scripts.size();j++) {
 				inf.inicio_playout =System.currentTimeMillis();
 				
@@ -526,26 +532,29 @@ public class SSSteste extends AbstractionLayerAI  {
 			if(gs.getTime()%intervalo_amostragem==0) {
 				if(sim==0)rna.agrupa(player, gs, utt, mapea2);
 				else rna.amostra(player, gs, utt, mapea2);
-				if(!this.treinando&&player==0)System.out.println(mapea2);
+			//	if(!this.treinando&&player==0)System.out.println(mapea2);
 				
 			}
-			/* agrupaem canonica, O menor id sempre estará no grupo 0
-			Integer menor_id =11111;
-			for (Iterator<Integer> iterator = mapea2.keySet().iterator(); iterator.hasNext();) {
-				Integer i = iterator.next();
-				if(menor_id > i ) {
-					menor_id =i;
+			// agrupaem canonica, O menor id sempre estará no grupo 0
+			Integer id_base=-1;
+		
+			for (Unit u : gs.getUnits()) {
+				if(u.getType()==baseType && player==u.getPlayer()) {
+					id_base=(int) u.getID();
 				}
 			}
-			Integer valor_id =mapea2.get(menor_id);	
-			if(valor_id==1) {
-				for (Iterator<Integer> iterator = mapea2.keySet().iterator(); iterator.hasNext();) {
-					Integer i = iterator.next();
-					Integer troca = mapea2.get(i);
-					mapea2.put(i,  (troca+1)%2);
-				}
+			if(id_base!=-1) {
+				int valor_id =mapea2.get(id_base);	
+				
+					for (Iterator<Integer> iterator = mapea2.keySet().iterator(); iterator.hasNext();) {
+						Integer i = iterator.next();
+						Integer troca = mapea2.get(i);
+						if(troca==0) mapea2.put(i,  valor_id);
+						if(troca==valor_id)mapea2.put(i,  0);
+					}
+				
 			}
-			*/
+			//
 			
 			double e_m = simula(player,gs,mapea2);
 			gerador = new Random();
@@ -570,10 +579,10 @@ public class SSSteste extends AbstractionLayerAI  {
 			 double e_m = simula(player,gs,mapea);
 			
 		
-			if(e_m>0.8&&mapea.size()>2&&gs.getTime()%10==0) {
+			if(gs.getTime()%10==0&&e_m>0) {
 				//	System.out.println(mapea);
 					if(treinando)rna.grava(player, gs, utt,mapea);
-					if(gs.getTime()==0)System.out.println(mapea);
+				//	if(gs.getTime()==0)System.out.println(mapea);
 				}
 		
 		
@@ -586,10 +595,12 @@ public class SSSteste extends AbstractionLayerAI  {
 			scripts.get(melhor.get(j)).getAction(player, gs, grupos.get(j), Units_aux, inf,actions);
 		}
 	
-		
-		//for(int kk =0;kk<melhor.size();kk++)
-		//System.out.print(" " + melhor.get(kk));
-		//System.out.println("------------------ " + e_m);
+		if(!treinando&&false) {
+			System.out.print("aprendendo  ");
+			for(int kk =0;kk<melhor.size();kk++)
+			System.out.print(" " + melhor.get(kk));
+			System.out.println("------------------ " + e_m);
+		}
 		return translateActions(player, gs);
 	}
 

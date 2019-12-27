@@ -65,7 +65,7 @@ public class Ataca extends AbstractionLayerAID  {
         // behavior of bases:
         for (Unit u : pgs.getUnits()) {
             
-            if (u.getType().canAttack 
+            if (u.getType().canAttack && u.getHarvestAmount()>0
                     && u.getPlayer() == player
                     ) {
                 meleeUnitBehavior(u, p, gs);
@@ -88,7 +88,7 @@ public class Ataca extends AbstractionLayerAID  {
         // behavior of bases:
         for (Unit u : Units) {
            if (u.getType().canAttack 
-                    && u.getPlayer() == player
+                    && u.getPlayer() == player && u.getHarvestAmount()>0
                     && gs.getActionAssignment(u) == null) {
                 meleeUnitBehavior(u, p, gs);
             }
@@ -101,7 +101,8 @@ public class Ataca extends AbstractionLayerAID  {
         // behavior of melee units:
      
            if (u.getType().canAttack 
-                    && u.getPlayer() == player&&gs.getActionAssignment(u) == null
+                    && u.getPlayer() == player && u.getHarvestAmount()>0
+                    && gs.getActionAssignment(u) == null
                  ) {
                 meleeUnitBehavior(u, p, gs);
             }

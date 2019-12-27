@@ -96,9 +96,9 @@ public class SSSDavid extends AbstractionLayerAI  {
     public SSSDavid configuracao2() {
     	rep=2;
     	for(Playout play : playouts ) {
-    		play.setAI(new RandomBiasedAI(utt));
+    		//play.setAI(new RandomBiasedAI(utt));
     		play.setTempoSimulacao(10000);
-    		play.setProfSimulacao(400);
+    		play.setProfSimulacao(200);
     	}
     	return this;
     }
@@ -170,8 +170,12 @@ public class SSSDavid extends AbstractionLayerAI  {
 	
 	protected void buildPortfolio() {
 		
-	 this.scripts.add(new Ataca(utt));
-		 this.scripts.add(new MoonWalker(utt));
+		this.scripts.add(new Ataca(utt));
+		this.scripts.add(new Coleta(utt));
+	 this.scripts.add(new ConstroiWorker(utt));
+
+		
+		 
 		//this.scripts.add(new Script4(utt));
 		// this.scripts.add(new Script2(utt));
 	//	this.scripts.add(new LightDefenseD(utt));
@@ -523,9 +527,10 @@ public PlayerAction getAction(int player, GameState gs) throws Exception {
 	arq.close();
      */
 
-    //	for(int pa =0; pa<scripts.size();pa++) {
-    //		System.out.println(sepa.get(pa));
-    //}
+
+	//for(int kk =0;kk<melhor.size();kk++)
+	//System.out.print(" " + melhor.get(kk));
+	//	System.out.println("------------------ " + e_m);
     return translateActions(player, gs);
 }
 	

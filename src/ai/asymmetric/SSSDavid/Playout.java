@@ -216,7 +216,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
 		
 		double inicio_playout =System.currentTimeMillis();
    
-      
+      resultado=0;
         
         boolean gameover = false;
        
@@ -269,10 +269,10 @@ public class Playout extends AbstractionLayerAID implements Runnable{
             //	s.getAction(player, gs2, aux, actions);
             	for(int j = 0;j < grupos2.size();j++) {
             		//System.out.println("será "+ j);
-            		int mj=35;
+            		int mj=50;
             		if(teste_grupo == j ) {
             			try {
-							if(prof<mj)scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux,inf2, actions);
+							if(prof<mj|| atual.get(j)!=1)scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux,inf2, actions);
 							else scripts.get(0).getAction(player, gs2, grupos2.get(j),aux,inf2, actions);
             			} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -283,7 +283,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
             			else {
             			
             			try {
-            				if(prof<mj) scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux2,inf2, actions);
+            				if(prof<mj||atual.get(j)!=1) scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux2,inf2, actions);
 							else scripts.get(0).getAction(player, gs2, grupos2.get(j),aux,inf2, actions);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
@@ -296,8 +296,11 @@ public class Playout extends AbstractionLayerAID implements Runnable{
            gs2.issue( translateActions(player, gs2));
             	
             			//new WorkerRush(utt);//
-            			
-            		ai4=new LightRush(utt);// ;
+            		if(prof<100)ai4= new WorkerRush(utt);//
+            		else ai4= new RandomBiasedAI(utt);
+            		//ai4= new WorkerRush(utt);//
+            				
+            				//new LightRush(utt);// ;
                 try {
 					gs2.issue(ai4.getAction(1 - player, gs2));
 				} catch (Exception e) {
@@ -306,6 +309,7 @@ public class Playout extends AbstractionLayerAID implements Runnable{
 				}
                
                 gameover = gs2.cycle();
+                if(prof!=0&&prof%30==0)resultado +=  evaluation.evaluate(player, 1 - player, gs2);
         }
 
    //  analisa(gs2);
