@@ -56,7 +56,6 @@ public class RoundRobinTOScale_GP {
     ICompiler compiler = new MainGPCompiler(); 
     int counterlinesRecorded=0;
     HashSet<String> usedCommands;
-    HashMap<Long, String> counterByFunction;
     
 
     public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsUsedCommands) {
@@ -78,11 +77,12 @@ public class RoundRobinTOScale_GP {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml",
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
-        		"maps/NoWhereToRun9x8.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
+        		//"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
         		//"maps/16x16/basesWorkers16x16A.xml"
         		//"maps/BroodWar/(4)EmpireoftheSun.scmB.xml"
+        		//"maps/battleMaps/Others/RangedHeavyMixed.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -140,11 +140,11 @@ public class RoundRobinTOScale_GP {
       
         List<AI> scriptsRun1=decodeScripts(utt, iScriptsAi1);
         List<AI> scriptsRun2=decodeScripts(utt, iScriptsAi2);
-      	AI ai1 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun1,200, "PGSR");
-      	AI ai2 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun2,200, "PGSR");
+      	//AI ai1 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun1,200, "PGSR");
+      	//AI ai2 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun2,200, "PGSR");
       	
-//      	AI ai1=decodeScripts(utt, iScriptsAi1).get(0);
-//      	AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
+      	AI ai1=decodeScripts(utt, iScriptsAi1).get(0);
+      	AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
         
       
 //      AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
@@ -371,7 +371,7 @@ public class RoundRobinTOScale_GP {
     	FunctionGPCompiler.counterCommands=0;
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         usedCommands=new HashSet<String> ();
-        counterByFunction=new HashMap<Long, String>();
+        HashMap<Long, String> counterByFunction=new HashMap<Long, String>();
         AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
         return aiscript;
     }
