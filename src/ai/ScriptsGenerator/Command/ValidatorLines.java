@@ -24,7 +24,7 @@ public class ValidatorLines {
     public static void main(String args[]) throws Exception {
         UnitTypeTable utt = new UnitTypeTable();
         ICompiler compiler = new MainGPCompiler(); 
-        String path = "C:\\\\Users\\\\Ingeniero Gil\\\\Desktop\\\\cosas\\\\ScriptsTable.txt";
+        String path = "C:\\Users\\Ingeniero Gil\\git\\GAmRTSSOAScale_SG\\GAforMicroRTSSOAScaleSG\\Table\\ScriptsTable.txt";
         
         File file = new File(path);
         String linha = "";
