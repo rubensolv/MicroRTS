@@ -61,7 +61,7 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
     }
     protected int getNumberUnitsDoingAction(String action, HashMap<Long, String> counterByFunction, GameState game, PlayerAction currentPlayerAction) {
     	int counterUnits=0;
-    	HashMap<Long, String> counterByFunctionNew = new HashMap<Long,String>(counterByFunction);
+//    	HashMap<Long, String> counterByFunctionNew = new HashMap<Long,String>(counterByFunction);
     	Iterator it = counterByFunction.entrySet().iterator();
     	while (it.hasNext()) {
     		Map.Entry pair = (Map.Entry)it.next();
@@ -70,12 +70,12 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
     			if(getUnitByIdFree(game, currentPlayerAction, (Long)pair.getKey(), counterByFunction) )
     					counterUnits++;
     		}
-    		else
-    		{
-    			counterByFunctionNew.remove((Long)pair.getKey());
-    		}
+//    		else
+//    		{
+//    			counterByFunctionNew.remove((Long)pair.getKey());
+//    		}
     	}
-    	counterByFunction=counterByFunctionNew;
+    	//counterByFunction=counterByFunctionNew;
     	return counterUnits;
     }
     
