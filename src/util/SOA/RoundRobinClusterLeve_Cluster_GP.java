@@ -6,6 +6,7 @@
 package util.SOA;
 
 import Standard.StrategyTactics;
+import ai.CMAB.A3NWithin;
 import ai.CMAB.CMABBuilder;
 import ai.ScriptsGenerator.ChromosomeAI;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
@@ -130,7 +131,8 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 //"maps/8x8/basesWorkers8x8A.xml"
                 //"maps/16x16/BasesWithWalls16x16.xml"
                 //"maps/16x16/basesWorkers16x16A.xml"
-                "maps/NoWhereToRun9x8.xml"
+                //"maps/NoWhereToRun9x8.xml"
+        		"maps/battleMaps/Others/RangedHeavyMixed.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -175,15 +177,48 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 3), //WR
-                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts(utt, bestGAAAAI), 200, "GAAAAI_PGS"),
-                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1020;1021;1022;1023;1024;1008;")),scriptsTable1), 200, "GPP_PGS_ISO_0"),
+//                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts(utt, bestGAAAAI), 200, "GAAAAI_PGS"),
+//                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1020;1021;1022;1023;1024;1008;")),scriptsTable1), 200, "GPP_PGS_ISO_0"),
+                new A3NWithin(100, -1, 100, 8, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3,
+                        decodeScripts(utt, "0;"), "A3N"),
+                
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("0;")),scriptsTable1), 200, "GPP_SC_R4_it1_0"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1), 200, "GPP_SC_R4_it1_5"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2;")),scriptsTable1), 200, "GPP_SC_R4_it1_10"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1), 200, "GPP_SC_R4_it1_15"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("4;")),scriptsTable1), 200, "GPP_SC_R4_it1_20"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("5;")),scriptsTable1), 200, "GPP_PURE_R4_it1_0"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("6;")),scriptsTable1), 200, "GPP_PURE_R4_it1_5"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("7;")),scriptsTable1), 200, "GPP_PURE_R4_it1_10"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("8;")),scriptsTable1), 200, "GPP_PURE_R4_it1_15"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("9;")),scriptsTable1), 200, "GPP_PURE_R4_it1_20")
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("10;")),scriptsTable1), 200, "GPP_SC_R5_it1_0"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("11;")),scriptsTable1), 200, "GPP_SC_R5_it1_5"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("12;")),scriptsTable1), 200, "GPP_SC_R5_it1_10"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("13;")),scriptsTable1), 200, "GPP_SC_R5_it1_15"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("14;")),scriptsTable1), 200, "GPP_SC_R5_it1_20"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("15;")),scriptsTable1), 200, "GPP_PURE_R5_it1_0"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("16;")),scriptsTable1), 200, "GPP_PURE_R5_it1_5"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("17;")),scriptsTable1), 200, "GPP_PURE_R5_it1_10"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("18;")),scriptsTable1), 200, "GPP_PURE_R5_it1_15"),
+//              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("19;")),scriptsTable1), 200, "GPP_PURE_R5_it1_20"),
+//
+//              
+              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("20;")),scriptsTable1), 200, "GPP_SC_R4_it1_20"),
+              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("21;")),scriptsTable1), 200, "GPP_SC_R4_it2_20"),
+              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("22;")),scriptsTable1), 200, "GPP_SC_R5_it1_20"),
+              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("23;")),scriptsTable1), 200, "GPP_SC_R5_it2_20") 
+              
+              
+              
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1249;1250;1206;1251;1327;1328;1329;")),scriptsTable1), 200, "GPP_PGS_ISO_1"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2377;1423;2291;2529;1328;")),scriptsTable1), 200, "GPP_PGS_ISO_50"),
-                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1286;1044;1149;1589;1445;")),scriptsTable1), 200, "GPP_PGS_ISO_100"),
+//                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1286;1044;1149;1589;1445;")),scriptsTable1), 200, "GPP_PGS_ISO_100"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;2749;4275;3894;3257;")),scriptsTable1), 200, "GPP_PGS_ISO_150"),
-                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1044;1149;1286;1368;1445;1039;")),scriptsTable1), 200, "GPP_PGS_ISO_200"),
+//                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1044;1149;1286;1368;1445;1039;")),scriptsTable1), 200, "GPP_PGS_ISO_200"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;5610;5769;2749;3640;")),scriptsTable1), 200, "GPP_PGS_ISO_250"),
-                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1044;1149;1445;1155;1039;1286;")),scriptsTable1), 200, "GPP_PGS_ISO_300")
+//                new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1014;1044;1149;1445;1155;1039;1286;")),scriptsTable1), 200, "GPP_PGS_ISO_300")
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2749;7135;2286;7088;5256;")),scriptsTable1), 200, "GPP_PGS_ISO_350"),
 //                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("3923;1296;3517;1874;")),scriptsTable1), 200, "GPP_PGS_ISO_400"),
 ////                new LightPGSSCriptChoice(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("2286;6700;")),scriptsTable1), 200, "GPP_PGS_ISO_400"),
