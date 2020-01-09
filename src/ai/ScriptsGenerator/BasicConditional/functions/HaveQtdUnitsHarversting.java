@@ -87,7 +87,12 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
                 return false;
             }
         }
-        return true;
+        for (Unit u : game.getUnits()) {
+            if(u.getID()==idUnit ){            	
+            	return true;
+            }
+        }
+        return false;
     }
     
 }
