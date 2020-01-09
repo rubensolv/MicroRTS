@@ -88,7 +88,12 @@ public class HaveQtdUnitsAttacking extends AbstractConditionalFunction{
                 return false;
             }
         }
-        return true;
+        for (Unit u : game.getUnits()) {
+            if(u.getID()==idUnit ){            	
+            	return true;
+            }
+        }
+        return false;
     }
      
     protected boolean getUnitByIdCorrectType(GameState game, PlayerAction currentPlayerAction, Long idUnit, HashMap<Long, String> counterByFunction)
