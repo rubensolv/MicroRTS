@@ -143,8 +143,8 @@ public class RoundRobinTOScale_GP {
       	//AI ai1 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun1,200, "PGSR");
       	//AI ai2 = new LightPGSSCriptChoiceNoWaits(utt, scriptsRun2,200, "PGSR");
       	
-      	AI ai1=decodeScripts(utt, iScriptsAi1).get(0);
-      	AI ai2=decodeScripts(utt, iScriptsAi2).get(0);
+      	AI ai1=scriptsRun1.get(0);
+      	AI ai2=scriptsRun2.get(0);
         
       
 //      AI ai1 = new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f, 
