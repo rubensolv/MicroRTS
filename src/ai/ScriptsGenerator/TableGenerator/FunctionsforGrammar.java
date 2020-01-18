@@ -9,6 +9,7 @@ public class FunctionsforGrammar {
     List<Parameter> parameters;
 
     List<String> typeUnitDiscrete;
+    List<String> typeUnitTrainDiscrete;
     List<String> typeStructureDiscrete;
     List<String> behaviourDiscrete;
     List<String> playerTargetDiscrete;
@@ -38,13 +39,21 @@ public class FunctionsforGrammar {
         typeUnitDiscrete.add("Light");
         typeUnitDiscrete.add("Ranged");
         typeUnitDiscrete.add("Heavy");
-        typeUnitDiscrete.add("All");
+        //typeUnitDiscrete.add("All");
+        
+        //Parameter TypeUnitTrain
+        typeUnitTrainDiscrete = new ArrayList<>();
+        typeUnitTrainDiscrete.add("Worker");
+        typeUnitTrainDiscrete.add("Light");
+        typeUnitTrainDiscrete.add("Ranged");
+        typeUnitTrainDiscrete.add("Heavy");
+        //typeUnitTrainDiscrete.add("All");
 
         //Parameter TypeStructure
         typeStructureDiscrete = new ArrayList<>();
         typeStructureDiscrete.add("Base");
         typeStructureDiscrete.add("Barrack");
-        typeStructureDiscrete.add("All");
+        //typeStructureDiscrete.add("All");
 
         //Parameter Behaviour
         behaviourDiscrete = new ArrayList<>();
@@ -54,7 +63,7 @@ public class FunctionsforGrammar {
         behaviourDiscrete.add("mostHealthy");
         behaviourDiscrete.add("strongest");
         behaviourDiscrete.add("weakest");
-        behaviourDiscrete.add("random");
+        //behaviourDiscrete.add("random");
 
         //Parameter PlayerTarget
         playerTargetDiscrete = new ArrayList<>();
@@ -98,20 +107,20 @@ public class FunctionsforGrammar {
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 3.0, null));
+        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
         parameters.add(new Parameter("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("build", parameters));
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 30.0, 30.0, null));
+        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
         parameters.add(new Parameter("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("build", parameters));
 
         //Function HarvestBasic
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 1.0, 5.0, null));
+        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("harvest", parameters));
         //Function HarvestBasic
         parameters = new ArrayList<>();
@@ -149,9 +158,9 @@ public class FunctionsforGrammar {
 
         //Function TrainBasic
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        parameters.add(new Parameter("unitType", null, null, typeUnitTrainDiscrete));
         //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 20.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
         parameters.add(new Parameter("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("train", parameters));
         
@@ -272,6 +281,9 @@ public class FunctionsforGrammar {
 
     public List<FunctionsforGrammar> getConditionalsForGrammar() {
         return conditionalsForGrammar;
+    }
+    public void setConditionalsForGrammar(List<FunctionsforGrammar> newList) {
+    	conditionalsForGrammar=newList;
     }
     
     public List<FunctionsforGrammar> getBasicFunctionsForGrammarUnit() {
