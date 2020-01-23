@@ -342,6 +342,10 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
             return false;
         }
         
+        if((x + y * width) < 0){
+            return false;
+        }
+        
         if (game.free(x, y)) {
             return true;
         }
