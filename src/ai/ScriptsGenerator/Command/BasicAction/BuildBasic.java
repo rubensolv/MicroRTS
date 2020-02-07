@@ -338,13 +338,13 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
         }
         int width = game.getPhysicalGameState().getWidth();
         int height = game.getPhysicalGameState().getHeight();
-        if( (x + y * width) > (width * height) ){
+        if( (x + y * width) >= (width * height) ){
             return false;
         }
         
         if((x + y * width) < 0){
             return false;
-        }
+        }        
         
         if (game.free(x, y)) {
             return true;
