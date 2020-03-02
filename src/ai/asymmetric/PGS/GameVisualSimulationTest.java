@@ -187,7 +187,7 @@ public class GameVisualSimulationTest {
         //AI ai1 = new Izanagi(utt);
         //AI ai1 = new PGSmRTS_Paralel_JulianTest(utt);
         //AI ai1 = new PGSmRTS_Paralel_SandBox(utt);
-        AI ai1 = new SSSDavid(utt, 1);
+        AI ai1 = new SSSDavid(utt, 5);
 
         AI ai2 = new CmabAssymetricMCTS(100, -1, 50, 2, 0.3f, 0.0f, 0.4f, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,

@@ -35,6 +35,7 @@ import ai.asymmetric.GAB.GAB_oldVersion;
 import ai.asymmetric.GAB.SandBox.GAB;
 import ai.asymmetric.GAB.SandBox.GABRandom;
 import ai.asymmetric.IDABCD.IDABCDAsymmetric;
+import ai.asymmetric.PGS.LightPGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSCriptChoice;
 import ai.asymmetric.PGS.PGSSelection;
 import ai.asymmetric.PGS.PGSmRTS;
@@ -174,10 +175,18 @@ public class ClusterTesteLeve_GAB_SAB {
         */
         
         List<String> maps = new ArrayList<>(Arrays.asList(
+                //"maps/8x8/basesWorkers8x8A.xml",
+                //"maps/8x8/FourBasesWorkers8x8.xml",
+                //"maps/16x16/basesWorkers16x16A.xml",
+                //"maps/16x16/TwoBasesBarracks16x16.xml",
+                "maps/24x24/basesWorkers24x24A.xml",
                 "maps/24x24/basesWorkers24x24A_Barrack.xml",
+                "maps/DoubleGame24x24.xml",
+                "maps/32x32/basesWorkers32x32A.xml",
                 "maps/32x32/basesWorkersBarracks32x32.xml",
-                "maps/BroodWar/(4)Fortress.scxA.xml", 
-                "maps/BroodWar/(4)EmpireoftheSun.scmC.xml"
+                "maps/BWDistantResources32x32.xml",
+                "maps/BroodWar/(4)BloodBath.scmB.xml",
+                "maps/BroodWar/(4)BloodBath.scmD.xml"
         ));
         
         UnitTypeTable utt = new UnitTypeTable();
@@ -281,13 +290,15 @@ public class ClusterTesteLeve_GAB_SAB {
         if(iAi1 == 0){
             //ai1 = new PGSmRTS(utt);
             //ai1 = new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS");
-            ai1 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
+            ai1 = new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS");
+            //ai1 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
             //ai1 = new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator");;
             ai2 = getIA(utt,iAi2);
         }else{
             //ai2 = new PGSmRTS(utt);
             //ai2 = new PGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "PGS");
-            ai2 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
+            ai2 = new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGS");
+            //ai2 = new SSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), "SSS");
             //ai2 = new CMABBuilder(100, -1, 200, 10, 0, new RandomBiasedAI(utt), new SimpleSqrtEvaluationFunction3(), 0, utt, new ArrayList<>(), "CmabCombinatorialGenerator");;
             ai1 = getIA(utt,iAi2);
         }
@@ -436,8 +447,8 @@ public class ClusterTesteLeve_GAB_SAB {
 
     private static AI getIA(UnitTypeTable utt, int iAi2) {
         ArrayList<Integer>  choices = mapElements.get(iAi2);
-        //return new GAB(utt, choices.get(0), choices.get(1));
-        return new SAB(utt, choices.get(0), choices.get(1));
+        return new GAB(utt, choices.get(0), choices.get(1));
+        //return new SAB(utt, choices.get(0), choices.get(1));
         //return new CMABBuilder(100, -1, 100, 1, 0, new RandomBiasedAI(), new SimpleSqrtEvaluationFunction3(), 0, utt,
         //        new ArrayList<>(), "CmabCombinatorialGenerator", getManager(choices.get(1)), choices.get(0));
     }

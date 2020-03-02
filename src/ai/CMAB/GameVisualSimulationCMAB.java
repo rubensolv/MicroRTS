@@ -75,6 +75,7 @@ import rts.units.Unit;
 import rts.units.UnitTYpeTableBattle;
 import rts.units.UnitTypeTable;
 import static tests.ClusterTesteLeve.decodeScripts;
+import static tests.RemoteReport.decodeScripts;
 import util.XMLWriter;
 
 /**
@@ -92,13 +93,14 @@ public class GameVisualSimulationCMAB {
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(3)TauCross.scxA.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/basesWorkers8x8A.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);        
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/basesWorkers16x16A.xml", utt);   
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A_Barrack.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BWDistantResources32x32.xml", utt);
-        //PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
+        PhysicalGameState pgs = PhysicalGameState.load("maps/32x32/basesWorkers32x32A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/24x24/basesWorkers24x24A.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/BroodWar/(4)BloodBath.scmB.xml", utt);
         //PhysicalGameState pgs = PhysicalGameState.load("maps/8x8/FourBasesWorkers8x8.xml", utt);
-        PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
+        //PhysicalGameState pgs = PhysicalGameState.load("maps/16x16/TwoBasesBarracks16x16.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/NoWhereToRun9x8.xml", utt);
        //PhysicalGameState pgs = PhysicalGameState.load("maps/DoubleGame24x24.xml", utt);
         //PhysicalGameState pgs = MapGenerator.basesWorkers8x8Obstacle();
@@ -168,8 +170,22 @@ public class GameVisualSimulationCMAB {
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new KitterDPS(utt), new KitterDPS(utt), new LTD2()), "Play_KitterDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new NOKDPS(utt), new NOKDPS(utt), new LTD2()), "Play_NOKDPS_LTD2");
         //AI ai1 = new AlphaBetaSearch(utt, new PlayoutFunction(new POLightRush(utt), new POLightRush(utt), new LTD2()), "Play_POLightRush_LTD2");        
-        AI ai1 = new CMABBuilder(utt);
+        //AI ai1 = new CMABBuilder(utt);
         //AI ai1 = new AlphaBetaSearch(utt);
+        AI ai1 = new A3NWithin(100, -1, 100, 10, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerByDistance", 1,
+                        decodeScripts(utt, "1;2;3;"), "A3NW");        
+        //AI ai1 = new A3NNoWait(100, -1, 200, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+        //                new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerByDistance", 4,
+        //                decodeScripts(utt, "1;"), "A3NWnoWait");
+        //AI ai1 = new A3NNoWait(100, -1, 200, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+        //                new LanchesterEvaluationFunction(), true, utt, "ManagerByDistance", 4,
+        //                decodeScripts(utt, "1;"), "A3NWnoWait");
+        //AI ai1 = new PuppetSearchMCTS(utt);
+        AI ai2 = new StrategyTactics(utt);
+        //AI ai2 = new ai.competition.capivara.CmabAssymetricMCTS(100, -1, 100, 1, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
+        //                new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 1,
+        //                decodeScripts(utt, "1;2;3;"), "A3N");
         
         //AI ai2 = new NaiveMCTS(utt);
         //AI ai2 = new CIA_TDLearning(utt);
@@ -198,7 +214,7 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new PGSmRTS(utt); 
         //AI ai2 = new WorkerRush(utt);
         //AI ai2 = new PuppetSearchMCTS(utt);
-        AI ai2 = new POLightRush(utt);
+        //AI ai2 = new POLightRush(utt);
         //AI ai2 = new AHTNAI(utt);
         
         //AI ai2 = new RangedDefense(utt);
@@ -214,7 +230,8 @@ public class GameVisualSimulationCMAB {
         //AI ai2 = new PVAIML_FW(utt);
         //AI ai2 = new PVAIML_EDP(utt);
         //AI ai2 = new PVAIML_SLFWMS(utt);
-        //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");       
+        //AI ai2 = new PVAICluster(4, utt, "EconomyRush(AStarPathFinding)");    
+        
         
         System.out.println("---------AI's---------");
         System.out.println("AI 1 = "+ai1.toString());
@@ -229,9 +246,9 @@ public class GameVisualSimulationCMAB {
             if (System.currentTimeMillis() >= nextTimeToUpdate) {
                 startTime = System.currentTimeMillis();
                 PlayerAction pa1 = ai1.getAction(0, gs);  
-                //if( (System.currentTimeMillis() - startTime) >0){
-                //System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
-                //}
+                if( (System.currentTimeMillis() - startTime) >100){
+                System.out.println("Tempo de execução P1="+(startTime = System.currentTimeMillis() - startTime));
+                }
                 //System.out.println("Action A1 ="+ pa1.toString());
                 
                 startTime = System.currentTimeMillis();

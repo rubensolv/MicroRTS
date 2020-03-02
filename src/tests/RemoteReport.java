@@ -184,6 +184,10 @@ public class RemoteReport {
 
         System.out.println("---------Mapa---------");
         System.out.println("Mapa= " + maps.get(map) + "\n");
+        if( (iAi1 == 12) || (iAi2 == 12)){
+            System.out.println(gene);
+            System.out.println(decodeScripts2(utt, new ArrayList<>(getListIfInteger(gene)),scriptsTable).toString());            
+        }
 
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
@@ -290,7 +294,6 @@ public class RemoteReport {
         iScriptsAi1.forEach((idSc) -> {
             scriptsAI.add(scriptsCompleteSet.get(idSc));
         });
-        scriptsAI.add(new EconomyRush(utt));
 
         return scriptsAI;
     }
@@ -314,15 +317,14 @@ public class RemoteReport {
             //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));            
             scriptsAI.add(buildCommandsIA(utt, table.get(BigDecimal.valueOf(idSc))));
         }
-
+        System.out.println(scriptsAI.toString());
         return scriptsAI;
     }
     
     private static AI buildCommandsIA(UnitTypeTable utt, String code) {
         List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
         HashSet<String> usedCommands=new HashSet<String> ();
-        HashMap<Long, String> counterByFunction=new HashMap<Long, String>();
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
+        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands, new HashMap<Long, String>());
         return aiscript;
     }
     

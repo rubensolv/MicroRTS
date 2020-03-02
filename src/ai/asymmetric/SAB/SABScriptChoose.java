@@ -417,8 +417,8 @@ public class SABScriptChoose extends AIWithComputationBudget implements Interrup
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        //return "SAB_SandBox_" + _numUnits + "_" + _numManager;
-        return name;
+        return "SAB_" + _numUnits + "_" + _numManager;
+        //return name;
     }
 
 }

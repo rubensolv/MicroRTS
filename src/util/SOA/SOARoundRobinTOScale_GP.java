@@ -59,7 +59,7 @@ public class SOARoundRobinTOScale_GP {
 
             try {
                 System.out.println("Waiting...");
-                Thread.sleep(10000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

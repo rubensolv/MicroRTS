@@ -419,8 +419,8 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
     @Override
     public String toString() {
         //return "GAB{" + "_numUnits=" + _numUnits + ", numManager=" + _numManager + '}';
-        //return "GABScriptChoose" + _numUnits + "_" + _numManager+"_"+name;
-        return name;
+        return "GAB" +"_" +_numUnits + "_" + _numManager;
+        //return name;
     }
 
 }

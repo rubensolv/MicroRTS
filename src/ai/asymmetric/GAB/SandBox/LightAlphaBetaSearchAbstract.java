@@ -88,8 +88,8 @@ public class LightAlphaBetaSearchAbstract extends AIWithComputationBudget implem
             {
                 //add(0, new EconomyRush(utt));
                  //add(0, new POWorkerRush(utt));
-                add(0, scriptsCompleteSet.get(0));
-                //add(0, scriptsCompleteSet.get(1));
+                //add(0, scriptsCompleteSet.get(0));
+                add(0, scriptsCompleteSet.get(1));
                 //add(1, scriptsCompleteSet.get(2));
                 //add(3, scriptsCompleteSet.get(3));
                 //add(1, new NOKDPS(utt));
