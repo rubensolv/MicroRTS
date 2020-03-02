@@ -18,7 +18,7 @@ import util.XMLWriter;
  * @author santi
  */
 public class Build extends AbstractAction  {
-    UnitType type;
+    public UnitType type;
     int x,y;
     PathFinding pf;
     
