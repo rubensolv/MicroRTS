@@ -34,17 +34,16 @@ public abstract class AbstractionLayerAI extends AIWithComputationBudget {
     //      - harvest(target)
     //      - attack(target)
     protected HashMap<Unit, AbstractAction> actions = new LinkedHashMap<>();
-    protected PathFinding pf = null;
+    protected PathFinding pf;
     // In case the GameState is cloned, and the Unit pointers in the "actions" map change, this variable
     // saves a pointer to the previous GameState, if it's different than the current one, then we need to find a mapping
     // between the old units and the new ones
-    protected GameState lastGameState = null;
+    protected GameState lastGameState;
 
     public AbstractionLayerAI(PathFinding a_pf) {
         super(-1, -1);
         pf = a_pf;
     }
-           
 
     public AbstractionLayerAI(PathFinding a_pf, int timebudget, int cyclesbudget) {
         super(timebudget, cyclesbudget);
@@ -121,22 +120,18 @@ public abstract class AbstractionLayerAI extends AIWithComputationBudget {
         actions.put(u, new Move(u, x, y, pf));
     }
 
-    
     public void train(Unit u, UnitType unit_type) {
         actions.put(u, new Train(u, unit_type));
     }
-
 
     public void build(Unit u, UnitType unit_type, int x, int y) {
         actions.put(u, new Build(u, unit_type, x, y, pf));
     }
 
-
     public void harvest(Unit u, Unit target, Unit base) {
         actions.put(u, new Harvest(u, target, base, pf));
     }
 
-    
     public void attack(Unit u, Unit target) {
         actions.put(u, new Attack(u, target, pf));
     }
@@ -248,7 +243,6 @@ public abstract class AbstractionLayerAI extends AIWithComputationBudget {
             return false;
         }
     }
-    
 
     @Override
     public String toString() {

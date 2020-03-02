@@ -7,7 +7,6 @@
 package ai.ahtn;
 
 import ai.abstraction.WorkerRush;
-import ai.abstraction.partialobservability.POWorkerRush;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,14 +36,14 @@ import rts.units.UnitTypeTable;
 public class AHTNAI extends AIWithComputationBudget {
     public static int DEBUG = 0;
     
-    String domainFileName = null;
-    DomainDefinition dd = null;
+    String domainFileName;
+    DomainDefinition dd;
 
-    EvaluationFunction ef = null;
-    AI playoutAI = null;
+    EvaluationFunction ef;
+    AI playoutAI;
     public int PLAYOUT_LOOKAHEAD = 100;
         
-    List<MethodDecomposition> actionsBeingExecuted = null;
+    List<MethodDecomposition> actionsBeingExecuted;
     
     
     public AHTNAI(UnitTypeTable utt) throws Exception {

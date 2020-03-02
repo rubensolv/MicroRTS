@@ -24,14 +24,14 @@ import ai.core.InterruptibleAI;
  */
 public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleAI {
     public static int DEBUG = 0;
-    public EvaluationFunction ef = null;
+    public EvaluationFunction ef;
        
     Random r = new Random();
     public AI playoutPolicy = new RandomBiasedAI();
     protected long max_actions_so_far = 0;
     
-    protected GameState gs_to_start_from = null;
-    protected NaiveMCTSNode tree = null;
+    protected GameState gs_to_start_from;
+    protected NaiveMCTSNode tree;
     protected int current_iteration = 0;
             
     public int MAXSIMULATIONTIME = 1024;
@@ -67,14 +67,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
              new SimpleSqrtEvaluationFunction3(), true);
-    }
-    
-    public NaiveMCTS(UnitTypeTable utt, int lookahead) {
-        this(100,-1,lookahead,10,
-             0.3f, 0.0f, 0.4f,
-             new RandomBiasedAI(),
-             new SimpleSqrtEvaluationFunction3(), true);
-    }
+    }    
     
     
     public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
@@ -324,8 +317,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     
     @Override
     public String toString() {
-        //return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + MAXSIMULATIONTIME + "," + MAX_TREE_DEPTH + "," + epsilon_l + ", " + discount_l + ", " + epsilon_g + ", " + discount_g + ", " + epsilon_0 + ", " + discount_0 + ", " + playoutPolicy + ", " + ef + ")";
-        return getClass().getSimpleName()+""+MAXSIMULATIONTIME;
+        return getClass().getSimpleName() + "(" + TIME_BUDGET + ", " + ITERATIONS_BUDGET + ", " + MAXSIMULATIONTIME + "," + MAX_TREE_DEPTH + "," + epsilon_l + ", " + discount_l + ", " + epsilon_g + ", " + discount_g + ", " + epsilon_0 + ", " + discount_0 + ", " + playoutPolicy + ", " + ef + ")";
     }
     
     @Override
