@@ -162,6 +162,7 @@ public class GABRandom extends AIWithComputationBudget implements InterruptibleA
                     break;
                 case 7:
                     manager = new ManagerLessDPS(playerID, numUnits);
+                    break;
                 case 8:
                     manager = new ManagerMoreDPS(playerID, numUnits);
                     break;
