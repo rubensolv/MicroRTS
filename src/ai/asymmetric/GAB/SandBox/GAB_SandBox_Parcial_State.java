@@ -148,6 +148,7 @@ public class GAB_SandBox_Parcial_State extends AIWithComputationBudget implement
                     break;
                 case 7:
                     manager = new ManagerLessDPS(playerID, numUnits);
+                    break;
                 case 8:
                     manager = new ManagerMoreDPS(playerID, numUnits);
                     break;
