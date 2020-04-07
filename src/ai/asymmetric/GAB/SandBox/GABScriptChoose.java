@@ -179,6 +179,7 @@ public class GABScriptChoose extends AIWithComputationBudget implements Interrup
                     break;
                 case 7:
                     manager = new ManagerLessDPS(playerID, numUnits);
+                    break;
                 case 8:
                     manager = new ManagerMoreDPS(playerID, numUnits);
                     break;
