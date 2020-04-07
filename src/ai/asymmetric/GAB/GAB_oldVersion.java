@@ -134,6 +134,7 @@ public class GAB_oldVersion extends AIWithComputationBudget implements Interrupt
                     break;
                 case 7:
                     manager = new ManagerLessDPS(playerID, numUnits);
+                    break;
                 case 8:
                     manager = new ManagerMoreDPS(playerID, numUnits);
                     break;
