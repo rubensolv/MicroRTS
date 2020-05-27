@@ -13,6 +13,7 @@ import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 
 import ai.core.AI;
+import ai.evaluation.EvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
@@ -56,7 +57,7 @@ public class RoundRobinTOScale_GP {
     ICompiler compiler = new MainGPCompiler(); 
     int counterlinesRecorded=0;
     HashSet<String> usedCommands;
-    
+    EvaluationFunction evaluation = new SimpleSqrtEvaluationFunction3();
 
     public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsUsedCommands) {
         this.pathTableScripts = pathTableScripts;
@@ -77,10 +78,10 @@ public class RoundRobinTOScale_GP {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml",
                 //"maps/32x32/basesWorkers32x32A.xml"
-                "maps/8x8/basesWorkers8x8A.xml"
+                //"maps/8x8/basesWorkers8x8A.xml"
         		//"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
-        		//"maps/16x16/basesWorkers16x16A.xml"
+        		"maps/16x16/basesWorkers16x16A.xml"
         		//"maps/BroodWar/(4)EmpireoftheSun.scmB.xml"
         		//"maps/battleMaps/Others/RangedHeavyMixed.xml"
         ));
@@ -182,6 +183,11 @@ public class RoundRobinTOScale_GP {
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
         long startTime;
         long timeTemp;
+        long countingTimeAI1=0;
+        long countingTimeAI2=0;
+        long counterCallsAI1=0;
+        long counterCallsAI2=0;
+        
         //System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;
         do {
@@ -192,6 +198,13 @@ public class RoundRobinTOScale_GP {
                 PlayerAction pa1 = ai1.getAction(0, gs);
                 //dados de tempo ai1
                 timeTemp = (System.currentTimeMillis() - startTime);
+                
+                if(timeTemp>0)
+                {
+                	counterCallsAI1++;
+                	countingTimeAI1=countingTimeAI1+timeTemp;
+                }
+                
                 sumAi1 += timeTemp;
                 //coleto tempo mínimo
                 if (ai1TempoMin > timeTemp) {
@@ -201,11 +214,18 @@ public class RoundRobinTOScale_GP {
                 if (ai1TempoMax < timeTemp) {
                     ai1TempoMax = timeTemp;
                 }
-
+                
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
                 //dados de tempo ai2
                 timeTemp = (System.currentTimeMillis() - startTime);
+                
+                if(timeTemp>0)
+                {
+                	counterCallsAI2++;
+                	countingTimeAI2=countingTimeAI1+timeTemp;
+                }
+                
                 sumAi2 += timeTemp;
                 //coleto tempo mínimo
                 if (ai2TempoMin > timeTemp) {
@@ -249,6 +269,12 @@ public class RoundRobinTOScale_GP {
         if (gs.winner() == -1) {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
+        
+        if(counterCallsAI1>0)
+        	log.add("Avg Response "+ai1.toString()+" "+ countingTimeAI1/counterCallsAI1);
+        if(counterCallsAI2>0)
+        	log.add("Avg Response "+ai2.toString()+" "+ countingTimeAI2/counterCallsAI2);
+        
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         

@@ -59,6 +59,7 @@ public class ChromosomeAI extends AI{
     ICompiler compiler = new MainGPCompiler();
     public HashSet<String> usedCommands;
     public HashMap<Long, String> counterByFunction;
+    String nameIA;
 
     public ChromosomeAI(UnitTypeTable utt) {
         this.utt = utt;
@@ -72,6 +73,17 @@ public class ChromosomeAI extends AI{
         this.originalGrammar=originalGrammar;
         this.usedCommands=usedCommands;
         this.counterByFunction=counterByFunction;
+        this.nameIA="";
+    }
+
+    public ChromosomeAI(UnitTypeTable utt, List<ICommand> commands, String name, String originalGrammar, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction, String nameIA) {
+        this.utt = utt;
+        this.commands = commands;
+        this.name = name;
+        this.originalGrammar=originalGrammar;
+        this.usedCommands=usedCommands;
+        this.counterByFunction=counterByFunction;
+        this.nameIA=nameIA;
     }
 
 	public PlayerAction getAction(int player, GameState gs) {
@@ -128,6 +140,11 @@ public class ChromosomeAI extends AI{
 
     @Override
     public String toString() {
+    	
+    	if(nameIA.length()>0)
+    	{
+    		return nameIA;
+    	}
     	String nameCommand="";
     	for (Iterator iterator = commands.iterator(); iterator.hasNext();) {
 			ICommand iCommand = (ICommand) iterator.next();
