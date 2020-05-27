@@ -14,8 +14,8 @@ import java.util.List;
  * @author santi
  */
 public class LispElement {
-    public String element;
-    public List<LispElement> children;
+    public String element = null;
+    public List<LispElement> children = null;
     
     // create a new atom:
     public LispElement(String e) {
@@ -33,21 +33,17 @@ public class LispElement {
     
     
     public String toString(int tabs) {
-        StringBuilder tabstr = new StringBuilder();
-
-        for (int i = 0; i < tabs; i++) {
-            tabstr.append("  ");
-        }
-
-        if (children == null) {
+        String tabstr = "";
+        for(int i = 0;i<tabs;i++) tabstr+="  ";
+        if (children==null) {
             return tabstr + element;
         } else {
-            StringBuilder tmp = new StringBuilder(tabstr + "(\n");
+            String tmp = tabstr + "(\n";
             for(LispElement e:children) {
-                tmp.append(e.toString(tabs + 1)).append("\n");
+                tmp += e.toString(tabs+1) + "\n";
             }
-            tmp.append(tabstr).append(")");
-            return tmp.toString();
+            tmp += tabstr + ")";
+            return tmp;
         }        
     }
 }

@@ -38,23 +38,23 @@ public class AdversarialChoicePoint {
                                 // is equivalent to the number of operators executed so far)
     
     // Method: variables to continue finding expansions after the first:
-    List<HTNMethod> possibleMethods;
+    List<HTNMethod> possibleMethods = null;
     
     // Condition: variables to continue finding expansions after the first:
-    Clause updatedClause;
+    Clause updatedClause = null;
     boolean updatedClauseHadAnyMatches = false;
-    List<Binding> lastBindings;  // If the bindings found for a next match are the same as
+    List<Binding> lastBindings = null;  // If the bindings found for a next match are the same as
                                         // the previous one, the new match is ignored (to reduce
                                         // useless branching)
     
     // Variables to restore the execution point of the plan after backtracking:
-    HashMap<MethodDecomposition, MethodDecompositionState> executionState;
+    HashMap<MethodDecomposition, MethodDecompositionState> executionState = null;
     
     // evaluation function:
     public int minimaxType = -1;   // 0: max, 1: min, -1: not yet set.
     public float bestEvaluation = 0;
-    public MethodDecomposition bestMaxPlan;
-    public MethodDecomposition bestMinPlan;
+    public MethodDecomposition bestMaxPlan = null;
+    public MethodDecomposition bestMinPlan = null;
     float alpha = 0;
     float beta = 0;
 
@@ -372,14 +372,26 @@ public class AdversarialChoicePoint {
                 }
                 break;
         }
-
-        // alpha-beta pruning
-        if (minimaxType==0)
+        
+        // alpha-beta prunning:
+        if (minimaxType==0) {
+            // max node:
             alpha = Math.max(alpha, f);
-        else if (minimaxType==1)
+//            System.out.println(alpha + " <= " + beta);
+            if (beta<=alpha) {
+                // beta cutoff:
+                return true;
+            }
+        } else if (minimaxType==1) {
+            // min node:
             beta = Math.min(beta, f);
-
-        return beta <= alpha;
+//            System.out.println(alpha + " <= " + beta);
+            if (beta<=alpha) {
+                // alpha cutoff:
+                return true;
+            }
+        }       
+        return false;
     }
     
     

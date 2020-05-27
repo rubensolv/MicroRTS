@@ -254,9 +254,9 @@ public class Term {
         sb.append("(");
         sb.append(functor);
         if (parameters!=null) {
-            for (Parameter parameter : parameters) {
+            for(int i = 0;i<parameters.length;i++) {
                 sb.append(" ");
-                sb.append(parameter);
+                sb.append(parameters[i]);
             }
         }
         sb.append(")");

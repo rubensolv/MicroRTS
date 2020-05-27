@@ -17,7 +17,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -65,8 +64,8 @@ public class HTNDomainVisualizerVertical {
     int vpadding = 4;
     int hMethodPadding = 32;
     int vMethodPadding  = 8;
-    Font font;
-    FontMetrics fm;
+    Font font = null;
+    FontMetrics fm = null;
     
     
     public HTNDomainVisualizerVertical() {
@@ -170,10 +169,14 @@ public class HTNDomainVisualizerVertical {
                         children.add(md.getTerm().getFunctor());
                         break;
                 case MethodDecomposition.METHOD_SEQUENCE:
-                    stack.addAll(Arrays.asList(md.getSubparts()));
+                        for(MethodDecomposition md2:md.getSubparts()) {
+                            stack.add(md2);
+                        }
                         break;
                 case MethodDecomposition.METHOD_PARALLEL:
-                    stack.addAll(Arrays.asList(md.getSubparts()));
+                        for(MethodDecomposition md2:md.getSubparts()) {
+                            stack.add(md2);
+                        }
                         break;
                 case MethodDecomposition.METHOD_CONDITION:
                         break;
@@ -265,10 +268,14 @@ public class HTNDomainVisualizerVertical {
                         }
                         break;
                 case MethodDecomposition.METHOD_SEQUENCE:
-                    stack.addAll(Arrays.asList(md.getSubparts()));
+                        for(MethodDecomposition md2:md.getSubparts()) {
+                            stack.add(md2);
+                        }
                         break;
                 case MethodDecomposition.METHOD_PARALLEL:
-                    stack.addAll(Arrays.asList(md.getSubparts()));
+                        for(MethodDecomposition md2:md.getSubparts()) {
+                            stack.add(md2);
+                        }
                         break;
                 case MethodDecomposition.METHOD_CONDITION:
                         break;
@@ -337,10 +344,14 @@ public class HTNDomainVisualizerVertical {
                         }
                         break;
                 case MethodDecomposition.METHOD_SEQUENCE:
-                    stack.addAll(Arrays.asList(md.getSubparts()));
+                        for(MethodDecomposition md2:md.getSubparts()) {
+                            stack.add(md2);
+                        }
                         break;
                 case MethodDecomposition.METHOD_PARALLEL:
-                    stack.addAll(Arrays.asList(md.getSubparts()));
+                        for(MethodDecomposition md2:md.getSubparts()) {
+                            stack.add(md2);
+                        }
                         break;
                 case MethodDecomposition.METHOD_CONDITION:
                         break;

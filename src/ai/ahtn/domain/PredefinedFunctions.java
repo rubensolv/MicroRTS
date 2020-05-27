@@ -18,7 +18,7 @@ public class PredefinedFunctions {
     public static int DEBUG = 0;
     
     public interface FunctionEvaluator {
-        Parameter evaluate(Function f, GameState gs) throws Exception;
+        public abstract Parameter evaluate(Function f, GameState gs) throws Exception;
     }
     
     static final HashMap<Symbol, FunctionEvaluator> functions = new HashMap<>();

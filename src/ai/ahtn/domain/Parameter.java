@@ -17,13 +17,13 @@ public interface Parameter {
     // If a match is found:
     // - the return value is a list with the required bindings
     // If a match is not found: return null
-    List<Binding> match(int v) throws Exception;
-    List<Binding> match(String s) throws Exception;
+    public List<Binding> match(int v) throws Exception;
+    public List<Binding> match(String s) throws Exception;
     
-    Parameter cloneParameter();
+    public Parameter cloneParameter();
     
-    Parameter applyBindingsParameter(List<Binding> l) throws Exception;
+    public Parameter applyBindingsParameter(List<Binding> l) throws Exception;
 
     // applies all the bindings and evaluates in case it is a function:
-    Parameter resolveParameter(List<Binding> l, GameState gs) throws Exception;
+    public Parameter resolveParameter(List<Binding> l, GameState gs) throws Exception;
 }
