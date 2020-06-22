@@ -59,7 +59,8 @@ public class BuildBasic extends AbstractBasicAction implements IUnitCommand {
             //verify if the limit of units are reached
             if (!limitReached(game, player, currentPlayerAction)) {
                 //check if we have resources
-                if (game.getPlayer(player).getResources() >= getResourceCost(unitToBeBuilded, a_utt)) {
+                int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction) + game.getResourceUsage().getResourcesUsed(player);        
+                if ((game.getPlayer(player).getResources()- resourcesUsed) >= getResourceCost(unitToBeBuilded, a_utt)) {
                     //pick one work to build
                     Unit workToBuild = getWorkToBuild(player, game, currentPlayerAction, a_utt, pf);
                     if (workToBuild != null) {
