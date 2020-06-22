@@ -31,6 +31,7 @@ import static rts.UnitAction.DIRECTION_DOWN;
 import static rts.UnitAction.DIRECTION_LEFT;
 import static rts.UnitAction.DIRECTION_RIGHT;
 import static rts.UnitAction.DIRECTION_UP;
+import rts.UnitActionAssignment;
 import rts.units.Unit;
 import rts.units.UnitType;
 import rts.units.UnitTypeTable;
@@ -46,9 +47,8 @@ public class TrainBasic extends AbstractBasicAction {
 	String originalPieceGrammarWord;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
-    	
-    	int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction);
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {    	         
+    	int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction) + game.getResourceUsage().getResourcesUsed(player);        
         if ((game.getPlayer(player).getResources() - resourcesUsed) >= valueOfUnitsToBuild(game, player, a_utt)
                 && limitReached(game, player, currentPlayerAction)) {
             //get units basead in type to produce
@@ -58,7 +58,9 @@ public class TrainBasic extends AbstractBasicAction {
             for (Unit unit : unitToBuild) {
             	 if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null) {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit, p);
-                    if (unTemp != null) {
+                    if (unTemp != null && 
+                            (game.getPlayer(player).getResources() - resourcesUsed) >= unTemp.getUnitType().cost) 
+                    {
                     	usedCommands.add(getOriginalPieceGrammar());
                     	if(counterByFunction.containsKey(unit.getID()))
                     	{
@@ -70,6 +72,7 @@ public class TrainBasic extends AbstractBasicAction {
                     		counterByFunction.put(unit.getID(), "train");
                     	}
                         currentPlayerAction.addUnitAction(unit, unTemp);
+                        resourcesUsed += unTemp.getUnitType().cost;
                     }
                 }
             }
