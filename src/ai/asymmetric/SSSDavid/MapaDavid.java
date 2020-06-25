@@ -1,11 +1,11 @@
 package ai.asymmetric.SSSDavid;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.jdom.JDOMException;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
+
 import org.tensorflow.Tensor;
 
 import rts.GameState;
@@ -60,35 +60,35 @@ public class MapaDavid implements ConfMapa {
 	@Override
 	public float[][][]  montar_entrada(int player, GameState gs, boolean espelhado) {
 
-			float estado[][][]=new float[altura][largura][camadas];
+			float estado[][][]=new float[camadas][altura][largura];
 		
 		
 			for(Unit u : gs.getUnits()) {
 				if(u.getPlayer()==player) {
 					if(espelhado==false) {
 						
-						estado[u.getY()][u.getX()][mapea.get(u.getType())]= 1.0f*u.getHitPoints()/4;
-						estado[u.getY()][u.getX()][mapea.get(u.getType())+2]= 1.0f;
+						estado[mapea.get(u.getType())][u.getY()][u.getX()]= 1.0f*u.getHitPoints()/4;
+						estado[mapea.get(u.getType())+2][u.getY()][u.getX()]= 1.0f;
 						
 					}
 					else {
 				
-						estado[u.getY()][largura-u.getX()-1][mapea.get(u.getType())]= 1.0f*u.getHitPoints()/4;
-						estado[u.getY()][largura-u.getX()-1][mapea.get(u.getType())+2]= 1.0f;
+						estado[mapea.get(u.getType())][u.getY()][largura-u.getX()-1]= 1.0f*u.getHitPoints()/4;
+						estado[mapea.get(u.getType())+2][u.getY()][largura-u.getX()-1]= 1.0f;
 					}
 					
 				}
 				else if (u.getPlayer()== 1 - player){
 					if(espelhado==false) {
 						
-						estado[u.getY()][u.getX()][mapea.get(u.getType())+4]= 1.0f*u.getHitPoints()/4;
-						estado[u.getY()][u.getX()][mapea.get(u.getType())+6]= 1.0f;
+						estado[mapea.get(u.getType())+4][u.getY()][u.getX()]= 1.0f*u.getHitPoints()/4;
+						estado[mapea.get(u.getType())+6][u.getY()][u.getX()]= 1.0f;
 						
 					}
 					else {
 				
-						estado[u.getY()][largura-u.getX()-1][mapea.get(u.getType())+4]= 1.0f*u.getHitPoints()/4;
-						estado[u.getY()][largura-u.getX()-1][mapea.get(u.getType())+6]= 1.0f;
+						estado[mapea.get(u.getType())+4][u.getY()][largura-u.getX()-1]= 1.0f*u.getHitPoints()/4;
+						estado[mapea.get(u.getType())+6][u.getY()][largura-u.getX()-1]= 1.0f;
 					}
 				}
 			
@@ -100,22 +100,19 @@ public class MapaDavid implements ConfMapa {
 
 	
 	@Override
-	public float[] montar_entrada2(int player, GameState gs, boolean espelhado) {
+	public HashMap<Integer, Integer>  montar_entrada2(int player, GameState gs, boolean espelhado) {
 		
-		float entrada2[] = new float[altura*largura];
-		for(int i =0;i<altura;i++) {
-			for(int j =0 ; j<largura;j++)
-				entrada2[i*largura+j]= 10000.0f;
-		}
+		HashMap<Integer, Integer> input2 = new HashMap<Integer, Integer>() ;
+	
 		for(Unit u: gs.getUnits()) {
 			if(player==u.getPlayer()) {
-				if(espelhado) entrada2[u.getY()*largura+(largura - u.getX()-1)]=-10000.0f;
-				else entrada2[u.getY()*largura+u.getX()]=-10000.0f;
+				input2.put((int) u.getID(), u.getY()*largura+u.getX());
+				
 			}
 		}
 		
 		
-		return entrada2;
+		return input2;
 	}
 	
 	

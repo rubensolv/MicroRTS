@@ -14,6 +14,8 @@ import ai.abstraction.partialobservability.PORangedRush;
 import ai.abstraction.partialobservability.POWorkerRush;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
+import ai.asymmetric.SSSDavid.Ataca;
+import ai.asymmetric.SSSDavid.MoonWalker;
 import ai.asymmetric.common.UnitScriptData;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
@@ -57,7 +59,7 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     private Double timePlayout;
 
     public SSSmRTS(UnitTypeTable utt) {
-        this(100, -1, 200, 1, 1,
+        this(100, -1, 150, 1, 1,
                 //new CombinedEvaluation(),
                 new SimpleSqrtEvaluationFunction3(),
                 //new SimpleSqrtEvaluationFunction2(),
@@ -81,10 +83,13 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
     }
 
     protected void buildPortfolio() {
-        this.scripts.add(new POWorkerRush(utt));
-        this.scripts.add(new POLightRush(utt));
-        this.scripts.add(new POHeavyRush(utt));
-        this.scripts.add(new PORangedRush(utt));
+    	this.scripts.add(new Ataca(utt));
+		 this.scripts.add(new MoonWalker(utt));
+    	
+        //this.scripts.add(new POWorkerRush(utt));
+        //this.scripts.add(new POLightRush(utt));
+        //this.scripts.add(new POHeavyRush(utt));
+        //this.scripts.add(new PORangedRush(utt));
         //this.scripts.add(new NOKDPS(utt));
         //this.scripts.add(new KitterDPS(utt));
         //this.scripts.add(new Cluster(utt));
@@ -194,13 +199,16 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         ai2.reset();
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
+        int i=0;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(ai1.getAction(player, gs2));
+            	if(i<50)   gs2.issue(ai1.getAction(player, gs2));
+            	else gs2.issue(defaultScript.getAction(player, gs2));
                 gs2.issue(ai2.getAction(1 - player, gs2));
             }
+            i++;
         }
         double e = evaluation.evaluate(player, 1 - player, gs2);
 
@@ -227,15 +235,18 @@ public class SSSmRTS extends AIWithComputationBudget implements InterruptibleAI 
         ai2.reset();
         int timeLimit = gs2.getTime() + LOOKAHEAD;
         boolean gameover = false;
+        int i=0;
         while (!gameover && gs2.getTime() < timeLimit) {
             if (gs2.isComplete()) {
                 gameover = gs2.cycle();
             } else {
-                gs2.issue(uScriptPlayer.getAction(player, gs2));
+            	if(i<50)gs2.issue(uScriptPlayer.getAction(player, gs2));
+                else gs2.issue(defaultScript.getAction(player, gs2));
                 //
                 gs2.issue(ai2.getAction(1 - player, gs2));
             }
         }
+        i++;
 
         return evaluation.evaluate(player, 1 - player, gs2);
     }

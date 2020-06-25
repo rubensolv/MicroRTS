@@ -55,6 +55,7 @@ import java.util.Scanner;
 
 
 public class SSSDavid extends AbstractionLayerAI  {
+	int intervalo;
 	Script4 s ;
 	int num_tipo;
 	int rep=1;
@@ -94,7 +95,7 @@ public class SSSDavid extends AbstractionLayerAI  {
     }
     
     public SSSDavid configuracao2() {
-    	rep=2;
+    	rep=1;
     	for(Playout play : playouts ) {
     		//play.setAI(new RandomBiasedAI(utt));
     		play.setTempoSimulacao(10000);
@@ -112,12 +113,12 @@ public class SSSDavid extends AbstractionLayerAI  {
     }
     
     
-	public SSSDavid(UnitTypeTable a_utt, int numGrupos) throws IOException {
+	public SSSDavid(UnitTypeTable a_utt, int numGrupos, int intervalo) throws IOException {
 		
 		   super( new AStarPathFinding());
 		   s= new Script4(a_utt);
 		   num_tipo = numGrupos;
-		   
+		   this.intervalo=intervalo;
 		
 		   gerador = new Random();
 		   link = new HashMap<Long, Integer>();
@@ -169,10 +170,11 @@ public class SSSDavid extends AbstractionLayerAI  {
 	}
 	
 	protected void buildPortfolio() {
-		
+		 
 		this.scripts.add(new Ataca(utt));
-		this.scripts.add(new Coleta(utt));
-	 this.scripts.add(new ConstroiWorker(utt));
+		this.scripts.add(new MoonWalker(utt));
+		//this.scripts.add(new Coleta(utt));
+	// this.scripts.add(new ConstroiWorker(utt));
 
 		
 		 
@@ -500,8 +502,8 @@ public PlayerAction getAction(int player, GameState gs) throws Exception {
     }
     //	System.out.println("vrrwre! " + inf.contruindo_barraca);
     //	System.out.println("vrrwre! " + inf.contruindo_base);
-    if (e_m < -0.3) {
-        inf.cont++;
+    if (gs.getTime()%this.intervalo==0) {
+        inf.cont=100;
     } else {
         inf.cont = 0;
     }

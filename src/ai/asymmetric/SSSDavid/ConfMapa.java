@@ -13,7 +13,7 @@ public interface ConfMapa {
 	
 	
 	public float[][][] montar_entrada(int player,GameState gs,boolean espelhado);
-	public float[] montar_entrada2(int player,GameState gs,boolean espelhado);
+	public HashMap<Integer, Integer> montar_entrada2(int player,GameState gs,boolean espelhado);
 	public float[][] montar_saida(int player,GameState gs,boolean espelhado,HashMap<Integer, Integer> agrup);
 	
 	public int getLargura();

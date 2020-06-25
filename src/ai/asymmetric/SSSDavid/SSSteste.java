@@ -29,6 +29,8 @@ import ai.evaluation.EvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction2;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
+import jep.JepException;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -55,34 +57,39 @@ import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.Scanner;
 
-import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
-import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
+//import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
+//import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
 import org.jdom.JDOMException;
 
 
 public class SSSteste extends AbstractionLayerAI  {
 	RNA rna;
+	
 	boolean treinando =false;
 	int intervalo_amostragem=30;
+	int ultimo_grupo=0;
+	int ultimo_grupo_simulacao=0;
+	int melhor_numero_grupo=0;
 	
 	
 	 HashMap<Integer, Integer> mapea;
-	int conttreino=0;
-	Script4 s ;
+	
+
 	int num_tipo;
 	int rep=1;
 	Information inf;
 	Information inf2;
-	float tempo_incial;
+	
 	List<List<Unit>> grupos;
 	List<List<Unit>> grupos2;
 	ArrayList<AbstractionLayerAID> scripts;
 	ArrayList<Integer> atual;
 	ArrayList<Integer> melhor;
-	ArrayList<Integer> sepa;
+	ArrayList<Integer> melhor_simulacao;
 	EvaluationFunction evaluation = new SimpleSqrtEvaluationFunction3();
 	HashMap<Long, Integer> link ;
-	//HashMap<int,int> map;
+	
+	
 	UnitTypeTable utt;
 	UnitType workerType;
     UnitType baseType;
@@ -96,6 +103,7 @@ public class SSSteste extends AbstractionLayerAI  {
     ArrayList<Playout> playouts;
     FileWriter arq ;
     PrintWriter gravarArq;
+   
 	
     public SSSteste configuracao1() {
     	rep=2;
@@ -108,11 +116,11 @@ public class SSSteste extends AbstractionLayerAI  {
     
     public SSSteste configuracao2(int intervaloAmostragem) {
     	intervalo_amostragem= intervaloAmostragem;
-    	rep=5;
+    	rep=1;
     	for(Playout play : playouts ) {
     	
     		play.setTempoSimulacao(10000);
-    		play.setProfSimulacao(150);
+    		play.setProfSimulacao(100);
     	}
     	return this;
     }
@@ -137,12 +145,11 @@ public class SSSteste extends AbstractionLayerAI  {
 	public SSSteste(UnitTypeTable a_utt, int numGrupos) throws JDOMException, Exception {
 		
 		   super( new AStarPathFinding());
-		   s= new Script4(a_utt);
 		   num_tipo = numGrupos;
-		
+		   ultimo_grupo=0;
 		   
 		  
-	 mapea=new HashMap<Integer, Integer>();
+		   mapea=new HashMap<Integer, Integer>();
 			 mapea.put(2, 1);
 			 mapea.put(3, 1);
 			 mapea.put(4, 1);
@@ -167,7 +174,7 @@ public class SSSteste extends AbstractionLayerAI  {
 		   link = new HashMap<Long, Integer>();
 		  atual = new ArrayList<>();
 		  melhor =   new ArrayList<>();
-		  sepa = new ArrayList<>();
+		 
 		inf = new Information();
 		inf2 = new Information();
 		inf2.tempo_playout=-1;
@@ -192,14 +199,14 @@ public class SSSteste extends AbstractionLayerAI  {
 	       lightType = utt.getUnitType("Light");
 	       
 	       buildPortfolio();
-	       inf.tempo_playout = 100/scripts.size() ;
+	      
 	       
 	       playouts = new ArrayList<>();
 	       threads = new ArrayList<>();
 	       for(int i=0; i < scripts.size();i++) {
 		       playouts.add( new Playout(utt,num_tipo,scripts));
 		       threads.add(new Thread());
-		       sepa.add(0);
+		      
 	       }
 	       
 	     //arq = new FileWriter("C:\\Users\\barba\\Desktop\\testesss\\resultado.txt",true);
@@ -213,17 +220,19 @@ public class SSSteste extends AbstractionLayerAI  {
 	}
 	
 	protected void buildPortfolio() {
+		this.scripts.add(new David(utt));
 		this.scripts.add(new Ataca(utt));
-		this.scripts.add(new Coleta(utt));
-		this.scripts.add(new ConstroiWorker(utt));
+		this.scripts.add(new MoonWalker(utt));
+		//this.scripts.add(new Coleta(utt));
+		//this.scripts.add(new ConstroiWorker(utt));
 		
 		//this.scripts.add(new Coleta(utt));
 		
 		
 		//this.scripts.add(new Script4(utt));
 		 //this.scripts.add(new Ataca(utt));
-		 //this.scripts.add(new MoonWalker(utt));
-		
+		 
+		 
 		
 		// this.scripts.add(new Script2(utt));
 	//	this.scripts.add(new LightDefenseD(utt));
@@ -341,93 +350,17 @@ public class SSSteste extends AbstractionLayerAI  {
 		 
 	}
 	
-	public double playout(int player, GameState gs, int teste_grupo) throws Exception {
-        float inicio_playout =System.currentTimeMillis();
-        GameState gs2 = gs.clone();
-       
-        inf2.copia(inf);
-        int timeLimit =  1000;
-        List<Unit> aux =new LinkedList<Unit>();
-        boolean gameover = false;
-        List<Unit> aux2 =new LinkedList<Unit>();
-     
-        HashMap<Unit, AbstractAction> action2;
-        action2 = (HashMap<Unit, AbstractAction>) actions.clone();
-        
-        
-        for(int i = 0;i < grupos.size();i++) grupos2.get(i).clear();
-
-        for(Unit u : gs2.getUnits()) {
-        	
-        	if(link.get(u.getID())!= null ){
-        		int g = link.get(u.getID());
-        		grupos2.get(g).add(u);
-        	    
-        	}
-        }
-        inf.inicio_playout =System.currentTimeMillis();
-        int i=0;
-        for( i=0; !gameover && inf.tempo_playout > System.currentTimeMillis() - inf.inicio_playout && i < 500000 ;i++) {
-           
-           
-            	
-            	aux.clear();
-           
-            	
-            	
-                for(Unit u : gs2.getUnits()) {
-                	if(link.get(u.getID())== null && player==u.getPlayer()) {
-                		
-                		aux.add(u);
-                	    
-                	}
-                	
-                }
-              //  System.out.println(aux.size());
-            //	s.getAction(player, gs2, aux, actions);
-            	for(int j = 0;j < grupos.size();j++) {
-            		//System.out.println("será "+ j);
-            		if(teste_grupo == j ) {
-            			scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux,inf2, actions);
-            			
-            		}
-            			else {
-            			
-            			scripts.get(atual.get(j)).getAction(player, gs2, grupos2.get(j),aux2,inf2, actions);
-            		}
-        		
-        		}
-            	
-           gs2.issue( translateActions(player, gs2));
-            	AI ai4 = new LightRush(utt);
-            			//new WorkerRush(utt);;
-            			
-            			//new LightRush(utt);// ;
-                gs2.issue(ai4.getAction(1 - player, gs2));
-               
-                gameover = gs2.cycle();
-        }
-
-        //System.out.println(i);
-     
-        
-     //  analisa(gs2);
-     //   analisa(gs);
-        actions = (HashMap<Unit, AbstractAction>) action2.clone();
-        return evaluation.evaluate(player, 1 - player, gs2);
-    }
 	
 	
-	
-	public void treina(boolean b) {
-		rna.treina();
-		conttreino++;
+	public void treina(boolean b,int player) throws IOException, JepException {
+		rna.treina(player);
+		
 	}
 	
-	public double simula(int player, GameState gs,HashMap<Integer, Integer> mapea2) throws InterruptedException {
+public double simula(int player, GameState gs,HashMap<Integer, Integer> mapea2) throws InterruptedException {
 		
 
-		 link.clear();
+		link.clear();
 		 
 		 for(int i = 0;i < grupos.size();i++) grupos.get(i).clear();
 		 for(Unit un : gs.getUnits()) {
@@ -438,7 +371,7 @@ public class SSSteste extends AbstractionLayerAI  {
 						link.put(un.getID(), mapea2.get(g));
 					}
 					else {
-						int gg = gerador.nextInt(100)%grupos.size();
+						int gg = gerador.nextInt(100)%num_tipo;
 					
 							grupos.get(gg).add(un);
 							link.put(un.getID(), gg);
@@ -447,116 +380,110 @@ public class SSSteste extends AbstractionLayerAI  {
 					}
 			}
 		 }	
+		 
 		
-		
-		
-		for(int k =0 ; k<melhor.size();k++) {
-   		atual.set(k , melhor.get(k));
-   	}
-		int i = gs.getTime() % grupos.size();
-		ArrayList<Double> pont= new ArrayList<>();
-		for(int j=0;j<playouts.size();j++)	pont.add((double) 0);
-		for(int r =0;r<rep;r++) {
-			for(int j=0;j<scripts.size();j++) {
-				inf.inicio_playout =System.currentTimeMillis();
+		 melhor_simulacao= (ArrayList<Integer>) melhor.clone();
+		 ultimo_grupo=ultimo_grupo_simulacao;
+		 long startTime = System.currentTimeMillis();
+		 double e_m_s=-1112;
+		 
+		 for(int nt=0;nt<num_tipo ;nt++) {
+			 int i =  (ultimo_grupo+nt)%num_tipo;
+			 if(grupos.get(i).isEmpty()) {
+				 ultimo_grupo=(ultimo_grupo+1)%num_tipo;;
 				
-				atual.set(i, j);
-				
-				playouts.get(j).configura(player, gs, actions, i, inf, atual,link);
-				
-				
+				 continue;
+			 }
+			 if(90<System.currentTimeMillis()-startTime ) {
 			
-			}
-				
-			for(int t =0 ; t<threads.size();t++) {
-				threads.set(t, new Thread(playouts.get(t)));
-				threads.get(t).start();
-			}
-				
+				 break;
+			 }
 			
-			for(int t =0 ; t<threads.size();t++) {
-				
-				threads.get(t).join();
-				
+			for(int k =0 ; k<melhor_simulacao.size();k++) {
+				atual.set(k , melhor_simulacao.get(k));
 			}
-			for(int t =0; t<playouts.size();t++) pont.set(t, pont.get(t) +playouts.get(t).resultado);
-		
-		}
 			
-			double e_m= -11111;
-			for(int t =0; t<playouts.size();t++) {
-				double e = pont.get(t);
+			
+			
+			ArrayList<Double> pont= new ArrayList<>();
+			for(int j=0;j<playouts.size();j++)	pont.add((double) 0);
+			for(int r =0;r<rep;r++) {
 				
-				if(e_m<e) {
+				for(int j=0;j<scripts.size();j++) {
+					inf.inicio_playout =System.currentTimeMillis();
 					
-					melhor.set(i, t);
-					e_m=e;
+					atual.set(i, j);
+					
+					playouts.get(j).configura(player, gs, actions, i, inf, atual,link);
+					
+					
+				
 				}
-		}
-			return e_m;
-		
+					
+				for(int t =0 ; t<threads.size();t++) {
+					threads.set(t, new Thread(playouts.get(t)));
+					threads.get(t).start();
+					threads.get(t).join();
+				}
+					
+				
+				
+				for(int t =0; t<playouts.size();t++) pont.set(t, pont.get(t) +playouts.get(t).resultado);
+			
+			}
+				
+				double e_m= -111;
+				for(int t =0; t<playouts.size();t++) {
+					double e = pont.get(t);
+					
+					if(e_m<e) {
+						
+						melhor_simulacao.set(i, t);
+						e_m=e;
+					}
+			}
+				if(e_m_s<e_m) {
+					e_m_s=e_m;
+				}
+				ultimo_grupo=(ultimo_grupo+1)%num_tipo;
+			}
+		return e_m_s;
 	}
-	
 	@Override
 	public PlayerAction getAction(int player, GameState gs) throws Exception {
 		
 		PhysicalGameState pgs = gs.getPhysicalGameState();
 		Player p = gs.getPlayer(player);
 		
-	//if((gs.getTime()+1)%10==0)rna.test(player, gs, utt);;
-		/*for(Unit un : gs.getUnits()) {
-			if(!link.containsKey(un.getID())){
-			int g =gerador.nextInt(num_tipo);
-			grupos.get(g).add(un);
-			link.put(un.getID(), g);
-		}
-			if(un.getType()==rangedType) {
-				grupos.get(0).add(un);
-				link.put(un.getID(), 0);
-			}
-			else {
-				grupos.get(1).add(un);
-				link.put(un.getID(), 1);
-			}
-		}*/
+
 		
 		
-		 int simulacao =5;
+		 int simulacao =10;
 		 double mg=-1111;
+		 
+		 int amostra_num_grupo = 0;
 		 int num_unt=-1;
 		 HashMap<Integer,Integer> mapea2 = (HashMap<Integer, Integer>) mapea.clone();
-			 
+			
 			 if(!treinando)simulacao=1;
 			 
+			 
+			 if(gs.getTime()%intervalo_amostragem==0) {
+				 rna.atualiza_distribuicao(player, gs,treinando);
+				 System.out.println("----------------------------------------------------------------");
+			 
 		for(int sim=0;sim<simulacao;sim++)	 {
-			if(gs.getTime()%intervalo_amostragem==0) {
-				if(sim==0)rna.agrupa(player, gs, utt, mapea2);
-				else rna.amostra(player, gs, utt, mapea2);
+			
+			
+				
+				if(sim==0)amostra_num_grupo=rna.agrupa(player, gs, utt, mapea2);
+				else amostra_num_grupo=rna.amostra(player, gs, utt, mapea2);
 			//	if(!this.treinando&&player==0)System.out.println(mapea2);
 				
-			}
-			// agrupaem canonica, O menor id sempre estará no grupo 0
-			Integer id_base=-1;
 		
-			for (Unit u : gs.getUnits()) {
-				if(u.getType()==baseType && player==u.getPlayer()) {
-					id_base=(int) u.getID();
-				}
-			}
-			if(id_base!=-1) {
-				int valor_id =mapea2.get(id_base);	
 				
-					for (Iterator<Integer> iterator = mapea2.keySet().iterator(); iterator.hasNext();) {
-						Integer i = iterator.next();
-						Integer troca = mapea2.get(i);
-						if(troca==0) mapea2.put(i,  valor_id);
-						if(troca==valor_id)mapea2.put(i,  0);
-					}
-				
-			}
-			//
-			
 			double e_m = simula(player,gs,mapea2);
+			//System.out.println(player+"grupo = "+amostra_num_grupo+" v= "+ e_m);;
 			gerador = new Random();
 			
 				if(e_m>=mg) {
@@ -565,38 +492,44 @@ public class SSSteste extends AbstractionLayerAI  {
 							mapea=(HashMap<Integer, Integer>) mapea2.clone();
 							mg=e_m;
 							num_unt = gs.getUnits().size();
+							 melhor_numero_grupo=amostra_num_grupo;
 						}
 					}
-					else {
+				else {
 						mapea=(HashMap<Integer, Integer>) mapea2.clone();
+						melhor_numero_grupo=amostra_num_grupo;
 						mg=e_m;
 					}
 					
 				}
-	}	
-		
+			}	
+		}
 		
 			 double e_m = simula(player,gs,mapea);
+			melhor=(ArrayList<Integer>) melhor_simulacao.clone();
+			ultimo_grupo_simulacao = ultimo_grupo;
 			
-		
 			if(gs.getTime()%10==0&&e_m>0) {
-				//	System.out.println(mapea);
-					if(treinando)rna.grava(player, gs, utt,mapea);
-				//	if(gs.getTime()==0)System.out.println(mapea);
+				//if(!treinando)System.out.println(mapea);
+					if(treinando)rna.grava(player, gs, utt,mapea,melhor_numero_grupo);
+					//if(treinando)System.out.println("grupo = "+ melhor_numero_grupo);;
 				}
 		
-		
-		
-		
+			
+			
+			
 		
 			//System.out.println(melhor.get(0));
 		List<Unit> Units_aux = new ArrayList<>();
-		for(int j = 0;j < grupos.size();j++) {
+		for(int j = 0;j < 8;j++) {
 			scripts.get(melhor.get(j)).getAction(player, gs, grupos.get(j), Units_aux, inf,actions);
 		}
 	
-		if(!treinando&&false) {
+		if(gs.getTime()%intervalo_amostragem==0) {
+			System.out.println("numero de grupo  "+melhor_numero_grupo);
+			System.out.println("agrup  "+mapea);
 			System.out.print("aprendendo  ");
+	
 			for(int kk =0;kk<melhor.size();kk++)
 			System.out.print(" " + melhor.get(kk));
 			System.out.println("------------------ " + e_m);
@@ -604,7 +537,9 @@ public class SSSteste extends AbstractionLayerAI  {
 		return translateActions(player, gs);
 	}
 
-	
+	public void resetar() {
+		
+	}
 	
 	@Override
 	public AI clone() {

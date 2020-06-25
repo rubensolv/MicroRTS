@@ -77,7 +77,7 @@ public class MoonWalker extends AbstractionLayerAID  {
         }
     //    workersBehavior(workers, p, gs,inf);
 
-        actions = null;
+        
         return translateActions(player, gs);
     }
     

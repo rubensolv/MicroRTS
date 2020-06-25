@@ -24,7 +24,7 @@ public class SimpleSqrtEvaluationFunction3 extends EvaluationFunction {
     public float evaluate(int maxplayer, int minplayer, GameState gs) {
         float s1 = base_score(maxplayer,gs);
         float s2 = base_score(minplayer,gs);
-        if (s1 + s2 == 0) return 0.5f;
+        if (s1 + s2 == 0) return 0.0f;
         return  (2*s1 / (s1 + s2))-1;
     }
     
