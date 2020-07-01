@@ -88,11 +88,6 @@ public class Rojo extends AbstractionLayerAI {
 	}
 
 
-	public void computeDuringOneGameFrame() throws Exception {
-
-	}
-
-
 	private void initializeIA(int player, GameState gs) {
 		
 		PhysicalGameState pgs = gs.getPhysicalGameState();   
@@ -101,74 +96,74 @@ public class Rojo extends AbstractionLayerAI {
 			//FourBasesWorkers8x8
 			if(getUnitsbyType(gs,player,"Base")==4)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (attack(Worker,closest,u)) if(HaveQtdUnitsAttacking(Worker,4)) (harvest(50)) if(HaveQtdEnemiesbyType(Worker,2)) (moveToUnit(Worker,Ally,lessHealthy)) for(u) (attack(Worker,lessHealthy,u)) for(u) (harvest(50,u)) train(Worker,50,Up) for(u) (moveToUnit(Worker,Ally,lessHealthy,u))");
 			}
 			//basesWorkers8x8A and others 8x8 maps
 			else
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (train(Worker,50,Down,u)) for(u) (if(HaveQtdUnitsHarversting(1,u)) (attack(Worker,closest,u)) (harvest(50,u))) for(u) (attack(Worker,closest,u))");
 			}
 		} else if(pgs.getHeight() == 16 && pgs.getWidth() == 16){
 			//TwoBasesBarracks16x16.xml
 			if(getUnitsbyType(gs,player,"Base")==2 && getUnitsbyType(gs,player,"Barracks")==2)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "train(Light,50,EnemyDir) train(Worker,50,Right) attack(Light,closest) for(u) (harvest(50,u)) for(u) (attack(Worker,mostHealthy,u)) for(u) (moveToUnit(Worker,Ally,farthest,u)) attack(Light,strongest)");
 			}
 			//basesWorkers16x16A and others 16x16 maps
 			else
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,4,u)) (attack(Worker,closest,u)) (harvest(50,u)) train(Worker,50,EnemyDir,u)) for(u) (moveToUnit(Worker,Ally,lessHealthy,u)) for(u) (harvest(50,u)) attack(Worker,farthest)");
 			}       	
 
 		} else if(pgs.getHeight() == 8 && pgs.getWidth() == 9){
 			//NoWhereToRun9x8.xml and others 9x8 maps
-			baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+			baseAI=decodeScripts(utt, "build(Barrack,50,Right) for(u) (if(HaveQtdUnitsbyType(Worker,4,u)) (train(Ranged,50,Up,u)) (train(Worker,50,Right))) attack(Ranged,closest) for(u) (harvest(50,u)) for(u) (if(HaveQtdUnitsbyType(Worker,4,u)) (moveToUnit(Worker,Ally,mostHealthy,u))) for(u) (train(Ranged,50,Up))");
 
 		} else if(pgs.getHeight()==24 && pgs.getWidth()==24) {
 			//DoubleGame24x24 and others 24x24 maps
-			baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+			baseAI=decodeScripts(utt, "if(HaveQtdEnemiesbyType(Worker,2)) (train(Worker,50,Up)) (train(Worker,50,Up)) for(u) (if(HaveQtdUnitsHarversting(2,u)) (attack(Worker,closest,u)) harvest(50,u)) if(HaveQtdUnitsbyType(Worker,6)) (moveToUnit(Worker,Ally,mostHealthy))");
 
 		} else if(pgs.getHeight()==32 && pgs.getWidth()==32) {
 			//BWDistantResources32x32 and others 32x32 maps
-			baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+			baseAI=decodeScripts(utt, "for(u) (attack(Worker,closest,u)) train(Worker,50,Right) for(u) (moveaway(Worker,u))");
 
 		} else if(pgs.getHeight()==64 && pgs.getWidth()==64) {
 			//(4)BloodBath and others 64x64 maps
-			baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+			baseAI=decodeScripts(utt, "for(u) (train(Worker,50,Left,u)) for(u) (if(HaveUnitsToDistantToEnemy(Worker,18,u)) (attack(Worker,closest,u))) for(u) (harvest(50,u)) for(u) (attack(Worker,closest,u))");
 
-		} else { // Here we choose one of the 8 scripts we have in our bag
+		} else { // Here we choose one of the 8 scripts showed above just in case of a map with a new size (it should not happen)
 			int choice = rand.nextInt(8);
 			if(choice==0)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (attack(Worker,closest,u)) if(HaveQtdUnitsAttacking(Worker,4)) (harvest(50)) if(HaveQtdEnemiesbyType(Worker,2)) (moveToUnit(Worker,Ally,lessHealthy)) for(u) (attack(Worker,lessHealthy,u)) for(u) (harvest(50,u)) train(Worker,50,Up) for(u) (moveToUnit(Worker,Ally,lessHealthy,u))");
 			}
 			else if(choice==1)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (train(Worker,50,Down,u)) for(u) (if(HaveQtdUnitsHarversting(1,u)) (attack(Worker,closest,u)) (harvest(50,u))) for(u) (attack(Worker,closest,u))");
 			}
 			else if(choice==2)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "train(Light,50,EnemyDir) train(Worker,50,Right) attack(Light,closest) for(u) (harvest(50,u)) for(u) (attack(Worker,mostHealthy,u)) for(u) (moveToUnit(Worker,Ally,farthest,u)) attack(Light,strongest)");
 			}
 			else if (choice==3)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,4,u)) (attack(Worker,closest,u)) (harvest(50,u)) train(Worker,50,EnemyDir,u)) for(u) (moveToUnit(Worker,Ally,lessHealthy,u)) for(u) (harvest(50,u)) attack(Worker,farthest)");
 			}
 			else if(choice==4)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "build(Barrack,50,Right) for(u) (if(HaveQtdUnitsbyType(Worker,4,u)) (train(Ranged,50,Up,u)) (train(Worker,50,Right))) attack(Ranged,closest) for(u) (harvest(50,u)) for(u) (if(HaveQtdUnitsbyType(Worker,4,u)) (moveToUnit(Worker,Ally,mostHealthy,u))) for(u) (train(Ranged,50,Up))");
 			}
 			else if(choice==5)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "if(HaveQtdEnemiesbyType(Worker,2)) (train(Worker,50,Up)) (train(Worker,50,Up)) for(u) (if(HaveQtdUnitsHarversting(2,u)) (attack(Worker,closest,u)) harvest(50,u)) if(HaveQtdUnitsbyType(Worker,6)) (moveToUnit(Worker,Ally,mostHealthy))");
 			}
 			else if (choice==6)
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (attack(Worker,closest,u)) train(Worker,50,Right) for(u) (moveaway(Worker,u))");
 			}
 			else
 			{
-				baseAI=decodeScripts(utt, "for(u) (if(HaveUnitsToDistantToEnemy(Worker,6,u)) (attack(Worker,closest,u))) harvest(50) train(Worker,50,Left) moveToUnit(Worker,Ally,farthest)");
+				baseAI=decodeScripts(utt, "for(u) (train(Worker,50,Left,u)) for(u) (if(HaveUnitsToDistantToEnemy(Worker,18,u)) (attack(Worker,closest,u))) for(u) (harvest(50,u)) for(u) (attack(Worker,closest,u))");
 			}       	
 		}
 
