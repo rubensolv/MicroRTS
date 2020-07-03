@@ -16,8 +16,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -25,7 +23,6 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "ucb", catalog = "", schema = "")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Ucb.findAll", query = "SELECT u FROM Ucb u")
     , @NamedQuery(name = "Ucb.findByIdRule", query = "SELECT u FROM Ucb u WHERE u.idRule = :idRule")
@@ -63,8 +60,7 @@ public class Ucb implements Serializable {
     public void setQtdUsed(Integer qtdUsed) {
         this.qtdUsed = qtdUsed;
     }
-
-    @XmlTransient
+    
     public List<LogUCB> getLogUCBList() {
         return logUCBList;
     }
