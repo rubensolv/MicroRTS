@@ -41,8 +41,8 @@ public class MoveToCoordinatesOnce extends AbstractBasicAction implements IUnitC
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
         if (game.getTime() == 0) {
             this.hasExecuted = false;
-        }
-        if (this.hasExecuted) {
+        }        
+        if (this.hasExecuted) {            
             return currentPlayerAction;
         }
         ResourceUsage resources = new ResourceUsage();
@@ -50,9 +50,12 @@ public class MoveToCoordinatesOnce extends AbstractBasicAction implements IUnitC
         IQuantity qtd = getQuantityFromParam();
         cleanControlledUnits(game);
         for (Unit potentialUnit : getPotentialUnits(game, currentPlayerAction, player)) {
-            if (unitsToMove.size() < qtd.getQuantity()) {
-                unitsToMove.add(potentialUnit);
+            if (game.getActionAssignment(potentialUnit) == null) {
+                if (unitsToMove.size() < qtd.getQuantity()) {
+                    unitsToMove.add(potentialUnit);
+                }
             }
+
         }
         if (unitsToMove.isEmpty()) {
             return currentPlayerAction;
@@ -138,6 +141,10 @@ public class MoveToCoordinatesOnce extends AbstractBasicAction implements IUnitC
                 && unAlly.getPlayer() != player) {
             return currentPlayerAction;
         }
+        //check if the unit is on type
+        if (!isUnitControlledByParam(unAlly)) {
+            return currentPlayerAction;
+        }
 
         ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
@@ -145,24 +152,24 @@ public class MoveToCoordinatesOnce extends AbstractBasicAction implements IUnitC
         cleanControlledUnits(game);
         if (unitsToMove.size() < qtd.getQuantity()) {
             unitsToMove.add(unAlly);
-        }else{
+        } else {
             //check if the unit is in controlled units
-            if(!unitsToMove.contains(unAlly)){
+            if (!unitsToMove.contains(unAlly)) {
                 return currentPlayerAction;
             }
         }
-        
+
         //update variable resources
         resources = getResourcesUsed(currentPlayerAction, pgs);
 
         int pX = getCoordinatesFromParam().getX();
         int pY = getCoordinatesFromParam().getY();
-        
-        if(unAlly.getX() == pX && unAlly.getY() == pY){
-                this.hasExecuted = true;
-                unitsToMove.clear();
-                return currentPlayerAction;
-            }
+
+        if (unAlly.getX() == pX && unAlly.getY() == pY) {
+            this.hasExecuted = true;
+            unitsToMove.clear();
+            return currentPlayerAction;
+        }
 
         if (game.getActionAssignment(unAlly) == null && unAlly != null && hasInPotentialUnits(game, currentPlayerAction, unAlly, player)) {
 
