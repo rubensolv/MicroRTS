@@ -128,12 +128,16 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 //"maps/DoubleGame24x24.xml",
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
-                //"maps/BroodWar/(4)BloodBath.scmB.xml"
+                "maps/BroodWar/(4)BloodBath.scmB.xml"
                 //"maps/8x8/basesWorkers8x8A.xml"
                 //"maps/16x16/BasesWithWalls16x16.xml"
                 //"maps/16x16/basesWorkers16x16A.xml"
-                "maps/NoWhereToRun9x8.xml"
+                //"maps/NoWhereToRun9x8.xml"
         		//"maps/battleMaps/Others/RangedHeavyMixed.xml"
+        		//"maps/8x8/FourBasesWorkers8x8.xml"
+        		//"maps/16x16/TwoBasesBarracks16x16.xml"
+        		//"maps/DoubleGame24x24.xml"
+        		//"maps/BWDistantResources32x32.xml"
         ));
 
         //UnitTypeTable utt = new UnitTYpeTableBattle();
@@ -173,13 +177,14 @@ public class RoundRobinClusterLeve_Cluster_GP {
         //AI aiChampion16=decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1).get(0);
         
         ais = new ArrayList<>(Arrays.asList(
-        		//new AHTNAI(utt),
+//        		new AHTNAI(utt),
                 new Droplet(utt),
                 new NaiveMCTS(utt),
-                new PuppetSearchMCTS(utt),
-                new StrategyTactics(utt),
-                new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGSR_LIGHT"),
-                new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "SSSR_LIGHT"),
+                new Tiamat(utt),
+//                new PuppetSearchMCTS(utt),
+//                new StrategyTactics(utt),
+//                new LightPGSSCriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "PGSR_LIGHT"),
+//                new LightSSSmRTSScriptChoice(utt, decodeScripts(utt, "0;1;2;3;"), 200, "SSSR_LIGHT"),
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 4), //lr
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 5), //HR
                 new BasicExpandedConfigurableScript(utt, new AStarPathFinding(), 18, 0, 0, 1, 2, 2, -1, -1, 6), //RR
@@ -187,6 +192,10 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 new A3NWithin(100, -1, 100, 8, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3,
                         decodeScripts(utt, "1;2;3;"), "A3N"),
+//                new CmabAssymetricMCTS(100, -1, 100, 1, 0.3f,
+//                	      0.0f, 0.4f, 0, new RandomBiasedAI(utt),
+//                	      new SimpleSqrtEvaluationFunction3(), true, utt,
+//                	      "ManagerClosestEnemy", 3, decodeScripts(utt, "1;2;3;")), 
 //                new A3NWithin(100, -1, 100, 8, 0.3F, 0.0F, 0.4F, 0, new RandomBiasedAI(utt),
 //                        new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3,
 //                        decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1,""), "A3N_Trace"),
@@ -255,13 +264,18 @@ public class RoundRobinClusterLeve_Cluster_GP {
 //                decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1,"RR_OURGRAMMAR").get(0)
               
               decodeScripts2(utt, new ArrayList<>(getListIfInteger("0;")),scriptsTable1,"GPPD_BEST_RR1").get(0),
-//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1,"GPPD_BEST_RR2").get(0),
-//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("2;")),scriptsTable1,"GPPD_BEST_RR3").get(0),
+              decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1,"GPPD_BEST_RR2").get(0),
+              decodeScripts2(utt, new ArrayList<>(getListIfInteger("2;")),scriptsTable1,"GPPD_BEST_RR3").get(0)
 //              decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1,"GPPD_BEST_RR4").get(0),
 //              decodeScripts2(utt, new ArrayList<>(getListIfInteger("4;")),scriptsTable1,"GPPD_BEST_RR5").get(0),
 //              decodeScripts2(utt, new ArrayList<>(getListIfInteger("5;")),scriptsTable1,"GPPD_BEST_RR6").get(0)
               
-            decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1,"GPPD_BEST_CURR_RR1").get(0)
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1,"GPPD_BEST_CURR_RR1").get(0),
+            
+//          decodeScripts2(utt, new ArrayList<>(getListIfInteger("2;")),scriptsTable1,"WR_OURGRAMMAR").get(0),
+//          decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1,"LR_OURGRAMMAR").get(0),
+//          decodeScripts2(utt, new ArrayList<>(getListIfInteger("4;")),scriptsTable1,"HR_OURGRAMMAR").get(0),
+//          decodeScripts2(utt, new ArrayList<>(getListIfInteger("5;")),scriptsTable1,"RR_OURGRAMMAR").get(0)
         		
         		
 //              decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1,"GPPD_BEST_RR1").get(0),
@@ -278,10 +292,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
 //              decodeScripts2(utt, new ArrayList<>(getListIfInteger("9;")),scriptsTable1,"GPPD_BEST_RR4").get(0),
 //              decodeScripts2(utt, new ArrayList<>(getListIfInteger("10;")),scriptsTable1,"GPPD_BEST_RR5").get(0),
 //              decodeScripts2(utt, new ArrayList<>(getListIfInteger("11;")),scriptsTable1,"GPPD_BEST_RR6").get(0)
-//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1,"WR_OURGRAMMAR").get(0),
-//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("4;")),scriptsTable1,"LR_OURGRAMMAR").get(0),
-//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("5;")),scriptsTable1,"HR_OURGRAMMAR").get(0),
-//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("6;")),scriptsTable1,"RR_OURGRAMMAR").get(0)
+
                 
 //              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("0;")),scriptsTable1), 200, "GPPD_SCHEME_1_1"),
 //              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1), 200, "GPPD_SCHEME_1_2"),
@@ -320,12 +331,12 @@ public class RoundRobinClusterLeve_Cluster_GP {
         //método para fazer a troca dos players
         //JFrame w = PhysicalGameStatePanel.newVisualizer(gs, 840, 840, false, PhysicalGameStatePanel.COLORSCHEME_BLACK);
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
-        long startTime;
-        long timeTemp;
-        long countingTimeAI1=0;
-        long countingTimeAI2=0;
-        long counterCallsAI1=0;
-        long counterCallsAI2=0;
+        double startTime;
+        double timeTemp;
+        double countingTimeAI1=0;
+        double countingTimeAI2=0;
+        double counterCallsAI1=0;
+        double counterCallsAI2=0;
         //System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;
         do {
@@ -387,7 +398,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
             //avaliacao de tempo
             duracao = Duration.between(timeInicial, Instant.now());
 
-        } while (!gameover && (gs.getTime() < 6000));
+        } while (!gameover && (gs.getTime() < MAXCYCLES));
 
         log.add("Total de actions= " + totalAction + " sumAi1= " + sumAi1 + " sumAi2= " + sumAi2 + "\n");
 
@@ -404,8 +415,8 @@ public class RoundRobinClusterLeve_Cluster_GP {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
         
-//        log.add("Avg Response "+ai1.toString()+" "+ countingTimeAI1/counterCallsAI1);
-//        log.add("Avg Response "+ai2.toString()+" "+ countingTimeAI2/counterCallsAI2);
+        log.add("Avg Response "+ai1.toString()+" "+ countingTimeAI1/counterCallsAI1);
+        log.add("Avg Response "+ai2.toString()+" "+ countingTimeAI2/counterCallsAI2);
 
         gravarLog(log, sIA1, sIA2, sMap, sIte, pathLog);
         //System.exit(0);
