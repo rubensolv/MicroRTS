@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.UnitAction;
@@ -226,7 +227,7 @@ public class EditedPGSmRTS extends AIWithComputationBudget implements Interrupti
      * @param gs
      * @param uScriptPlayer
      * @param aiEnemy
-     * @return a avaliação para ser utilizada como base.
+     * @return a avaliaÃ§Ã£o para ser utilizada como base.
      * @throws Exception
      */
     public double eval(int player, GameState gs, UnitScriptData uScriptPlayer, AI aiEnemy) throws Exception {
@@ -349,7 +350,7 @@ public class EditedPGSmRTS extends AIWithComputationBudget implements Interrupti
         UnitScriptData bestScriptData = currentScriptData.clone();
         double bestScore = eval(player, gs_to_start_from, bestScriptData, seedEnemy);
         ArrayList<Unit> unitsPlayer = getUnitsPlayer(player);
-        //controle pelo número de iterações
+        //controle pelo nÃºmero de iteraÃ§Ãµes
         //for (int i = 0; i < I; i++) {
         //controla por tempo
         while (System.currentTimeMillis() < (start_time + (TIME_BUDGET - 8))) {
@@ -376,7 +377,7 @@ public class EditedPGSmRTS extends AIWithComputationBudget implements Interrupti
                         return bestScriptData.clone();
                     }
                 }
-                //seto o melhor vetor para ser usado em futuras simulações
+                //seto o melhor vetor para ser usado em futuras simulaÃ§Ãµes
                 currentScriptData = bestScriptData.clone();
             }
         }
@@ -460,3 +461,4 @@ public class EditedPGSmRTS extends AIWithComputationBudget implements Interrupti
     }
 
 }
+
