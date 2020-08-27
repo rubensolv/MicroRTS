@@ -5,12 +5,9 @@
  */
 package ai.ScriptsGenerator.Command.BasicBoolean;
 
-import ai.ScriptsGenerator.BasicConditional.IConditional;
 import ai.ScriptsGenerator.BasicConditional.SimpleConditional;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.CommandInterfaces.IUnitCommand;
-import ai.ScriptsGenerator.IParameters.IParameters;
-import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.abstraction.pathfinding.PathFinding;
 import java.util.ArrayList;
 import java.util.HashMap;

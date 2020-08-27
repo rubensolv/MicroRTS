@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import ai.ScriptsGenerator.Command.BasicAction.BuildBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumTypeUnits;
 import ai.ScriptsGenerator.CommandInterfaces.ICommand;
 import ai.ScriptsGenerator.IParameters.IBehavior;
@@ -21,14 +20,12 @@ import ai.ScriptsGenerator.IParameters.IQuantity;
 import ai.ScriptsGenerator.ParametersConcrete.ConstructionTypeParam;
 import ai.ScriptsGenerator.ParametersConcrete.PlayerTargetParam;
 import ai.ScriptsGenerator.ParametersConcrete.UnitTypeParam;
-import ai.abstraction.pathfinding.PathFinding;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.ResourceUsage;
 import rts.UnitAction;
 import rts.units.Unit;
-import rts.units.UnitTypeTable;
 import util.Pair;
 
 /**

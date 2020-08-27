@@ -63,6 +63,9 @@ public class ConditionalGPCompiler extends AbstractCompiler {
         if (code.contains("HaveEnemiesStrongest")) {
             return conditionalHaveEnemiesStrongest(code);
         }
+        if (code.contains("IsPlayerInPosition")) {
+            return conditionalIsPlayerInPosition(code);
+        }
 
         return null;
     }
@@ -180,5 +183,23 @@ public class ConditionalGPCompiler extends AbstractCompiler {
                     params[1])));
         }
     }
+    
+    private SimpleConditional conditionalIsPlayerInPosition(String code) {
+        code = code.replace("IsPlayerInPosition(", "");
+        code = code.replace(")", "").replace(",", " ");
+        String[] params = code.split(" ");
+        
+        if (params.length == 1) {
+            return new SimpleConditional("IsPlayerInPosition",
+                    new ArrayList(Arrays.asList(getPriorityPositionByName(params[0]))));
+        } else {
+            return new SimpleConditional("IsPlayerInPosition",
+                    new ArrayList(Arrays.asList(getPriorityPositionByName(params[0]),
+                    params[1])));
+        }
+    }
+    
+    
+            
 
 }

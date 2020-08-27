@@ -11,6 +11,7 @@ import ai.ScriptsGenerator.Command.BasicAction.ClusterBasic;
 import ai.ScriptsGenerator.Command.BasicAction.HarvestBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveAwayBasic;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesBasic;
+import ai.ScriptsGenerator.Command.BasicAction.MoveToCoordinatesOnce;
 import ai.ScriptsGenerator.Command.BasicAction.MoveToUnitBasic;
 import ai.ScriptsGenerator.Command.BasicAction.TrainBasic;
 import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
@@ -103,6 +104,9 @@ public class FunctionGPCompiler extends AbstractCompiler {
         }
         if (code.contains("cluster")) {
             return clusterCommand(code, utt);
+        } 
+        if (code.contains("moveOnceToCoord")) {
+            return moveToCoordOnceCommand(code, utt);
         }
 
         return null;
@@ -293,6 +297,29 @@ public class FunctionGPCompiler extends AbstractCompiler {
         cluster.addParameter(getTypeUnitByString(params[0]));
 
         return cluster;
+    }
+    
+    private ICommand moveToCoordOnceCommand(String code, UnitTypeTable utt) {
+    	String originalCode=code;
+        if(code.startsWith("(")){
+            code = code.substring(1);
+        }
+        code = code.replace("moveOnceToCoord(", "");
+        code = code.replace(")", "").replace(",", " ");
+        String[] params = code.split(" ");
+
+        MoveToCoordinatesOnce moveToCoordinates = new MoveToCoordinatesOnce();
+        moveToCoordinates.setOriginalPieceGrammar(String.valueOf(FunctionGPCompiler.counterCommands++));
+        moveToCoordinates.setOriginalPieceGrammarWord("moveOnceToCoord");
+        int x = Integer.decode(params[2]);
+        int y = Integer.decode(params[3]);
+        moveToCoordinates.addParameter(new CoordinatesParam(x, y));
+        moveToCoordinates.addParameter(getTypeUnitByString(params[0]));//add unit type
+        moveToCoordinates.addParameter(new QuantityParam(Integer.decode(params[1]))); //add qtd unit
+        if (params.length > 4) {
+            moveToCoordinates.setUnitIsNecessary();
+        }
+        return moveToCoordinates;
     }
 
 }

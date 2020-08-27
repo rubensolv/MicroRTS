@@ -31,7 +31,6 @@ import static rts.UnitAction.DIRECTION_DOWN;
 import static rts.UnitAction.DIRECTION_LEFT;
 import static rts.UnitAction.DIRECTION_RIGHT;
 import static rts.UnitAction.DIRECTION_UP;
-import rts.UnitActionAssignment;
 import rts.units.Unit;
 import rts.units.UnitType;
 import rts.units.UnitTypeTable;
@@ -42,13 +41,14 @@ import util.Pair;
  * @author rubens
  */
 public class TrainBasic extends AbstractBasicAction {
-	
-	String originalPieceGrammar;
-	String originalPieceGrammarWord;
+
+    String originalPieceGrammar;
+    String originalPieceGrammarWord;
 
     @Override
-    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {    	         
-    	int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction) + game.getResourceUsage().getResourcesUsed(player);        
+    public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
+
+        int resourcesUsed = getResourcesInCurrentAction(currentPlayerAction) + game.getResourceUsage().getResourcesUsed(player);        
         if ((game.getPlayer(player).getResources() - resourcesUsed) >= valueOfUnitsToBuild(game, player, a_utt)
                 && limitReached(game, player, currentPlayerAction)) {
             //get units basead in type to produce
@@ -56,21 +56,18 @@ public class TrainBasic extends AbstractBasicAction {
             Player p = game.getPlayer(player);
             //produce the type of unit in param
             for (Unit unit : unitToBuild) {
-            	 if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null) {
+                if (game.getActionAssignment(unit) == null && currentPlayerAction.getAction(unit) == null) {
                     UnitAction unTemp = translateUnitAction(game, a_utt, unit, p);
-                    if (unTemp != null && 
-                            (game.getPlayer(player).getResources() - resourcesUsed) >= unTemp.getUnitType().cost) 
-                    {
-                    	usedCommands.add(getOriginalPieceGrammar());
-                    	if(counterByFunction.containsKey(unit.getID()))
-                    	{
-                    		if(!counterByFunction.get(unit.getID()).equals("train"))
-                    			counterByFunction.put(unit.getID(), "train");
-                    	}
-                    	else
-                    	{
-                    		counterByFunction.put(unit.getID(), "train");
-                    	}
+                    if (unTemp != null
+                            && (game.getPlayer(player).getResources() - resourcesUsed) >= unTemp.getUnitType().cost) {
+                        usedCommands.add(getOriginalPieceGrammar());
+                        if (counterByFunction.containsKey(unit.getID())) {
+                            if (!counterByFunction.get(unit.getID()).equals("train")) {
+                                counterByFunction.put(unit.getID(), "train");
+                            }
+                        } else {
+                            counterByFunction.put(unit.getID(), "train");
+                        }
                         currentPlayerAction.addUnitAction(unit, unTemp);
                         resourcesUsed += unTemp.getUnitType().cost;
                     }
@@ -112,22 +109,21 @@ public class TrainBasic extends AbstractBasicAction {
 
         for (UnitTypeParam type : types) {
             for (EnumTypeUnits en : type.getParamTypes()) {
-            	
-            	if(p.getResources() >= a_utt.getUnitType(en.code()).cost)
-            	{
-            		
-            		UnitAction uAct = null;
-            		//train based in PriorityPosition
-            		uAct = trainUnitBasedInPriorityPosition(game, unit, a_utt.getUnitType(en.code()));
-            		if (uAct == null) {
-            			AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
-            			uAct = action.execute(game);
-            		}
 
-            		if (uAct != null && uAct.getType() == 4) {
-            			return uAct;
-            		}
-            	}
+                if (p.getResources() >= a_utt.getUnitType(en.code()).cost) {
+
+                    UnitAction uAct = null;
+                    //train based in PriorityPosition
+                    uAct = trainUnitBasedInPriorityPosition(game, unit, a_utt.getUnitType(en.code()));
+                    if (uAct == null) {
+                        AbstractAction action = new Train(unit, a_utt.getUnitType(en.code()));
+                        uAct = action.execute(game);
+                    }
+
+                    if (uAct != null && uAct.getType() == 4) {
+                        return uAct;
+                    }
+                }
             }
         }
 
@@ -309,41 +305,41 @@ public class TrainBasic extends AbstractBasicAction {
 
     private int valueOfUnitsToBuild(GameState game, int player, UnitTypeTable a_utt) {
         int v = 999;
-        
+
         List<UnitTypeParam> types = getTypeUnitFromParam();
 
         for (UnitTypeParam type : types) {
             for (EnumTypeUnits en : type.getParamTypes()) {
-                if(v > a_utt.getUnitType(en.code()).cost){
+                if (v > a_utt.getUnitType(en.code()).cost) {
                     v = a_utt.getUnitType(en.code()).cost;
                 }
-            	
+
             }
         }
-        
+
         return v;
     }
-    
-	/**
-	 * @return the originalPieceGrammar
-	 */
-	public String getOriginalPieceGrammar() {
-		return originalPieceGrammar;
-	}
 
-	/**
-	 * @param originalPieceGrammar the originalPieceGrammar to set
-	 */
-	public void setOriginalPieceGrammar(String originalPieceGrammar) {
-		this.originalPieceGrammar = originalPieceGrammar;
-	}
-	
-	public String getOriginalPieceGrammarWord() {
-		return originalPieceGrammarWord;
-	}
+    /**
+     * @return the originalPieceGrammar
+     */
+    public String getOriginalPieceGrammar() {
+        return originalPieceGrammar;
+    }
 
-	public void setOriginalPieceGrammarWord(String originalPieceGrammarWord) {
-		this.originalPieceGrammarWord = originalPieceGrammarWord;
-	}
+    /**
+     * @param originalPieceGrammar the originalPieceGrammar to set
+     */
+    public void setOriginalPieceGrammar(String originalPieceGrammar) {
+        this.originalPieceGrammar = originalPieceGrammar;
+    }
+
+    public String getOriginalPieceGrammarWord() {
+        return originalPieceGrammarWord;
+    }
+
+    public void setOriginalPieceGrammarWord(String originalPieceGrammarWord) {
+        this.originalPieceGrammarWord = originalPieceGrammarWord;
+    }
 
 }

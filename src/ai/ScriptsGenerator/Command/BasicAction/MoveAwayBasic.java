@@ -131,7 +131,8 @@ public class MoveAwayBasic extends AbstractBasicAction implements IUnitCommand {
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
     	//usedCommands.add(getOriginalPieceGrammar()+")");
-    	if(unAlly != null && currentPlayerAction.getAction(unAlly) != null){
+    	if(unAlly != null && currentPlayerAction.getAction(unAlly) != null &&
+                unAlly.getPlayer() != player){
             return currentPlayerAction ;
         }
         ResourceUsage resources = new ResourceUsage();

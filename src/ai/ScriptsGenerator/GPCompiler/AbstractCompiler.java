@@ -6,11 +6,13 @@
 package ai.ScriptsGenerator.GPCompiler;
 
 import ai.ScriptsGenerator.Command.Enumerators.EnumPlayerTarget;
+import ai.ScriptsGenerator.Command.Enumerators.EnumPositionType;
 import ai.ScriptsGenerator.IParameters.IParameters;
 import ai.ScriptsGenerator.ParametersConcrete.ClosestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.FarthestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.LessHealthyEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.MostHealthyEnemy;
+import ai.ScriptsGenerator.ParametersConcrete.PriorityPositionParam;
 import ai.ScriptsGenerator.ParametersConcrete.RandomEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.StrongestEnemy;
 import ai.ScriptsGenerator.ParametersConcrete.TypeConcrete;
@@ -58,6 +60,22 @@ public abstract class AbstractCompiler implements ICompiler {
         }
         return total;
     }
+    
+    protected IParameters getTypeUnitByString(String j) {
+        switch (j) {
+            case "Worker":
+                return TypeConcrete.getTypeWorker();
+            case "Light":
+                return TypeConcrete.getTypeLight();
+            case "Ranged":
+                return TypeConcrete.getTypeRanged();
+            case "Heavy":
+                return TypeConcrete.getTypeHeavy();
+            default:
+                return TypeConcrete.getTypeUnits();
+
+        }
+    }
 
     protected IParameters getBehaviorByName(String i) {
         switch (i) {
@@ -78,22 +96,26 @@ public abstract class AbstractCompiler implements ICompiler {
 
         }
     }
-
-    protected IParameters getTypeUnitByString(String j) {
-        switch (j) {
-            case "Worker":
-                return TypeConcrete.getTypeWorker();
-            case "Light":
-                return TypeConcrete.getTypeLight();
-            case "Ranged":
-                return TypeConcrete.getTypeRanged();
-            case "Heavy":
-                return TypeConcrete.getTypeHeavy();
+    
+    protected IParameters getPriorityPositionByName(String i) {
+        PriorityPositionParam p = new PriorityPositionParam();
+        switch (i) {
+            case "Left":
+                p.addPosition(EnumPositionType.Left);
+                return p;
+            case "Right":
+                p.addPosition(EnumPositionType.Right);
+                return p;
+            case "Up":
+                p.addPosition(EnumPositionType.Up);
+                return p;            
             default:
-                return TypeConcrete.getTypeUnits();
+                p.addPosition(EnumPositionType.Down);
+                return p;
 
         }
     }
+       
 
     protected EnumPlayerTarget getPlayerTargetByNumber(String p) {
         if (p.equals("Ally")) {

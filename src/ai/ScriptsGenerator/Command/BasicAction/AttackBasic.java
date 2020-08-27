@@ -117,7 +117,7 @@ public class AttackBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit unAlly, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
-    	//usedCommands.add(getOriginalPieceGrammar()+")");
+    	//usedCommands.add(getOriginalPieceGrammar()+")");        
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //update variable resources

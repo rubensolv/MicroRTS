@@ -107,40 +107,40 @@ public class FunctionsforGrammar {
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 5.0, null));
         parameters.add(new Parameter("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("build", parameters));
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 5.0, null));
         parameters.add(new Parameter("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("build", parameters));
 
         //Function HarvestBasic
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("harvest", parameters));
         //Function HarvestBasic
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         parameters.add(new Parameter("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("harvest", parameters));
 
-//        //Function MoveToCoordinatesBasic
-//        parameters = new ArrayList<>();
-//        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-//        parameters.add((new Parameter("x", 0.0, 0.0, null)));
-//        parameters.add((new Parameter("y", 0.0, 0.0, null)));        
-//        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToCoord", parameters));
-//        //Function MoveToCoordinatesBasic
-//        parameters = new ArrayList<>();
-//        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-//        parameters.add((new Parameter("x", 0.0, 15.0, null)));
-//        parameters.add((new Parameter("y", 0.0, 15.0, null)));
-//        parameters.add(new Parameter("u", null, null, null));
-//        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveToCoord", parameters));
+        //Function MoveToCoordinatesBasic
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+        parameters.add((new Parameter("y", 0.0, 15.0, null)));        
+        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveToCoord", parameters));
+        //Function MoveToCoordinatesBasic
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+        parameters.add((new Parameter("y", 0.0, 15.0, null)));
+        parameters.add(new Parameter("u", null, null, null));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveToCoord", parameters));
 
         //Function MoveToUnitBasic
         parameters = new ArrayList<>();
@@ -160,14 +160,14 @@ public class FunctionsforGrammar {
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitTrainDiscrete));
         //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         parameters.add(new Parameter("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammar.add(new FunctionsforGrammar("train", parameters));
         //Function TrainBasic
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitTrainDiscrete));
         //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new Parameter("Quantity", 50.0, 50.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
         parameters.add(new Parameter("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("train", parameters));
         
@@ -188,6 +188,22 @@ public class FunctionsforGrammar {
 //        //parameters.add(new Parameter("structureType", null, null, typeStructureDiscrete));
 //        basicFunctionsForGrammar.add(new FunctionsforGrammar("cluster", parameters));
 
+        //Function MoveToCoordinatesOnce
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
+        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+        parameters.add((new Parameter("y", 0.0, 15.0, null)));        
+        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveOnceToCoord", parameters));
+        //Function MoveToCoordinatesOnce
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
+        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+        parameters.add((new Parameter("y", 0.0, 15.0, null)));
+        parameters.add(new Parameter("u", null, null, null));
+        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveOnceToCoord", parameters));
+
     }
 
     public void createTableConditionalsGrammar() {
@@ -207,43 +223,43 @@ public class FunctionsforGrammar {
         //Conditional HaveQtdEnemiesbyType
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdEnemiesbyType", parameters));
         //Conditional HaveQtdEnemiesbyType
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveQtdEnemiesbyType", parameters));
 
         //Conditional HaveQtdEnemiesAttacking
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdUnitsAttacking", parameters));
         //Conditional HaveQtdEnemiesAttacking
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveQtdUnitsAttacking", parameters));
 
         //Conditional HaveQtdUnitsbyType
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdUnitsbyType", parameters));
         //Conditional HaveQtdUnitsbyType
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveQtdUnitsbyType", parameters));
 
         //Conditional HaveQtdUnitsHarvesting
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveQtdUnitsHarversting", parameters));
         //Conditional HaveQtdUnitsHarvesting
         parameters = new ArrayList<>();
-        parameters.add(new Parameter("Quantity", 1.0, 20.0, null));
+        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveQtdUnitsHarversting", parameters));
 
         //Conditional HaveUnitsinEnemyRange
@@ -259,12 +275,12 @@ public class FunctionsforGrammar {
         //Conditional HaveUnitsToDistantToEnemy
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Distance", 1.0, 20.0, null));        
+        parameters.add(new Parameter("Distance", 1.0, 10.0, null));        
         conditionalsForGrammar.add(new FunctionsforGrammar("HaveUnitsToDistantToEnemy", parameters));
         //Conditional HaveUnitsToDistantToEnemy
         parameters = new ArrayList<>();
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Distance", 1.0, 20.0, null));
+        parameters.add(new Parameter("Distance", 1.0, 10.0, null));
         parameters.add(new Parameter("u", null, null, null));
         conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveUnitsToDistantToEnemy", parameters));
         
@@ -287,6 +303,12 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("u", null, null, null));
         conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveEnemiesStrongest", parameters));
+        
+        
+        //Conditional IsPlayerInPosition
+        parameters = new ArrayList<>();
+        parameters.add(new Parameter("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
+        conditionalsForGrammar.add(new FunctionsforGrammar("IsPlayerInPosition", parameters));
 
     }
 
