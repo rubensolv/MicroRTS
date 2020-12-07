@@ -71,7 +71,7 @@ public class Capivara extends AbstractionLayerAI {
     @Override
     public AI clone() {
         return new Capivara(utt);
-    }
+    }    
 
     @Override
     public List<ParameterSpecification> getParameters() {

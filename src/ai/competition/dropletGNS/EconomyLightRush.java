@@ -115,7 +115,7 @@ public class EconomyLightRush extends AbstractionLayerAI {
     @Override
     public AI clone() {
         return new EconomyLightRush(utt, pf);
-    }
+    }    
 
     @Override
     public List<ParameterSpecification> getParameters() {

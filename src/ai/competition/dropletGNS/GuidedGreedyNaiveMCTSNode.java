@@ -38,21 +38,24 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
 //    static int count = -1;
 //    public int ID = -1;
 
-
-    public GuidedGreedyNaiveMCTSNode(int maxplayer, int minplayer, GameState a_gs, GuidedGreedyNaiveMCTSNode a_parent, double a_evaluation_bound, int a_creation_ID, AI[] guide, boolean fensa) throws Exception {
+    public GuidedGreedyNaiveMCTSNode(int maxplayer, int minplayer, GameState a_gs, GuidedGreedyNaiveMCTSNode a_parent,
+            double a_evaluation_bound, int a_creation_ID, AI[] guide, boolean fensa) throws Exception {
         parent = a_parent;
         gs = a_gs;
-        if (parent == null) depth = 0;
-        else depth = parent.depth + 1;
+        if (parent == null) {
+            depth = 0;
+        } else {
+            depth = parent.depth + 1;
+        }
         evaluation_bound = a_evaluation_bound;
         creation_ID = a_creation_ID;
         this.guide = guide;
         forceExplorationOfNonSampledActions = fensa;
 
-        while (gs.winner() == -1 &&
-                !gs.gameover() &&
-                !gs.canExecuteAnyAction(maxplayer) &&
-                !gs.canExecuteAnyAction(minplayer)) {
+        while (gs.winner() == -1
+                && !gs.gameover()
+                && !gs.canExecuteAnyAction(maxplayer)
+                && !gs.canExecuteAnyAction(minplayer)) {
             gs.cycle();
         }
         if (gs.winner() != -1 || gs.gameover()) {
@@ -113,11 +116,14 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
         }
     }
 
-
     // Naive Sampling:
     public GuidedGreedyNaiveMCTSNode selectLeaf(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, float epsilon_s, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
-        if (unitActionTable == null) return this;
-        if (depth >= max_depth) return this;
+        if (unitActionTable == null) {
+            return this;
+        }
+        if (depth >= max_depth) {
+            return this;
+        }
         /*
         // DEBUG:
         for(PlayerAction a:actions) {
@@ -130,20 +136,22 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
                 if (!found) new Error("DEBUG 2!!!!!");
             }
         } 
-        */
+         */
 
         if (children.size() > 0 && r.nextFloat() >= epsilon_0) {
             // sample from the global MAB:
             GuidedGreedyNaiveMCTSNode selected = null;
-            if (global_strategy == E_GREEDY) selected = selectFromAlreadySampledEpsilonGreedy(epsilon_g);
-            else if (global_strategy == UCB1) selected = selectFromAlreadySampledUCB1(C);
+            if (global_strategy == E_GREEDY) {
+                selected = selectFromAlreadySampledEpsilonGreedy(epsilon_g);
+            } else if (global_strategy == UCB1) {
+                selected = selectFromAlreadySampledUCB1(C);
+            }
             return selected.selectLeaf(maxplayer, minplayer, epsilon_l, epsilon_g, epsilon_0, epsilon_s, global_strategy, max_depth, a_creation_ID);
         } else {
             // sample from the local MABs (this might recursively call "selectLeaf" internally):
             return selectLeafUsingLocalMABs(maxplayer, minplayer, epsilon_l, epsilon_g, epsilon_0, epsilon_s, global_strategy, max_depth, a_creation_ID);
         }
     }
-
 
     public GuidedGreedyNaiveMCTSNode selectFromAlreadySampledEpsilonGreedy(float epsilon_g) throws Exception {
         if (r.nextFloat() >= epsilon_g) {
@@ -170,7 +178,6 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
         }
     }
 
-
     public GuidedGreedyNaiveMCTSNode selectFromAlreadySampledUCB1(float C) throws Exception {
         GuidedGreedyNaiveMCTSNode best = null;
         double bestScore = 0;
@@ -194,7 +201,6 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
         return best;
     }
 
-
     public GuidedGreedyNaiveMCTSNode selectLeafUsingLocalMABs(int maxplayer, int minplayer, float epsilon_l, float epsilon_g, float epsilon_0, float epsilon_s, int global_strategy, int max_depth, int a_creation_ID) throws Exception {
         PlayerAction pa2;
         BigInteger actionCode;
@@ -203,10 +209,9 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
             int index = 0;
             if (gs.getPhysicalGameState().getWidth() <= 8 && gs.getPhysicalGameState().getHeight() <= 8) {
                 index = 1;
-            }else if (gs.getPhysicalGameState().getWidth() <= 9 && gs.getPhysicalGameState().getHeight() <= 8){
+            } else if (gs.getPhysicalGameState().getWidth() <= 9 && gs.getPhysicalGameState().getHeight() <= 8) {
                 index = 2;
-            }
-            else if (gs.getPhysicalGameState().getWidth() <= 16 && gs.getPhysicalGameState().getHeight() <= 16) {
+            } else if (gs.getPhysicalGameState().getWidth() <= 16 && gs.getPhysicalGameState().getHeight() <= 16) {
                 index = 1;
                 for (Unit unit : gs.getUnits()) {
                     if (unit.getPlayer() == maxplayer && unit.getType().name.equals("Barracks")) {
@@ -262,22 +267,28 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
             for (int i = 0; i < ate.nactions; i++) {
                 if (type == 0) {
                     // max node:
-                    if (bestIdx == -1 ||
-                            (visits != 0 && ate.visit_count[i] == 0) ||
-                            (visits != 0 && (ate.accum_evaluation[i] / ate.visit_count[i]) > bestEvaluation)) {
+                    if (bestIdx == -1
+                            || (visits != 0 && ate.visit_count[i] == 0)
+                            || (visits != 0 && (ate.accum_evaluation[i] / ate.visit_count[i]) > bestEvaluation)) {
                         bestIdx = i;
-                        if (ate.visit_count[i] > 0) bestEvaluation = (ate.accum_evaluation[i] / ate.visit_count[i]);
-                        else bestEvaluation = 0;
+                        if (ate.visit_count[i] > 0) {
+                            bestEvaluation = (ate.accum_evaluation[i] / ate.visit_count[i]);
+                        } else {
+                            bestEvaluation = 0;
+                        }
                         visits = ate.visit_count[i];
                     }
                 } else {
                     // min node:
-                    if (bestIdx == -1 ||
-                            (visits != 0 && ate.visit_count[i] == 0) ||
-                            (visits != 0 && (ate.accum_evaluation[i] / ate.visit_count[i]) < bestEvaluation)) {
+                    if (bestIdx == -1
+                            || (visits != 0 && ate.visit_count[i] == 0)
+                            || (visits != 0 && (ate.accum_evaluation[i] / ate.visit_count[i]) < bestEvaluation)) {
                         bestIdx = i;
-                        if (ate.visit_count[i] > 0) bestEvaluation = (ate.accum_evaluation[i] / ate.visit_count[i]);
-                        else bestEvaluation = 0;
+                        if (ate.visit_count[i] > 0) {
+                            bestEvaluation = (ate.accum_evaluation[i] / ate.visit_count[i]);
+                        } else {
+                            bestEvaluation = 0;
+                        }
                         visits = ate.visit_count[i];
                     }
                 }
@@ -287,18 +298,24 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
                 dist[bestIdx] = (1 - epsilon_l) + (epsilon_l / ate.nactions);
             } else {
                 if (forceExplorationOfNonSampledActions) {
-                    for (int j = 0; j < dist.length; j++)
-                        if (ate.visit_count[j] > 0) dist[j] = 0;
+                    for (int j = 0; j < dist.length; j++) {
+                        if (ate.visit_count[j] > 0) {
+                            dist[j] = 0;
+                        }
+                    }
                 }
             }
 
             if (DEBUG >= 3) {
                 System.out.print("[ ");
-                for (int i = 0; i < ate.nactions; i++)
+                for (int i = 0; i < ate.nactions; i++) {
                     System.out.print("(" + ate.visit_count[i] + "," + ate.accum_evaluation[i] / ate.visit_count[i] + ")");
+                }
                 System.out.println("]");
                 System.out.print("[ ");
-                for (int i = 0; i < dist.length; i++) System.out.print(dist[i] + " ");
+                for (int i = 0; i < dist.length; i++) {
+                    System.out.print(dist[i] + " ");
+                }
                 System.out.println("]");
             }
 
@@ -353,8 +370,9 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
                 }
 
                 // DEBUG code:
-                if (gs.getUnit(ate.u.getID()) == null) throw new Error("Issuing an action to an inexisting unit!!!");
-
+                if (gs.getUnit(ate.u.getID()) == null) {
+                    throw new Error("Issuing an action to an inexisting unit!!!");
+                }
 
                 pa2.getResourceUsage().merge(r2);
                 pa2.addUnitAction(ate.u, ua);
@@ -378,19 +396,18 @@ public class GuidedGreedyNaiveMCTSNode extends MCTSNode {
         return pate.selectLeaf(maxplayer, minplayer, epsilon_l, epsilon_g, epsilon_0, epsilon_s, global_strategy, max_depth, a_creation_ID);
     }
 
-
     public UnitActionTableEntry getActionTableEntry(Unit u) {
         for (UnitActionTableEntry e : unitActionTable) {
-            if (e.u == u) return e;
+            if (e.u == u) {
+                return e;
+            }
         }
         throw new Error("Could not find Action Table Entry!");
     }
 
-
     public void propagateEvaluation(double evaluation, GuidedGreedyNaiveMCTSNode child) {
         accum_evaluation += evaluation;
         visit_count++;
-
 
         // update the unitAction table:
         if (child != null) {

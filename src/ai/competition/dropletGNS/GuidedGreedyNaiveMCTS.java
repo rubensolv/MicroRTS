@@ -62,6 +62,8 @@ public class GuidedGreedyNaiveMCTS extends AIWithComputationBudget implements In
     public long total_cycles_executed = 0;
     public long total_actions_issued = 0;
     public long total_time = 0;
+    // state control
+    boolean reset_search = true;
 
 
     public GuidedGreedyNaiveMCTS(UnitTypeTable utt) {
@@ -95,7 +97,7 @@ public class GuidedGreedyNaiveMCTS extends AIWithComputationBudget implements In
         forceExplorationOfNonSampledActions = fensa;
         epsilon_s = e_s;
     }
-
+  //GuidedGreedyNaiveMCTS(g          etTimeBudget(), -1,                  100,               100,      .2f,       0.0f,     .6f,         .75f
     public GuidedGreedyNaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, float e_s, AI policy, EvaluationFunction a_ef, AI[] gd, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
@@ -139,23 +141,51 @@ public class GuidedGreedyNaiveMCTS extends AIWithComputationBudget implements In
         total_actions_issued = 0;
         total_time = 0;
         current_iteration = 0;
+        reset_search = true;
     }
 
     public static int[] width = new int[50];
 
     public AI clone() {
         return new GuidedGreedyNaiveMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, epsilon_s, playoutPolicy, ef, guide, forceExplorationOfNonSampledActions);
-    }
+    }    
 
 
     public PlayerAction getAction(int player, GameState gs) throws Exception {
         if (gs.canExecuteAnyAction(player)) {
-            startNewComputation(player, gs.clone());
+            if (reset_search) {
+                startNewComputation(player, gs.clone());
+            }
             computeDuringOneGameFrame();
+            reset_search = true;
             return getBestActionSoFar();
         } else {
+            if (moveGameStateNextDecision(player, gs)) {
+                computeDuringOneGameFrame();
+                reset_search = false;
+            } 
             return new PlayerAction();
         }
+    }
+    
+    private boolean moveGameStateNextDecision(int player, GameState gs) throws Exception {
+        int timeNextAction = gs.getNextChangeTime();
+        GameState gs2 = gs.clone();
+        boolean gameover = false;
+        while (!gameover && (gs2.getTime() < timeNextAction)) {
+            gameover = gs2.cycle();
+        }
+        if (gs2.canExecuteAnyAction(player)) { 
+            if(reset_search){
+                startNewComputation(player, gs2);
+                if (DEBUG >= 2) {
+                    System.out.println("State moved to "+gs_to_start_from.getTime());
+                }
+            }
+            
+            return true;
+        }
+        return false;
     }
 
 

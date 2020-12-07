@@ -227,8 +227,7 @@ public class CmabAssymetricMCTS extends AIWithComputationBudget implements Inter
     @Override
     public AI clone() {
         return new CmabAssymetricMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
-    }    
-    
+    }        
     
     @Override
     public PlayerAction getAction(int player, GameState gs) throws Exception

@@ -1,0 +1,40 @@
+/* ------- Barra Superior ------- */
+
+#barra-superior{
+    -fx-background-color: transparent;
+}
+
+
+/* ------- TabPane ------- */
+
+.tab{
+    -fx-background-color:  #202134;
+}
+
+.tab-header-background{
+    -fx-background-color:  #202134
+}
+
+.jfx-tab-pane .tab-selected-line{
+    -fx-background-color: derive( WHITE, -30%);
+}
+
+.jfx-tab-pane .tab-header-area .jfx-rippler{
+    -jfx-rippler-fill: derive( #202134, +50%);
+}
+
+.jfx-tab-pane .tab .tab-label{
+    -fx-font-size: 13;
+}
+
+.toggle-button {
+    -fx-background-color:  #6e6e7b;
+    -fx-background-radius: 10px;
+
+
+}
+
+.toggle-button:selected {
+    -fx-background-color: derive( #6e6e7b, +50%);
+    -fx-background-radius: 10px;
+}

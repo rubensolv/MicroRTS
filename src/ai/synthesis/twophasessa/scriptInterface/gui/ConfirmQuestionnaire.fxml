@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" style="-fx-background-color: #202134;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ai.synthesis.twophasessa.scriptInterface.gui.ConfirmQuestionnaireController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0">
+         <children>
+            <Text fill="#ffffffd9" strokeType="OUTSIDE" strokeWidth="0.0" text="Your questionnaire was sent!" textAlignment="CENTER" wrappingWidth="380.0">
+               <font>
+                  <Font name="Ebrima Bold" size="21.0" />
+               </font>
+            </Text>
+            <Text fill="#ffffffd9" strokeType="OUTSIDE" strokeWidth="0.0" text="Thank you for helping us." textAlignment="CENTER" wrappingWidth="380.0">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+      <Button fx:id="btnOk" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickBtnOk" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #6e6e7b; -fx-background-radius: 10px;" text="Ok" textFill="#ffffffbf" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

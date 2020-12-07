@@ -76,7 +76,7 @@ public class MixedBot extends AbstractionLayerAI {
     @Override
     public AI clone() {
         return new MixedBot(utt);
-    }
+    }    
 
     @Override
     public List<ParameterSpecification> getParameters() {

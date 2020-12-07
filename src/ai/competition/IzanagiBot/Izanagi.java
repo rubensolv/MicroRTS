@@ -77,7 +77,7 @@ public class Izanagi extends AbstractionLayerAI {
     @Override
     public AI clone() {
         return new Izanagi(utt);
-    }
+    }    
 
     @Override
     public List<ParameterSpecification> getParameters() {

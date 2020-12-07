@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import rts.GameState;
 import rts.PlayerAction;
 import rts.UnitAction;

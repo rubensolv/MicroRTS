@@ -83,7 +83,7 @@ public class ImprovedTiamat extends AbstractionLayerAI {
     @Override
     public AI clone() {
         return new ImprovedTiamat(utt);
-    }
+    }    
 
     @Override
     public List<ParameterSpecification> getParameters() {
