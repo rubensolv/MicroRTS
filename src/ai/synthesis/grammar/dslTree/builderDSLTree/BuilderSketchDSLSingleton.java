@@ -84,7 +84,7 @@ public class BuilderSketchDSLSingleton {
         CDSL CTrain = buildCGrammarbyName(true, "train");
         CDSL Charvest = buildCGrammarbyName(true, "harvest");
         CDSL Cattack = buildCGrammarbyName(true, "attack");
-        BooleanDSL B = BuilderDSLTreeSingleton.getInstance().buildBGrammar(true);
+        BooleanDSL B = BuilderDSLTreeSingleton.getInstance().buildBGrammarRedefinedFromSketch(true);
         //setting order
         CTrain.setNextCommand(Charvest);
         S2DSL ifDSl = new S2DSL(B, Cattack, Cattack.clone());
@@ -201,7 +201,7 @@ public class BuilderSketchDSLSingleton {
                     );
                 } else {
                     tB.setBooleanCommand(
-                            builder.buildBGrammar(hasS3Father).getBooleanCommand()
+                            builder.buildBGrammarRedefinedFromSketch(hasS3Father).getBooleanCommand()
                     );
                 }
 

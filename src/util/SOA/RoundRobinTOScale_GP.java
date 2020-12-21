@@ -5,15 +5,15 @@
 package util.SOA;
 
 import ai.RandomBiasedAI;
-import ai.ScriptsGenerator.ChromosomeAI;
-import ai.ScriptsGenerator.CommandInterfaces.ICommand;
-import ai.ScriptsGenerator.GPCompiler.FunctionGPCompiler;
-import ai.ScriptsGenerator.GPCompiler.ICompiler;
-import ai.ScriptsGenerator.GPCompiler.MainGPCompiler;
+import ai.synthesis.DslLeague.Runner.SettingsAlphaDSL;
+import ai.synthesis.dslForScriptGenerator.DSLCommandInterfaces.ICommand;
+import ai.synthesis.dslForScriptGenerator.DSLCompiler.IDSLCompiler;
+import ai.synthesis.dslForScriptGenerator.DSLCompiler.MainDSLCompiler;
+import ai.synthesis.dslForScriptGenerator.DslAI;
+import ai.synthesis.grammar.dslTree.interfacesDSL.iDSL;
 import ai.ScriptsGenerator.TableGenerator.TableCommandsGenerator;
 
 import ai.core.AI;
-import ai.evaluation.EvaluationFunction;
 import ai.evaluation.SimpleSqrtEvaluationFunction3;
 import ai.asymmetric.GAB.SandBox.GABScriptChoose;
 import ai.asymmetric.PGS.LightPGSSCriptChoice;
@@ -24,10 +24,12 @@ import ai.competition.capivara.CmabAssymetricMCTS;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -51,13 +53,15 @@ public class RoundRobinTOScale_GP {
 
     static String _nameStrategies = "", _enemy = "";
     static AI[] strategies = null;
-    private HashMap<BigDecimal, String> scriptsTable;
+    private  ArrayList<iDSL> scriptsTable;
     String pathTableScripts;
     String pathLogsUsedCommands;
-    ICompiler compiler = new MainGPCompiler(); 
+    IDSLCompiler compiler = new MainDSLCompiler();
     int counterlinesRecorded=0;
     HashSet<String> usedCommands;
-    EvaluationFunction evaluation = new SimpleSqrtEvaluationFunction3();
+	private final String pathTableScriptsAST = System.getProperty("user.dir").concat("/Table/");
+
+    
 
     public RoundRobinTOScale_GP(String pathTableScripts, String pathLogsUsedCommands) {
         this.pathTableScripts = pathTableScripts;
@@ -78,17 +82,12 @@ public class RoundRobinTOScale_GP {
         List<String> maps = new ArrayList<>(Arrays.asList(
                 //"maps/24x24/basesWorkers24x24A.xml",
                 //"maps/32x32/basesWorkers32x32A.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
-        		"maps/NoWhereToRun9x8.xml"
+                "maps/8x8/basesWorkers8x8A.xml"
+        		//"maps/NoWhereToRun9x8.xml"
         //"maps/BroodWar/(4)BloodBath.scmB.xml"
         		//"maps/16x16/basesWorkers16x16A.xml"
         		//"maps/BroodWar/(4)EmpireoftheSun.scmB.xml"
         		//"maps/battleMaps/Others/RangedHeavyMixed.xml"
-        		
-        		//"maps/8x8/FourBasesWorkers8x8.xml"
-        		//"maps/16x16/TwoBasesBarracks16x16.xml"
-        		//"maps/BWDistantResources32x32.xml"
-        		//"maps/DoubleGame24x24.xml"
         ));
 
         UnitTypeTable utt = new UnitTypeTable();
@@ -188,11 +187,6 @@ public class RoundRobinTOScale_GP {
 //        JFrame w = PhysicalGameStatePanel.newVisualizer(gs,640,640,false,PhysicalGameStatePanel.COLORSCHEME_WHITE);
         long startTime;
         long timeTemp;
-        long countingTimeAI1=0;
-        long countingTimeAI2=0;
-        long counterCallsAI1=0;
-        long counterCallsAI2=0;
-        
         //System.out.println("Tempo de execução P2="+(startTime = System.currentTimeMillis() - startTime));
         long nextTimeToUpdate = System.currentTimeMillis() + PERIOD;
         do {
@@ -203,13 +197,6 @@ public class RoundRobinTOScale_GP {
                 PlayerAction pa1 = ai1.getAction(0, gs);
                 //dados de tempo ai1
                 timeTemp = (System.currentTimeMillis() - startTime);
-                
-                if(timeTemp>0)
-                {
-                	counterCallsAI1++;
-                	countingTimeAI1=countingTimeAI1+timeTemp;
-                }
-                
                 sumAi1 += timeTemp;
                 //coleto tempo mínimo
                 if (ai1TempoMin > timeTemp) {
@@ -219,18 +206,11 @@ public class RoundRobinTOScale_GP {
                 if (ai1TempoMax < timeTemp) {
                     ai1TempoMax = timeTemp;
                 }
-                
+
                 startTime = System.currentTimeMillis();
                 PlayerAction pa2 = ai2.getAction(1, gs);
                 //dados de tempo ai2
                 timeTemp = (System.currentTimeMillis() - startTime);
-                
-                if(timeTemp>0)
-                {
-                	counterCallsAI2++;
-                	countingTimeAI2=countingTimeAI1+timeTemp;
-                }
-                
                 sumAi2 += timeTemp;
                 //coleto tempo mínimo
                 if (ai2TempoMin > timeTemp) {
@@ -274,18 +254,12 @@ public class RoundRobinTOScale_GP {
         if (gs.winner() == -1) {
             System.out.println("Empate!" + ai1.toString() + " vs " + ai2.toString() + " Max Cycles =" + MAXCYCLES + " Time:" + duracao.toMinutes());
         }
-        
-        if(counterCallsAI1>0)
-        	log.add("Avg Response "+ai1.toString()+" "+ countingTimeAI1/counterCallsAI1);
-        if(counterCallsAI2>0)
-        	log.add("Avg Response "+ai2.toString()+" "+ countingTimeAI2/counterCallsAI2);
-        
         String stMatch = Integer.toString(IDMatch) + "" + Integer.toString(iMap);
         gravarLog(log, tupleAi1, tupleAi2, stMatch, Generation, pathLog);
         
         //System.exit(0);
-        recordGrammars(createFullString(scriptsRun1, iScriptsAi1));
-        recordGrammars(createFullString(scriptsRun2, iScriptsAi2));
+//        recordGrammars(createFullString(scriptsRun1, iScriptsAi1));
+//        recordGrammars(createFullString(scriptsRun2, iScriptsAi2));
         return true;
     }
 
@@ -318,56 +292,58 @@ public class RoundRobinTOScale_GP {
         for (Integer idSc : iScripts) {
             //System.out.println("tam tab"+scriptsTable.size());
             //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-            scriptsAI.add(buildCommandsIA(utt, scriptsTable.get(BigDecimal.valueOf(idSc))));
+        	iDSL astChosen = scriptsTable.get(idSc);
+            scriptsAI.add(buildCommandsIA(utt, astChosen));
         }
 
         return scriptsAI;
     }
     
-    public String buildCompleteGrammar(UnitTypeTable utt, ArrayList<Integer> iScripts) {
-        List<AI> scriptsAI = new ArrayList<>();
-        String portfolioGrammar="";
+//    public String buildCompleteGrammar(UnitTypeTable utt, ArrayList<Integer> iScripts) {
+//        List<AI> scriptsAI = new ArrayList<>();
+//        String portfolioGrammar="";
+//
+//        for (Integer idSc : iScripts) {
+//            //System.out.println("tam tab"+scriptsTable.size());
+//            //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
+//        	portfolioGrammar=portfolioGrammar+scriptsTable.get(BigDecimal.valueOf(idSc))+";";
+//        }
+//
+//        return portfolioGrammar;
+//    }
 
-        for (Integer idSc : iScripts) {
-            //System.out.println("tam tab"+scriptsTable.size());
-            //System.out.println("id "+idSc+" Elems "+scriptsTable.get(BigDecimal.valueOf(idSc)));
-        	portfolioGrammar=portfolioGrammar+scriptsTable.get(BigDecimal.valueOf(idSc))+";";
-        }
+//    public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
+//        //System.out.println("laut");
+//        TableCommandsGenerator tcg = TableCommandsGenerator.getInstance(utt);
+//        List<ICommand> commands = new ArrayList<>();
+//        //System.out.println("sizeeiRules "+iRules.size());
+//        for (Integer idSc : iRules) {
+//            //System.out.println("idSc "+idSc);
+//            commands.add(tcg.getCommandByID(idSc));;
+//        }
+//        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(), new HashMap<Long, String>());
+//
+//        return aiscript;
+//    }
 
-        return portfolioGrammar;
-    }
-
-    public static AI buildScript(UnitTypeTable utt, ArrayList<Integer> iRules) {
-        //System.out.println("laut");
-        TableCommandsGenerator tcg = TableCommandsGenerator.getInstance(utt);
-        List<ICommand> commands = new ArrayList<>();
-        //System.out.println("sizeeiRules "+iRules.size());
-        for (Integer idSc : iRules) {
-            //System.out.println("idSc "+idSc);
-            commands.add(tcg.getCommandByID(idSc));;
-        }
-        AI aiscript = new ChromosomeAI(utt, commands, "P1", "", new HashSet<String>(), new HashMap<Long, String>());
-
-        return aiscript;
-    }
-
-    public HashMap<BigDecimal, String> buildScriptsTable() {
-        scriptsTable = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String code = line.substring(line.indexOf(" "), line.length());
-                String[] strArray = line.split(" ");
-                int idScript = Integer.decode(strArray[0]);
-                scriptsTable.put(BigDecimal.valueOf(idScript), code);
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public ArrayList<iDSL> buildScriptsTable() {
+        scriptsTable = new ArrayList<iDSL>();
+        readTableAST();
+//        try (BufferedReader br = new BufferedReader(new FileReader(pathTableScripts + "/ScriptsTable.txt"))) {
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                String code = line.substring(line.indexOf(" "), line.length());
+//                String[] strArray = line.split(" ");
+//                int idScript = Integer.decode(strArray[0]);
+//                scriptsTable.put(BigDecimal.valueOf(idScript), code);
+//            }
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
         return scriptsTable;
     }
@@ -398,33 +374,31 @@ public class RoundRobinTOScale_GP {
         }
     }
 
-    private AI buildCommandsIA(UnitTypeTable utt, String code) {
-    	FunctionGPCompiler.counterCommands=0;
-        List<ICommand> commandsGP = compiler.CompilerCode(code, utt);
-        usedCommands=new HashSet<String> ();
-        HashMap<Long, String> counterByFunction=new HashMap<Long, String>();
-        AI aiscript = new ChromosomeAI(utt, commandsGP, "P1", code, usedCommands,counterByFunction);
+    private AI buildCommandsIA(UnitTypeTable utt, iDSL code) {
+        HashMap<Long, String> counterByFunction = new HashMap<Long, String>();
+        List<ICommand> commandsDSL = compiler.CompilerCode(code, utt);
+        AI aiscript = new DslAI(utt, commandsDSL, "P1", code, counterByFunction);
         return aiscript;
     }
     
-    private List<String> createFullString(List<AI> scriptsRun, ArrayList<Integer> iScriptsAi)
-    {
-    	List<String> listOfCompleteStrings=new ArrayList<String>();
-    	String newComplete="";
-		for (int i=0; i<scriptsRun.size();i++) {
-			newComplete="";
-			newComplete=newComplete+String.valueOf(iScriptsAi.get(i))+" ";
-			for(String str :((ChromosomeAI)((scriptsRun).get(i))).usedCommands)
-    		{
-				newComplete=newComplete+str+" ";
-    		}
-			
-			listOfCompleteStrings.add(newComplete);
-
-		}
-		
-		return listOfCompleteStrings;
-    }
+//    private List<String> createFullString(List<AI> scriptsRun, ArrayList<Integer> iScriptsAi)
+//    {
+//    	List<String> listOfCompleteStrings=new ArrayList<String>();
+//    	String newComplete="";
+//		for (int i=0; i<scriptsRun.size();i++) {
+//			newComplete="";
+//			newComplete=newComplete+String.valueOf(iScriptsAi.get(i))+" ";
+//			for(String str :((ChromosomeAI)((scriptsRun).get(i))).usedCommands)
+//    		{
+//				newComplete=newComplete+str+" ";
+//    		}
+//			
+//			listOfCompleteStrings.add(newComplete);
+//
+//		}
+//		
+//		return listOfCompleteStrings;
+//    }
     
     private void recordGrammars(List<String> listOfCompleteStrings) {
     	File pathCommandsUsed = new File(pathLogsUsedCommands);
@@ -448,4 +422,25 @@ public class RoundRobinTOScale_GP {
     		}
 		
 	}
+    
+    public void readTableAST() {
+    	FileInputStream fis;
+		try {
+			fis = new FileInputStream(pathTableScriptsAST+"ScriptsTableAST.txt");
+	    	ObjectInputStream ois = new ObjectInputStream(fis);
+	    	scriptsTable=new ArrayList<iDSL>();
+	    	scriptsTable = (ArrayList<iDSL>) ois.readObject();
+	    	ois.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    }
 }

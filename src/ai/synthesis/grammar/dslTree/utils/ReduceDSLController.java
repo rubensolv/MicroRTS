@@ -105,14 +105,14 @@ public class ReduceDSLController {
 
     public static void removeUnactivatedParts(iDSL dsl, List<ICommand> commands) {        
         if (SettingsAlphaDSL.get_apply_rules_remove()) {
-            System.out.println("------------------------------------------------------------");        
+            //System.out.println("------------------------------------------------------------");        
             //get all unactivated elements
             List<iDSL> parts = getUnactivatedParts(commands);
             //System.out.println("        -- Old DSL " + dsl.translate());
             //log -- remove this
-            for (iDSL part : parts) {
-                System.out.println("        -- Part to remove " + part.translate());
-            }
+//            for (iDSL part : parts) {
+//                System.out.println("        -- Part to remove " + part.translate());
+//            }
 
             //remove the iDSL fragments from the DSL.
             //removeParts(parts);
@@ -134,9 +134,9 @@ public class ReduceDSLController {
                 removeInconsistentFor(dsl);
             }
             //log -- remove this
-            System.out.println("        -- New DSL " + dsl.translate());
-            //BuilderDSLTreeSingleton.formatedStructuredDSLTreePreOrderPrint((iNodeDSLTree) dsl);
-            System.out.println("--------------------------------\n");
+//            System.out.println("        -- New DSL " + dsl.translate());
+//            //BuilderDSLTreeSingleton.formatedStructuredDSLTreePreOrderPrint((iNodeDSLTree) dsl);
+//            System.out.println("--------------------------------\n");
         }
     }
 

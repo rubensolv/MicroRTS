@@ -107,24 +107,24 @@ public class FunctionsforDSL {
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 2.0, null)); //5
+        parameters.add(new ParameterDSL("Quantity", 50.0, 50.0, null)); //5
         parameters.add(new ParameterDSL("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         basicFunctionsForGrammar.add(new FunctionsforDSL("build", parameters));
         //Function BuildBasic
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 2.0, null));
+        parameters.add(new ParameterDSL("Quantity", 50.0, 50.0, null));
         parameters.add(new ParameterDSL("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
         parameters.add(new ParameterDSL("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforDSL("build", parameters));
 
         //Function HarvestBasic
         parameters = new ArrayList<>();
-        parameters.add(new ParameterDSL("Quantity", 1.0, 4.0, null)); //10
+        parameters.add(new ParameterDSL("Quantity", 50.0, 50.0, null)); //10
         basicFunctionsForGrammar.add(new FunctionsforDSL("harvest", parameters));
         //Function HarvestBasic
         parameters = new ArrayList<>();
-        parameters.add(new ParameterDSL("Quantity", 1.0, 4.0, null));
+        parameters.add(new ParameterDSL("Quantity", 50.0, 50.0, null));
         parameters.add(new ParameterDSL("u", null, null, null));
         basicFunctionsForGrammarUnit.add(new FunctionsforDSL("harvest", parameters));
 
@@ -161,14 +161,14 @@ public class FunctionsforDSL {
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitTrainDiscrete));
         //parameters.add(new ParameterDSL("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null)); //20
+        parameters.add(new ParameterDSL("Quantity", 50.0, 50.0, null)); //20
         parameters.add(new ParameterDSL("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammar.add(new FunctionsforDSL("train", parameters));
         //Function TrainBasic
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitTrainDiscrete));
         //parameters.add(new ParameterDSL("structureType", null, null, typeStructureDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 50.0, 50.0, null));
         parameters.add(new ParameterDSL("priorityPos", null, null, priorityPositionDiscrete));
         basicFunctionsForGrammarUnit.add(new FunctionsforDSL("train", parameters));
 
@@ -189,22 +189,6 @@ public class FunctionsforDSL {
 //        //parameters.add(new ParameterDSL("structureType", null, null, typeStructureDiscrete));
 //        basicFunctionsForGrammar.add(new FunctionsforDSL("cluster", parameters));
 
-        //Function MoveToCoordinatesOnce
-//        parameters = new ArrayList<>();
-//        parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-//        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
-//        parameters.add((new ParameterDSL("x", 0.0, 15.0, null)));
-//        parameters.add((new ParameterDSL("y", 0.0, 15.0, null)));        
-//        basicFunctionsForGrammar.add(new FunctionsforDSL("moveOnceToCoord", parameters));
-//        //Function MoveToCoordinatesOnce
-//        parameters = new ArrayList<>();
-//        parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-//        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
-//        parameters.add((new ParameterDSL("x", 0.0, 15.0, null)));
-//        parameters.add((new ParameterDSL("y", 0.0, 15.0, null)));
-//        parameters.add(new ParameterDSL("u", null, null, null));
-//        basicFunctionsForGrammarUnit.add(new FunctionsforDSL("moveOnceToCoord", parameters));
-
     }
 
     public void createTableConditionalsGrammar() {
@@ -224,43 +208,43 @@ public class FunctionsforDSL {
         //Conditional HaveQtdEnemiesbyType
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforDSL("HaveQtdEnemiesbyType", parameters));
         //Conditional HaveQtdEnemiesbyType
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforDSL("HaveQtdEnemiesbyType", parameters));
 
         //Conditional HaveQtdEnemiesAttacking
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforDSL("HaveQtdUnitsAttacking", parameters));
         //Conditional HaveQtdEnemiesAttacking
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforDSL("HaveQtdUnitsAttacking", parameters));
 
         //Conditional HaveQtdUnitsbyType
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforDSL("HaveQtdUnitsbyType", parameters));
         //Conditional HaveQtdUnitsbyType
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforDSL("HaveQtdUnitsbyType", parameters));
 
         //Conditional HaveQtdUnitsHarvesting
         parameters = new ArrayList<>();
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammar.add(new FunctionsforDSL("HaveQtdUnitsHarversting", parameters));
         //Conditional HaveQtdUnitsHarvesting
         parameters = new ArrayList<>();
-        parameters.add(new ParameterDSL("Quantity", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Quantity", 1.0, 20.0, null));
         conditionalsForGrammarUnit.add(new FunctionsforDSL("HaveQtdUnitsHarversting", parameters));
 
         //Conditional HaveUnitsinEnemyRange
@@ -276,12 +260,12 @@ public class FunctionsforDSL {
         //Conditional HaveUnitsToDistantToEnemy
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Distance", 1.0, 10.0, null));        
+        parameters.add(new ParameterDSL("Distance", 1.0, 20.0, null));        
         conditionalsForGrammar.add(new FunctionsforDSL("HaveUnitsToDistantToEnemy", parameters));
         //Conditional HaveUnitsToDistantToEnemy
         parameters = new ArrayList<>();
         parameters.add(new ParameterDSL("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new ParameterDSL("Distance", 1.0, 10.0, null));
+        parameters.add(new ParameterDSL("Distance", 1.0, 20.0, null));
         parameters.add(new ParameterDSL("u", null, null, null));
         conditionalsForGrammarUnit.add(new FunctionsforDSL("HaveUnitsToDistantToEnemy", parameters));
         
@@ -305,10 +289,6 @@ public class FunctionsforDSL {
         parameters.add(new ParameterDSL("u", null, null, null));
         conditionalsForGrammarUnit.add(new FunctionsforDSL("HaveEnemiesStrongest", parameters));
 
-        //Conditional IsPlayerInPosition
-//        parameters = new ArrayList<>();
-//        parameters.add(new ParameterDSL("priorityPositionDiscreteLimited", null, null, priorityPositionDiscreteLimited));
-//        conditionalsForGrammar.add(new FunctionsforDSL("IsPlayerInPosition", parameters));
     }
 
     public void printFunctions(List<FunctionsforDSL> functionstoPrint)

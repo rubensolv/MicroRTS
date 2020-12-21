@@ -77,7 +77,7 @@ public class AddScriptPlusController {
     void clickAddEpsilon(ActionEvent event) {
 	    ArrayList<String> temp = new ArrayList<>();
 	    temp.addAll(ScriptPreview);
-	    temp.add("ε");
+	    temp.add("Z");
 	    		
 	    ScriptPreview.clear();
 	    ScriptPreview.addAll(temp);
@@ -193,7 +193,7 @@ public class AddScriptPlusController {
     				System.out.println("A última linha está dentro de um IF");
             		System.out.println("String s: " + s);
             		s = s.trim();
-            		s += ") (ε)";
+            		s += ") (Z)";
             		new_tab--;
             		inIf = false;
     			}
@@ -216,7 +216,7 @@ public class AddScriptPlusController {
     	//Verificação de epsilons excessivos
     	boolean hasIllegalEpsilon = false;
     	hasIllegalEpsilon = verifyEpsilons(s);
-    	if(hasIllegalEpsilon) txtAlert.setText("Please, check the ε(s).");
+    	if(hasIllegalEpsilon) txtAlert.setText("Please, check the Z(s).");
     	
     	//Verificação de if na última linha
     	boolean hasLastLineIF = false;
@@ -541,12 +541,12 @@ public class AddScriptPlusController {
     	
     	char sc[] = script.toCharArray();
     	for(int i = 0; i < sc.length; i++) {
-    		if(sc[i] == 'ε') {
+    		if(sc[i] == 'Z') {
     			if(i-1 > 0 && i+1 < sc.length) {
     				if(sc[i-1] != '(' || sc[i+1] != ')') { hasIllegalEpsilon = true; }
     			}
     		}
-    		if(i == sc.length-1 && sc[i] == 'ε') {
+    		if(i == sc.length-1 && sc[i] == 'Z') {
     			hasIllegalEpsilon = true;
     		}
     	}

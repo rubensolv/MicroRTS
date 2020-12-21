@@ -21,7 +21,7 @@ public class EmptyDSL extends AbstractNodeDSLTree implements iEmptyDSL, iS4Const
     private String command;
 
     public EmptyDSL() {
-        this.command = "(ε)";
+        this.command = "(Z)";
         super.setLeaf(true);
     }
     

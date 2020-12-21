@@ -68,6 +68,8 @@ public class BuilderDSLTreeSingleton {
     private static BuilderDSLTreeSingleton uniqueInstance;
     private final FunctionsforDSL grammar;
     private static final Random rand = new Random();
+    ArrayList<String> commandsRedefined; 
+    ArrayList<String> booleansRedefined;
 
     /**
      * The constructor is private to keep the singleton working properly
@@ -141,7 +143,7 @@ public class BuilderDSLTreeSingleton {
         if (Math.random() < C_Grammar_Chances_Empty) {
             return new CDSL(new EmptyDSL());
         } else {
-            return buildTerminalCGrammar(includeUnit);
+            return buildTerminalCGrammarRedefinedFromSketch(includeUnit);
         }
     }
 
@@ -183,6 +185,41 @@ public class BuilderDSLTreeSingleton {
         sCommand += ") ";
         iCommandDSL c = new CommandDSL(sCommand);
         return new CDSL(c);
+    }
+    
+    /**
+     */
+    public CDSL buildTerminalCGrammarRedefinedFromSketch(boolean includeUnit) {
+    	String commandChosen;
+    	if(includeUnit)
+    	{
+    		commandChosen=commandsRedefined.get(new Random().nextInt(commandsRedefined.size()));
+    		commandChosen=commandChosen.substring(0, commandChosen.length() - 1);
+    		commandChosen=commandChosen+",u)";
+    	}
+    	else
+    	{
+    		commandChosen=commandsRedefined.get(new Random().nextInt(commandsRedefined.size()));
+    	}
+    	
+    	iCommandDSL c = new CommandDSL(commandChosen);
+        return new CDSL(c);
+    }
+    
+    public BooleanDSL buildBGrammarRedefinedFromSketch(boolean includeUnit) {
+    	String commandChosen;
+    	if(includeUnit)
+    	{
+    		commandChosen=booleansRedefined.get(new Random().nextInt(booleansRedefined.size()));
+    		commandChosen=commandChosen.substring(0, commandChosen.length() - 1);
+    		commandChosen=commandChosen+",u)";
+    	}
+    	else
+    	{
+    		commandChosen=booleansRedefined.get(new Random().nextInt(booleansRedefined.size()));
+    	}
+    	
+    	return new BooleanDSL(commandChosen);	
     }
 
     /**
@@ -266,7 +303,7 @@ public class BuilderDSLTreeSingleton {
                 || C.translate().equals("")) {
             C = buildCGramar(includeUnit);
         }
-        S2DSL S2 = new S2DSL(buildBGrammar(includeUnit),
+        S2DSL S2 = new S2DSL(buildBGrammarRedefinedFromSketch(includeUnit),
                 C);
         return S2;
     }
@@ -458,6 +495,26 @@ public class BuilderDSLTreeSingleton {
      * @return a S1DSL instance.
      */
     public S1DSL buildS1Grammar() {
+        S1DSL root = buildS1RandomlyGrammar();
+        while (root.translate().equals("")) {
+            root = buildS1RandomlyGrammar();
+        }
+        S1DSL child = root;
+        for (int j = 1; j < (rand.nextInt(S1_Grammar_Depth) + 1); j++) {
+            S1DSL next = buildS1RandomlyGrammar();
+            child.setNextCommand(next);
+            child = next;
+            if (child.getCommandS1() instanceof EmptyDSL) {
+                return root;
+            }
+        }
+        return root;
+    }
+    
+    public S1DSL buildS1Grammar(ArrayList<String> commandsRedefined, ArrayList<String> booleansRedefined) {
+    	this.commandsRedefined=commandsRedefined;
+    	this.booleansRedefined=booleansRedefined;
+    	
         S1DSL root = buildS1RandomlyGrammar();
         while (root.translate().equals("")) {
             root = buildS1RandomlyGrammar();
@@ -707,11 +764,11 @@ public class BuilderDSLTreeSingleton {
         } else if (dsl instanceof CDSL) {
             CDSL temp = (CDSL) dsl;
             if (hasS2asFather((iNodeDSLTree) dsl)) {
-                CDSL n = buildTerminalCGrammar(hasS3Father);
+                CDSL n = buildTerminalCGrammarRedefinedFromSketch(hasS3Father);
                 temp.setNextCommand(n.getNextCommand());
                 temp.setRealCommand(n.getRealCommand());
                 while (temp.translate().equals("")) {
-                    n = buildTerminalCGrammar(hasS3Father);
+                    n = buildTerminalCGrammarRedefinedFromSketch(hasS3Father);
                     temp.setNextCommand(n.getNextCommand());
                     temp.setRealCommand(n.getRealCommand());
                 }
@@ -824,17 +881,18 @@ public class BuilderDSLTreeSingleton {
      * @param hasS3Father - If the iDSL is child of a S3SDL (for structure)
      * @return a String with the new conditional command.
      */
-    public String modifyBoolean(BooleanDSL bGrammar, boolean hasS3Father) {
-        double p = Math.random();
-        if (p < 0.4) {
-            //change completely the boolean command. 
-            return buildBGrammar(hasS3Father).getBooleanCommand();
-        } else {
-            String boolName = bGrammar.getBooleanCommand();
-            //change the parameters
-            return changeJustBooleanParameters(boolName, hasS3Father);
-        }
-    }
+	    public String modifyBoolean(BooleanDSL bGrammar, boolean hasS3Father) {
+	        double p = Math.random();
+	//         if (p < 0.4) {
+	            //change completely the boolean command. 
+	            return buildBGrammarRedefinedFromSketch(hasS3Father).getBooleanCommand();
+	//        } else {
+	//            String boolName = bGrammar.getBooleanCommand();
+	//            //change the parameters
+	//
+	//            return changeJustBooleanParameters(boolName, hasS3Father);
+	//        }
+	    }
 
     public String changeJustBooleanParameters(String boolName, boolean includeUnit) {
         String sName = boolName.substring(0, boolName.indexOf("("));
@@ -863,16 +921,16 @@ public class BuilderDSLTreeSingleton {
                     int parametherValueChosen = rand.nextInt(supLimit - infLimit) + infLimit;
                     sName += parametherValueChosen + ",";
                 } else {
-                    int idChosen = rand.nextInt(p.getDiscreteSpecificValues().size());
-                    discreteValue = p.getDiscreteSpecificValues().get(idChosen);
-                    sName += discreteValue + ",";
+//                    int idChosen = rand.nextInt(p.getDiscreteSpecificValues().size());
+//                    discreteValue = p.getDiscreteSpecificValues().get(idChosen);
+                    sName += params[i] + ",";
                 }
             }
         }
 
         sName = sName.substring(0, sName.length() - 1).trim().concat(")");
         if (boolName.equals(sName)) {
-            sName = changeJustBooleanParameters(boolName, includeUnit);
+            sName = buildBGrammarRedefinedFromSketch(includeUnit).getBooleanCommand();
         }
         return sName;
     }
@@ -902,17 +960,18 @@ public class BuilderDSLTreeSingleton {
      * @param hasS3Father - If the iDSL is child of a S3SDL (for structure)
      * @return a String with the new C command.
      */
-    public String modifyCommand(CommandDSL temp, boolean hasS3Father) {
-        double p = Math.random();
-        if (p < 0.4) {
-            //change completely the C command . 
-            return buildTerminalCGrammar(hasS3Father).getRealCommand().translate();
-        } else {
-            String cName = temp.getGrammarDSF();
-            //change the parameters
-            return changeJustCommandParameters(cName, hasS3Father);
-        }
-    }
+	    public String modifyCommand(CommandDSL temp, boolean hasS3Father) {
+	 //   	System.out.println("transito ");
+	 //       double p = Math.random();
+	//        if (p < 0.4) {
+	            //change completely the C command . 
+	            return buildTerminalCGrammarRedefinedFromSketch(hasS3Father).getRealCommand().translate();
+	//        } else {
+	//            String cName = temp.getGrammarDSF();
+	//            //change the parameters
+	//            return changeJustCommandParameters(cName, hasS3Father);
+	//        }
+	    }
 
     /**
      * Generates modifications in CommandDSL without probability of modify its
@@ -960,16 +1019,16 @@ public class BuilderDSLTreeSingleton {
                     }
                     sName += parametherValueChosen + ",";
                 } else {
-                    int idChosen = rand.nextInt(p.getDiscreteSpecificValues().size());
-                    discreteValue = p.getDiscreteSpecificValues().get(idChosen);
-                    sName += discreteValue + ",";
+//                    int idChosen = rand.nextInt(p.getDiscreteSpecificValues().size());
+//                    discreteValue = p.getDiscreteSpecificValues().get(idChosen);
+                    sName += params[i] + ",";
                 }
             }
         }
 
         sName = sName.substring(0, sName.length() - 1).trim().concat(")");
         if (cName.equals(sName)) {
-            sName = changeJustCommandParameters(cName, hasS3Father);
+            sName =  buildTerminalCGrammarRedefinedFromSketch(hasS3Father).getRealCommand().translate();
         }
         return sName;
     }
@@ -1155,6 +1214,27 @@ public class BuilderDSLTreeSingleton {
         }
         return dsl;
     }
+    
+    public iDSL composeNeighbourWithSizeLimit(iDSL dsl, ArrayList<String> commandsRedefined, ArrayList<String> booleansRedefined) {
+        this.commandsRedefined=commandsRedefined;
+        this.booleansRedefined=booleansRedefined;
+    	String originalDSL = dsl.translate();
+        //get all necessary nodes
+        HashSet<iNodeDSLTree> nodes = getNodesWithoutDuplicity(dsl);
+//        if (count_by_commands(nodes) >= this.MAX_SIZE) {
+//            //dsl = get_ast_with_small_modifications(dsl);
+//        	dsl = get_new_ast_with_modifications(dsl);
+//        } else {
+            dsl = get_new_ast_with_modifications(dsl);
+//       }
+
+        //guarantee some modification
+        while (dsl.translate().equals(originalDSL)
+                || dsl.translate().equals("")) {
+            dsl = composeNeighbourWithSizeLimit(dsl);
+        }
+        return dsl;
+    }
 
     private iDSL get_ast_with_small_modifications(iDSL ast) {
         HashSet<iNodeDSLTree> nodes = getNodesWithoutDuplicity(ast);
@@ -1178,7 +1258,9 @@ public class BuilderDSLTreeSingleton {
         Collections.shuffle(fullNodes);
         //select the node and change
         int nNode = rand.nextInt(nodes.size());
+        //System.out.println("nNode_random "+nNode);
         iNodeDSLTree targetNode = (iNodeDSLTree) nodes.toArray()[nNode];
+        //System.out.println("Target Node "+targetNode.getFantasyName());
         generateNewCommand((iDSL) targetNode, hasS3asFather(targetNode));
         return ast;
     }
@@ -1254,6 +1336,20 @@ public class BuilderDSLTreeSingleton {
             while (builder.count_by_commands(builder.getNodesWithoutDuplicity(dsl))
                     > builder.MAX_SIZE) {
                 dsl = builder.composeNeighbourWithSizeLimit(dsl);
+            }
+            return dsl;
+        }
+        return builder.composeNeighbourPassively(dsl);
+    }
+    
+    public static iDSL changeNeighbourPassively(iDSL dsl, ArrayList<String> commandsRedefined, ArrayList<String> booleansRedefined) {
+        BuilderDSLTreeSingleton builder = BuilderDSLTreeSingleton.getInstance();
+        if (builder.get_neighbour_type() == NeighbourTypeEnum.LIMITED) {
+            dsl = builder.composeNeighbourWithSizeLimit(dsl,commandsRedefined,booleansRedefined);
+            while (builder.count_by_commands(builder.getNodesWithoutDuplicity(dsl))
+                    > builder.MAX_SIZE) {
+            	//System.out.println("dsl_current "+dsl.translate()+" counter "+builder.count_by_commands(builder.getNodesWithoutDuplicity(dsl)) +"max size "+builder.MAX_SIZE);
+                dsl = builder.composeNeighbourWithSizeLimit(dsl,commandsRedefined,booleansRedefined);
             }
             return dsl;
         }

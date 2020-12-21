@@ -189,20 +189,20 @@ public class FunctionsforGrammar {
 //        basicFunctionsForGrammar.add(new FunctionsforGrammar("cluster", parameters));
 
         //Function MoveToCoordinatesOnce
-        parameters = new ArrayList<>();
-        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
-        parameters.add((new Parameter("x", 0.0, 15.0, null)));
-        parameters.add((new Parameter("y", 0.0, 15.0, null)));        
-        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveOnceToCoord", parameters));
-        //Function MoveToCoordinatesOnce
-        parameters = new ArrayList<>();
-        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
-        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
-        parameters.add((new Parameter("x", 0.0, 15.0, null)));
-        parameters.add((new Parameter("y", 0.0, 15.0, null)));
-        parameters.add(new Parameter("u", null, null, null));
-        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveOnceToCoord", parameters));
+//        parameters = new ArrayList<>();
+//        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+//        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
+//        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+//        parameters.add((new Parameter("y", 0.0, 15.0, null)));        
+//        basicFunctionsForGrammar.add(new FunctionsforGrammar("moveOnceToCoord", parameters));
+//        //Function MoveToCoordinatesOnce
+//        parameters = new ArrayList<>();
+//        parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
+//        parameters.add(new Parameter("Quantity", 1.0, 10.0, null));
+//        parameters.add((new Parameter("x", 0.0, 15.0, null)));
+//        parameters.add((new Parameter("y", 0.0, 15.0, null)));
+//        parameters.add(new Parameter("u", null, null, null));
+//        basicFunctionsForGrammarUnit.add(new FunctionsforGrammar("moveOnceToCoord", parameters));
 
     }
 
@@ -303,7 +303,6 @@ public class FunctionsforGrammar {
         parameters.add(new Parameter("unitType", null, null, typeUnitDiscrete));
         parameters.add(new Parameter("u", null, null, null));
         conditionalsForGrammarUnit.add(new FunctionsforGrammar("HaveEnemiesStrongest", parameters));
-        
         
         //Conditional IsPlayerInPosition
         parameters = new ArrayList<>();

@@ -33,13 +33,13 @@ public class SettingsAlphaDSL {
     private static final boolean RUN_FULL_LEAGUE = true;
     private static final int ITERATIONS_SA_BEST_RESPONDE = 2;
    //private static final String MAP = "maps/battleMaps/Others/RangedHeavyMixed.xml";
-   private static final String MAP = "maps/8x8/basesWorkers8x8A.xml";
+   //private static final String MAP = "maps/8x8/basesWorkers8x8A.xml";
    //private static final String MAP = "maps/16x16/basesWorkers16x16A.xml";
    //private static final String MAP = "maps/24x24/basesWorkers24x24A.xml";
    //new maps
    //private static final String MAP = "maps/barricades24x24.xml";
    //private static final String MAP = "maps/chambers32x32.xml";
-   //private static final String MAP = "maps/DoubleGame24x24.xml";
+   private static final String MAP = "maps/DoubleGame24x24.xml";
    //private static final String MAP = "maps/itsNotSafe.xml";
    //private static final String MAP = "maps/letMeOut.xml";
    //private static final String MAP = "maps/NoWhereToRun9x8.xml";   
