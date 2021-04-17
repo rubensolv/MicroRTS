@@ -141,7 +141,7 @@ public class RoundRobinClusterLeve_Cluster_GP {
                 //"maps/32x32/basesWorkers32x32A.xml"
                 //"maps/BWDistantResources32x32.xml"
                 //"maps/BroodWar/(4)BloodBath.scmB.xml"
-                //"maps/8x8/basesWorkers8x8A.xml"
+               //"maps/8x8/basesWorkers8x8A.xml"
                 //"maps/16x16/BasesWithWalls16x16.xml"
                 //"maps/16x16/basesWorkers16x16A.xml"
                 //"maps/NoWhereToRun9x8.xml"
@@ -158,22 +158,23 @@ public class RoundRobinClusterLeve_Cluster_GP {
         boolean gameover = false;
 
         if (pgs.getHeight() == 8) {
-            MAXCYCLES = 9000;
+            MAXCYCLES = 3000;
         }
         if (pgs.getHeight() == 9) {
-            MAXCYCLES = 9000;
+            MAXCYCLES = 5000;
         }
         if (pgs.getHeight() == 16) {
-            MAXCYCLES = 10000;
+            MAXCYCLES = 5000;
+            //MAXCYCLES = 1000;
         }
         if (pgs.getHeight() == 24) {
-            MAXCYCLES = 11000;
+            MAXCYCLES = 6000;
         }
         if (pgs.getHeight() == 32) {
-            MAXCYCLES = 12000;
+            MAXCYCLES = 7000;
         }
         if (pgs.getHeight() == 64) {
-            MAXCYCLES = 17000;
+            MAXCYCLES = 12000;
         }
         //BEST AAAI for 8x8
         //String bestGAAAAI = "198;272;100;168;78;86;27;120;279;93;";
@@ -197,28 +198,111 @@ public class RoundRobinClusterLeve_Cluster_GP {
                         new SimpleSqrtEvaluationFunction3(), true, utt, "ManagerClosestEnemy", 3,
                         decodeScripts(utt, "1;2;3;"), "A3N"),
                 
-                decodeScripts2(utt, new ArrayList<>(getListIfInteger("0;")),scriptsTable1,"AST_RR0").get(0),
-                decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1,"AST_RR1").get(0)
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("2;")),scriptsTable1,"AST_RR2").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1,"AST_RR3").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("4;")),scriptsTable1,"AST_RR4").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("5;")),scriptsTable1,"AST_RR5").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("6;")),scriptsTable1,"AST_RR6").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("7;")),scriptsTable1,"AST_RR7").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("8;")),scriptsTable1,"AST_RR8").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("9;")),scriptsTable1,"AST_RR9").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("10;")),scriptsTable1,"AST_RR10").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("11;")),scriptsTable1,"AST_RR11").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("12;")),scriptsTable1,"AST_RR12").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("13;")),scriptsTable1,"AST_RR13").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("14;")),scriptsTable1,"AST_RR14").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("15;")),scriptsTable1,"AST_RR15").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("16;")),scriptsTable1,"AST_RR16").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("17;")),scriptsTable1,"AST_RR17").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("18;")),scriptsTable1,"AST_RR18").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("19;")),scriptsTable1,"AST_RR19").get(0)
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("10;")),scriptsTable1,"AST_RR10").get(0),
-//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("11;")),scriptsTable1,"AST_RR11").get(0)
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("0;")),scriptsTable1,"AST_RRR0").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("1;")),scriptsTable1,"AST_RRR1").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("2;")),scriptsTable1,"AST_RRR2").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("3;")),scriptsTable1,"AST_RRR3").get(0),
+                
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("4;")),scriptsTable1,"AST_RRR4").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("5;")),scriptsTable1,"AST_RRR5").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("6;")),scriptsTable1,"AST_RRR6").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("7;")),scriptsTable1,"AST_RRR7").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("8;")),scriptsTable1,"AST_RRR8").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("9;")),scriptsTable1,"AST_RRR9").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("10;")),scriptsTable1,"AST_RRR10").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("11;")),scriptsTable1,"AST_RRR11").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("12;")),scriptsTable1,"AST_RRR12").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("13;")),scriptsTable1,"AST_RRR13").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("14;")),scriptsTable1,"AST_RRR14").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("15;")),scriptsTable1,"AST_RRR15").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("16;")),scriptsTable1,"AST_RRR16").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("17;")),scriptsTable1,"AST_RRR17").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("18;")),scriptsTable1,"AST_RRR18").get(0),
+                decodeScripts2(utt, new ArrayList<>(getListIfInteger("19;")),scriptsTable1,"AST_RRR19").get(0)
+//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("20;")),scriptsTable1,"AST_RRR20").get(0),
+//                decodeScripts2(utt, new ArrayList<>(getListIfInteger("21;")),scriptsTable1,"AST_RRR21").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("22;")),scriptsTable1,"AST_RRR22").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("23;")),scriptsTable1,"AST_RRR23").get(0)
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("24;")),scriptsTable1,"AST_RRR24").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("25;")),scriptsTable1,"AST_RRR25").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("26;")),scriptsTable1,"AST_RRR26").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("27;")),scriptsTable1,"AST_RRR27").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("28;")),scriptsTable1,"AST_RRR28").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("29;")),scriptsTable1,"AST_RRR29").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("30;")),scriptsTable1,"AST_RRR30").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("31;")),scriptsTable1,"AST_RRR31").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("32;")),scriptsTable1,"AST_RRR32").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("33;")),scriptsTable1,"AST_RRR33").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("34;")),scriptsTable1,"AST_RRR34").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("35;")),scriptsTable1,"AST_RRR35").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("36;")),scriptsTable1,"AST_RRR36").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("37;")),scriptsTable1,"AST_RRR37").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("38;")),scriptsTable1,"AST_RRR38").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("39;")),scriptsTable1,"AST_RRR39").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("40;")),scriptsTable1,"AST_RRR40").get(0),    
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("41;")),scriptsTable1,"AST_RRR41").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("42;")),scriptsTable1,"AST_RRR42").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("43;")),scriptsTable1,"AST_RRR43").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("44;")),scriptsTable1,"AST_RRR44").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("45;")),scriptsTable1,"AST_RRR45").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("46;")),scriptsTable1,"AST_RRR46").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("47;")),scriptsTable1,"AST_RRR47").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("48;")),scriptsTable1,"AST_RRR48").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("49;")),scriptsTable1,"AST_RRR49").get(0), 
+//              
+//              
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("50;")),scriptsTable1,"AST_RRR50").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("51;")),scriptsTable1,"AST_RRR51").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("52;")),scriptsTable1,"AST_RRR52").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("53;")),scriptsTable1,"AST_RRR53").get(0),
+//              
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("54;")),scriptsTable1,"AST_RRR54").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("55;")),scriptsTable1,"AST_RRR55").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("56;")),scriptsTable1,"AST_RRR56").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("57;")),scriptsTable1,"AST_RRR57").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("58;")),scriptsTable1,"AST_RRR58").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("59;")),scriptsTable1,"AST_RRR59").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("60;")),scriptsTable1,"AST_RRR60").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("61;")),scriptsTable1,"AST_RRR61").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("62;")),scriptsTable1,"AST_RRR62").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("63;")),scriptsTable1,"AST_RRR63").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("64;")),scriptsTable1,"AST_RRR64").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("65;")),scriptsTable1,"AST_RRR65").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("66;")),scriptsTable1,"AST_RRR66").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("67;")),scriptsTable1,"AST_RRR67").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("68;")),scriptsTable1,"AST_RRR68").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("69;")),scriptsTable1,"AST_RRR69").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("70;")),scriptsTable1,"AST_RRR70").get(0),
+//              decodeScripts2(utt, new ArrayList<>(getListIfInteger("71;")),scriptsTable1,"AST_RRR71").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("72;")),scriptsTable1,"AST_RRR72").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("73;")),scriptsTable1,"AST_RRR73").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("74;")),scriptsTable1,"AST_RRR74").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("75;")),scriptsTable1,"AST_RRR75").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("76;")),scriptsTable1,"AST_RRR76").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("77;")),scriptsTable1,"AST_RRR77").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("78;")),scriptsTable1,"AST_RRR78").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("79;")),scriptsTable1,"AST_RRR79").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("80;")),scriptsTable1,"AST_RRR80").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("81;")),scriptsTable1,"AST_RRR81").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("82;")),scriptsTable1,"AST_RRR82").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("83;")),scriptsTable1,"AST_RRR83").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("84;")),scriptsTable1,"AST_RRR84").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("85;")),scriptsTable1,"AST_RRR85").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("86;")),scriptsTable1,"AST_RRR86").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("87;")),scriptsTable1,"AST_RRR87").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("88;")),scriptsTable1,"AST_RRR88").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("89;")),scriptsTable1,"AST_RRR89").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("90;")),scriptsTable1,"AST_RRR90").get(0),    
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("91;")),scriptsTable1,"AST_RRR91").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("92;")),scriptsTable1,"AST_RRR92").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("93;")),scriptsTable1,"AST_RRR93").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("94;")),scriptsTable1,"AST_RRR94").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("95;")),scriptsTable1,"AST_RRR95").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("96;")),scriptsTable1,"AST_RRR96").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("97;")),scriptsTable1,"AST_RRR97").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("98;")),scriptsTable1,"AST_RRR98").get(0),
+//            decodeScripts2(utt, new ArrayList<>(getListIfInteger("99;")),scriptsTable1,"AST_RRR99").get(0) 
+                
 //              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("6;")),scriptsTable1), 200, "GPP_PURE_R4_it1_5"),
 //              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("7;")),scriptsTable1), 200, "GPP_PURE_R4_it1_10"),
 //              new LightPGSSCriptChoiceNoWaits(utt, decodeScripts2(utt, new ArrayList<>(getListIfInteger("8;")),scriptsTable1), 200, "GPP_PURE_R4_it1_15"),

@@ -39,10 +39,10 @@ public class SettingsAlphaDSL {
    //new maps
    //private static final String MAP = "maps/barricades24x24.xml";
    //private static final String MAP = "maps/chambers32x32.xml";
-   private static final String MAP = "maps/DoubleGame24x24.xml";
+   //private static final String MAP = "maps/DoubleGame24x24.xml";
    //private static final String MAP = "maps/itsNotSafe.xml";
-   //private static final String MAP = "maps/letMeOut.xml";
-   //private static final String MAP = "maps/NoWhereToRun9x8.xml";   
+  //private static final String MAP = "maps/NoWhereToRun9x8.xml";
+   private static final String MAP = "maps/8x8/basesWorkers8x8A.xml";   
    
    private static final int WINDOWS_SIZE = 4;
    
