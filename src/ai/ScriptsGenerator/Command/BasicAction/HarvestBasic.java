@@ -38,7 +38,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
 
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt,HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
-    	
+    	//System.out.println("Harvest");
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst
@@ -74,7 +74,9 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
                     	else
                     	{
                     		counterByFunction.put(unit.getID(), "harvest");
+                    		
                     	}
+                    	//System.out.println("harv "+counterByFunction);
                         currentPlayerAction.addUnitAction(unit, uAct);
                         resources.merge(uAct.resourceUsage(unit, pgs));
                     }
@@ -221,7 +223,7 @@ public class HarvestBasic extends AbstractBasicAction implements IUnitCommand {
     @Override
     public PlayerAction getAction(GameState game, int player, PlayerAction currentPlayerAction, PathFinding pf, UnitTypeTable a_utt, Unit u, HashSet<String> usedCommands, HashMap<Long, String> counterByFunction) {
     	//usedCommands.add(getOriginalPieceGrammar()+")");
-    	
+    	//System.out.println("this2");
     	ResourceUsage resources = new ResourceUsage();
         PhysicalGameState pgs = game.getPhysicalGameState();
         //check if there are resources to harverst

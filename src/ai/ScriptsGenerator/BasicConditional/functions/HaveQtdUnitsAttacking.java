@@ -35,9 +35,13 @@ public class HaveQtdUnitsAttacking extends AbstractConditionalFunction{
         QuantityParam qtd = (QuantityParam) lParam1.get(5);
         UnitTypeParam unitType = (UnitTypeParam) lParam1.get(6);
         parameters.add(unitType);
-        
+        //System.out.println("enter "+counterByFunction);
         //if (getAllyUnitsAttacking(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
         if (getNumberUnitsDoingAction("attack",counterByFunction,game,currentPlayerAction) >= qtd.getQuantity()){
+        	return true;
+        }
+        if (getAllyUnitsAttacking(game, currentPlayerAction, player).size() >= qtd.getQuantity()){
+        	//System.out.println("Some attacking "+getAllyUnitsAttacking(game, currentPlayerAction, player).size());
         	return true;
         }
         

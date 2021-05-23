@@ -34,11 +34,18 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
         //PathFinding pf = (PathFinding) lParam1.get(3);
         //UnitTypeTable a_utt = (UnitTypeTable) lParam1.get(4);
         QuantityParam qtd = (QuantityParam) lParam1.get(5);
+        //System.out.println("enter2 "+counterByFunction);
         if (getNumberUnitsDoingAction("harvest",counterByFunction,game,currentPlayerAction) >= qtd.getQuantity()){
-        	
+        	//System.out.println("counterByFunction "+counterByFunction);
             return true;
         }
+        if(getAllyUnitsHarvesting(game,currentPlayerAction,player).size() >= qtd.getQuantity())
+        {
+        	//System.out.println("Some harvesting "+getAllyUnitsHarvesting(game,currentPlayerAction,player).size());
+        	return true;
+        }
         return false;
+        	
     }
 
      protected ArrayList<Unit> getAllyUnitsHarvesting(GameState game, PlayerAction currentPlayerAction, int player) {
@@ -46,11 +53,11 @@ public class HaveQtdUnitsHarversting extends AbstractConditionalFunction{
     	 HashSet<Long> unitsID = hb.unitsID;
     	ArrayList<Unit> unitAllys = new ArrayList<>();
         for (Unit u : game.getUnits()) {
-            if(u.getPlayer() == player){
-            	//if(currentPlayerAction.getAction(u).getType()==2 || currentPlayerAction.getAction(u).getType()==3 || u.getResources()>0)
-            	if(unitsID.contains(u.getID())) 
-            		unitAllys.add(u);
-            }
+            	if(u.getPlayer() == player && currentPlayerAction.getAction(u)!=null){
+            		if(currentPlayerAction.getAction(u).getType()==2 || currentPlayerAction.getAction(u).getType()==3 || u.getResources()>0)
+            			//if(unitsID.contains(u.getID())) 
+            			unitAllys.add(u);
+            	}
         }
         return unitAllys;
     }
